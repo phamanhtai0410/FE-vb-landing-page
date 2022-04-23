@@ -22,3 +22,4 @@ RUN npm run build
 FROM nginx:1.17.1-alpine
 
 COPY --from=build-step /web-vebank/build /usr/share/nginx/html
+COPY conf.d/default.conf /etc/nginx/conf.d/default.conf

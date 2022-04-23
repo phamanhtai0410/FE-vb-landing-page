@@ -1,0 +1,129 @@
+
+variables:
+  REGION: asia-southeast1
+  IMAGE_NAME: vb-landing-page
+  CONTAINER_REPO_ASIA_STAG: 420811272222.dkr.ecr.ap-southeast-1.amazonaws.com/vb-staging-ecr/landing-page
+  NAMESPACE_STAG: vb-website-stag
+  FULLREPO_ASIA_STAG: $CONTAINER_REPO_ASIA_STAG:$CI_COMMIT_SHORT_SHA
+  HELM_VALUE: ${CI_COMMIT_REF_NAME}
+  HELM_VERSION: 2.4.3
+  AWS_REGION: ap-southeast-1
+  GITLAB_TOKEN: $GITLAB_RUNNER_TOKEN
+  DOCKER_DRIVER: overlay
+  DOCKER_HOST: tcp://localhost:2375
+  DOCKER_TLS_CERTDIR: ""
+  GIT_SUBMODULE_STRATEGY: recursive
+
+
+stages:
+  - build
+  - deploy
+
+.kubectl_config: &kubectl_config
+  - env
+  - aws sts get-caller-identity
+  - |
+      if [ "$CI_COMMIT_REF_NAME" == "prod" ]; then
+        aws eks --region $AWS_REGION update-kubeconfig --name rinz-production-cluster
+      fi
+  - |
+      if [ "$CI_COMMIT_REF_NAME" == "stag" ]; then
+        aws eks --region $AWS_REGION update-kubeconfig --name rinz-staging-cluster
+      fi
+  - cat /root/.kube/config
+.predeploy: &predeploy |
+  apk add --no-cache  bash git  python3 py3-pip
+  pip3 install --upgrade pip 
+  pip3 install --no-cache-dir awscli
+  helm plugin install https://github.com/hypnoglow/helm-s3.git
+  helm repo add helm-template s3://rinz-helm-template
+  helm pull s3://rinz-helm-template/helm-template-$HELM_VERSION.tgz --untar=true
+
+build_stag:
+  image: docker:19.03.1
+  tags:
+  - rinz-stag
+  stage: build
+  services:
+  - docker:19.03.1-dind
+  before_script:
+    - apk add --no-cache curl jq python py-pip wget git
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
+    - pip install awscli 
+  script:
+    - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $CONTAINER_REPO_ASIA_STAG
+    - git clone https://read-token:$GITLAB_TOKEN@gitlab.rinznetwork.com/rinz-io-devops/helm-value/$IMAGE_NAME.git
+    - mv $IMAGE_NAME/stag.yaml .
+    - |
+      if [ "$CI_COMMIT_REF_NAME" == "stag" ]; then
+        sed -i -e "s#\[FULLREPO_ASIA\]#$FULLREPO_ASIA_STAG#g" stag.yaml
+        sed -i -e "s#\[NAMESPACE\]#$NAMESPACE_STAG#g" stag.yaml
+      fi
+    - docker build -t $FULLREPO_ASIA_STAG .
+    - docker push $FULLREPO_ASIA_STAG
+  only:
+    refs:
+      - stag
+  artifacts:
+    paths:
+    - stag.yaml
+
+build_prod:
+  image: docker:19.03.1
+  tags:
+  - rinz-prod
+  stage: build
+  services:
+  - docker:19.03.1-dind
+  before_script:
+    - apk add --no-cache curl jq python py-pip wget git
+    - pip install awscli 
+  script:
+    - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $CONTAINER_REPO_ASIA
+    - git clone https://read-token:$GITLAB_TOKEN@gitlab.rinznetwork.com/rinz-io-devops/helm-value/$IMAGE_NAME.git
+    - |
+      if [ "$CI_COMMIT_REF_NAME" == "prod" ]; then
+        sed -i -e "s#\[FULLREPO_ASIA\]#$FULLREPO_ASIA#g" prod.yaml
+        sed -i -e "s#\[NAMESPACE\]#$NAMESPACE#g" prod.yaml
+      fi
+    - |
+      if [ "$CI_COMMIT_REF_NAME" == "stag" ]; then
+        sed -i -e "s#\[FULLREPO_ASIA\]#$FULLREPO_ASIA#g" stag.yaml
+        sed -i -e "s#\[NAMESPACE\]#$NAMESPACE#g" stag.yaml
+      fi
+    - docker build -t $FULLREPO_ASIA .
+    - docker push $FULLREPO_ASIA
+  only:
+    refs:
+      - prod
+  artifacts:
+    paths:
+    - prod.yaml
+
+
+deploy_stag:
+  stage: deploy
+  image:  alpine/helm:3.2.1
+  tags:
+  - rinz-stag
+  script:
+    - *predeploy
+    - *kubectl_config
+    - helm upgrade --install  --namespace $NAMESPACE_STAG  -f stag.yaml  $IMAGE_NAME ./helm-template
+  only:
+    refs:
+      - stag
+
+deploy_prod:
+  stage: deploy
+  image:  alpine/helm:3.2.1
+  tags:
+  - rinz-prod
+  script:
+    - *predeploy
+    - *kubectl_config
+    - helm upgrade --install  --namespace $NAMESPACE_PROD  -f prod.yaml  $IMAGE_NAME ./helm-template
+  only:
+    refs:
+      - prod
