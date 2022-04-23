@@ -25,6 +25,7 @@ function App() {
         <Route path="/home" element={<HomePage />} />
 
         <Route path="/borrows" element={<BorrowPage />} />
+
         <Route path="/supply" element={<SupplyPage />} />
 
         <Route path="*" element={<Navigate to="/home" />} />

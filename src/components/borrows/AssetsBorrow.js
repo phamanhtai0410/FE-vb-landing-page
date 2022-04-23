@@ -7,7 +7,7 @@ const AssetsBorrow = () => {
 
     return (
 
-        <div className="w-full min-h-max rounded-lg bg-[#141432] mt-16 p-10">
+        <div className="w-full min-h-max rounded-lg bg-[#141432] mt-16 p-10 fade-in-box">
 
             <h4 className="font-montserrat text-[30px] leading-9">Assets to borrow</h4>
 
