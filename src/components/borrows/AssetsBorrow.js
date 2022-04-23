@@ -47,7 +47,7 @@ const AssetsBorrow = () => {
 
                     <div className="p-2 flex flex-row justify-center items-center space-x-4 w-full text-right cursor-pointer">
                         <img className="w-6 h-6" src="https://s3-alpha-sig.figma.com/img/1a70/25c5/63c9e4820739ea78686e9bcfb12ea426?Expires=1651449600&Signature=FpitPuHVNJeECaOLYbqTO89cUzktxw17gN3obLpkqaXq4T8X0VHoFyde3lKS5AwgCBuyiklSRZwD52zXrcybL3FkjjAlL-8eVgeTgFmQSnujM8-sSRhVSGK7P4FnO0FztvIz~tHJbHg6E0LcuWUDVhaCuRg8D0H9Qthe1IA~tH2JtkRTMAHEDHwtZZ9JhxXnLmAoBTZVKxLmWy7LNnDkc493BZEOsfHGIjnR8JmN1v4l4OwwMki7yFvaF1RrTkt2XBQGY2wseGER-i0YNm4a-31OdCTvfJj~FYEHnsrrgITZEgQAYI1wFJx3-60bGw62k3pv98kenD1Qvlda~zWlcw__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA" />
-                        <span className="text-lg font-semibold">BUSD</span>
+                        <span className="text-lg font-semibold w-12 text-left">BUSD</span>
                     </div>
 
                     <div className="p-2 flex justify-center items-center font-semibold">0</div>
@@ -70,7 +70,7 @@ const AssetsBorrow = () => {
 
                     <div className="p-2 flex flex-row justify-center items-center space-x-4 w-full text-right cursor-pointer">
                         <img className="w-6 h-6" src="https://s3-alpha-sig.figma.com/img/61ea/9ddb/59d8a613c5c74e77b86fe65c5e4283f4?Expires=1651449600&Signature=Q3cCCT0kHQY7qsMZCmU~Mb13iiQ90Y12b2cxR~sirNRyUY2W0IsVSCS5owd6oboEKEEB~55PJwMTOUGv2gBatmwyrwTtA-~bbJ5i3053fcr8L5KSSglwjQUhZ02e0FwBN5~L3gzJLh0J~219sF1JL5VJ5yg8hxiPyhjPXutRBeiVMzPWTaZ7xoW7YQOVIpJm~l6zNGuq1mU4l0W0humOMJuXQZAHNd1aw15JWKD3s3jBp19r58Q4D1f-Gq~kSIGOq40TW~mmBfGnsPDOP-FPLvUs72GzRSNv9QWor7r1J4deY2OCFB5W2q2eot-RE1xOhbItU-z7m817MNHH0~BkGQ__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA" />
-                        <span className="text-lg font-semibold">FEI</span>
+                        <span className="text-lg font-semibold w-12 text-left">FEI</span>
                     </div>
 
                     <div className="p-2 flex justify-center items-center font-semibold">0</div>
@@ -93,7 +93,7 @@ const AssetsBorrow = () => {
 
                     <div className="p-2 flex flex-row justify-center items-center space-x-4 w-full text-right cursor-pointer">
                         <img className="w-6 h-6" src="https://s3-alpha-sig.figma.com/img/6b7f/ca37/00c4e43540a3ed6937b4dba531ba994e?Expires=1651449600&Signature=ZMKNm4wo9RepLhKSCIUro~nUoCccH4Hh0BIzttdTMB03kpgz1vrO~xwqv6mdWekzPP-VjizZQmRN6RPYYA81QyJk7LutX56AcSJrT6hVNZLMoKBq5vL6Q2FCJEPzILAxY~WEt0aVWLReYPVQXyXqvsiXIRA6RFTEGNDcwurC34UZ2KQwhj8xmKpfarx94SxdUmD9PLzNVO4LcPXFywkhnQsgyu4Qb9cxQ5eSWWRNdmejg2OzMEkXu6Qe-dGkw0Lf7XUX~vWlxaPL8GV4HmVEW1c4ds5lAlUGTcKSlvkOdWbXv42r73rKPwLlAC-HOqvDX1XOY59TFMcmAwfyM~LFCg__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA" />
-                        <span className="text-lg font-semibold">Aave</span>
+                        <span className="text-lg font-semibold w-12 text-left">Aave</span>
                     </div>
 
                     <div className="p-2 flex justify-center items-center font-semibold">0</div>
