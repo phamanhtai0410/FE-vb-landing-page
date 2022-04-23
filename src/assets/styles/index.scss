@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "./animation.scss";
 
 @font-face {
     font-family: "Poppins";
@@ -101,4 +102,32 @@ footer {
 
 .img-scale-1-1:hover {
     transform: scale(1.1);
+}
+
+
+
+.tab-market {
+    width: fit-content;
+    height: auto;
+    border: 1px solid #D2C0F14D;
+    background-color: rgba(255, 255, 255, 0.08);
+    padding: 4px;
+    border-radius: 24px;
+}
+
+.tab-market a {
+    font-family: "Poppins";
+    line-height: 24px;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    color: #FFFFFF;
+    margin: 1px;
+    padding: 0.45rem 2.5rem;
+    display: inline-block;
+}
+
+.tab-market .active {
+    background: linear-gradient(91.96deg, #33B576 0%, rgba(23, 129, 188, 0.87) 100%);
+    border-radius: 32px;
 }

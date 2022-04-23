@@ -26,7 +26,7 @@ const Navbar = () => {
                 </div>
             </div>
             <div className="flex flex-row justify-center space-x-8">
-                <div className="box-menu   flex flex-row justify-center my-auto space-x-4">
+                <div className="box-menus flex flex-row justify-center my-auto space-x-4">
 
                     <NavLink to="/pool" className="px-6 text-gray-300 hover:text-gray-100">
                         Pool

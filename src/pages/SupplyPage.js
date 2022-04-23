@@ -1,12 +1,12 @@
 import React from "react";
 // import { useDispatch, useSelector } from "react-redux";
 
-import AssetsBorrow from "../components/borrows/AssetsBorrow";
+import AssetsSupply from "../components/supply/AssetsSupply";
 
 import NetMarket from "../components/partials/NetMarket";
 import TabMarket from "../components/partials/TabMarket";
 
-const BorrowPage = () => {
+const SupplyPage = () => {
 
   return (
 
@@ -19,10 +19,10 @@ const BorrowPage = () => {
           <NetMarket />
 
           <TabMarket />
+
         </div>
 
-
-        <AssetsBorrow />
+        <AssetsSupply />
 
       </div>
 
@@ -30,4 +30,4 @@ const BorrowPage = () => {
 
   );
 };
-export default BorrowPage;
+export default SupplyPage;
