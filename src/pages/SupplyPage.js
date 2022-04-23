@@ -12,7 +12,7 @@ const SupplyPage = () => {
 
     <section className="box-borrows mx-auto bg-cover bg-center" >
 
-      <div className="container mx-auto lg:px-6 px-4 min-h-screen pt-16 pb-24">
+      <div className="lg:container mx-auto lg:px-6 px-4 min-h-screen pt-16 pb-24">
 
         <div className="flex flex-row">
 
