@@ -9,12 +9,14 @@ const Navbar = () => {
 
     return (
         <nav className="py-4 flex justify-between">
+
             <div className="flex flex-row justify-center">
+
                 <NavLink to="/home">
                     <img src={IcLogo} alt="logo VEBank" />
                 </NavLink>
 
-                <div className="bg-gradient-search rounded-lg flex flex-row ml-8 py-2 px-4 ra justify-between xl:w-64 2xl:w-96 ">
+                <div className="bg-gradient-search rounded-lg flex flex-row ml-8 py-2 px-4 ra justify-between lg:w-72 xl:w-96">
                     <input
                         className="bg-transparent focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full"
                         type="text"
