@@ -11,12 +11,13 @@ const NetMarket = () => {
                 <span className="font-poppins text-3xl ">VeBank Market</span>
             </div>
 
-            <div class="flex justify-start">
+            <div className="flex justify-start">
 
                 <div className="flex justify-start items-center space-x-4 mt-10">
                     <img
                         className="h-12 w-12 object-cover"
                         src={IcNet}
+                        alt="icon Net work"
                     />
                     <div className="xs:ml-2 lg:ml-3 font-normal">
                         <div className="font-poppins leading-4 text-[#BFBFBF] text-[18px]">Net worth</div>
@@ -28,6 +29,7 @@ const NetMarket = () => {
                     <img
                         className="h-12 w-12 object-cover"
                         src={IcNet}
+                        alt="icon Net APY"
                     />
                     <div className="xs:ml-2 lg:ml-3 font-normal">
                         <div className="font-poppins leading-4 text-[#BFBFBF] text-[18px]">Net APY</div>
@@ -36,6 +38,7 @@ const NetMarket = () => {
                 </div>
 
             </div>
+
         </div>
     )
 

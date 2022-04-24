@@ -24,7 +24,7 @@ module.exports = {
         montserrat: "'Montserrat', sans-serif",
         poppins: "'Poppins', sans-serif",
         sans_serif: "sans-serif",
-        svn_gilroy: "'SVN-Gilroy', sans-serif",
+        sf_pro: "SF Pro Display",
       }
     },
   },
