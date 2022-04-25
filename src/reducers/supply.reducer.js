@@ -1,7 +1,6 @@
 import { marketplaceConstants } from '../constants';
 
 const initialState = {
-
   isOpen: false,
   pending: false,
   transaction: null,
@@ -14,11 +13,11 @@ const initialState = {
 
 };
 
-export function borrowReducer(state = initialState, action) {
+export function supplyReducer(state = initialState, action) {
 
   switch (action.type) {
 
-    case marketplaceConstants.MODAL_OPEN_BORROW_MARKET:
+    case marketplaceConstants.MODAL_OPEN_SUPPLY_MARKET:
       return {
         ...state,
         isOpen: true,
@@ -28,14 +27,14 @@ export function borrowReducer(state = initialState, action) {
         ...action
       };
 
-    case marketplaceConstants.MODAL_BORROW_MARKET_REQUEST:
+    case marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST:
       return {
         ...state,
         transaction: null,
         pending: true
       };
 
-    case marketplaceConstants.MODAL_BORROW_MARKET_SUCCESS:
+    case marketplaceConstants.MODAL_SUPPLY_MARKET_SUCCESS:
       return {
         ...state,
         pending: false,
@@ -43,14 +42,14 @@ export function borrowReducer(state = initialState, action) {
       };
 
 
-    case marketplaceConstants.MODAL_BORROW_MARKET_ERROR:
+    case marketplaceConstants.MODAL_SUPPLY_MARKET_ERROR:
       return {
         ...state,
         pending: false,
         ...action
       };
 
-    case marketplaceConstants.MODAL_CLOSE_BORROW_MARKET:
+    case marketplaceConstants.MODAL_CLOSE_SUPPLY_MARKET:
       return {
         ...state,
         isOpen: false,

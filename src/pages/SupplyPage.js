@@ -5,6 +5,7 @@ import AssetsSupply from "../components/supply/AssetsSupply";
 
 import NetMarket from "../components/partials/NetMarket";
 import TabMarket from "../components/partials/TabMarket";
+import ModalSupply from "../components/supply/ModalSupply";
 
 const SupplyPage = () => {
 
@@ -25,6 +26,8 @@ const SupplyPage = () => {
         <AssetsSupply />
 
       </div>
+
+      <ModalSupply />
 
     </section>
 

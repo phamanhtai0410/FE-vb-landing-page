@@ -6,13 +6,14 @@ import { destroyConstants } from '../constants';
 import { alert } from './alert.reducer';
 import { web3 } from './web3.reducer';
 import { borrowReducer } from './borrow.reducer';
-
+import { supplyReducer } from './supply.reducer';
 
 const appReducer = combineReducers({
 
   alert,
   web3,
   borrowReducer,
+  supplyReducer
 
 });
 

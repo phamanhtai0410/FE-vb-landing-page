@@ -22,6 +22,7 @@
     "redux-logger": "^3.0.6",
     "redux-promise": "^0.6.0",
     "redux-thunk": "^2.4.1",
+    "thorify": "^1.6.2",
     "web3": "^1.7.3"
   },
   "scripts": {

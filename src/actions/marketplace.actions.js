@@ -95,3 +95,28 @@ export const borrowMarket = (price) => async (dispatch, getState) => {
     // }
 
 };
+
+
+/**
+ * 
+ * @param {number} id 
+ * @returns dispatch strore
+ * 
+ */
+export const supplyMarket = (price) => async (dispatch, getState) => {
+
+    const state = getState();
+
+    dispatch({
+        type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
+    })
+
+    setTimeout(() => {
+        dispatch({
+            type: marketplaceConstants.MODAL_SUPPLY_MARKET_SUCCESS,
+            transaction: 1
+        });
+        return true;
+    }, 2000);
+
+};

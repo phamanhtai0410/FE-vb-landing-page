@@ -2,6 +2,7 @@
 
 import IcCheckList from '../../assets/images/ic_checklist.svg';
 import IcWarning from '../../assets/images/ic-warning-circle.svg';
+import BtnOpenSupply from './BtnOpenBorrow';
 
 const AssetsSupply = () => {
 
@@ -49,7 +50,7 @@ const AssetsSupply = () => {
                         <img src={IcCheckList} className="w-6 h-16" />
                     </div>
                     <div className="p-2 flex justify-center items-center">
-                        <button className="btn-veb h-10">Supply</button>
+                        <BtnOpenSupply id={"VET"} />
                     </div>
                 </div>
 
@@ -66,7 +67,7 @@ const AssetsSupply = () => {
                     </div>
                     <div className="p-2 flex justify-center items-center font-semibold">-</div>
                     <div className="p-2 flex justify-center items-center">
-                        <button className="btn-veb h-10">Supply</button>
+                        <BtnOpenSupply id={"FEI"} />
                     </div>
                 </div>
 
@@ -85,7 +86,7 @@ const AssetsSupply = () => {
                         <img src={IcCheckList} className="w-6 h-16" />
                     </div>
                     <div className="p-2 flex justify-center items-center">
-                        <button className="btn-veb h-10">Supply</button>
+                        <BtnOpenSupply id={"Aave"} />
                     </div>
                 </div>
 
@@ -104,7 +105,7 @@ const AssetsSupply = () => {
                         <img src={IcCheckList} className="w-6 h-16" />
                     </div>
                     <div className="p-2 flex justify-center items-center">
-                        <button className="btn-veb h-10">Supply</button>
+                        <BtnOpenSupply id={"USDP"} />
                     </div>
                 </div>
 
