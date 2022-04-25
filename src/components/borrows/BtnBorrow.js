@@ -4,15 +4,16 @@ import { Beforeunload } from 'react-beforeunload';
 
 import * as actions from '../../actions';
 
-const BtnBorrow = ({ boxID }) => {
+const BtnBorrow = ({ amount, pending }) => {
 
     const [isPending, setIsPending] = useState(false);
     const dispatch = useDispatch();
 
     const handlerSubmit = async () => {
-        if (!isPending && boxID) {
+
+        if (isPending === false && amount) {
             setIsPending(true);
-            await dispatch(actions.borrowMarket(boxID)).then(() => {
+            await dispatch(actions.borrowMarket(amount)).then(() => {
                 setIsPending(false);
             }).catch((e) => {
                 setIsPending(false);
@@ -21,9 +22,9 @@ const BtnBorrow = ({ boxID }) => {
     }
 
     return (<>
-        {isPending ? <div> <Beforeunload onBeforeunload={(event) => event.preventDefault()} /> <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">  </svg></div> : ""}
-        <button onClick={e => { handlerSubmit(e) }} className="btn-modal-veb bg-btn-veb" type="submit">
+        {isPending ? <Beforeunload onBeforeunload={(event) => event.preventDefault()} /> : ""}
 
+        <button onClick={e => { handlerSubmit(e) }} disabled={pending} className={`btn-modal-veb ${pending ? "bg-btn-veb-disabled" : "bg-btn-veb"}`} type="submit">
             {isPending ? "Pending..." : "Borrow"}
         </button>
     </>)

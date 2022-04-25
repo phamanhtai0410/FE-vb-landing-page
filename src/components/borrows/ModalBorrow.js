@@ -1,24 +1,25 @@
 
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import { Range } from "react-range"
+import { Range } from "react-range";
+import { TailSpin } from 'react-loading-icons';
 
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import { numberWithCommas } from '../../utils/lib';
 
 import { marketplaceConstants } from '../../constants';
 import BtnBorrow from './BtnBorrow';
+
 import IcNext from '../../assets/images/ic_next.svg';
 import IcNext1 from '../../assets/images/ic_factory.svg';
 
-
-
 const customStyles = {
     content: {
-        top: '40vh',
+        top: '30%',
         left: '50%',
         right: 'auto',
         bottom: 'auto',
-        transform: 'translate(-50%, -50%)',
+        transform: 'translate(-50%, -30%)',
         background: "#1D1A3F",
         border: "none",
         borderRadius: "8px",
@@ -36,20 +37,31 @@ const ModalBorrow = () => {
     const [step, setStep] = useState(1);
     const [rate, setRate] = useState(null);
 
-
     const { data, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        setAmount(0);
+        resetFrm();
     }, [data.id]);
+
+    const resetFrm = () => {
+        setAmount(0);
+        setValues([0]);
+        setStep(1);
+        setRate(null);
+    }
 
     const closeModal = () => {
         dispatch({
             type: marketplaceConstants.MODAL_CLOSE_BORROW_MARKET
         })
     };
+
+    const closeModalAndDashboard = () => {
+        closeModal();
+        resetFrm();
+    }
 
     const onChangeRangeAmount = (values) => {
         setValues(values);
@@ -73,7 +85,6 @@ const ModalBorrow = () => {
         if (step === 2 && rate > 0) {
             setStep(3);
         }
-
 
     }
 
@@ -109,8 +120,7 @@ const ModalBorrow = () => {
             isOpen={isOpen}
             ariaHideApp={false}
             style={customStyles}
-            contentLabel="Example Modal"
-            portalClassName="modal-lur"
+            portalClassName="modal-veb"
             overlayClassName="overlay-lur">
 
             <div className="header-modal" >
@@ -118,7 +128,7 @@ const ModalBorrow = () => {
                 <button className="btn-modal-close" onClick={closeModal}></button>
             </div>
 
-            <div className="content-modal modal-sale">
+            <div className="content-modal">
 
                 {/* STEP 1 */}
                 <div className={step === 1 ? "" : "hidden"}>
@@ -231,7 +241,7 @@ const ModalBorrow = () => {
                             </div>
                             <div className='flex items-center'>
                                 <img className='w-6 h-6' src={IcVeb} alt="Token VEBank" />
-                                <span className='font-poppins font-bold pl-2'>5,000</span>
+                                <span className='font-poppins font-bold pl-2'>{numberWithCommas(amount)}</span>
                                 <span className='text-[#BFBFBF] pl-2'>VET</span>
                             </div>
                         </div>
@@ -240,7 +250,7 @@ const ModalBorrow = () => {
                             <div className='text-[#FAFAFA]'>
                             </div>
                             <div>
-                                <span className='font-poppins font-thin text-sm'>5,000</span>
+                                <span className='font-poppins font-thin text-sm'>{numberWithCommas(amount)}</span>
                             </div>
                         </div>
 
@@ -262,7 +272,6 @@ const ModalBorrow = () => {
                             </div>
                         </div>
 
-
                         <div class="flex justify-between text-lg font-poppins pt-4">
                             <div className='text-[#FAFAFA] font-light'>
                                 New health factor
@@ -277,10 +286,10 @@ const ModalBorrow = () => {
                     <div className='border-2 border-solid border-[#363564] mx-8 my-12'>
 
                         <div class="flex justify-between text-lg font-poppins bg-[#39355F]">
-                            <div className='text-[#FAFAFA] text-base text-center font-light bg-btn-veb w-1/2 p-1'>
+                            <div className={`text-[#FAFAFA] text-base text-center font-light  w-1/2 p-1 ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
                                 1 Borrow
                             </div>
-                            <div className='text-[#FAFAFA] text-base text-center font-light w-1/2 p-1'>
+                            <div className={`text-[#FAFAFA] text-base text-center font-light w-1/2 p-1 ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
                                 2 Finished
                             </div>
                         </div>
@@ -288,12 +297,28 @@ const ModalBorrow = () => {
                         <div class="flex justify-between text-lg font-poppins p-6">
                             <div>
                                 <div className='font-light text-base'>
-                                    <label className='text-[#50e3ab]'>1/2 Borrow</label>
-                                    <div className='text-[#FAFAFA] pt-2'>Please submit to borrow</div>
+
+                                    {transaction ?
+                                        <label className='text-[#50e3ab]'>2/2 Borrow</label>
+                                        :
+                                        <>
+                                            <label className='text-[#50e3ab]'>1/2 Borrow</label>
+                                            <div className='text-[#FAFAFA] pt-2'>Please submit to borrow</div>
+                                        </>
+                                    }
+
                                 </div>
                             </div>
-                            <div className='pt-1'>
-                                <BtnBorrow />
+                            <div className='pt-1 flex flex-row'>
+
+                                {pending ? <TailSpin className='w-6 h-6 m-4' /> : ""}
+
+                                {transaction ?
+                                    <button onClick={e => { closeModalAndDashboard(e) }} className={`btn-modal-veb bg-btn-veb`} type="submit">Dashboard</button>
+                                    :
+                                    <BtnBorrow pending={pending} amount={amount} rate={rate} />
+                                }
+
                             </div>
                         </div>
 

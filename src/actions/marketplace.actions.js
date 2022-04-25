@@ -13,7 +13,7 @@ import * as actions from './';
  * @returns dispatch strore
  * 
  */
-export const borrowMarket = (id, price) => async (dispatch, getState) => {
+export const borrowMarket = (price) => async (dispatch, getState) => {
 
     const state = getState();
 
@@ -26,6 +26,7 @@ export const borrowMarket = (id, price) => async (dispatch, getState) => {
             type: marketplaceConstants.MODAL_BORROW_MARKET_SUCCESS,
             transaction: 1
         });
+        return true;
     }, 2000);
 
     // const { web3, account } = state.web3;

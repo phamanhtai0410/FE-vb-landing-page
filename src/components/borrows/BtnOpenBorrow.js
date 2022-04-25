@@ -15,7 +15,10 @@ const BtnOpenBorrow = ({ id }) => {
         if (!isPending && id) {
 
             dispatch({
-                type: marketplaceConstants.MODAL_OPEN_BORROW_MARKET
+                type: marketplaceConstants.MODAL_OPEN_BORROW_MARKET,
+                data: {
+                    id
+                }
             })
 
             // setIsPending(true);

@@ -73,6 +73,19 @@
     background: linear-gradient(91.96deg, #33B576 0%, rgba(23, 129, 188, 0.87) 100%);
 }
 
+.bg-btn-veb-disabled {
+    background: #393755 !important;
+    color: rgb(104, 103, 103) !important;
+}
+
+.bg-success {
+    background: #3c8260;
+}
+
+.bg-pending {
+    background: #FA8C16;
+}
+
 .btn-connect-wallet {
     cursor: pointer;
     font-weight: 500;

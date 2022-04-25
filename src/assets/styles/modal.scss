@@ -26,11 +26,11 @@
     z-index: 999;
 }
 
-.modal-lur .header-modal {
+.modal-veb .header-modal {
     position: relative;
 }
 
-.modal-lur .header-modal h2 {
+.modal-veb .header-modal h2 {
     width: 100%;
     padding: 25px;
     font-family: "Montserrat";
@@ -40,7 +40,7 @@
     font-weight: 700;
 }
 
-.modal-lur .header-modal .btn-modal-close {
+.modal-veb .header-modal .btn-modal-close {
     background: url('../images/ic_close.svg') no-repeat center center;
     background-size: 100% 100%;
     width: 24px;
@@ -52,14 +52,11 @@
     cursor: pointer;
 }
 
-
-
-
-.modal-lur .content-modal {
-    color: white;
+.modal-veb .content-modal {
+    color: #FFFFFF;
 }
 
-.modal-lur .footer-modal {
+.modal-veb .footer-modal {
     position: relative;
     min-height: 5rem;
 }
