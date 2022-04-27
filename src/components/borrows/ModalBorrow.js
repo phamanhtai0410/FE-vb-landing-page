@@ -142,7 +142,7 @@ const ModalBorrow = () => {
                         </p>
                     </div>
 
-                    <div class="flex justify-between px-8 mt-12 text-lg font-sf_pro">
+                    <div className="flex justify-between px-8 mt-12 text-lg font-sf_pro">
                         <div className='text-[#FAFAFA]'>
                             Available to borrow
                         </div>
@@ -240,7 +240,7 @@ const ModalBorrow = () => {
 
                     <div className='border-2 border-solid border-[#363564] mx-8 p-6 mt-10'>
 
-                        <div class="flex justify-between text-lg font-poppins">
+                        <div className="flex justify-between text-lg font-poppins">
                             <div className='text-[#FAFAFA] font-light'>
                                 Amount
                             </div>
@@ -251,7 +251,7 @@ const ModalBorrow = () => {
                             </div>
                         </div>
 
-                        <div class="flex justify-between text-lg font-poppins">
+                        <div className="flex justify-between text-lg font-poppins">
                             <div className='text-[#FAFAFA]'>
                             </div>
                             <div>
@@ -259,7 +259,7 @@ const ModalBorrow = () => {
                             </div>
                         </div>
 
-                        <div class="flex justify-between text-lg font-poppins pt-4">
+                        <div className="flex justify-between text-lg font-poppins pt-4">
                             <div className='text-[#FAFAFA] font-light'>
                                 Interest (APY)
                             </div>
@@ -268,7 +268,7 @@ const ModalBorrow = () => {
                             </div>
                         </div>
 
-                        <div class="flex justify-between text-lg font-poppins pt-4">
+                        <div className="flex justify-between text-lg font-poppins pt-4">
                             <div className='text-[#FAFAFA] font-light'>
                                 Interest rate type
                             </div>
@@ -277,7 +277,7 @@ const ModalBorrow = () => {
                             </div>
                         </div>
 
-                        <div class="flex justify-between text-lg font-poppins pt-4">
+                        <div className="flex justify-between text-lg font-poppins pt-4">
                             <div className='text-[#FAFAFA] font-light'>
                                 New health factor
                             </div>
@@ -290,7 +290,7 @@ const ModalBorrow = () => {
 
                     <div className='border-2 border-solid border-[#363564] mx-8 my-12'>
 
-                        <div class="flex justify-between text-lg font-poppins bg-[#39355F]">
+                        <div className="flex justify-between text-lg font-poppins bg-[#39355F]">
                             <div className={`text-[#FAFAFA] text-base text-center font-light  w-1/2 p-1 ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
                                 1 Borrow
                             </div>
@@ -299,7 +299,7 @@ const ModalBorrow = () => {
                             </div>
                         </div>
 
-                        <div class="flex justify-between text-lg font-poppins p-6">
+                        <div className="flex justify-between text-lg font-poppins p-6">
                             <div>
                                 <div className='font-light text-base'>
 

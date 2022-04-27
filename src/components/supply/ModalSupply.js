@@ -10,12 +10,8 @@ import { numberWithCommas } from '../../utils/lib';
 import { marketplaceConstants } from '../../constants';
 import BtnSupply from './BtnSupply';
 
-import IcNext from '../../assets/images/ic_next.svg';
-import IcNext1 from '../../assets/images/ic_factory.svg';
-
 import IcExplorer from '../../assets/images/ic_explorer.svg';
 import IcSuccess from '../../assets/images/ic_success.svg';
-
 
 const customStyles = {
     content: {
@@ -119,7 +115,7 @@ const ModalSupply = () => {
                         </p>
                     </div>
 
-                    <div class="flex justify-between px-8 mt-12 text-lg font-sf_pro">
+                    <div className="flex justify-between px-8 mt-12 text-lg font-sf_pro">
                         <div className='text-[#FAFAFA]'>
                             Available to supply
                         </div>
@@ -189,7 +185,7 @@ const ModalSupply = () => {
 
                     <div className='border-2 border-solid border-[#363564] mx-8 p-6 mt-10'>
 
-                        <div class="flex justify-between text-lg font-poppins">
+                        <div className="flex justify-between text-lg font-poppins">
                             <div className='text-[#FAFAFA] font-light'>
                                 Amount
                             </div>
@@ -200,7 +196,7 @@ const ModalSupply = () => {
                             </div>
                         </div>
 
-                        <div class="flex justify-between text-lg font-poppins">
+                        <div className="flex justify-between text-lg font-poppins">
                             <div className='text-[#FAFAFA]'>
                             </div>
                             <div>
@@ -208,8 +204,7 @@ const ModalSupply = () => {
                             </div>
                         </div>
 
-
-                        <div class="flex justify-between text-lg font-poppins pt-4">
+                        <div className="flex justify-between text-lg font-poppins pt-4">
                             <div className='text-[#FAFAFA] font-light'>
                                 Collateral Usage
                             </div>
@@ -222,7 +217,7 @@ const ModalSupply = () => {
 
                     <div className='border-2 border-solid border-[#363564] mx-8 my-12'>
 
-                        <div class="flex justify-between text-lg font-poppins">
+                        <div className="flex justify-between text-lg font-poppins">
                             <div className={`text-[#FAFAFA] bg-[#39355F] text-base text-center font-light  w-1/2 p-1 bg-btn-veb ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
                                 1 Supply
                             </div>
@@ -231,7 +226,7 @@ const ModalSupply = () => {
                             </div>
                         </div>
 
-                        <div class="flex justify-between text-lg font-poppins p-6">
+                        <div className="flex justify-between text-lg font-poppins p-6">
                             <div className='font-light text-base flex items-center'>
 
                                 {transaction ?
@@ -240,10 +235,10 @@ const ModalSupply = () => {
                                 }
 
                                 {(pending === false && transaction === null) ?
-                                    <>
+                                    <div className='block'>
                                         <label className='text-[#50e3ab]'>1/2 Supply</label>
                                         <div className='text-[#FAFAFA] pt-2'>Please submit to supply</div>
-                                    </>
+                                    </div>
                                     : ""}
 
                                 {(pending === true && transaction === null) ? <p className='text-[#FA8C16] text-left'>Transaction(s) Pending</p> : ""}

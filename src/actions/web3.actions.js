@@ -1,5 +1,9 @@
 
 import { ethers } from 'ethers';
+import Connex from '@vechain/connex';
+
+import { Certificate, blake2b256, secp256k1 } from 'thor-devkit';
+
 import { alertActions } from './alert.actions';
 import { web3Constants } from '../constants';
 import getWeb3 from '../utils/getWeb3';
@@ -64,174 +68,119 @@ async function checkChainSwitch(web3) {
 
 }
 
+async function checkConected(connex, certid) {
+
+    connex.vendor.sign('cert', {
+        purpose: 'identification',
+        payload: {
+            type: 'text',
+            content: 'random generated string'
+        }
+    })
+        .link(`https://connex.vecha.in/${certid}`) // User will be back to the app by the url https://connex.vecha.in/0xffff....
+        .request()
+        .then(result => {
+
+            return result;
+        })
+
+
+}
+
+
+
 export const web3Connect = (isLogin) => async (dispatch) => {
 
     const web3 = await getWeb3();
 
-    if (web3.givenProvider === null) {
-        if (isLogin) {
-            dispatch(alertActions.error('Please connect to MetaMask!'));
-        }
-        return web3;
-    }
+    const PK = "Kocanbiet082429!@#"
 
-    let account;
-    const chainActived = await checkChainSwitch(web3);
-
-    if (window.ethereum && chainActived === false) {
-        await window.ethereum.request({
-            method: "wallet_addEthereumChain",
-            params: [
-                {
-                    ...networks[process.env.REACT_APP_NETWORK_NAME]
-                    //...networks["bsc_testnet"]
-                }
-            ]
-        });
-        return account;
-    }
-
-    // imposition login when khi pruchase and buy
-    if (isLogin && !chainActived) {
-
-        try {
-            await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: `0x${Number(chainID).toString(16)}` }] })
-        } catch (error) {
-            if (error.code === 4001) {
-                dispatch(alertActions.error(error.message));
-            }
-            if (error.code === 4902) {
-                dispatch(alertActions.error("Unrecognized chain ID " + (chainID)));
-            }
-        }
-        return account;
-    }
-
-    // Acccounts now exposed
-    let checkConected = [];
+    let signer;
     let _acc = localStorage.getItem('_acc');
-    if (window.ethereum && isLogin) {
+    let _sign = localStorage.getItem('_sign');
 
-        await window.ethereum.request({
-            method: "wallet_requestPermissions",
-            params: [
-                {
-                    eth_accounts: {}
-                }
-            ]
+    const connex = new Connex({
+        node: 'https://testnet.veblocks.net/',
+        network: 'test'
+    })
+
+
+    if (_acc && _sign) {
+        dispatch({
+            type: web3Constants.WEB3_CONNECT,
+            web3,
+            signer: JSON.parse(_sign),
+            account: _acc
         });
-
-        checkConected = await web3.eth.getAccounts();
-
-        if (checkConected) {
-            _acc = checkConected[0];
-            localStorage.setItem('_acc', checkConected[0]);
-        }
-
+        return _acc;
     }
 
-    if (_acc) {
-        try {
-            checkConected = await web3.eth.getAccounts();
-        } catch (error) {
-            if (isLogin) {
-                dispatch(alertActions.error('Please connect to MetaMask!'));
+    if (!_acc && isLogin) {
+        // Ask user to sign the agreement
+        signer = await connex.vendor.sign('cert', {
+            purpose: 'agreement',
+            payload: {
+                type: 'text',
+                content: 'agreement'
             }
-            return account;
-        }
-    }
+        }).request();
 
+        _acc = signer.annex.signer;
+        _sign = JSON.stringify(signer);
 
-    // account conected when mart chain dapp
-    if (checkConected.length > 0 && chainActived === false) {
-        try {
+        // console.log(blake2b256(jsonStr))
+        // const signature = secp256k1.sign(blake2b256(jsonStr), PK);
+        //sconsole.log("signature", blake2b256(jsonStr).toString('hex'));
 
-            await window.ethereum.request({
-                method: "wallet_addEthereumChain",
-                params: [
-                    {
-                        ...networks[process.env.REACT_APP_NETWORK_NAME]
-                        //...networks["bsc_testnet"]
-                    }
-                ]
-            });
-
-
-            // await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x61' }] })
-        } catch (error) {
-
-            if (error.code === 4001) {
-                dispatch(alertActions.error(error.message));
-            }
-
-            if (error.code === -32603) {
-                dispatch(alertActions.error("Not found network chainId " + process.env.REACT_APP_NETWORK_ID));
-            }
-
-        }
-        return account;
-
-    }
-
-
-    // No account access
-    if (checkConected.length === 0 && isLogin === false) {
+        localStorage.setItem('_acc', _acc);
+        localStorage.setItem('_sign', _sign);
 
         dispatch({
             type: web3Constants.WEB3_CONNECT,
             web3,
-            account
+            signer,
+            account: _acc
         });
 
-        return account;
 
+    } else {
+
+
+
+        // const recoveredAddress = await web3.eth.accounts.recover('agreement', _sign);
+        // if (recoveredAddress) {
+        //     dispatch({
+        //         type: web3Constants.WEB3_CONNECT,
+        //         web3,
+        //         signer: _acc,
+        //         account: signer.annex.signer
+        //     });
+        // }
+
+        //const sign = web3.eth.accounts.sign('agreement', _sign);
+        // const acc = connex.thor.account(_acc);
+
+        // acc.get().then(accInfo => {
+        //     console.log(accInfo)
+        // });
+
+        // acc.getCode().then(code => {
+        //     console.log("code", code)
+        // });
+
+        // // 3: check results, compare both address
+        // if (web3.utils.toChecksumAddress(recoveredAddress) === _acc) {
+        //     console.log('SUCCESS');
+        // } else {
+        //     console.log('FAILED');
+        // }
+
+        // const signCert = checkConected(connex, _sign);
+        // console.log(signCert)
     }
 
-    let checkAccount;
 
-    try {
-
-        // connect wallet
-        checkAccount = await window.ethereum.enable();
-
-    } catch (e) {
-
-        if (e.code === 4001) {
-            dispatch(alertActions.error(e.message))
-        }
-
-        return account;
-
-
-    }
-
-    if (checkAccount) {
-
-        try {
-
-            const accounts = await web3.eth.getAccounts();
-            if (accounts && accounts.length > 0) {
-                account = accounts[0];
-            }
-
-        } catch (error) {
-
-            console.log("------------web3Connect getAccounts error", error);
-
-        }
-
-        dispatch({
-            type: web3Constants.WEB3_CONNECT,
-            web3,
-            account
-        });
-
-        dispatch(instantiateLUSContracts());
-        dispatch(instantiateBUSDContracts());
-
-        return web3;
-
-    }
+    return _acc;
 
 
 };
@@ -243,6 +192,7 @@ export const web3Disconnect = () => async (dispatch, getState) => {
     const { web3 } = state.web3;
 
     localStorage.removeItem("_acc");
+    localStorage.removeItem("_sign");
 
     dispatch({
         type: web3Constants.WEB3_DISCONNECT,

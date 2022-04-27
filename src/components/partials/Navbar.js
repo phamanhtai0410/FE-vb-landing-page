@@ -1,22 +1,26 @@
 
-
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import IcLogo from '../../assets/images/ic_logo.svg';
 import IcSearch from '../../assets/images/ic_search.png';
 
+import BtnConnect from './BtnConnect';
+import MenuLink from './MenuLink';
+
 const Navbar = () => {
+
+    const [isNavOpen, setIsNavOpen] = useState(false);
 
     return (
         <nav className="py-4 flex justify-between">
-
             <div className="flex flex-row justify-center">
 
                 <NavLink to="/home">
                     <img src={IcLogo} alt="logo VEBank" />
                 </NavLink>
 
-                <div className="bg-gradient-search rounded-lg flex flex-row ml-8 py-2 px-4 ra justify-between lg:w-72 xl:w-96">
+                <div className="hidden lg:flex flex-row bg-gradient-search rounded-lg ml-8 py-2 px-4 ra justify-between md:hidden lg:w-64 xl:w-80 ">
                     <input
                         className="bg-transparent focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full"
                         type="text"
@@ -28,35 +32,66 @@ const Navbar = () => {
                         className="ml-1 object-contain"
                     />
                 </div>
-            </div>
-            <div className="flex flex-row justify-center space-x-8">
-                <div className="box-menus flex flex-row justify-center my-auto space-x-4">
 
-                    <NavLink to="/pool" className="px-6 text-gray-300 hover:text-gray-100">
-                        Pool
-                    </NavLink>
-                    <NavLink to="/stake" className="px-6 text-gray-300 hover:text-gray-100">
-                        Stake
-                    </NavLink>
-                    <NavLink to="/lend" className="px-6 text-gray-300 hover:text-gray-100">
-                        Lend
-                    </NavLink>
-                    <NavLink to="/borrows" className="px-6 text-gray-300 hover:text-gray-100">
-                        Borrows
-                    </NavLink>
-                    <NavLink to="/lauch-pad" className="px-6 text-gray-300 hover:text-gray-100">
-                        Lauch pad
-                    </NavLink>
-                    <NavLink to="/trade" className="px-6 text-gray-300 hover:text-gray-100">
-                        Trade
-                    </NavLink>
-                </div>
-                <div className="flex flex-row justify-center items-center my-auto space-x-4">
-                    <button className="btn-connect-wallet px-6 py-3">
-                        Connect to a wallet
-                    </button>
+            </div>
+
+            <div className="hidden lg:flex flex-wrap items-center justify-between ">
+                <MenuLink />
+                <div className="flex flex-row justify-center items-center my-auto space-x-2">
+                    <BtnConnect />
                 </div>
             </div>
+
+            <section className="MOBILE-MENU flex lg:hidden">
+
+                <button
+                    onClick={() => setIsNavOpen((prev) => !prev)} // toggle isNavOpen state on click
+                    className="rounded-lg focus:outline-none focus:shadow-outline pr-4">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+                <div className={isNavOpen ? "showMenuNav" : "hideMenuNav"}>
+                    <div
+                        className="absolute top-0 right-0 px-8 py-8 cursor-pointer"
+                        onClick={() => setIsNavOpen(false)} // change isNavOpen state to false to close the menu
+                    >
+                        <svg
+                            className="h-8 w-8 text-gray-200"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                    </div>
+                    <MenuLink />
+                </div>
+            </section>
+            <style>{`
+            .hideMenuNav {
+                display: none;
+            }
+            .showMenuNav {
+                display: block;
+                position: absolute;
+                width: 100%;
+                height: 100vh;
+                top: 0;
+                left: 0;
+                background: #141432;
+                z-index: 10;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-evenly;
+                align-items: center;
+            }`}
+            </style>
         </nav>
     );
 };

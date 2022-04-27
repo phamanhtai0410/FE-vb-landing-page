@@ -2,7 +2,8 @@ import { web3Constants } from '../constants';
 
 const initialState = {
   web3: null,
-  account: null
+  signer: null,
+  account: localStorage.getItem('_acc') || null
 };
 
 export function web3(state = initialState, action) {
