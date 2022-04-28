@@ -5,7 +5,6 @@ import IcScRobot from '../../assets/images/social/ic_robot.svg';
 import IcScGit from '../../assets/images/social/ic_git.svg';
 import IcScDiscord from '../../assets/images/social/ic_discord.svg';
 
-
 const Footer = () => {
 
   return (
@@ -14,9 +13,7 @@ const Footer = () => {
 
       <div className="container mx-auto ">
 
-        <div className="py-16 flex flex-rows">
-
-
+        <div className="py-16 px-10 flex flex-rows">
 
           <div className="flex flex-col font-poppins">
             <h4 className="text-3xl leading-8 text-slate-50">ESOL Labs</h4>
@@ -29,15 +26,15 @@ const Footer = () => {
           <div className="text-[#7D86F5] lg:ml-[120px]">
 
             <div className='flex flex-rows items-left justify-center lg:space-x-14'>
-              <img src={IcScTelegram} alt="icon Telegram" className="w-8 h-8" />
-              <img src={IcScDiscord} alt="icon Discord" className="w-8 h-8" />
-              <img src={IcScTwitter} alt="icon Twitter" className="w-8 h-8" />
-              <img src={IcScGit} alt="icon Git" className="w-8 h-8" />
-              <img src={IcScRobot} alt="icon Robot" className="w-8 h-8" />
+              <img src={IcScTelegram} alt="icon Telegram" className="w-8 h-8 cursor-pointer" />
+              <img src={IcScDiscord} alt="icon Discord" className="w-8 h-8 cursor-pointer" />
+              <img src={IcScTwitter} alt="icon Twitter" className="w-8 h-8 cursor-pointer" />
+              <img src={IcScGit} alt="icon Git" className="w-8 h-8 cursor-pointer" />
+              <img src={IcScRobot} alt="icon Robot" className="w-8 h-8 cursor-pointer" />
             </div>
 
             <div className='mt-8'>
-              <ul className='font-poppins text-base leading-6 text-[#7D86F5] flex space-x-2'>
+              <ul className='font-poppins text-base leading-6 text-[#7D86F5] flex space-x-2 cursor-pointer'>
                 <li>FAQ</li>
                 <li>Docs</li>
                 <li>Analytics</li>
