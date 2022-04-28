@@ -11,6 +11,10 @@ import getWeb3 from '../utils/getWeb3';
 import ERC20ABI from '../_contracts/abi-erc20.json';
 import ERC20ABI_MSP from '../_contracts/MSP.json';
 
+
+// VET : dung de staking duy tri he thong
+// VTH0 : dung de tra vi chay smart Contract
+
 const TOKEN_BUSD = process.env.REACT_APP_TOKEN_BUSD;
 const TOKEN_MSP = process.env.REACT_APP_TOKEN_MSP;
 
@@ -141,7 +145,6 @@ export const web3Connect = (isLogin) => async (dispatch) => {
             signer,
             account: _acc
         });
-
 
     } else {
 
