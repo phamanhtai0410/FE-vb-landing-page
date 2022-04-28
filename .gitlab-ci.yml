@@ -5,7 +5,7 @@ variables:
   CONTAINER_REPO_ASIA_STAG: 420811272222.dkr.ecr.ap-southeast-1.amazonaws.com/vb-staging-ecr/landing-page
   CONTAINER_REPO_ASIA_PROD: 420811272222.dkr.ecr.ap-southeast-1.amazonaws.com/vb-production-ecr/landing-page
   NAMESPACE_STAG: vb-website-stag
-  NAMESPACE_STAG: vb-website-prod
+  NAMESPACE_PROD: vb-website-prod
   FULLREPO_ASIA_STAG: $CONTAINER_REPO_ASIA_STAG:$CI_COMMIT_SHORT_SHA
   FULLREPO_ASIA_PROD: $CONTAINER_REPO_ASIA_PROD:$CI_COMMIT_SHORT_SHA
 
@@ -25,7 +25,6 @@ stages:
 
 .kubectl_config: &kubectl_config
   - env
-  - aws sts get-caller-identity
   - |
       if [ "$CI_COMMIT_REF_NAME" == "prod" ]; then
         aws eks --region $AWS_REGION update-kubeconfig --name rinz-production-cluster
@@ -34,7 +33,6 @@ stages:
       if [ "$CI_COMMIT_REF_NAME" == "stag" ]; then
         aws eks --region $AWS_REGION update-kubeconfig --name rinz-staging-cluster
       fi
-  - cat /root/.kube/config
 .predeploy: &predeploy |
   apk add --no-cache  bash git  python3 py3-pip curl
   pip3 install --upgrade pip 
