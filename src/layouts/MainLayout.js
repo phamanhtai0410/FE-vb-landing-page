@@ -18,7 +18,7 @@ const MainLayout = () => {
     // }
 
     return (
-        <main className="bg-[#1D1A3F] text-white leading-loose">
+        <main className="bg-[#00051e] text-white leading-loose">
             <Header />
             <Outlet />
         </main>

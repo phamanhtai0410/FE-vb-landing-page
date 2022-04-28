@@ -25,6 +25,8 @@ module.exports = {
         poppins: "'Poppins', sans-serif",
         sans_serif: "sans-serif",
         sf_pro: "SF Pro Display",
+        nebula: "Nebula",
+        blank_space: "Blank Space"
       }
     },
   },

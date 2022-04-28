@@ -3,7 +3,8 @@ import Navbar from "./Navbar";
 
 const Header = () => {
   return (
-    <header className="bg-[#141432]">
+    <header className="bg-[#00051e]">
+
       <div className="mx-auto mx-2 lg:mx-4 2xl:mx-8">
         <Navbar />
       </div>

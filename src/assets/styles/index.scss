@@ -30,6 +30,21 @@
         url(../fonts/sf-pro-display/0b51833ff62e4af8acb5fd3e2bf59e97.woff) format("woff");
 }
 
+@font-face {
+    font-family: "Nebula";
+    font-style: normal;
+    font-weight: 200;
+    src: local("Nebula"),
+        url(../fonts/nebula/Nebula-Regular.woff) format("woff");
+}
+
+@font-face {
+    font-family: "Blank Space";
+    font-style: normal;
+    font-weight: 200;
+    src: local("Blank Space"),
+        url(../fonts/blank-space/BlankSpace-Eaggz.woff) format("woff");
+}
 
 
 .hero__img {
@@ -56,6 +71,7 @@
 .bg-gradient-border {
     border: 2px solid rgba(35, 210, 126, 1)
 }
+
 
 .btn-modal-veb {
     font-size: 16px;
@@ -141,7 +157,7 @@
 }
 
 footer {
-    background-color: #061d36;
+    background-color: #051338;
 }
 
 .img-scale-1-1 {
@@ -178,4 +194,44 @@ footer {
 .tab-market .active {
     background: linear-gradient(91.96deg, #33B576 0%, rgba(23, 129, 188, 0.87) 100%);
     border-radius: 32px;
+}
+
+.box_home {
+    background-image: url('../images/home/bg_home.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-origin: padding-box;
+    background-position: center;
+    overflow: hidden;
+}
+
+
+.box-border-gr {
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 1px 3px #39C5F1;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+.blend-dodge {
+    mix-blend-mode: color-dodge;
+}
+
+
+.box_home-round {
+    background-image: url('../images/home/bg_round.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-blend-mode: color-dodge;
+    height: 500px;
+    min-width: 500px;
+}
+
+.box_home-round img {
+    mix-blend-mode: dodge;
+}
+
+.bg-light-shadow {
+    box-shadow: 0px 0px 40px 2px rgb(0 255 255 / 30%);
 }
