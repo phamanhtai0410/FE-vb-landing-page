@@ -19,60 +19,89 @@ const Group = () => {
 
         <div className="flex flex-wrap 2xl:px-28">
 
-          <div className="pb-8 px-8 w-full lg:w-1/3 h-48 my-12">
-            <div className="box-border-gr rounded-xl flex flex-row items-object justify-center h-full relative cursor-pointer">
-              <div className="bg-[#734BE4] bg-light-shadow absolute top-[-35px] w-16 h-16 p-3 rounded-full flex justify-center items-center">
-                <img src={IcBorrow} alt={"IcBorrow"} className="object-center" />
+          <div className="pb-8 px-8 w-full lg:w-1/3 h-56 my-12">
+            <div className="box-border-gr rounded-xl flex flex-col items-object justify-center h-full relative cursor-pointer">
+              <div className="absolute top-[-35px] w-full flex justify-center ">
+                <div className="bg-[#734BE4] bg-light-shadow w-16 h-16 p-3 rounded-full flex justify-center items-center">
+                  <img src={IcBorrow} alt={"IcBorrow"} className="object-center" />
+                </div>
               </div>
-              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Trade</div>
+              <div className="mt-2 bottom-4 w-full text-center text-[22px] font-bold font-poppins text-[#19FFFF] mt-3">Trade/Swap</div>
+              <p className="px-4 font-poppins text-[16px] text-[#FAFAFA] text-center font-normal leading-7 mt-2">
+                Seamlessly trade multiple tokens at the best rates with our AMM
+              </p>
             </div>
           </div>
 
-          <div className="pb-8 px-8 w-full lg:w-1/3 h-48 my-12">
-            <div className="box-border-gr rounded-xl flex flex-row items-object justify-center h-full relative cursor-pointer">
-              <div className="bg-[#7AC550] bg-light-shadow  absolute top-[-35px] w-16 h-16 p-3 rounded-full flex justify-center items-center">
-                <img src={IcLend} alt={"IcBorrow"} className="object-center" />
+          <div className="pb-8 px-8 w-full lg:w-1/3 h-56 my-12">
+            <div className="box-border-gr rounded-xl flex flex-col items-object justify-center h-full relative cursor-pointer">
+              <div className="absolute top-[-35px] w-full flex justify-center ">
+                <div className="bg-[#7AC550] bg-light-shadow w-16 h-16 p-3 rounded-full flex justify-center items-center">
+                  <img src={IcLend} alt={"IcLend"} className="object-center" />
+                </div>
               </div>
-              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Lend/Borrow</div>
+              <div className="mt-2 bottom-4 w-full text-center text-[22px] font-bold font-poppins text-[#19FFFF] mt-3">Lend/Borrow</div>
+              <p className="px-4 font-poppins text-[16px] text-[#FAFAFA] text-center font-normal leading-7 mt-2">
+                Earn interest by depositing tokens, and borrow at low risk from VeBank
+              </p>
             </div>
           </div>
 
-          <div className="pb-8 px-8 w-full lg:w-1/3 h-48 my-12">
-            <div className="box-border-gr rounded-xl flex flex-row items-object justify-center h-full relative cursor-pointer">
-              <div className="bg-[#23BCE4] bg-light-shadow absolute top-[-35px] w-16 h-16 rounded-full flex justify-center items-center">
-                <img src={IcPool} alt={"IcPool"} className="object-center" />
+          <div className="pb-8 px-8 w-full lg:w-1/3 h-56 my-12">
+            <div className="box-border-gr rounded-xl flex flex-col items-object justify-center h-full relative cursor-pointer">
+              <div className="absolute top-[-35px] w-full flex justify-center ">
+                <div className="bg-[#23BCE4] bg-light-shadow w-16 h-16 p-3 rounded-full flex justify-center items-center">
+                  <img src={IcPool} alt={"IcPool"} className="object-center" />
+                </div>
               </div>
-              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Pool</div>
+              <div className="mt-2 bottom-4 w-full text-center text-[22px] font-bold font-poppins text-[#19FFFF] mt-3">Pool</div>
+              <p className="px-4 font-poppins text-[16px] text-[#FAFAFA] text-center font-normal leading-7 mt-2">
+                Earn rewards by providing liquidity for seamless token trading
+              </p>
             </div>
           </div>
 
-          <div className="pb-8 px-8 w-full lg:w-1/3 h-48 my-12">
-            <div className="box-border-gr rounded-xl flex flex-row items-object justify-center h-full relative cursor-pointer">
-              <div className="bg-[#D643BE] bg-light-shadow absolute top-[-35px] w-16 h-16 rounded-full flex justify-center items-center">
-                <img src={IcStake} alt={"IcStake"} className="object-center" />
+          <div className="pb-8 px-8 w-full lg:w-1/3 h-56 my-12">
+            <div className="box-border-gr rounded-xl flex flex-col items-object justify-center h-full relative cursor-pointer">
+              <div className="absolute top-[-35px] w-full flex justify-center ">
+                <div className="bg-[#D643BE] bg-light-shadow w-16 h-16 p-3 rounded-full flex justify-center items-center">
+                  <img src={IcStake} alt={"IcStake"} className="object-center" />
+                </div>
               </div>
-              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Stake</div>
+              <div className="mt-2 bottom-4 w-full text-center text-[22px] font-bold font-poppins text-[#19FFFF] mt-3">Stake</div>
+              <p className="px-4 font-poppins text-[16px] text-[#FAFAFA] text-center font-normal leading-7 mt-2">
+                Earn new tokens by staking $VB
+              </p>
             </div>
           </div>
 
-          <div className="pb-8 px-8 w-full lg:w-1/3 h-48 my-12">
-            <div className="box-border-gr rounded-xl flex flex-row items-object justify-center h-full relative cursor-pointer">
-              <div className="bg-[#FFC951] bg-light-shadow absolute top-[-35px] w-16 h-16 rounded-full flex justify-center items-center">
-                <img src={IcFarm} alt={"IcFarm"} className="object-center" />
+          <div className="pb-8 px-8 w-full lg:w-1/3 h-56 my-12">
+            <div className="box-border-gr rounded-xl flex flex-col items-object justify-center h-full relative cursor-pointer">
+              <div className="absolute top-[-35px] w-full flex justify-center ">
+                <div className="bg-[#FFC951] bg-light-shadow w-16 h-16 p-3 rounded-full flex justify-center items-center">
+                  <img src={IcFarm} alt={"IcFarm"} className="object-center" />
+                </div>
               </div>
-              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Farm</div>
+              <div className="mt-2 bottom-4 w-full text-center text-[22px] font-bold font-poppins text-[#19FFFF] mt-3">Farm</div>
+              <p className="px-4 font-poppins text-[16px] text-[#FAFAFA] text-center font-normal leading-7 mt-2">
+                Maximize rewards when participate in token farming opportunities
+              </p>
             </div>
           </div>
 
-          <div className="pb-8 px-8 w-full lg:w-1/3 h-48 my-12">
-            <div className="box-border-gr rounded-xl flex flex-row items-object justify-center h-full relative cursor-pointer">
-              <div className="bg-[#96C5FD] bg-light-shadow absolute top-[-35px] w-16 h-16 rounded-full flex justify-center items-center">
-                <img src={IcLaunchpad} alt={"IcLaunchpad"} className="object-center" />
+          <div className="pb-8 px-8 w-full lg:w-1/3 h-56 my-12">
+            <div className="box-border-gr rounded-xl flex flex-col items-object justify-center h-full relative cursor-pointer">
+              <div className="absolute top-[-35px] w-full flex justify-center ">
+                <div className="bg-[#96C5FD] bg-light-shadow w-16 h-16 p-3 rounded-full flex justify-center items-center">
+                  <img src={IcLaunchpad} alt={"IcLaunchpad"} className="object-center" />
+                </div>
               </div>
-              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Launchpad</div>
+              <div className="mt-2 bottom-4 w-full text-center text-[22px] font-bold font-poppins text-[#19FFFF] mt-3">Launchpad</div>
+              <p className="px-4 font-poppins text-[16px] text-[#FAFAFA] text-center font-normal leading-7 mt-2">
+                Raise funds and increase adoption for projects launched on VeChain
+              </p>
             </div>
           </div>
-
 
         </div>
 

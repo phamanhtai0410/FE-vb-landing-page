@@ -171,3 +171,55 @@
   animation-name: fadeInUp;
   -webkit-animation-name: fadeInUp;
 }
+
+
+@-webkit-keyframes xoayvong {
+  from {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+  }
+}
+
+/* Standard syntax */
+@keyframes xoayvong {
+  from {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+  }
+}
+
+// call animation
+.xoayvong {
+  animation: xoayvong infinite 50s linear;
+  -webkit-animation: xoayvong infinite 50s linear;
+  -moz-animation: xoayvong infinite 50s linear;
+  -o-animation: xoayvong infinite 50s linear;
+}
+
+.app-logo {
+  animation: app-logo-spin infinite 5s linear
+}
+
+@keyframes app-logo-spin {
+  from {
+    transform: rotate(0deg)
+  }
+
+  to {
+    transform: rotate(360deg)
+  }
+}
