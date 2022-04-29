@@ -10,13 +10,6 @@ const MenuLink = () => {
                 </NavLink>
             </li>
 
-
-            <li className="p-4 lg:p-0">
-                <NavLink to="/borrows" className="px-6 text-gray-300 hover:text-gray-100">
-                    Borrows
-                </NavLink>
-            </li>
-
             <li className="p-4 lg:p-0">
                 <NavLink to="/lend" className="px-6 text-gray-300 hover:text-gray-100">
                     Lend
@@ -29,6 +22,13 @@ const MenuLink = () => {
                 </NavLink>
             </li>
 
+
+            <li className="p-4 lg:p-0">
+                <NavLink to="/borrows" className="px-6 text-gray-300 hover:text-gray-100">
+                    Borrows
+                </NavLink>
+            </li>
+
             <li className="p-4 lg:p-0">
                 <NavLink to="/stake" className="px-6 text-gray-300 hover:text-gray-100">
                     Stake
@@ -37,7 +37,7 @@ const MenuLink = () => {
 
             <li className="p-4 lg:p-0">
                 <NavLink to="/lauch-pad" className="px-6 text-gray-300 hover:text-gray-100">
-                    Lauch pad
+                    Lauchpad
                 </NavLink>
             </li>
 

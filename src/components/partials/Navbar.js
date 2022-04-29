@@ -15,29 +15,23 @@ const Navbar = () => {
     return (
         <nav className="py-4 flex justify-between">
 
-            <div className="flex flex-row items-center justify-center">
+            <div className="flex flex-row items-center justify-center space-x-8">
 
-                <NavLink to="/home">
-                    <img src={IcLogo} alt="logo VEBank" />
-                </NavLink>
+                <div>
+                    <NavLink to="/home">
+                        <img src={IcLogo} alt="logo VEBank" />
+                    </NavLink>
+                </div>
 
-                {/* <div className="hidden lg:flex flex-row bg-gradient-search rounded-lg ml-8 py-2 px-4 ra justify-between md:hidden lg:w-64 xl:w-80 ">
-                    <input
-                        className="bg-transparent focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full"
-                        type="text"
-                        placeholder={"Search"}
-                    />
-                    <img
-                        alt="search_icon"
-                        src={IcSearch}
-                        className="ml-1 object-contain"
-                    />
-                </div> */}
+
+                <div className="hidden lg:flex flex-wrap items-center justify-between ">
+                    <MenuLink />
+                </div>
 
             </div>
 
             <div className="hidden lg:flex flex-wrap items-center justify-between ">
-                <MenuLink />
+
                 <div className="flex flex-row justify-center items-center my-auto space-x-2">
                     <BtnConnect />
                 </div>

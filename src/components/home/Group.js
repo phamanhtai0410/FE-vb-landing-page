@@ -24,7 +24,7 @@ const Group = () => {
               <div className="bg-[#734BE4] bg-light-shadow absolute top-[-35px] w-16 h-16 p-3 rounded-full flex justify-center items-center">
                 <img src={IcBorrow} alt={"IcBorrow"} className="object-center" />
               </div>
-              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Borrow</div>
+              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Trade</div>
             </div>
           </div>
 
@@ -33,7 +33,34 @@ const Group = () => {
               <div className="bg-[#7AC550] bg-light-shadow  absolute top-[-35px] w-16 h-16 p-3 rounded-full flex justify-center items-center">
                 <img src={IcLend} alt={"IcBorrow"} className="object-center" />
               </div>
-              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Lend</div>
+              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Lend/Borrow</div>
+            </div>
+          </div>
+
+          <div className="pb-8 px-8 w-full lg:w-1/3 h-48 my-12">
+            <div className="box-border-gr rounded-xl flex flex-row items-object justify-center h-full relative cursor-pointer">
+              <div className="bg-[#23BCE4] bg-light-shadow absolute top-[-35px] w-16 h-16 rounded-full flex justify-center items-center">
+                <img src={IcPool} alt={"IcPool"} className="object-center" />
+              </div>
+              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Pool</div>
+            </div>
+          </div>
+
+          <div className="pb-8 px-8 w-full lg:w-1/3 h-48 my-12">
+            <div className="box-border-gr rounded-xl flex flex-row items-object justify-center h-full relative cursor-pointer">
+              <div className="bg-[#D643BE] bg-light-shadow absolute top-[-35px] w-16 h-16 rounded-full flex justify-center items-center">
+                <img src={IcStake} alt={"IcStake"} className="object-center" />
+              </div>
+              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Stake</div>
+            </div>
+          </div>
+
+          <div className="pb-8 px-8 w-full lg:w-1/3 h-48 my-12">
+            <div className="box-border-gr rounded-xl flex flex-row items-object justify-center h-full relative cursor-pointer">
+              <div className="bg-[#FFC951] bg-light-shadow absolute top-[-35px] w-16 h-16 rounded-full flex justify-center items-center">
+                <img src={IcFarm} alt={"IcFarm"} className="object-center" />
+              </div>
+              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Farm</div>
             </div>
           </div>
 
@@ -43,30 +70,6 @@ const Group = () => {
                 <img src={IcLaunchpad} alt={"IcLaunchpad"} className="object-center" />
               </div>
               <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Launchpad</div>
-            </div>
-          </div>
-          <div className="pb-8 px-8 w-full lg:w-1/3 h-48 my-12">
-            <div className="box-border-gr rounded-xl flex flex-row items-object justify-center h-full relative cursor-pointer">
-              <div className="bg-[#23BCE4] bg-light-shadow absolute top-[-35px] w-16 h-16 rounded-full flex justify-center items-center">
-                <img src={IcPool} alt={"IcPool"} className="object-center" />
-              </div>
-              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Pool</div>
-            </div>
-          </div>
-          <div className="pb-8 px-8 w-full lg:w-1/3 h-48 my-12">
-            <div className="box-border-gr rounded-xl flex flex-row items-object justify-center h-full relative cursor-pointer">
-              <div className="bg-[#FFC951] bg-light-shadow absolute top-[-35px] w-16 h-16 rounded-full flex justify-center items-center">
-                <img src={IcFarm} alt={"IcFarm"} className="object-center" />
-              </div>
-              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Farm</div>
-            </div>
-          </div>
-          <div className="pb-8 px-8 w-full lg:w-1/3 h-48 my-12">
-            <div className="box-border-gr rounded-xl flex flex-row items-object justify-center h-full relative cursor-pointer">
-              <div className="bg-[#D643BE] bg-light-shadow absolute top-[-35px] w-16 h-16 rounded-full flex justify-center items-center">
-                <img src={IcStake} alt={"IcStake"} className="object-center" />
-              </div>
-              <div className="mt-2  bottom-4 w-full text-center text-[24px] font-bold font-poppins text-[#19FFFF] mt-10">Stake</div>
             </div>
           </div>
 
