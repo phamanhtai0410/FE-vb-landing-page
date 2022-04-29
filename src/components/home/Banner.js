@@ -7,7 +7,7 @@ const Banner = ({ handleClickExplore }) => {
     return (
         <div className="flex justify-center items-center relative mt-[-5rem] max-w-max mx-auto max-w-fit min-h-screen">
             <img src={bgHomeRound} className="w-full object-center object-cover blend-dodge fade-in-box" />
-            <div className="text-[#19FFFF] absolute w-full h-full flex flex-col justify-center items-center lg:mt-[-13rem] xl:mt-[-13rem] 3xl:mt-[-17rem]">
+            <div className="text-[#19FFFF] absolute w-full h-full flex flex-col justify-center items-center lg:mt-[-12rem] xl:mt-[-14rem] 3xl:mt-[-17rem]">
                 <p className="font-nebula text-[30px] leading-10 animatedFadeInUp animated-fadeInDown fadeInDown">VeBank Protocol</p>
                 <p className="font-blank_space text-[30px] leading-11 text-center animatedFadeInUp animated-fadeInDown fadeInDown">One-stop DeFi Platform</p>
                 <p className="font-nebula text-[30px] leading-10 animatedFadeInUp animated-fadeInDown fadeInDown">on vechain</p>
