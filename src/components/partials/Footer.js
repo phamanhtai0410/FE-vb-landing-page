@@ -25,7 +25,7 @@ const Footer = () => {
 
           <div className="text-[#7D86F5] sm:ml-0 md:ml-14 md:ml-5s lg:ml-[120px]">
 
-            <div className='flex flex-rows items-left md:mt-9 md:max-w-xs md:justify-between lg:justify-center space-x-8 lg:space-x-14 mt-7 md:mt-0'>
+            <div className='flex flex-rows items-left md:mt-9 md:max-w-xs md:justify-between space-x-8 lg:space-x-14 mt-7 md:mt-0'>
               <img src={IcScTelegram} alt="icon Telegram" className="w-8 h-8 cursor-pointer" />
               <img src={IcScDiscord} alt="icon Discord" className="w-8 h-8 cursor-pointer" />
               <img src={IcScTwitter} alt="icon Twitter" className="w-8 h-8 cursor-pointer" />
