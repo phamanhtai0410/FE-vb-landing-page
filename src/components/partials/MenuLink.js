@@ -37,7 +37,7 @@ const MenuLink = () => {
 
             <li className="p-4 lg:p-0">
                 <NavLink to="/lauch-pad" className="px-6 text-gray-300 hover:text-gray-100">
-                    Lauchpad
+                    Launchpad
                 </NavLink>
             </li>
 
