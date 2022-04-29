@@ -26,7 +26,7 @@ stages:
 .kubectl_config: &kubectl_config
   - env
   - |
-      if [ "$CI_COMMIT_REF_NAME" == "prod" ]; then
+      if [ "$CI_COMMIT_REF_NAME" == "master" ]; then
         aws eks --region $AWS_REGION update-kubeconfig --name rinz-production-cluster
       fi
   - |
