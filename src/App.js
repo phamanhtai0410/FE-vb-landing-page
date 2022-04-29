@@ -20,15 +20,15 @@ function App() {
 
       <Route path="/" element={<MainLayout />} >
 
-        <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/home" element={<Navigate to="/" />} />
 
-        <Route path="/home" element={<HomePage />} />
+        <Route path="/" element={<HomePage />} />
 
         <Route path="/borrows" element={<BorrowPage />} />
 
         <Route path="/supply" element={<SupplyPage />} />
 
-        <Route path="*" element={<Navigate to="/home" />} />
+        <Route path="*" element={<Navigate to="/" />} />
 
       </Route>
 

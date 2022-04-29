@@ -204,22 +204,10 @@
 
 // call animation
 .xoayvong {
-  animation: xoayvong infinite 50s linear;
-  -webkit-animation: xoayvong infinite 50s linear;
-  -moz-animation: xoayvong infinite 50s linear;
-  -o-animation: xoayvong infinite 50s linear;
-}
-
-.app-logo {
-  animation: app-logo-spin infinite 5s linear
-}
-
-@keyframes app-logo-spin {
-  from {
-    transform: rotate(0deg)
-  }
-
-  to {
-    transform: rotate(360deg)
-  }
+  animation: xoayvong infinite 120s linear;
+  -webkit-animation: xoayvong infinite 120s linear;
+  -moz-animation: xoayvong infinite 120s linear;
+  -o-animation: xoayvong infinite 120s linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
