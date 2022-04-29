@@ -18,11 +18,8 @@ const HomePage = () => {
 
   return (
     <div className="box_home w-full min-h-screen">
-      {/* <img src={bgHomeRound} className="w-full" /> */}
       <Banner />
-
       <Group />
-
       <Footer />
     </div>
 

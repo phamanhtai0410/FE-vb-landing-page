@@ -13,7 +13,7 @@ const Footer = () => {
 
       <div className="container mx-auto ">
 
-        <div className="py-16 px-10 flex flex-rows">
+        <div className="py-24 px-10 flex flex-rows">
 
           <div className="flex flex-col font-poppins">
             <h4 className="text-3xl leading-8 text-slate-50">ESOL Labs</h4>

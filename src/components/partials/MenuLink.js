@@ -5,6 +5,13 @@ const MenuLink = () => {
             {/* // <ul className="flex flex-col items-center justify-between "> */}
 
             <li className="p-4 lg:p-0">
+                <NavLink to="/trade" className="px-6 text-gray-300 hover:text-gray-100">
+                    Trade
+                </NavLink>
+            </li>
+
+
+            <li className="p-4 lg:p-0">
                 <NavLink to="/borrows" className="px-6 text-gray-300 hover:text-gray-100">
                     Borrows
                 </NavLink>
@@ -31,12 +38,6 @@ const MenuLink = () => {
             <li className="p-4 lg:p-0">
                 <NavLink to="/lauch-pad" className="px-6 text-gray-300 hover:text-gray-100">
                     Lauch pad
-                </NavLink>
-            </li>
-
-            <li className="p-4 lg:p-0">
-                <NavLink to="/trade" className="px-6 text-gray-300 hover:text-gray-100">
-                    Trade
                 </NavLink>
             </li>
 
