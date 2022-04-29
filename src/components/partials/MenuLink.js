@@ -24,14 +24,14 @@ const MenuLink = () => {
 
 
             <li className="p-4 lg:p-0">
-                <NavLink to="/borrows" className="px-6 text-gray-300 hover:text-gray-100">
-                    Borrows
+                <NavLink to="/stake" className="px-6 text-gray-300 hover:text-gray-100">
+                    Stake
                 </NavLink>
             </li>
 
             <li className="p-4 lg:p-0">
-                <NavLink to="/stake" className="px-6 text-gray-300 hover:text-gray-100">
-                    Stake
+                <NavLink to="/farm" className="px-6 text-gray-300 hover:text-gray-100">
+                    Farm
                 </NavLink>
             </li>
 
