@@ -27,7 +27,7 @@ const Group = ({ exploreRef }) => {
                   <img src={IcBorrow} alt={"IcBorrow"} className="object-center" />
                 </div>
               </div>
-              <div className="mt-2 bottom-4 w-full text-center text-[22px] font-bold font-poppins text-[#19FFFF] mt-3">Trade/Swap</div>
+              <div className="mt-2 bottom-4 w-full text-center text-[22px] font-bold font-poppins text-[#19FFFF] mt-3">Trade</div>
               <p className="px-4 font-poppins text-[16px] text-[#FAFAFA] text-center font-normal leading-7 mt-2">
                 Seamlessly trade multiple tokens at the best rates with our AMM
               </p>
