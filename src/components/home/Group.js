@@ -12,9 +12,9 @@ const Group = ({ exploreRef }) => {
 
   return (
 
-    <section className="container pt-5 pb-24 mx-auto" ref={exploreRef} >
+    <section className="container pt-28 pb-24 mx-auto"  >
 
-      <div className="lg:px-6 px-4">
+      <div className="lg:px-6 px-4" >
 
         <h3 className="font-bold text-center mb-20 text-2xl lg:text-4xl font-montserrat text-[#19FFFF]">Money market on Vechain</h3>
 

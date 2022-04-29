@@ -17,9 +17,12 @@ const HomePage = () => {
   return (
     <div className="box_home w-full min-h-screen">
       <Banner handleClickExplore={handleClickExplore} />
-      <Group exploreRef={exploreRef} />
+      <div ref={exploreRef}  >
+        <Group />
+      </div>
+
       <Footer />
-    </div>
+    </div >
 
   );
 };
