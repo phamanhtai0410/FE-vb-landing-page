@@ -8,10 +8,11 @@ import IcPool from '../../assets/images/home/ic_cream.svg';
 import IcFarm from '../../assets/images/home/ic_farm.svg';
 import IcStake from '../../assets/images/home/ic_piggy.svg';
 
-const Group = () => {
+const Group = ({ exploreRef }) => {
 
   return (
-    <section className="container pt-5 pb-24 mx-auto">
+
+    <section className="container pt-5 pb-24 mx-auto" ref={exploreRef} >
 
       <div className="lg:px-6 px-4">
 
@@ -70,7 +71,7 @@ const Group = () => {
               </div>
               <div className="mt-2 bottom-4 w-full text-center text-[22px] font-bold font-poppins text-[#19FFFF] mt-3">Stake</div>
               <p className="px-4 font-poppins text-[16px] text-[#FAFAFA] text-center font-normal leading-7 mt-2">
-                Earn new tokens by staking $VB
+                Earn new tokens by staking $VB<br /><br />
               </p>
             </div>
           </div>

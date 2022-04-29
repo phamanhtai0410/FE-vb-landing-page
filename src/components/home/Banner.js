@@ -2,7 +2,7 @@ import React from "react";
 
 import bgHomeRound from '../../assets/images/home/bg_round.png';
 
-const Banner = () => {
+const Banner = ({ handleClickExplore }) => {
 
     return (
         <div className="flex justify-center items-center relative mt-[-5rem] max-w-max mx-auto max-w-fit min-h-screen">
@@ -11,7 +11,7 @@ const Banner = () => {
                 <p className="font-nebula text-[30px] leading-10 animatedFadeInUp animated-fadeInDown fadeInDown">VeBank Protocol</p>
                 <p className="font-blank_space text-[30px] leading-11 text-center animatedFadeInUp animated-fadeInDown fadeInDown">One-stop DeFi Platform</p>
                 <p className="font-nebula text-[30px] leading-10 animatedFadeInUp animated-fadeInDown fadeInDown">on vechain</p>
-                <button className="bg-[#19FFFF] text-[#0B2D60] font-nebula leading-6 px-10 py-4 rounded-full mt-4 animated fadeInUp">EXPLORE</button>
+                <button onClick={handleClickExplore} className="bg-[#19FFFF] text-[#0B2D60] font-nebula leading-6 px-10 py-4 rounded-full mt-4 animated fadeInUp">EXPLORE</button>
             </div>
         </div>
     );
