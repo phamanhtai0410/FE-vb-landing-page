@@ -8,6 +8,7 @@ import IcPool from '../../assets/images/home/ic_cream.svg';
 import IcFarm from '../../assets/images/home/ic_farm.svg';
 import IcStake from '../../assets/images/home/ic_piggy.svg';
 
+
 const Group = ({ exploreRef }) => {
 
   return (
