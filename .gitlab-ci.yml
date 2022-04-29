@@ -66,7 +66,6 @@ build_stag:
         sed -i -e "s#\[NAMESPACE\]#$NAMESPACE_STAG#g" skaffold.yaml
         sed -i -e "s#\[IMAGE_NAME\]#$IMAGE_NAME#g" skaffold.yaml
         sed -i -e "s#\[CONTAINER_REPO\]#$CONTAINER_REPO_ASIA_STAG#g" skaffold.yaml
-        sed -i -e "s#\[CI_COMMIT_REF_NAME\]#$CI_COMMIT_REF_NAME#g" skaffold.yaml
       fi
     - /usr/local/bin/skaffold build -p profile-stag --file-output=build.json
   only:
@@ -97,18 +96,17 @@ build_prod:
     - git clone https://read-token:$GITLAB_TOKEN@gitlab.rinznetwork.com/rinz-io-devops/helm-value/$IMAGE_NAME.git
     - mv $IMAGE_NAME/prod.yaml .
     - |
-      if [ "$CI_COMMIT_REF_NAME" == "prod" ]; then
+      if [ "$CI_COMMIT_REF_NAME" == "master" ]; then
         sed -i -e "s#\[FULLREPO_ASIA\]#$FULLREPO_ASIA_PROD#g" prod.yaml
         sed -i -e "s#\[NAMESPACE\]#$NAMESPACE_PROD#g" prod.yaml
         sed -i -e "s#\[NAMESPACE\]#$NAMESPACE_PROD#g" skaffold.yaml
         sed -i -e "s#\[IMAGE_NAME\]#$IMAGE_NAME#g" skaffold.yaml
         sed -i -e "s#\[CONTAINER_REPO\]#$CONTAINER_REPO_ASIA_PROD#g" skaffold.yaml
-        sed -i -e "s#\[CI_COMMIT_REF_NAME\]#$CI_COMMIT_REF_NAME#g" skaffold.yaml
       fi
     - /usr/local/bin/skaffold build -p profile-prod --file-output=build.json
   only:
     refs:
-      - prod
+      - master
   artifacts:
     paths:
     - prod.yaml
@@ -144,4 +142,4 @@ deploy_prod:
     - /usr/local/bin/skaffold deploy -p profile-prod   -a build.json
   only:
     refs:
-      - prod
+      - master
