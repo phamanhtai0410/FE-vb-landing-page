@@ -204,11 +204,11 @@
 
 // call animation
 .xoayvong {
-  animation-delay: 3s;
-  animation: xoayvong infinite 120s linear;
-  -webkit-animation: xoayvong infinite 120s linear;
-  -moz-animation: xoayvong infinite 120s linear;
-  -o-animation: xoayvong infinite 120s linear;
+  animation-delay: 10s;
+  animation: xoayvong infinite 500s linear;
+  -webkit-animation: xoayvong infinite 500s linear;
+  -moz-animation: xoayvong infinite 500s linear;
+  -o-animation: xoayvong infinite 500s linear;
   animation-iteration-count: infinite;
   animation-direction: alternate;
 }
