@@ -10,7 +10,7 @@ const Banner = ({ handleClickExplore }) => {
         <div className="w-screen h-screen flex justify-center items-center relative mx-auto mt-[-2rem] lg:mt-[-3rem] 2xl:mt-[-5rem]">
 
             <div className="w-full h-fit">
-                <img src={bgHomeRound} className="xoayvong w-full object-center object-cover blend-dodge fade-in-box delay-500 transition duration-[2000ms] ease-in-out" />
+                <img src={bgHomeRound} className="xoayvong w-full object-center object-cover blend-dodge fade-in-box ease-in-out" />
             </div>
 
             <div className="text-[#19FFFF] absolute w-full h-full flex flex-col justify-center items-center">
