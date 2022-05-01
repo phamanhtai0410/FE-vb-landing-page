@@ -5,8 +5,14 @@ import bgHomeRound from '../../assets/images/home/bg_round.png';
 const Banner = ({ handleClickExplore }) => {
 
     return (
-        <div className="flex justify-center items-center relative max-w-max mx-auto max-w-fit min-h-screen mt-[-12rem]  lg:mt-[-16rem] 2xl:mt-[-24rem]">
-            <img src={bgHomeRound} className="xoayvong w-full object-center object-cover blend-dodge fade-in-box delay-500 transition duration-[2000ms] ease-in-out" />
+
+        // mt-[-12rem]  lg:mt-[-16rem] 2xl:mt-[-24rem]
+        <div className="w-screen h-screen flex justify-center items-center relative mx-auto mt-[-2rem] lg:mt-[-3rem] 2xl:mt-[-5rem]">
+
+            <div className="w-full h-fit">
+                <img src={bgHomeRound} className="xoayvong w-full object-center object-cover blend-dodge fade-in-box ease-in-out" />
+            </div>
+
             <div className="text-[#19FFFF] absolute w-full h-full flex flex-col justify-center items-center">
                 <p className="font-nebula text-[16px] lg:text-[26px] xl:text-[26px] 2xl:text-[36px] leading-10 animatedFadeInUp animated-fadeInDown fadeInDown">VeBank Protocol</p>
                 <p className="font-blank_space text-[16px] lg:text-[26px] xl:text-[26px] 2xl:text-[36px] leading-11 text-center animatedFadeInUp animated-fadeInDown fadeInDown">One-stop DeFi Platform</p>

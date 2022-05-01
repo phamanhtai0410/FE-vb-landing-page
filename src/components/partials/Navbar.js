@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import IcLogo from '../../assets/images/ic_logo.svg';
-import IcSearch from '../../assets/images/ic_search.png';
 
 import BtnConnect from './BtnConnect';
 import MenuLink from './MenuLink';
@@ -11,6 +10,7 @@ import MenuLink from './MenuLink';
 const Navbar = () => {
 
     const [isNavOpen, setIsNavOpen] = useState(false);
+
 
     return (
         <nav className="py-4 flex justify-between">
