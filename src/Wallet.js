@@ -31,6 +31,8 @@ const Wallet = () => {
 
     async function fetchWeb3Init(loadDefault) {
 
+        console.log("fetchWeb3Init")
+
         await dispatch(actions.web3Connect(loadDefault));// true is account conected reload contract
         // await dispatch(actions.instantiateLUSContracts());
         // await dispatch(actions.instantiateBUSDContracts());

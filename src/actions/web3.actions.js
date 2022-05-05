@@ -9,14 +9,16 @@ import { web3Constants } from '../constants';
 import getWeb3 from '../utils/getWeb3';
 
 import ERC20ABI from '../_contracts/abi-erc20.json';
-import ERC20ABI_MSP from '../_contracts/MSP.json';
+
+import ERC20ABI_VB from '../_contracts/VB.json';
 
 
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
 
 const TOKEN_BUSD = process.env.REACT_APP_TOKEN_BUSD;
-const TOKEN_MSP = process.env.REACT_APP_TOKEN_MSP;
+
+const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
 
 const chainID = process.env.REACT_APP_NETWORK_ID;
 const networks = {
@@ -92,12 +94,11 @@ async function checkConected(connex, certid) {
 }
 
 
-
 export const web3Connect = (isLogin) => async (dispatch) => {
 
     const web3 = await getWeb3();
 
-    const PK = "Kocanbiet082429!@#"
+    const PK = "Kocanbiet082429!@#";
 
     let signer;
     let _acc = localStorage.getItem('_acc');
@@ -108,14 +109,19 @@ export const web3Connect = (isLogin) => async (dispatch) => {
         network: 'test'
     })
 
-
     if (_acc && _sign) {
+        console.log("_acc && _sign")
         dispatch({
             type: web3Constants.WEB3_CONNECT,
             web3,
             signer: JSON.parse(_sign),
             account: _acc
         });
+
+        setTimeout(() => {
+            dispatch(instantiateVBContracts())
+        }, 500);
+
         return _acc;
     }
 
@@ -210,8 +216,8 @@ export const web3Disconnect = () => async (dispatch, getState) => {
     });
 
     dispatch({
-        type: web3Constants.INIT_CONTRACT_LUS,
-        contractLus: null,
+        type: web3Constants.INIT_CONTRACT_VB,
+        contractVB: null,
         balance: 0
     });
 
@@ -249,7 +255,7 @@ export const instantiateBUSDContracts = () => async (dispatch, getState) => {
 
 };
 
-export const instantiateLUSContracts = () => async (dispatch, getState) => {
+export const instantiateVBContracts = () => async (dispatch, getState) => {
 
     const state = getState();
 
@@ -257,13 +263,13 @@ export const instantiateLUSContracts = () => async (dispatch, getState) => {
 
     if (web3 && account) {
 
-        let contractLUS = new web3.eth.Contract(ERC20ABI_MSP, TOKEN_MSP);
+        let contractVB = new web3.eth.Contract(ERC20ABI_VB, TOKEN_VEBANK);
 
         let balance = 0;
 
-        if (contractLUS && account) {
+        if (contractVB && account) {
 
-            const balanceBigN = await contractLUS.methods.balanceOf(account).call();
+            const balanceBigN = await contractVB.methods.balanceOf(account).call();
 
             balance = ethers.utils.formatEther(balanceBigN);
 
@@ -272,8 +278,8 @@ export const instantiateLUSContracts = () => async (dispatch, getState) => {
         }
 
         dispatch({
-            type: web3Constants.INIT_CONTRACT_LUS,
-            contractLUS,
+            type: web3Constants.INIT_CONTRACT_VB,
+            contractVB,
             balance
         });
 

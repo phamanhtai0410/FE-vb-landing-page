@@ -22,7 +22,6 @@ const Header = () => {
     }
   }, [])
 
-  console.log(show)
 
   return (
     <header className={`bg-[#00051e] ${show && 'navigation'}`}>
