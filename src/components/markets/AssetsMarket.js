@@ -18,6 +18,7 @@ const AssetsMarket = () => {
         {
             icon: IcVeChain,
             assetsChain: "VET",
+            assetsAddress: "",
             totalSupplied: "200.50",
             supplyAPY: "4.03",
             interestSupply: "1.8",
@@ -28,6 +29,7 @@ const AssetsMarket = () => {
         {
             icon: IcVeUSD,
             assetsChain: "VEUSD",
+            assetsAddress: "0xf8D11abFe2085e52b2B3A750EE89CF7EB5cc29Bd",
             totalSupplied: "200.50",
             supplyAPY: "4.03",
             interestSupply: "1.8",
@@ -38,6 +40,7 @@ const AssetsMarket = () => {
         {
             icon: IcVtho,
             assetsChain: "VTHO",
+            assetsAddress: "0x0000000000000000000000000000456e65726779",
             totalSupplied: "200.50",
             supplyAPY: "4.03",
             interestSupply: "1.8",
@@ -48,6 +51,7 @@ const AssetsMarket = () => {
         {
             icon: IcVeBank,
             assetsChain: "VB",
+            assetsAddress: "0x0fa8DC6200255Fc3382CDDb4B5358d7713D99c8d",
             totalSupplied: "200.50",
             supplyAPY: "4.03",
             interestSupply: "1.8",

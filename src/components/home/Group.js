@@ -20,7 +20,7 @@ const Group = () => {
 
   return (
 
-    <section className="container pt-28 pb-24 mx-auto"  >
+    <section className="container pt-28 pb-24 mx-auto">
 
       <div className="lg:px-6 px-4" >
 
