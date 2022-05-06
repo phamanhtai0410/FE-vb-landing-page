@@ -5,7 +5,7 @@ import { Beforeunload } from 'react-beforeunload';
 import * as actions from '../../actions';
 import { marketplaceConstants } from '../../constants';
 
-const BtnOpenBorrow = ({ assetsAddress }) => {
+const BtnOpenWithdraw = ({ assetsAddress }) => {
 
     const [isPending, setIsPending] = useState(false);
 
@@ -33,8 +33,8 @@ const BtnOpenBorrow = ({ assetsAddress }) => {
 
     return (<>
         {isPending ? <Beforeunload onBeforeunload={(event) => event.preventDefault()} /> : ""}
-        <button onClick={e => { handlerOpenModal(e) }} className="btn-veb h-10" type="submit">{isPending ? "Pending..." : "Borrow"} </button>
+        <button onClick={e => { handlerOpenModal(e) }} className="btn-veb h-10" type="submit">{isPending ? "Pending..." : "Withdraw"} </button>
     </>)
 }
 
-export default BtnOpenBorrow;
+export default BtnOpenWithdraw;

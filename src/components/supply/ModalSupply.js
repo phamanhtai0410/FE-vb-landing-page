@@ -12,6 +12,7 @@ import BtnSupply from './BtnSupply';
 
 import IcExplorer from '../../assets/images/ic_explorer.svg';
 import IcSuccess from '../../assets/images/ic_success.svg';
+import IcVeChain from '../../assets/images/ic_vechain.svg';
 
 const customStyles = {
     content: {
@@ -28,7 +29,7 @@ const customStyles = {
     },
 };
 
-const IcVeb = "https://s3-alpha-sig.figma.com/img/63b8/0ba4/e17d8cf47adbdc845047e5c2eba0e8e5?Expires=1651449600&Signature=HZ7riBcgpeAWRTg6o1deCxabVzsv81yaab2vUaSJFu92d5SC65trDhN13ZZcTLLSPdqWc-PTUqm-zqn3HR-VRKtAabwvCy~TdwE43i7Gey0TahfHcpN~jg06E6ijdhjpYWMshhypo4vQBKG7Dwsc~~Aj4zjba7daY8YXiU7AH0mqawmWUxHCkQx5fxSEZv3yjc1uPx04UuKDJkX-tavOTATp8OvW0DY7gyNDo8bSGGtyvIL--QYIM7eNcugYVjUz5NInom2mwJUF-i6RL2X-IhXAbn-uLfpOKfR2qxGxV1qA5Kp8TCcGfSj7IHvV-wF6LpZjOIPcOBSDTBmQ~OnheA__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
+const IcVeb = IcVeChain;
 
 const ModalSupply = () => {
 
@@ -273,8 +274,6 @@ const ModalSupply = () => {
                                 </div>
                             </div>
                             : ""}
-
-
 
                     </div>
 

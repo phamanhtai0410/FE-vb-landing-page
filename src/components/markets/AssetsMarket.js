@@ -1,7 +1,6 @@
 
 
 import IcCoin from '../../assets/images/ic_logo.svg';
-import BtnOpenBorrow from './BtnOpenBorrow';
 
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
@@ -12,13 +11,20 @@ import IcVtho from '../../assets/images/ic_vtho.svg';
 
 import IcDropdown from '../../assets/images/ic_dropdown.svg';
 
+import BtnOpenBorrow from './BtnOpenBorrow';
+import BtnOpenWithdraw from './BtnOpenWithdraw';
+import BtnOpenSupply from './BtnOpenSupply';
+import BtnOpenRepay from './BtnOpenRepay';
+import ModalSupply from '../supply/ModalSupply';
+import ModalBorrow from '../borrows/ModalBorrow';
+
 const AssetsMarket = () => {
 
     const listAsset = [
         {
             icon: IcVeChain,
             assetsChain: "VET",
-            assetsAddress: "",
+            assetsAddress: "0x44B5ff695A0343A5c2401E7b97AfDb92395F102A",
             totalSupplied: "200.50",
             supplyAPY: "4.03",
             interestSupply: "1.8",
@@ -72,44 +78,50 @@ const AssetsMarket = () => {
                     timeout={500}
                     classNames="item_asset"
                 >
+                    <div>
 
-                    <div className="grid grid-cols-6 gap-6 mt-6 bg-[#182844] justify-items-center content-around font-poppins text-lg rounded">
+                        <div className="grid grid-cols-6 gap-6 mt-6 bg-[#182844] justify-items-center content-around font-poppins text-lg rounded">
 
-                        <div className="p-2 flex flex-row justify-center items-center space-x-4 w-full text-right cursor-pointer">
-                            <img className="w-6 h-6" src={item.icon} />
-                            <span className="text-lg font-semibold w-12 text-left">{item.assetsChain}</span>
-                        </div>
+                            <div className="p-2 flex flex-row justify-center items-center space-x-4 w-full text-right cursor-pointer">
+                                <img className="w-6 h-6" src={item.icon} />
+                                <span className="text-lg font-semibold w-12 text-left">{item.assetsChain}</span>
+                            </div>
 
-                        <div className="p-2 flex justify-center items-center font-semibold">{item.totalSupplied} M</div>
+                            <div className="p-2 flex justify-center items-center font-semibold">{item.totalSupplied} M</div>
 
-                        <div className="p-2 flex flex-col justify-center items-center content-center">
-                            <div className="text-lg font-semibold">{item.supplyAPY} %</div>
-                            <div className="border-2 border-solid border-[#363564] p-1">
-                                <div className="flex flex-row justify-start items-center space-x-2" >
-                                    <span className="font-light text-sm">{item.interestSupply} %</span>
-                                    <img className="w-4 h-4" src={IcVeBank} />
+                            <div className="p-2 flex flex-col justify-center items-center content-center">
+                                <div className="text-lg font-semibold">{item.supplyAPY} %</div>
+                                <div className="border-2 border-solid border-[#363564] p-1">
+                                    <div className="flex flex-row justify-start items-center space-x-2" >
+                                        <span className="font-light text-sm">{item.interestSupply} %</span>
+                                        <img className="w-4 h-4" src={IcVeBank} />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="p-2 flex justify-center items-center font-semibold">{item.totalBorrowed} M</div>
+                            <div className="p-2 flex justify-center items-center font-semibold">{item.totalBorrowed} M</div>
 
-                        <div className="p-2 flex flex-col justify-center items-center content-center">
-                            <div className="text-lg font-semibold">{item.borrowAPY} %</div>
-                            <div className="border-2 border-solid border-[#363564] p-1">
-                                <div className="flex flex-row justify-start items-center space-x-2" >
-                                    <span className="font-light text-sm">{item.interestBorrow} %</span>
-                                    <img className="w-4 h-4" src={IcVeBank} />
+                            <div className="p-2 flex flex-col justify-center items-center content-center">
+                                <div className="text-lg font-semibold">{item.borrowAPY} %</div>
+                                <div className="border-2 border-solid border-[#363564] p-1">
+                                    <div className="flex flex-row justify-start items-center space-x-2" >
+                                        <span className="font-light text-sm">{item.interestBorrow} %</span>
+                                        <img className="w-4 h-4" src={IcVeBank} />
+                                    </div>
                                 </div>
                             </div>
+
+                            <div className="p-2 flex justify-center items-center">
+                                <img className="w-3 h-3" src={IcDropdown} />
+                                {/* <BtnOpenBorrow id={"BUSD"} /> */}
+                            </div>
+
                         </div>
 
-                        <div className="p-2 flex justify-center items-center">
-                            <img className="w-3 h-3" src={IcDropdown} />
-                            {/* <BtnOpenBorrow id={"BUSD"} /> */}
-                        </div>
+                        {showRowAction(item)}
 
                     </div>
+
 
                 </CSSTransition>
             );
@@ -117,7 +129,65 @@ const AssetsMarket = () => {
 
     }
 
-    const showRowAction = (item) => {
+    const showRowAction = ({ assetsAddress }) => {
+
+        console.log("showRowAction", assetsAddress)
+
+        return (
+
+            <div className='bg-[#182844] p-4 mt-2 flex flex-row justify-between rounded space-x-4' >
+
+                <div className='bg-[#26355A] p-4 rounded'>
+                    <h4>Earn</h4>
+                    <div className='flex flex-row mt-3'>
+                        <input
+                            className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
+                            type="text"
+                            placeholder={"0"}
+                        />
+                        <BtnOpenWithdraw assetsAddress={assetsAddress} />
+                    </div>
+                </div>
+
+                <div className='bg-[#26355A] p-4 rounded '>
+                    <h4>Balance</h4>
+                    <div className='flex flex-row mt-3'>
+                        <input
+                            className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
+                            type="text"
+                            placeholder={"0"}
+                        />
+                        <BtnOpenSupply assetsAddress={assetsAddress} />
+                    </div>
+                </div>
+
+                <div className='bg-[#26355A] p-4 rounded'>
+                    <h4>Debt</h4>
+                    <div className='flex flex-row mt-3'>
+                        <input
+                            className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
+                            type="text"
+                            placeholder={"0"}
+                        />
+                        <BtnOpenRepay />
+                    </div>
+                </div>
+
+                <div className='bg-[#26355A] p-4 rounded'>
+                    <h4>Balance</h4>
+                    <div className='flex flex-row mt-3'>
+                        <input
+                            className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
+                            type="text"
+                            placeholder={"0"}
+                        />
+                        <BtnOpenBorrow assetsAddress={assetsAddress} />
+                    </div>
+                </div>
+
+            </div>
+
+        )
 
     }
 
@@ -154,6 +224,8 @@ const AssetsMarket = () => {
                 </TransitionGroup>
 
             </div>
+            <ModalSupply />
+            <ModalBorrow />
 
         </div>
     )

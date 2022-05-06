@@ -110,22 +110,35 @@ export const web3Connect = (isLogin) => async (dispatch) => {
     })
 
     if (_acc && _sign) {
+
         console.log("_acc && _sign")
-        dispatch({
-            type: web3Constants.WEB3_CONNECT,
-            web3,
-            signer: JSON.parse(_sign),
-            account: _acc
-        });
 
-        setTimeout(() => {
-            dispatch(instantiateVBContracts())
-        }, 500);
+        const acc = connex.thor.account(_acc);
+        acc.get().then(accInfo => {
 
-        return _acc;
+            dispatch({
+                type: web3Constants.WEB3_CONNECT,
+                web3,
+                signer: JSON.parse(_sign),
+                balanceVeT: "",
+                accInfo: accInfo,
+
+                account: _acc
+            });
+
+            setTimeout(() => {
+                dispatch(instantiateVBContracts())
+            }, 500);
+
+            return _acc;
+
+        })
+
+
     }
 
     if (!_acc && isLogin) {
+
         // Ask user to sign the agreement
         signer = await connex.vendor.sign('cert', {
             purpose: 'agreement',
@@ -153,8 +166,6 @@ export const web3Connect = (isLogin) => async (dispatch) => {
         });
 
     } else {
-
-
 
         // const recoveredAddress = await web3.eth.accounts.recover('agreement', _sign);
         // if (recoveredAddress) {
@@ -186,6 +197,7 @@ export const web3Connect = (isLogin) => async (dispatch) => {
 
         // const signCert = checkConected(connex, _sign);
         // console.log(signCert)
+
     }
 
 
@@ -272,7 +284,6 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
             const balanceBigN = await contractVB.methods.balanceOf(account).call();
 
             balance = ethers.utils.formatEther(balanceBigN);
-
             balance = Math.round(balance * 100) / 100;
 
         }
