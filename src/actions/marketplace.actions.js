@@ -7,6 +7,11 @@ import { web3Constants, marketplaceConstants } from '../constants';
 
 import * as actions from './';
 
+
+import ERC20ABI_VB from '../_contracts/VB.json';
+
+const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
+
 /**
  * 
  * @param {number} id 
@@ -15,7 +20,10 @@ import * as actions from './';
  */
 export const borrowMarket = (price) => async (dispatch, getState) => {
 
+
     const state = getState();
+
+    const { web3, account } = state.web3;
 
     dispatch({
         type: marketplaceConstants.MODAL_BORROW_MARKET_REQUEST
@@ -97,19 +105,83 @@ export const borrowMarket = (price) => async (dispatch, getState) => {
 };
 
 
+
 /**
  * 
  * @param {number} id 
  * @returns dispatch strore
+ * depositETH(PoolAddress,UserAddress, referralCode) await iWETHGateway.depositETH("0x...","0x.....", 0, {value: "100000000000000000"})
+ * 
+ */
+export const loadModalSupply = (token_address) => async (dispatch, getState) => {
+
+    const state = getState();
+
+    const { web3, account } = state.web3;
+
+    let contractVB = new web3.eth.Contract(ERC20ABI_VB, token_address);
+
+    let balance = 0;
+
+    if (contractVB && account) {
+
+        const balanceBigN = await contractVB.methods.balanceOf(account).call();
+
+        balance = ethers.utils.formatEther(balanceBigN);
+
+        balance = Math.round(balance * 100) / 100;
+
+        console.log(balance)
+
+    }
+
+
+    dispatch({
+        type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
+    });
+
+    setTimeout(() => {
+        dispatch({
+            type: marketplaceConstants.MODAL_SUPPLY_MARKET_SUCCESS,
+            transaction: 1
+        });
+        return true;
+    }, 2000);
+
+};
+
+
+/**
+ * 
+ * @param {number} id 
+ * @returns dispatch strore
+ * depositETH(PoolAddress,UserAddress, referralCode) await iWETHGateway.depositETH("0x...","0x.....", 0, {value: "100000000000000000"})
  * 
  */
 export const supplyMarket = (price) => async (dispatch, getState) => {
 
     const state = getState();
 
+    const { web3, account } = state.web3;
+
+    let contractVB = new web3.eth.Contract(ERC20ABI_VB, TOKEN_VEBANK);
+
+    let balance = 0;
+
+    if (contractVB && account) {
+
+        const balanceBigN = await contractVB.methods.balanceOf(account).call();
+
+        balance = ethers.utils.formatEther(balanceBigN);
+
+        balance = Math.round(balance * 100) / 100;
+
+    }
+
+
     dispatch({
         type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
-    })
+    });
 
     setTimeout(() => {
         dispatch({

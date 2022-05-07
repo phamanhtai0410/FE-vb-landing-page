@@ -4,15 +4,16 @@ import { NavLink } from 'react-router-dom';
 
 import IcLogo from '../../assets/images/ic_logo.svg';
 
-import BtnConnect from './BtnConnect';
+import BtnConnect from '../account/BtnConnect';
+import HeaderAccount from '../account/HeaderAccount';
 import MenuLink from './MenuLink';
 
 const Navbar = () => {
 
     const [isNavOpen, setIsNavOpen] = useState(false);
 
-
     return (
+
         <nav className="py-4 flex justify-between">
 
             <div className="flex flex-row items-center justify-center space-x-8">
@@ -30,12 +31,14 @@ const Navbar = () => {
 
             </div>
 
-            <div className="hidden lg:flex flex-wrap items-center justify-between ">
+            <HeaderAccount />
+
+            {/* <div className="hidden lg:flex flex-wrap items-center justify-between ">
 
                 <div className="flex flex-row justify-center items-center my-auto space-x-2">
                     <BtnConnect />
                 </div>
-            </div>
+            </div> */}
 
             <section className="MOBILE-MENU flex lg:hidden">
 

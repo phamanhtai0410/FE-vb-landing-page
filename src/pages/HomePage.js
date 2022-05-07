@@ -20,7 +20,6 @@ const HomePage = () => {
       <div ref={exploreRef}  >
         <Group />
       </div>
-
       <Footer />
     </div >
 

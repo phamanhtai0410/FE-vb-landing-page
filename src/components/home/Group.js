@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
+
 // import { useDispatch, useSelector } from "react-redux";
 
 import IcBorrow from '../../assets/images/home/ic_trade.svg';
@@ -10,9 +12,15 @@ import IcStake from '../../assets/images/home/ic_piggy.svg';
 
 const Group = () => {
 
+  let navigate = useNavigate();
+
+  const handleRouteClick = () => {
+    navigate('/markets');
+  };
+
   return (
 
-    <section className="container pt-28 pb-24 mx-auto"  >
+    <section className="container pt-28 pb-24 mx-auto">
 
       <div className="lg:px-6 px-4" >
 
@@ -34,7 +42,7 @@ const Group = () => {
             </div>
           </div>
 
-          <div className="pb-8 px-8 w-full lg:w-1/3 h-56 my-12">
+          <div className="pb-8 px-8 w-full lg:w-1/3 h-56 my-12" onClick={e => handleRouteClick(e)}>
             <div className="box-border-gr rounded-xl flex flex-col items-object justify-center h-full relative cursor-pointer">
               <div className="absolute top-[-35px] w-full flex justify-center ">
                 <div className="bg-[#7AC550] bg-light-shadow w-16 h-16 p-3 rounded-full flex justify-center items-center">
