@@ -3,23 +3,25 @@ import { useDispatch } from "react-redux";
 import { Beforeunload } from 'react-beforeunload';
 
 import * as actions from '../../actions';
+
 import { marketplaceConstants } from '../../constants';
 
-const BtnOpenSupply = ({ assetsAddress }) => {
-
-    const [isPending, setIsPending] = useState(false);
+const BtnOpenSupply = ({ item }) => {
 
     const dispatch = useDispatch();
 
     const handlerOpenModal = async () => {
-        if (!isPending && assetsAddress) {
 
-            dispatch({
-                type: marketplaceConstants.MODAL_OPEN_SUPPLY_MARKET,
-                data: {
-                    assetsAddress
-                }
-            })
+        if (item && item.assetsAddress) {
+
+            dispatch(actions.loadModalSupply(item))
+
+            // dispatch({
+            //     type: marketplaceConstants.MODAL_OPEN_SUPPLY_MARKET,
+            //     data: {
+            //         ...item
+            //     }
+            // })
 
             // setIsPending(true);
             // await dispatch(actions.buyLUS(boxID)).then(() => {
@@ -27,12 +29,12 @@ const BtnOpenSupply = ({ assetsAddress }) => {
             // }).catch((e) => {
             //     setIsPending(false);
             // });
+
         }
     }
 
     return (<>
-        {isPending ? <Beforeunload onBeforeunload={(event) => event.preventDefault()} /> : ""}
-        <button onClick={e => { handlerOpenModal(e) }} className="btn-veb h-10" type="submit">{isPending ? "Pending..." : "Supply"} </button>
+        <button onClick={e => { handlerOpenModal(e) }} className="btn-veb h-10" type="submit">Supply </button>
     </>)
 }
 

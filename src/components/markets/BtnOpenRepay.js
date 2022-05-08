@@ -34,7 +34,7 @@ const BtnOpenRepay = ({ id }) => {
 
     return (<>
         {isPending ? <Beforeunload onBeforeunload={(event) => event.preventDefault()} /> : ""}
-        <button onClick={e => { handlerOpenModal(e) }} className="btn-veb h-10" type="submit">{isPending ? "Pending..." : "Repay"} </button>
+        <button onClick={e => { handlerOpenModal(e) }} className="btn-veb h-10 bg-btn-veb-disabled" disabled={true} type="submit">{isPending ? "Pending..." : "Repay"} </button>
     </>)
 }
 

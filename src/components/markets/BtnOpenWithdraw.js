@@ -3,9 +3,10 @@ import { useDispatch } from "react-redux";
 import { Beforeunload } from 'react-beforeunload';
 
 import * as actions from '../../actions';
+
 import { marketplaceConstants } from '../../constants';
 
-const BtnOpenWithdraw = ({ assetsAddress }) => {
+const BtnOpenWithdraw = (item) => {
 
     const [isPending, setIsPending] = useState(false);
 
@@ -13,12 +14,12 @@ const BtnOpenWithdraw = ({ assetsAddress }) => {
 
     const handlerOpenModal = async () => {
 
-        if (!isPending && assetsAddress) {
+        if (!isPending && item && item.assetsAddress) {
 
             dispatch({
                 type: marketplaceConstants.MODAL_OPEN_BORROW_MARKET,
                 data: {
-                    assetsAddress
+                    ...item
                 }
             })
 
@@ -33,7 +34,7 @@ const BtnOpenWithdraw = ({ assetsAddress }) => {
 
     return (<>
         {isPending ? <Beforeunload onBeforeunload={(event) => event.preventDefault()} /> : ""}
-        <button onClick={e => { handlerOpenModal(e) }} className="btn-veb h-10" type="submit">{isPending ? "Pending..." : "Withdraw"} </button>
+        <button onClick={e => { handlerOpenModal(e) }} className="btn-veb h-10 bg-btn-veb-disabled" disabled={true} type="submit">{isPending ? "Pending..." : "Withdraw"} </button>
     </>)
 }
 

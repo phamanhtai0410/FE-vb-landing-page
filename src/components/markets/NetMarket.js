@@ -1,9 +1,14 @@
 
+
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
+
 import IcNet from '../../assets/images/ic_net.svg';
 import IcVeChain from '../../assets/images/ic_vechain.svg';
 
 
 const NetMarket = () => {
+
+    const { totalSupply, totalBorrow } = useSelector(state => state.accountOverview, shallowEqual);
 
     return (
 
@@ -11,7 +16,7 @@ const NetMarket = () => {
 
             <div className='flex flex-row justify-start items-center space-x-4 w-full text-right cursor-pointer'>
                 <img src={IcVeChain} alt="icon like" />
-                <span className="font-poppins text-xl ">VeBank Market</span>
+                <span className="font-poppins text-xl ">VeChain Market</span>
             </div>
 
             <div className="flex justify-start">
@@ -23,8 +28,8 @@ const NetMarket = () => {
                         alt="icon Net work"
                     />
                     <div className="xs:ml-2 lg:ml-3 font-normal">
-                        <div className="font-poppins leading-4 text-[#BFBFBF] text-[16px]">Net worth</div>
-                        <div className="font-poppins leading-4 text-[#BFBFBF] text-[20px] pt-3">$ <span className="text-slate-100">0</span></div>
+                        <div className="font-poppins leading-4 text-[#BFBFBF] text-[16px]">Total supply</div>
+                        <div className="font-poppins leading-4 text-[#BFBFBF] text-[20px] pt-3">$ <span className="text-slate-100">{totalSupply}</span></div>
                     </div>
                 </div>
 
@@ -35,8 +40,8 @@ const NetMarket = () => {
                         alt="icon Net APY"
                     />
                     <div className="xs:ml-2 lg:ml-3 font-normal">
-                        <div className="font-poppins leading-4 text-[#BFBFBF] text-[16px]">Net APY</div>
-                        <div className="font-poppins leading-4 text-[#BFBFBF] text-[20px] pt-3"><span className="text-slate-100">0</span> %</div>
+                        <div className="font-poppins leading-4 text-[#BFBFBF] text-[16px]">Total borrow</div>
+                        <div className="font-poppins leading-4 text-[#BFBFBF] text-[20px] pt-3"><span className="text-slate-100">{totalBorrow}</span> %</div>
                     </div>
                 </div>
 

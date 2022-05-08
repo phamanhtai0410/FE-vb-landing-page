@@ -7,10 +7,20 @@ import { web3Constants, marketplaceConstants } from '../constants';
 
 import * as actions from './';
 
-
 import ERC20ABI_VB from '../_contracts/VB.json';
+import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
+import ERC20ABI_WETH_GETAWAY from '../_contracts/WETHGateway.json';
+
+
+const TOKEN_AAVE = "0x4964b481dF13471f89781b09550484E82466352C";
 
 const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
+const TOKEN_WVET = process.env.REACT_APP_TOKEN_WVET; // WVET(Wrapped VET)
+
+
+
+const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY;//WETHGateway (chinh là VET Asset)
+const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 
 /**
  * 
@@ -113,40 +123,63 @@ export const borrowMarket = (price) => async (dispatch, getState) => {
  * depositETH(PoolAddress,UserAddress, referralCode) await iWETHGateway.depositETH("0x...","0x.....", 0, {value: "100000000000000000"})
  * 
  */
-export const loadModalSupply = (token_address) => async (dispatch, getState) => {
+export const loadModalSupply = (item) => async (dispatch, getState) => {
 
     const state = getState();
-
     const { web3, account } = state.web3;
 
-    let contractVB = new web3.eth.Contract(ERC20ABI_VB, token_address);
+    let accountBalance = 0;
+    let dataToken = item || null;
 
-    let balance = 0;
+    if (!account) {
+        return;
+    }
 
-    if (contractVB && account) {
+    if (item.assetsChain === "VET") {
 
-        const balanceBigN = await contractVB.methods.balanceOf(account).call();
+        const accountCoinVET = await dispatch(actions.instantiateVetContracts());
 
-        balance = ethers.utils.formatEther(balanceBigN);
+        if (accountCoinVET.balance) {
+            accountBalance = ethers.utils.formatEther(accountCoinVET.balance);
+            accountBalance = Math.round(accountBalance * 100) / 100;
+        }
 
-        balance = Math.round(balance * 100) / 100;
+    } else {
 
-        console.log(balance)
+        let contractModalSupply = new web3.eth.Contract(ERC20ABI_VB, item.assetsAddress);
+        if (contractModalSupply && account) {
+
+            const balanceBigN = await contractModalSupply.methods.balanceOf(account).call();
+            console.log(balanceBigN)
+            accountBalance = ethers.utils.formatEther(balanceBigN);
+            accountBalance = Math.round(accountBalance * 100) / 100;
+
+        }
+
+        // let contractModalSupply = new web3.eth.Contract(ERC20ABI_VB, item.addressAsset);
+        // const balanceBigN = await contractModalSupply.methods.balanceOf(account).call();
+
+        // accountBalance = ethers.utils.formatEther(balanceBigN);
+        // accountBalance = Math.round(accountBalance * 100) / 100;
+
+        // console.log("loadModalSupply", accountBalance);
 
     }
 
 
     dispatch({
-        type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
+        type: marketplaceConstants.MODAL_OPEN_SUPPLY_MARKET,
+        accountBalance: accountBalance,
+        dataToken
     });
 
-    setTimeout(() => {
-        dispatch({
-            type: marketplaceConstants.MODAL_SUPPLY_MARKET_SUCCESS,
-            transaction: 1
-        });
-        return true;
-    }, 2000);
+    // setTimeout(() => {
+    //     dispatch({
+    //         type: marketplaceConstants.MODAL_SUPPLY_MARKET_SUCCESS,
+    //         transaction: 1
+    //     });
+    //     return true;
+    // }, 2000);
 
 };
 
@@ -158,37 +191,94 @@ export const loadModalSupply = (token_address) => async (dispatch, getState) => 
  * depositETH(PoolAddress,UserAddress, referralCode) await iWETHGateway.depositETH("0x...","0x.....", 0, {value: "100000000000000000"})
  * 
  */
-export const supplyMarket = (price) => async (dispatch, getState) => {
+export const supplyMarket = (addressAsset, amount) => async (dispatch, getState) => {
 
     const state = getState();
 
-    const { web3, account } = state.web3;
+    const { web3, account, connex } = state.web3;
 
-    let contractVB = new web3.eth.Contract(ERC20ABI_VB, TOKEN_VEBANK);
+    // let contractGATEWAY = new web3.eth.Contract(ERC20ABI_WETH_GETAWAY, ADDRESS_GATEWAY);
 
-    let balance = 0;
+    if (connex && account) {
 
-    if (contractVB && account) {
+        dispatch({
+            type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
+        });
 
-        const balanceBigN = await contractVB.methods.balanceOf(account).call();
+        const depositETH_ABI = ERC20ABI_WETH_GETAWAY.find(({ name }) => name === "depositETH");
+        const methodDepositETH = connex.thor.account(ADDRESS_GATEWAY).method(depositETH_ABI);
 
-        balance = ethers.utils.formatEther(balanceBigN);
+        methodDepositETH.value(web3.utils.toWei(amount.toString()));
+        methodDepositETH.transact(ADDRESS_POOL, account, 0)
+            .comment(`transfer ${amount} VET to DepositETH`)
+            .request()
+            .then(transaction => {
 
-        balance = Math.round(balance * 100) / 100;
+                dispatch({
+                    type: marketplaceConstants.MODAL_SUPPLY_MARKET_SUCCESS,
+                    transaction: 1
+                });
+
+                return transaction;
+
+            }).catch((e) => {
+
+                console.log("error----", e);
+                return e;
+
+            });
 
     }
 
 
-    dispatch({
-        type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
-    });
+};
 
-    setTimeout(() => {
+
+/**
+ * 
+ * @param {number} id 
+ * @returns dispatch strore
+ * depositETH(PoolAddress,UserAddress, referralCode) await iWETHGateway.depositETH("0x...","0x.....", 0, {value: "100000000000000000"})
+ * 
+ */
+export const supplyDepositETHMarket = (addressAsset, amount) => async (dispatch, getState) => {
+
+    const state = getState();
+
+    const { web3, account, connex } = state.web3;
+
+    // let contractGATEWAY = new web3.eth.Contract(ERC20ABI_WETH_GETAWAY, ADDRESS_GATEWAY);
+
+    if (connex && account) {
+
         dispatch({
-            type: marketplaceConstants.MODAL_SUPPLY_MARKET_SUCCESS,
-            transaction: 1
+            type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
         });
-        return true;
-    }, 2000);
+
+        const depositETH_ABI = ERC20ABI_WETH_GETAWAY.find(({ name }) => name === "depositETH");
+        const methodDepositETH = connex.thor.account(ADDRESS_GATEWAY).method(depositETH_ABI);
+
+        methodDepositETH.value(web3.utils.toWei(amount.toString()));
+        methodDepositETH.transact(ADDRESS_POOL, account, 0)
+            .comment(`transfer ${amount} VET to DepositETH`)
+            .request()
+            .then(transaction => {
+
+                dispatch({
+                    type: marketplaceConstants.MODAL_SUPPLY_MARKET_SUCCESS,
+                    transaction: 1
+                });
+
+                return transaction;
+
+            }).catch((e) => {
+
+                console.log("error----", e);
+                return e;
+
+            });
+
+    }
+
 
 };

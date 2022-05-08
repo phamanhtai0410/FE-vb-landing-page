@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useDispatch } from "react-redux";
 import { Beforeunload } from 'react-beforeunload';
 
-import * as actions from '../../actions';
 import { marketplaceConstants } from '../../constants';
+import * as actions from '../../actions';
 
-const BtnOpenBorrow = ({ assetsAddress }) => {
+const BtnOpenBorrow = (item) => {
 
     const [isPending, setIsPending] = useState(false);
 
@@ -13,12 +13,12 @@ const BtnOpenBorrow = ({ assetsAddress }) => {
 
     const handlerOpenModal = async () => {
 
-        if (!isPending && assetsAddress) {
+        if (!isPending && item && item.assetsAddress) {
 
             dispatch({
                 type: marketplaceConstants.MODAL_OPEN_BORROW_MARKET,
                 data: {
-                    assetsAddress
+                    ...item
                 }
             })
 
@@ -28,6 +28,7 @@ const BtnOpenBorrow = ({ assetsAddress }) => {
             // }).catch((e) => {
             //     setIsPending(false);
             // });
+
         }
     }
 

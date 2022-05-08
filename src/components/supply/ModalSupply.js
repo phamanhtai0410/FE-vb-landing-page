@@ -34,23 +34,26 @@ const IcVeb = IcVeChain;
 const ModalSupply = () => {
 
     const [amount, setAmount] = useState(0);
-    const [values, setValues] = useState([0]);
     const [step, setStep] = useState(1);
-    const [rate, setRate] = useState(null);
 
-    const balanceAccount = 5000;
-
-    const { data, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.supplyReducer, shallowEqual);
+    const { dataToken, accountBalance, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.supplyReducer, shallowEqual);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
         resetFrm();
-    }, [data.id]);
+    }, [dataToken]);
+
+    useEffect(() => {
+        setStep(1);
+    }, [isOpen]);
+
+    // useEffect(() => {
+    //     setValues(accountBalance);
+    // }, [accountBalance]);
 
     const resetFrm = () => {
         setAmount(0);
-        setValues([0]);
         setStep(1);
     }
 
@@ -66,15 +69,13 @@ const ModalSupply = () => {
     }
 
     const onChangeRangeAmount = (values) => {
-        setValues(values);
         setAmount(values[0]);
     }
 
     const onChangeAmount = (e) => {
         const { value } = e.target;
-        if (value <= balanceAccount) {
+        if (value <= accountBalance) {
             setAmount(value)
-            setValues([value]);
         }
     }
 
@@ -121,12 +122,13 @@ const ModalSupply = () => {
                             Available to supply
                         </div>
                         <div>
-                            <span className='font-poppins font-bold'>5,000</span><span className='text-[#BFBFBF] pl-2'>VET</span>
+                            <span className='font-poppins font-bold'>{accountBalance}</span>
+                            <span className='text-[#BFBFBF] pl-2'>{dataToken ? dataToken.assetsChain : ""}</span>
                         </div>
                     </div>
 
                     <div className="bg-gradient-search rounded-lg flex flex-row mt-2 mx-8 py-4 px-4 justify-between">
-                        <img className='w-12 h-8 pr-3' src={IcVeb} alt="Token VEBank" />
+                        <img className='w-12 h-8 pr-3' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
                         <input
                             value={amount}
                             onChange={onChangeAmount}
@@ -135,7 +137,7 @@ const ModalSupply = () => {
                             placeholder={"Amount"}
                         />
                         <span onClick={e => {
-                            onChangeRangeAmount([balanceAccount])
+                            onChangeRangeAmount([accountBalance])
                         }} className='font-poppins font-bold text-[#A0D911] text-lg cursor-pointer'>Max</span>
 
                     </div>
@@ -191,9 +193,9 @@ const ModalSupply = () => {
                                 Amount
                             </div>
                             <div className='flex items-center'>
-                                <img className='w-6 h-6' src={IcVeb} alt="Token VEBank" />
+                                <img className='w-6 h-6' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
                                 <span className='font-poppins font-bold pl-2'>{numberWithCommas(amount)}</span>
-                                <span className='text-[#BFBFBF] pl-2'>VET</span>
+                                <span className='text-[#BFBFBF] pl-2'>{dataToken ? dataToken.assetsChain : ""}</span>
                             </div>
                         </div>
 
@@ -201,7 +203,7 @@ const ModalSupply = () => {
                             <div className='text-[#FAFAFA]'>
                             </div>
                             <div>
-                                <span className='font-poppins font-thin text-sm'>{numberWithCommas(amount)}</span>
+                                <span className='font-poppins font-thin text-sm'>{numberWithCommas(amount)} $</span>
                             </div>
                         </div>
 
@@ -255,7 +257,7 @@ const ModalSupply = () => {
                                     ""
                                 }
 
-                                {(pending === false && transaction === null) ? <BtnSupply pending={pending} amount={amount} /> : ""}
+                                {(pending === false && transaction === null) ? <BtnSupply dataToken={dataToken} pending={pending} amount={amount} /> : ""}
 
                             </div>
 

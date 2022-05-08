@@ -1,5 +1,5 @@
 
-import { ethers } from 'ethers';
+import { ethers } from "@vechain/ethers";
 import Connex from '@vechain/connex';
 
 import { Certificate, blake2b256, secp256k1 } from 'thor-devkit';
@@ -8,17 +8,18 @@ import { alertActions } from './alert.actions';
 import { web3Constants } from '../constants';
 import getWeb3 from '../utils/getWeb3';
 
-import ERC20ABI from '../_contracts/abi-erc20.json';
 
 import ERC20ABI_VB from '../_contracts/VB.json';
+import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
 
 
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
 
-const TOKEN_BUSD = process.env.REACT_APP_TOKEN_BUSD;
-
+const TOKEN_AAVE = "0x4964b481dF13471f89781b09550484E82466352C";
 const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
+const TOKEN_WVET = process.env.REACT_APP_TOKEN_WVET; //WVET(Wrapped VET)
+
 
 const chainID = process.env.REACT_APP_NETWORK_ID;
 const networks = {
@@ -82,8 +83,7 @@ async function checkConected(connex, certid) {
             type: 'text',
             content: 'random generated string'
         }
-    })
-        .link(`https://connex.vecha.in/${certid}`) // User will be back to the app by the url https://connex.vecha.in/0xffff....
+    }).link(`https://connex.vecha.in/${certid}`) // User will be back to the app by the url https://connex.vecha.in/0xffff....
         .request()
         .then(result => {
 
@@ -97,7 +97,6 @@ async function checkConected(connex, certid) {
 export const web3Connect = (isLogin) => async (dispatch) => {
 
     const web3 = await getWeb3();
-
     const PK = "Kocanbiet082429!@#";
 
     let signer;
@@ -111,29 +110,14 @@ export const web3Connect = (isLogin) => async (dispatch) => {
 
     if (_acc && _sign) {
 
-        console.log("_acc && _sign")
-
-        const acc = connex.thor.account(_acc);
-        acc.get().then(accInfo => {
-
-            dispatch({
-                type: web3Constants.WEB3_CONNECT,
-                web3,
-                signer: JSON.parse(_sign),
-                balanceVeT: "",
-                accInfo: accInfo,
-
-                account: _acc
-            });
-
-            setTimeout(() => {
-                dispatch(instantiateVBContracts())
-            }, 500);
-
-            return _acc;
-
-        })
-
+        // console.log("_acc && _sign");
+        dispatch({
+            type: web3Constants.WEB3_CONNECT,
+            web3,
+            connex,
+            signer: JSON.parse(_sign),
+            account: _acc
+        });
 
     }
 
@@ -151,10 +135,6 @@ export const web3Connect = (isLogin) => async (dispatch) => {
         _acc = signer.annex.signer;
         _sign = JSON.stringify(signer);
 
-        // console.log(blake2b256(jsonStr))
-        // const signature = secp256k1.sign(blake2b256(jsonStr), PK);
-        //sconsole.log("signature", blake2b256(jsonStr).toString('hex'));
-
         localStorage.setItem('_acc', _acc);
         localStorage.setItem('_sign', _sign);
 
@@ -164,42 +144,17 @@ export const web3Connect = (isLogin) => async (dispatch) => {
             signer,
             account: _acc
         });
-
-    } else {
-
-        // const recoveredAddress = await web3.eth.accounts.recover('agreement', _sign);
-        // if (recoveredAddress) {
-        //     dispatch({
-        //         type: web3Constants.WEB3_CONNECT,
-        //         web3,
-        //         signer: _acc,
-        //         account: signer.annex.signer
-        //     });
-        // }
-
-        //const sign = web3.eth.accounts.sign('agreement', _sign);
-        // const acc = connex.thor.account(_acc);
-
-        // acc.get().then(accInfo => {
-        //     console.log(accInfo)
-        // });
-
-        // acc.getCode().then(code => {
-        //     console.log("code", code)
-        // });
-
-        // // 3: check results, compare both address
-        // if (web3.utils.toChecksumAddress(recoveredAddress) === _acc) {
-        //     console.log('SUCCESS');
-        // } else {
-        //     console.log('FAILED');
-        // }
-
-        // const signCert = checkConected(connex, _sign);
-        // console.log(signCert)
-
     }
 
+    // if (_acc) {
+    //     setTimeout(() => {
+    //         dispatch(instantiateVBContracts())
+    //     }, 500);a
+    // }
+
+    // if (_acc) {
+    //     web3.eth.accounts.wallet.add(_acc)
+    // }
 
     return _acc;
 
@@ -222,7 +177,7 @@ export const web3Disconnect = () => async (dispatch, getState) => {
     });
 
     dispatch({
-        type: web3Constants.INIT_CONTRACT_BUSD,
+        type: web3Constants.INIT_CONTRACT_VET,
         contractBusd: null,
         balance: 0
     });
@@ -235,33 +190,37 @@ export const web3Disconnect = () => async (dispatch, getState) => {
 
 };
 
-export const instantiateBUSDContracts = () => async (dispatch, getState) => {
+export const instantiateVetContracts = () => async (dispatch, getState) => {
 
     const state = getState();
 
-    const { web3, account } = state.web3;
+    const { connex, account } = state.web3;
 
-    if (web3 && account) {
+    if (connex && account) {
 
-        let contractBUSD = new web3.eth.Contract(ERC20ABI, TOKEN_BUSD);
+        const accInfo = await connex.thor.account(account).get();
 
-        let balance = 0;
+        let balanceVET = 0;
+        let balanceVTHO = 0;
 
-        if (contractBUSD && account) {
+        if (accInfo && accInfo.balance && accInfo.energy) {
 
-            const balanceBigN = await contractBUSD.methods.balanceOf(account).call();
+            balanceVET = ethers.utils.formatEther(accInfo.balance);
+            balanceVET = Math.round(balanceVET * 100) / 100;
 
-            balance = ethers.utils.formatEther(balanceBigN);
-
-            balance = Math.round(balance * 100) / 100;
+            balanceVTHO = ethers.utils.formatEther(accInfo.energy);
+            balanceVTHO = Math.round(balanceVTHO * 100) / 100;
 
         }
 
         dispatch({
-            type: web3Constants.INIT_CONTRACT_BUSD,
-            contractBUSD,
-            balance
+            type: web3Constants.INIT_CONTRACT_VET,
+            balanceVET,
+            balanceVTHO
         });
+
+        return accInfo;
+
 
     }
 
@@ -295,6 +254,81 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
         });
 
     }
+
+};
+
+export const getOverview = () => async (dispatch, getState) => {
+
+    const state = getState();
+
+    const { web3, account } = state.web3;
+
+    let dataUser = {
+        accountSupplyBalance: 0,
+        accountBorrowBalance: 0,
+        totalSupply: 0,
+        totalBorrow: 0
+    }
+
+    if (web3 && account) {
+
+        let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
+
+        if (contractAAVE && account) {
+
+            const accountReserve = await contractAAVE.methods.getUserReserveData(TOKEN_WVET, account).call();
+
+            if (accountReserve.currentATokenBalance) {
+                const currentATokenBalance = ethers.utils.formatEther(accountReserve.currentATokenBalance);
+                dataUser.accountSupplyBalance = Math.round(currentATokenBalance * 100) / 100;
+            }
+
+            if (accountReserve.currentStableDebt || accountReserve.currentVariableDebt) {
+
+                const currentStableDebt = ethers.utils.formatEther(accountReserve.currentStableDebt || '0');
+                const currentVariableDebt = ethers.utils.formatEther(accountReserve.currentVariableDebt || '0');
+
+                dataUser.accountBorrowBalance = Number(currentStableDebt) + Number(currentVariableDebt)
+                dataUser.accountBorrowBalance = Math.round((dataUser.accountBorrowBalance) * 100) / 100;
+
+            }
+
+
+            // const accountConfiguration = await contractAAVE.methods.getReserveConfigurationData(TOKEN_WVET).call();
+            // console.log("accountConfiguration", accountConfiguration)
+
+            const getReserveData = await contractAAVE.methods.getReserveData(TOKEN_WVET).call();
+            console.log("getReserveData", getReserveData)
+
+            if (getReserveData.totalAToken) {
+                const totalAToken = ethers.utils.formatEther(getReserveData.totalAToken);
+                dataUser.totalSupply = Math.round(totalAToken * 100) / 100;
+            }
+
+            if (accountReserve.totalStableDebt || getReserveData.totalVariableDebt) {
+
+                const totalStableDebt = ethers.utils.formatEther(getReserveData.totalStableDebt || '0');
+                const totalVariableDebt = ethers.utils.formatEther(getReserveData.totalVariableDebt || '0');
+
+                dataUser.totalBorrow = Number(totalStableDebt) + Number(totalVariableDebt)
+                dataUser.totalBorrow = Math.round((dataUser.totalBorrow) * 100) / 100;
+
+            }
+
+        }
+        dispatch({
+            type: web3Constants.ACCOUNT_OVERVIEW_VEBANK,
+            ...dataUser,
+            contractAAVE,
+        });
+
+    } else {
+        dispatch({
+            type: web3Constants.ACCOUNT_OVERVIEW_VEBANK,
+            ...dataUser
+        });
+    }
+
 
 };
 

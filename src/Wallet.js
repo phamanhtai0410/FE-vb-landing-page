@@ -29,15 +29,27 @@ const Wallet = () => {
 
     }, []);
 
+    useEffect(() => {
+        fetchAccountInit()
+    }, [account]);
+
+
     async function fetchWeb3Init(loadDefault) {
 
-        console.log("fetchWeb3Init")
+        // console.log("fetchWeb3Init")
 
         await dispatch(actions.web3Connect(loadDefault));// true is account conected reload contract
-        // await dispatch(actions.instantiateLUSContracts());
-        // await dispatch(actions.instantiateBUSDContracts());
+
+        fetchAccountInit()
 
     }
+
+    async function fetchAccountInit() {
+        await dispatch(actions.instantiateVBContracts());
+        await dispatch(actions.instantiateVetContracts());
+        await dispatch(actions.getOverview());
+    }
+
 
     // async function loadAddNetwork() {
     //     await dispatch(actions.changeNetwork());
