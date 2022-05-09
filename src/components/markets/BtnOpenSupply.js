@@ -15,14 +15,6 @@ const BtnOpenSupply = ({ item }) => {
         if (item && item.assetsAddress) {
 
             dispatch(actions.loadModalSupply(item))
-
-            // dispatch({
-            //     type: marketplaceConstants.MODAL_OPEN_SUPPLY_MARKET,
-            //     data: {
-            //         ...item
-            //     }
-            // })
-
             // setIsPending(true);
             // await dispatch(actions.buyLUS(boxID)).then(() => {
             //     setIsPending(false);

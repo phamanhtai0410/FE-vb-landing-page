@@ -14,11 +14,23 @@ const BtnSupply = ({ dataToken, amount, pending }) => {
 
         if (isPending === false && dataToken && amount) {
             setIsPending(true);
-            await dispatch(actions.supplyMarket(dataToken, amount)).then(() => {
-                setIsPending(false);
-            }).catch((e) => {
-                setIsPending(false);
-            });
+
+            if (dataToken.assetsChain === "VET") {
+                await dispatch(actions.supplyDepositETHMarket(dataToken, amount)).then(() => {
+                    setIsPending(false);
+                }).catch((e) => {
+                    setIsPending(false);
+                });
+            } else {
+
+                await dispatch(actions.supplyMarket(dataToken, amount)).then(() => {
+                    setIsPending(false);
+                }).catch((e) => {
+                    setIsPending(false);
+                });
+            }
+
+
         }
     }
 

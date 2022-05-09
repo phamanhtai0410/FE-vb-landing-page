@@ -8,7 +8,7 @@ const initialState = {
 
   errorCode: null,
   message: null,
-  contractLUWA: null,
+  contractBorrow: null,
   accountBalance: 0,
   data: {}
 

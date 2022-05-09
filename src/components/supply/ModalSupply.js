@@ -13,6 +13,7 @@ import BtnSupply from './BtnSupply';
 import IcExplorer from '../../assets/images/ic_explorer.svg';
 import IcSuccess from '../../assets/images/ic_success.svg';
 import IcVeChain from '../../assets/images/ic_vechain.svg';
+import BtnSupplyApprove from './BtnSupplyApprove';
 
 const customStyles = {
     content: {
@@ -36,7 +37,7 @@ const ModalSupply = () => {
     const [amount, setAmount] = useState(0);
     const [step, setStep] = useState(1);
 
-    const { dataToken, accountBalance, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.supplyReducer, shallowEqual);
+    const { dataToken, accountBalance, accountApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.supplyReducer, shallowEqual);
 
     const dispatch = useDispatch();
 
@@ -89,6 +90,23 @@ const ModalSupply = () => {
         if (step === 1 && amount > 0) {
             return true;
         }
+    }
+
+    const showBtnView = () => {
+        let btn = "";
+        if (dataToken) {
+
+            if (dataToken.assetsChain === "VET") {
+                btn = <BtnSupply dataToken={dataToken} pending={pending} amount={amount} />
+            } else if (accountApprove === 0) {
+                btn = <BtnSupplyApprove dataToken={dataToken} pending={pending} />
+            } else {
+                btn = <BtnSupply dataToken={dataToken} pending={pending} amount={amount} />
+            }
+
+        }
+        return btn;
+
     }
 
     return (
@@ -257,7 +275,7 @@ const ModalSupply = () => {
                                     ""
                                 }
 
-                                {(pending === false && transaction === null) ? <BtnSupply dataToken={dataToken} pending={pending} amount={amount} /> : ""}
+                                {(pending === false && transaction === null) ? showBtnView() : ""}
 
                             </div>
 

@@ -20,6 +20,14 @@ const TOKEN_AAVE = "0x4964b481dF13471f89781b09550484E82466352C";
 const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
 const TOKEN_WVET = process.env.REACT_APP_TOKEN_WVET; //WVET(Wrapped VET)
 
+const ADDRESS_PROTOCOL = process.env.REACT_APP_ADDRESS_PROTOCOL; // AaveProtoco
+
+const LIST_ASSETS = [
+    process.env.REACT_APP_TOKEN_WVET,
+    process.env.REACT_APP_TOKEN_VTHO,
+    process.env.REACT_APP_TOKEN_VEUSD,
+    process.env.REACT_APP_TOKEN_VEBANK,
+]
 
 const chainID = process.env.REACT_APP_NETWORK_ID;
 const networks = {
@@ -183,8 +191,6 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
 
     const { connex, account } = state.web3;
 
-    console.log("instantiateVetContracts", connex);
-
     if (account) {
 
         const accInfo = await connex.thor.account(account).get();
@@ -237,7 +243,6 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
         if (contractVB && account) {
 
             const balanceBigN = await contractVB.methods.balanceOf(account).call();
-
             balance = ethers.utils.formatEther(balanceBigN);
             balance = Math.round(balance * 100) / 100;
 
@@ -261,6 +266,66 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
 
 };
 
+export const getAccountBorrowSupply = () => async (dispatch, getState) => {
+
+    const state = getState();
+
+    const { web3, account } = state.web3;
+
+    let dataUser = {
+        accountSupplyBalance: 0,
+        accountBorrowBalance: 0,
+        totalSupply: 0,
+        totalBorrow: 0
+    }
+
+    if (web3 && account) {
+
+        let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
+
+        if (contractAAVE && account) {
+
+            for await (const addressAsset of LIST_ASSETS) {
+
+                const accountReserve = await contractAAVE.methods.getUserReserveData(addressAsset, account).call();
+
+                if (accountReserve.currentATokenBalance) {
+                    let currentATokenBalance = ethers.utils.formatEther(accountReserve.currentATokenBalance);
+                    currentATokenBalance = Math.round(currentATokenBalance * 100) / 100;
+                    dataUser.accountSupplyBalance = dataUser.accountSupplyBalance + Number(currentATokenBalance)
+                }
+
+                if (accountReserve.currentStableDebt || accountReserve.currentVariableDebt) {
+
+                    const currentStableDebt = ethers.utils.formatEther(accountReserve.currentStableDebt || '0');
+                    const currentVariableDebt = ethers.utils.formatEther(accountReserve.currentVariableDebt || '0');
+
+                    let accountBorrowBalance = Number(currentStableDebt) + Number(currentVariableDebt)
+                    accountBorrowBalance = Math.round((accountBorrowBalance) * 100) / 100;
+
+                    dataUser.accountBorrowBalance = dataUser.accountBorrowBalance + Number(accountBorrowBalance)
+
+                }
+
+            }
+
+        }
+        dispatch({
+            type: web3Constants.ACCOUNT_OVERVIEW_VEBANK,
+            ...dataUser,
+            contractAAVE,
+        });
+
+    } else {
+        dispatch({
+            type: web3Constants.ACCOUNT_OVERVIEW_VEBANK,
+            ...dataUser
+        });
+    }
+
+
+};
+
 export const getOverview = () => async (dispatch, getState) => {
 
     const state = getState();
@@ -275,6 +340,7 @@ export const getOverview = () => async (dispatch, getState) => {
     }
 
     if (web3 && account) {
+
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
 
@@ -302,7 +368,6 @@ export const getOverview = () => async (dispatch, getState) => {
             // console.log("accountConfiguration", accountConfiguration)
 
             const getReserveData = await contractAAVE.methods.getReserveData(TOKEN_WVET).call();
-            console.log("getReserveData", getReserveData)
 
             if (getReserveData.totalAToken) {
                 const totalAToken = ethers.utils.formatEther(getReserveData.totalAToken);

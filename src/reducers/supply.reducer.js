@@ -9,6 +9,7 @@ const initialState = {
   message: null,
   contractSupply: null,
   accountBalance: 0,
+  accountApprove: 0,
   dataToken: null,
   data: {}
 
