@@ -11,12 +11,9 @@ import IcVtho from '../../assets/images/ic_vtho.svg';
 
 import IcDropdown from '../../assets/images/ic_dropdown.svg';
 
-import BtnOpenBorrow from './BtnOpenBorrow';
-import BtnOpenWithdraw from './BtnOpenWithdraw';
-import BtnOpenSupply from './BtnOpenSupply';
-import BtnOpenRepay from './BtnOpenRepay';
 import ModalSupply from '../supply/ModalSupply';
 import ModalBorrow from '../borrows/ModalBorrow';
+import AssetsRowAction from './AssetsRowAction';
 
 const listAsset = [
     {
@@ -92,7 +89,7 @@ const AssetsMarket = () => {
             return dataList.map((item) =>
 
                 <CSSTransition
-                    key={item._id}
+                    key={item.assetsAddress}
                     timeout={500}
                     classNames="item_asset"
                 >
@@ -136,7 +133,10 @@ const AssetsMarket = () => {
 
                         </div>
 
-                        {showRowAction(item)}
+
+                        <AssetsRowAction key={item.assetsAddress + '_act'} openRowAssets={openRowAssets} item={item} />
+
+                        {/* {showRowAction(item)} */}
 
                     </div>
 
@@ -147,71 +147,7 @@ const AssetsMarket = () => {
 
     }
 
-    const showRowAction = (item) => {
 
-        if (openRowAssets.indexOf(item.assetsAddress) === -1) {
-            return <></>;
-        }
-
-        return (
-
-            <div className='bg-[#182844] p-4 mt-2 flex flex-row justify-between rounded space-x-4 fade-in-box' >
-
-                <div className='bg-[#26355A] p-4 rounded'>
-                    <h4>Earn</h4>
-                    <div className='flex flex-row mt-3'>
-                        <input
-                            className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
-                            type="text"
-                            placeholder={"0"}
-                            disabled={true}
-                        />
-                        <BtnOpenWithdraw item={item} />
-                    </div>
-                </div>
-
-                <div className='bg-[#26355A] p-4 rounded '>
-                    <h4>Balance</h4>
-                    <div className='flex flex-row mt-3'>
-                        <input
-                            className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
-                            type="text"
-                            placeholder={"0"}
-                        />
-                        <BtnOpenSupply item={item} />
-                    </div>
-                </div>
-
-                <div className='bg-[#26355A] p-4 rounded'>
-                    <h4>Debt</h4>
-                    <div className='flex flex-row mt-3'>
-                        <input
-                            className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
-                            type="text"
-                            placeholder={"0"}
-                            disabled={true}
-                        />
-                        <BtnOpenRepay />
-                    </div>
-                </div>
-
-                <div className='bg-[#26355A] p-4 rounded'>
-                    <h4>Balance</h4>
-                    <div className='flex flex-row mt-3'>
-                        <input
-                            className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
-                            type="text"
-                            placeholder={"0"}
-                        />
-                        <BtnOpenBorrow item={item} />
-                    </div>
-                </div>
-
-            </div>
-
-        )
-
-    }
 
     return (
 

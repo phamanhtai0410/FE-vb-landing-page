@@ -8,35 +8,26 @@ import * as actions from './actions';
 const Wallet = () => {
 
     const { account } = useSelector(state => state.web3, shallowEqual);
-
     const dispatch = useDispatch();
 
     useEffect(() => {
 
         if (window.ethereum && window.ethereum.isMetaMask) {
-
             window.ethereum.on('accountsChanged', accountChangeHandler);
             window.ethereum.on('chainChanged', chainChangeHandler);
-
         }
 
         fetchWeb3Init(false);
 
-        // return () => clearTimeout(timer);
-
     }, []);
 
     useEffect(() => {
-
-        fetchAccountInit()
-
+        fetchAccountInit();
     }, [account]);
 
 
     async function fetchWeb3Init(loadDefault) {
-
         await dispatch(actions.web3Connect(loadDefault));// true is account conected reload contract
-
     }
 
     async function fetchAccountInit() {
