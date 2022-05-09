@@ -5,7 +5,7 @@ import Connex from '@vechain/connex';
 import { Certificate, blake2b256, secp256k1 } from 'thor-devkit';
 
 import { alertActions } from './alert.actions';
-import { web3Constants } from '../constants';
+import { web3Constants, destroyConstants } from '../constants';
 import getWeb3 from '../utils/getWeb3';
 
 
@@ -124,37 +124,31 @@ export const web3Connect = (isLogin) => async (dispatch) => {
     if (!_acc && isLogin) {
 
         // Ask user to sign the agreement
-        signer = await connex.vendor.sign('cert', {
+        connex.vendor.sign('cert', {
             purpose: 'agreement',
             payload: {
                 type: 'text',
                 content: 'agreement'
             }
-        }).request();
+        }).request().then((signer) => {
+            _acc = signer.annex.signer;
+            _sign = JSON.stringify(signer);
 
-        _acc = signer.annex.signer;
-        _sign = JSON.stringify(signer);
+            localStorage.setItem('_acc', _acc);
+            localStorage.setItem('_sign', _sign);
 
-        localStorage.setItem('_acc', _acc);
-        localStorage.setItem('_sign', _sign);
+            dispatch({
+                type: web3Constants.WEB3_CONNECT,
+                connex,
+                web3,
+                signer,
+                account: _acc
+            });
 
-        dispatch({
-            type: web3Constants.WEB3_CONNECT,
-            web3,
-            signer,
-            account: _acc
         });
+
+
     }
-
-    // if (_acc) {
-    //     setTimeout(() => {
-    //         dispatch(instantiateVBContracts())
-    //     }, 500);a
-    // }
-
-    // if (_acc) {
-    //     web3.eth.accounts.wallet.add(_acc)
-    // }
 
     return _acc;
 
@@ -172,21 +166,14 @@ export const web3Disconnect = () => async (dispatch, getState) => {
 
     dispatch({
         type: web3Constants.WEB3_DISCONNECT,
+        connex: null,
         web3: null,
         account: null
     });
 
-    dispatch({
-        type: web3Constants.INIT_CONTRACT_VET,
-        contractBusd: null,
-        balance: 0
-    });
-
-    dispatch({
-        type: web3Constants.INIT_CONTRACT_VB,
-        contractVB: null,
-        balance: 0
-    });
+    // setTimeout(() => {
+    //     dispatch({ type: destroyConstants.DESTROY_SESSION });
+    // }, 1000);
 
 };
 
@@ -196,7 +183,9 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
 
     const { connex, account } = state.web3;
 
-    if (connex && account) {
+    console.log("instantiateVetContracts", connex);
+
+    if (account) {
 
         const accInfo = await connex.thor.account(account).get();
 
@@ -219,10 +208,17 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
             balanceVTHO
         });
 
+
         return accInfo;
 
 
     }
+
+    dispatch({
+        type: web3Constants.INIT_CONTRACT_VET,
+        balanceVET: 0,
+        balanceVTHO: 0
+    });
 
 };
 
@@ -253,7 +249,15 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
             balance
         });
 
+        return balance;
+
     }
+
+    dispatch({
+        type: web3Constants.INIT_CONTRACT_VB,
+        contractVB: null,
+        balance: 0
+    });
 
 };
 
