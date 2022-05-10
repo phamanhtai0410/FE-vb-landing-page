@@ -373,7 +373,7 @@ export const getMarketAssets = () => async (dispatch, getState) => {
             const getReserveData = await contractAAVE.methods.getReserveData(item.assetsAddress).call();
 
             const dataConfig = await contractAAVE.methods.getReserveConfigurationData(item.assetsAddress).call();
-            console.log(dataConfig);
+            // console.log(dataConfig);
 
             let balanceSupply = 0;
             if (getReserveData.totalAToken) {

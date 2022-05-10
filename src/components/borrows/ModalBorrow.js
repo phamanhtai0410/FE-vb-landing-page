@@ -8,10 +8,14 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { numberWithCommas } from '../../utils/lib';
 
 import { marketplaceConstants } from '../../constants';
-import BtnBorrow from './BtnBorrow';
+
 
 import IcNext from '../../assets/images/ic_next.svg';
 import IcNext1 from '../../assets/images/ic_factory.svg';
+
+import BtnBorrow from './BtnBorrow';
+import BtnBorrowApprove from './BtnBorrowApprove';
+
 
 const customStyles = {
     content: {
@@ -20,15 +24,13 @@ const customStyles = {
         right: 'auto',
         bottom: 'auto',
         transform: 'translate(-50%, -30%)',
-        background: "#1D1A3F",
+        background: "#182233",
         border: "none",
         borderRadius: "8px",
         padding: 0,
         width: '640px'
     },
 };
-
-const IcVeb = "https://s3-alpha-sig.figma.com/img/63b8/0ba4/e17d8cf47adbdc845047e5c2eba0e8e5?Expires=1651449600&Signature=HZ7riBcgpeAWRTg6o1deCxabVzsv81yaab2vUaSJFu92d5SC65trDhN13ZZcTLLSPdqWc-PTUqm-zqn3HR-VRKtAabwvCy~TdwE43i7Gey0TahfHcpN~jg06E6ijdhjpYWMshhypo4vQBKG7Dwsc~~Aj4zjba7daY8YXiU7AH0mqawmWUxHCkQx5fxSEZv3yjc1uPx04UuKDJkX-tavOTATp8OvW0DY7gyNDo8bSGGtyvIL--QYIM7eNcugYVjUz5NInom2mwJUF-i6RL2X-IhXAbn-uLfpOKfR2qxGxV1qA5Kp8TCcGfSj7IHvV-wF6LpZjOIPcOBSDTBmQ~OnheA__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"
 
 const ModalBorrow = () => {
 
@@ -37,7 +39,7 @@ const ModalBorrow = () => {
     const [step, setStep] = useState(1);
     const [rate, setRate] = useState(null);
 
-    const { dataToken, accountBalance, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
+    const { dataToken, accountBalance, accountApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
 
     const dispatch = useDispatch();
 
@@ -111,6 +113,23 @@ const ModalBorrow = () => {
                 <div className='font-poppins font-light'>New health factor  <span className='font-bold'>1.03</span></div>
             )
         }
+
+    }
+
+    const showBtnView = () => {
+        let btn = "";
+        if (dataToken) {
+
+            if (dataToken.assetsChain === "VET") {
+                btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
+            } else if (accountApprove === 0) {
+                btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} />
+            } else {
+                btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
+            }
+
+        }
+        return btn;
 
     }
 
@@ -212,14 +231,14 @@ const ModalBorrow = () => {
                     </div>
 
                     <div className="flex flex-row space-x-6 justify-between px-16 my-12 text-lg font-poppins text-[#FAFAFA]">
-                        <div onClick={e => { handlerChangeRate(1) }} className={`basis-1/2 bg-[#373368] rounded-xl flex flex-col items-center justify-center h-44 cursor-pointer border-[2px] border-solid border-[#373368] ${rate === 1 ? "bg-gradient-border" : ""}`}>
+                        <div onClick={e => { handlerChangeRate(1) }} className={`basis-1/2 bg-[#20314E] rounded-xl flex flex-col items-center justify-center h-44 cursor-pointer border-[2px] border-solid border-[#373368] ${rate === 1 ? "bg-gradient-border" : ""}`}>
                             <div className="bg-[#4D4B86] rounded-full w-12 h-12 flex items-center place-content-center">
                                 <img src={IcNext} alt={"next"} className="w-7 h-7" />
                             </div>
                             <div className='pt-6 text-base'>Stable APY</div>
                             <div className='pt-1 font-bold text-sm'>6.21 %</div>
                         </div>
-                        <div onClick={e => { handlerChangeRate(2) }} className={`basis-1/2 bg-[#373368] rounded-xl flex flex-col items-center justify-center h-44 cursor-pointer border-[2px] border-solid border-[#373368] ${rate === 2 ? "bg-gradient-border" : ""}`}>
+                        <div onClick={e => { handlerChangeRate(2) }} className={`basis-1/2 bg-[#20314E] rounded-xl flex flex-col items-center justify-center h-44 cursor-pointer border-[2px] border-solid border-[#373368] ${rate === 2 ? "bg-gradient-border" : ""}`}>
                             <div className="bg-[#4D4B86] rounded-full w-12 h-12 flex items-center place-content-center">
                                 <img src={IcNext1} alt={"next"} className="w-7 h-7" />
                             </div>
@@ -240,7 +259,7 @@ const ModalBorrow = () => {
                         </p>
                     </div>
 
-                    <div className='border-2 border-solid border-[#363564] mx-8 p-6 mt-10'>
+                    <div className='border-2 border-solid border-[#4F92A7] mx-8 p-6 mt-10'>
 
                         <div className="flex justify-between text-lg font-poppins">
                             <div className='text-[#FAFAFA] font-light'>
@@ -290,10 +309,10 @@ const ModalBorrow = () => {
 
                     </div>
 
-                    <div className='border-2 border-solid border-[#363564] mx-8 my-12'>
+                    <div className='border-2 border-solid border-[#4F92A7] mx-8 my-12'>
 
-                        <div className="flex justify-between text-lg font-poppins bg-[#39355F]">
-                            <div className={`text-[#FAFAFA] text-base text-center font-light  w-1/2 p-1 ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
+                        <div className="flex justify-between text-lg font-poppins bg-[#0F1B2F]">
+                            <div className={`text-[#FAFAFA] text-base text-center font-light  w-1/2 p-1 bg-btn-veb ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
                                 1 Borrow
                             </div>
                             <div className={`text-[#FAFAFA] text-base text-center font-light w-1/2 p-1 ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
@@ -323,7 +342,8 @@ const ModalBorrow = () => {
                                 {transaction ?
                                     <button onClick={e => { closeModalAndDashboard(e) }} className={`btn-modal-veb bg-btn-veb`} type="submit">Dashboard</button>
                                     :
-                                    <BtnBorrow pending={pending} amount={amount} rate={rate} />
+                                    showBtnView()
+                                    // <BtnBorrow pending={pending} amount={amount} rate={rate} />
                                 }
 
                             </div>

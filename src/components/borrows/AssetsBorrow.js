@@ -41,7 +41,7 @@ const AssetsBorrow = () => {
                     <div className="p-2 flex justify-center items-center font-semibold">0</div>
                     <div className="p-2 flex flex-col justify-center items-center content-center">
                         <div className="text-lg font-semibold">4.03 %</div>
-                        <div className="border-2 border-solid border-[#363564] p-1">
+                        <div className="border-2 border-solid border-[#4F92A7] p-1">
                             <div className="flex flex-row justify-start items-center space-x-2" >
                                 <span className="font-light text-sm">1.80 %</span>
                                 <img className="w-4 h-4" src={IcCoin} />
@@ -64,7 +64,7 @@ const AssetsBorrow = () => {
                     <div className="p-2 flex justify-center items-center font-semibold">0</div>
                     <div className="p-2 flex flex-col justify-center items-center content-center">
                         <div className="text-lg font-semibold">4.03 %</div>
-                        <div className="border-2 border-solid border-[#363564] p-1">
+                        <div className="border-2 border-solid border-[#4F92A7] p-1">
                             <div className="flex flex-row justify-start items-center space-x-2 " >
                                 <span className="font-light text-sm">1.80 %</span>
                                 <img className="w-4 h-4" src={IcCoin} />
@@ -87,7 +87,7 @@ const AssetsBorrow = () => {
                     <div className="p-2 flex justify-center items-center font-semibold">0</div>
                     <div className="p-2 flex flex-col justify-center items-center content-center">
                         <div className="text-lg font-semibold">4.03 %</div>
-                        <div className="border-2 border-solid border-[#363564] p-1">
+                        <div className="border-2 border-solid border-[#4F92A7] p-1">
                             <div className="flex flex-row justify-start items-center space-x-2 font-sans_serif" >
                                 <span className="font-light text-sm">1.80 %</span>
                                 <img className="w-4 h-4" src={IcCoin} />
@@ -110,7 +110,7 @@ const AssetsBorrow = () => {
                     <div className="p-2 flex justify-center items-center font-semibold">0</div>
                     <div className="p-2 flex flex-col justify-center items-center content-center">
                         <div className="text-lg font-semibold">4.03 %</div>
-                        <div className="border-2 border-solid border-[#363564] p-1">
+                        <div className="border-2 border-solid border-[#4F92A7] p-1">
                             <div className="flex flex-row justify-start items-center space-x-2 " >
                                 <span className="font-light text-sm">1.80 %</span>
                                 <img className="w-4 h-4" src={IcCoin} />

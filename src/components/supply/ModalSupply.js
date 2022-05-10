@@ -13,6 +13,7 @@ import BtnSupply from './BtnSupply';
 import IcExplorer from '../../assets/images/ic_explorer.svg';
 import IcSuccess from '../../assets/images/ic_success.svg';
 import IcVeChain from '../../assets/images/ic_vechain.svg';
+
 import BtnSupplyApprove from './BtnSupplyApprove';
 
 const customStyles = {
@@ -22,7 +23,7 @@ const customStyles = {
         right: 'auto',
         bottom: 'auto',
         transform: 'translate(-50%, -30%)',
-        background: "#1D1A3F",
+        background: "#182233",
         border: "none",
         borderRadius: "8px",
         padding: 0,
@@ -160,37 +161,6 @@ const ModalSupply = () => {
 
                     </div>
 
-                    {/* <div className='flex justify-between px-8 mt-12 font-poppins text-sm leading-4 text-slate-200'>
-                        <label>Safer</label>
-                        {showFactor()}
-                        <label>Riskier</label>
-                    </div> */}
-                    {/* 
-                    <div className='px-8'>
-                        <Range
-                            step={1}
-                            min={0}
-                            max={balanceAccount}
-                            values={values}
-                            onChange={(values) => {
-                                onChangeRangeAmount(values)
-                            }}
-                            renderTrack={({ props, children }) => (
-                                <div
-                                    {...props}
-                                    className="w-full h-3 pr-2 my-4 bg-gradient-range-amount rounded-md"
-                                >
-                                    {children}
-                                </div>
-                            )}
-                            renderThumb={({ props }) => (
-                                <div
-                                    {...props}
-                                    className="w-3 h-3 transform translate-x-10 bg-slate-50 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                />
-                            )}
-                        />
-                    </div> */}
                 </div>
 
                 {/* STEP 2 */}
@@ -204,7 +174,7 @@ const ModalSupply = () => {
                         </p>
                     </div>
 
-                    <div className='border-2 border-solid border-[#363564] mx-8 p-6 mt-10'>
+                    <div className='border-2 border-solid border-[#4F92A7] mx-8 p-6 mt-10'>
 
                         <div className="flex justify-between text-lg font-poppins">
                             <div className='text-[#FAFAFA] font-light'>
@@ -236,7 +206,7 @@ const ModalSupply = () => {
 
                     </div>
 
-                    <div className='border-2 border-solid border-[#363564] mx-8 my-12'>
+                    <div className='border-2 border-solid border-[#4F92A7] mx-8 my-12'>
 
                         <div className="flex justify-between text-lg font-poppins">
                             <div className={`text-[#FAFAFA] bg-[#39355F] text-base text-center font-light  w-1/2 p-1 bg-btn-veb ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
@@ -282,9 +252,9 @@ const ModalSupply = () => {
                         </div>
 
                         {transaction || pending === true ?
-                            <div className='flex flex-row border-t-2 border-solid border-[#363564] font-poppins text-base'>
-                                <div className='flex-1 w-32 border-r-2 border-solid border-[#363564] indent-3.5 p-2'>Supply</div>
-                                <div className='flex-1 w-32 border-r-2 border-solid border-[#363564] flex items-center indent-3.5 p-2'>
+                            <div className='flex flex-row border-t-2 border-solid border-[#4F92A7] font-poppins text-base'>
+                                <div className='flex-1 w-32 border-r-2 border-solid border-[#4F92A7] indent-3.5 p-2'>Supply</div>
+                                <div className='flex-1 w-32 border-r-2 border-solid border-[#4F92A7] flex items-center indent-3.5 p-2'>
                                     Pending
                                     {transaction ? <img className='ml-2' src={IcSuccess} alt="icon success" /> : <ThreeDots className='w-6 h-6 ml-2' />}
                                 </div>

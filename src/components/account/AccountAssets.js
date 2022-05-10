@@ -64,7 +64,7 @@ const AccountAssets = () => {
 
                             <div className="p-2 flex flex-col justify-center items-center content-center">
                                 <div className="text-lg font-semibold">{item.supplyAPY} %</div>
-                                <div className="border-2 border-solid border-[#363564] p-1">
+                                <div className="border-2 border-solid border-[#4F92A7] p-1">
                                     <div className="flex flex-row justify-start items-center space-x-2" >
                                         <span className="font-light text-sm">{item.interestSupply} %</span>
                                         <img className="w-4 h-4" src={IcVeBank} />
@@ -76,7 +76,7 @@ const AccountAssets = () => {
 
                             <div className="p-2 flex flex-col justify-center items-center content-center">
                                 <div className="text-lg font-semibold">{item.borrowAPY} %</div>
-                                <div className="border-2 border-solid border-[#363564] p-1">
+                                <div className="border-2 border-solid border-[#4F92A7] p-1">
                                     <div className="flex flex-row justify-start items-center space-x-2" >
                                         <span className="font-light text-sm">{item.interestBorrow} %</span>
                                         <img className="w-4 h-4" src={IcVeBank} />

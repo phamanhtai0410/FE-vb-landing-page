@@ -6,11 +6,9 @@ import { destroyConstants } from '../constants';
 import { alert } from './alert.reducer';
 import { web3 } from './web3.reducer';
 
-
 import { contractVB } from './contractVB.reducer';
 import { contractVET } from './contractVET.reducer';
 
-import { accountOverview } from './accountOverview.reducer';
 import { borrowReducer } from './borrow.reducer';
 import { supplyReducer } from './supply.reducer';
 
@@ -23,7 +21,6 @@ const appReducer = combineReducers({
   web3,
   contractVB,
   contractVET,
-  accountOverview,
 
   accountAssetsReducer,
   assetsMarketReducer,
