@@ -6,7 +6,6 @@ const initialState = {
   accountSupplyBalance: 0,
   totalBorrow: 0,
   totalSupply: 0
-
 };
 
 export function accountOverview(state = initialState, action) {

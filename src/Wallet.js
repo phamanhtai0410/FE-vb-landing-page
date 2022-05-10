@@ -35,7 +35,7 @@ const Wallet = () => {
         setTimeout(async () => {
             await dispatch(actions.instantiateVBContracts());
             await dispatch(actions.instantiateVetContracts());
-            await dispatch(actions.getOverview());
+            // await dispatch(actions.getOverview());
         }, 500);
 
     }

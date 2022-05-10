@@ -5,7 +5,7 @@ import Connex from '@vechain/connex';
 import { Certificate, blake2b256, secp256k1 } from 'thor-devkit';
 
 import { alertActions } from './alert.actions';
-import { web3Constants, destroyConstants } from '../constants';
+import { web3Constants, destroyConstants, marketplaceConstants } from '../constants';
 import getWeb3 from '../utils/getWeb3';
 
 
@@ -100,7 +100,6 @@ async function checkConected(connex, certid) {
 
 
 }
-
 
 export const web3Connect = (isLogin) => async (dispatch) => {
 
@@ -266,138 +265,166 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
 
 };
 
-export const getAccountBorrowSupply = () => async (dispatch, getState) => {
+export const getAccountAssets = () => async (dispatch, getState) => {
 
     const state = getState();
-
     const { web3, account } = state.web3;
+
+    const { data } = state.assetsMarketReducer;
 
     let dataUser = {
         accountSupplyBalance: 0,
         accountBorrowBalance: 0,
-        totalSupply: 0,
-        totalBorrow: 0
     }
 
+    let dataList = [];
+
     if (web3 && account) {
+
+        dispatch({
+            type: marketplaceConstants.FETCH_ACCOUNT_ASSETS_REQUEST,
+            query: {}
+        });
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
 
         if (contractAAVE && account) {
 
-            for await (const addressAsset of LIST_ASSETS) {
+            for await (const item of data) {
 
-                const accountReserve = await contractAAVE.methods.getUserReserveData(addressAsset, account).call();
-
+                const accountReserve = await contractAAVE.methods.getUserReserveData(item.assetsAddress, account).call();
+                let balanceSupply = 0;
                 if (accountReserve.currentATokenBalance) {
-                    let currentATokenBalance = ethers.utils.formatEther(accountReserve.currentATokenBalance);
-                    currentATokenBalance = Math.round(currentATokenBalance * 100) / 100;
-                    dataUser.accountSupplyBalance = dataUser.accountSupplyBalance + Number(currentATokenBalance)
+                    balanceSupply = ethers.utils.formatEther(accountReserve.currentATokenBalance);
+                    balanceSupply = Math.round(balanceSupply * 100) / 100;
+                    dataUser.accountSupplyBalance = dataUser.accountSupplyBalance + Number(balanceSupply)
                 }
+
+                let balanceBorrow = 0;
 
                 if (accountReserve.currentStableDebt || accountReserve.currentVariableDebt) {
 
                     const currentStableDebt = ethers.utils.formatEther(accountReserve.currentStableDebt || '0');
                     const currentVariableDebt = ethers.utils.formatEther(accountReserve.currentVariableDebt || '0');
 
-                    let accountBorrowBalance = Number(currentStableDebt) + Number(currentVariableDebt)
-                    accountBorrowBalance = Math.round((accountBorrowBalance) * 100) / 100;
+                    balanceBorrow = Number(currentStableDebt) + Number(currentVariableDebt);
+                    balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
 
-                    dataUser.accountBorrowBalance = dataUser.accountBorrowBalance + Number(accountBorrowBalance)
+                    dataUser.accountBorrowBalance = dataUser.accountBorrowBalance + Number(balanceBorrow);
+
+                }
+
+                if (balanceSupply || balanceBorrow) {
+
+                    dataList.push({
+                        ...item,
+                        totalSupplied: balanceSupply,
+                        totalBorrowed: balanceBorrow,
+                    })
 
                 }
 
             }
 
         }
+
         dispatch({
-            type: web3Constants.ACCOUNT_OVERVIEW_VEBANK,
-            ...dataUser,
+            type: marketplaceConstants.FETCH_ACCOUNT_ASSETS_SUCCESS,
             contractAAVE,
+            ...dataUser,
+            data: dataList
         });
 
     } else {
+
         dispatch({
-            type: web3Constants.ACCOUNT_OVERVIEW_VEBANK,
-            ...dataUser
+            type: marketplaceConstants.FETCH_ACCOUNT_ASSETS_SUCCESS,
+            accountSupplyBalance: 0,
+            accountBorrowBalance: 0,
+            ...dataUser,
+            data: dataList
         });
     }
 
+    return dataList;
 
 };
 
-export const getOverview = () => async (dispatch, getState) => {
+export const getMarketAssets = () => async (dispatch, getState) => {
 
     const state = getState();
 
-    const { web3, account } = state.web3;
+    const { web3 } = state.web3;
+    const { data } = state.assetsMarketReducer;
 
-    let dataUser = {
-        accountSupplyBalance: 0,
-        accountBorrowBalance: 0,
+    let dataTotal = {
         totalSupply: 0,
         totalBorrow: 0
     }
 
-    if (web3 && account) {
+    let dataList = [];
 
+    if (web3 && TOKEN_AAVE && data.length > 0) {
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
 
-        if (contractAAVE && account) {
+        for await (const item of data) {
 
-            const accountReserve = await contractAAVE.methods.getUserReserveData(TOKEN_WVET, account).call();
+            const getReserveData = await contractAAVE.methods.getReserveData(item.assetsAddress).call();
 
-            if (accountReserve.currentATokenBalance) {
-                const currentATokenBalance = ethers.utils.formatEther(accountReserve.currentATokenBalance);
-                dataUser.accountSupplyBalance = Math.round(currentATokenBalance * 100) / 100;
-            }
+            const dataConfig = await contractAAVE.methods.getReserveConfigurationData(item.assetsAddress).call();
+            console.log(dataConfig);
 
-            if (accountReserve.currentStableDebt || accountReserve.currentVariableDebt) {
-
-                const currentStableDebt = ethers.utils.formatEther(accountReserve.currentStableDebt || '0');
-                const currentVariableDebt = ethers.utils.formatEther(accountReserve.currentVariableDebt || '0');
-
-                dataUser.accountBorrowBalance = Number(currentStableDebt) + Number(currentVariableDebt)
-                dataUser.accountBorrowBalance = Math.round((dataUser.accountBorrowBalance) * 100) / 100;
-
-            }
-
-
-            // const accountConfiguration = await contractAAVE.methods.getReserveConfigurationData(TOKEN_WVET).call();
-            // console.log("accountConfiguration", accountConfiguration)
-
-            const getReserveData = await contractAAVE.methods.getReserveData(TOKEN_WVET).call();
-
+            let balanceSupply = 0;
             if (getReserveData.totalAToken) {
-                const totalAToken = ethers.utils.formatEther(getReserveData.totalAToken);
-                dataUser.totalSupply = Math.round(totalAToken * 100) / 100;
+                balanceSupply = ethers.utils.formatEther(getReserveData.totalAToken);
+                balanceSupply = Math.round(balanceSupply * 100) / 100;
+                dataTotal.totalSupply = dataTotal.totalSupply + Number(balanceSupply);
             }
 
-            if (accountReserve.totalStableDebt || getReserveData.totalVariableDebt) {
+            let balanceBorrow = 0;
+            if (getReserveData.totalStableDebt || getReserveData.totalVariableDebt) {
 
                 const totalStableDebt = ethers.utils.formatEther(getReserveData.totalStableDebt || '0');
                 const totalVariableDebt = ethers.utils.formatEther(getReserveData.totalVariableDebt || '0');
 
-                dataUser.totalBorrow = Number(totalStableDebt) + Number(totalVariableDebt)
-                dataUser.totalBorrow = Math.round((dataUser.totalBorrow) * 100) / 100;
+                balanceBorrow = Number(totalStableDebt) + Number(totalVariableDebt);
+                balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
+
+                dataTotal.totalBorrow = dataTotal.totalBorrow + Number(balanceBorrow);
+
+            }
+
+            if (balanceSupply || balanceBorrow) {
+
+                dataList.push({
+                    ...item,
+                    totalSupplied: balanceSupply,
+                    totalBorrowed: balanceBorrow,
+                })
 
             }
 
         }
+
         dispatch({
-            type: web3Constants.ACCOUNT_OVERVIEW_VEBANK,
-            ...dataUser,
+            type: marketplaceConstants.FETCH_ASSETS_MARKET_SUCCESS,
+            ...dataTotal,
             contractAAVE,
+            data: dataList
         });
+
+
 
     } else {
         dispatch({
-            type: web3Constants.ACCOUNT_OVERVIEW_VEBANK,
-            ...dataUser
+            type: marketplaceConstants.FETCH_ASSETS_MARKET_SUCCESS,
+            ...dataTotal,
+            data: dataList
         });
     }
 
+    return dataList;
 
 };
 

@@ -5,6 +5,7 @@ const TabMarket = () => {
     return (
 
         <div className='flex flex-row-reverse flex-auto items-center flex-initial w-full'>
+
             <div className="tab-market ml-5">
                 <NavLink to="/markets" >
                     Native

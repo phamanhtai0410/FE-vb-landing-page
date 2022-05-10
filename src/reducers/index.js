@@ -14,7 +14,8 @@ import { accountOverview } from './accountOverview.reducer';
 import { borrowReducer } from './borrow.reducer';
 import { supplyReducer } from './supply.reducer';
 
-
+import { accountAssetsReducer } from './accountAssets.reducer';
+import { assetsMarketReducer } from './assetsMarket.reducer';
 
 const appReducer = combineReducers({
 
@@ -23,6 +24,9 @@ const appReducer = combineReducers({
   contractVB,
   contractVET,
   accountOverview,
+
+  accountAssetsReducer,
+  assetsMarketReducer,
 
   borrowReducer,
   supplyReducer

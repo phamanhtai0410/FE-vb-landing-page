@@ -8,7 +8,7 @@ import IcVeChain from '../../assets/images/ic_vechain.svg';
 
 const NetMarket = () => {
 
-    const { totalSupply, totalBorrow } = useSelector(state => state.accountOverview, shallowEqual);
+    const { totalSupply, totalBorrow } = useSelector(state => state.assetsMarketReducer, shallowEqual);
 
     return (
 

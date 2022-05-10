@@ -1,4 +1,5 @@
 import React from "react";
+import AccountAssets from "../components/account/AccountAssets";
 // import { useDispatch, useSelector } from "react-redux";
 
 
@@ -18,6 +19,8 @@ const MarketPage = () => {
       <div className="lg:px-4 lg:container xl:px-12 mx-auto  px-4 min-h-screen pt-16 pb-24">
 
         <Overview />
+
+        <AccountAssets />
 
         <div className="flex flex-row mt-12">
 

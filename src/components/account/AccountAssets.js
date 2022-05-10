@@ -1,59 +1,46 @@
 
 
-
-
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-import IcVeUSD from '../../assets/images/ic_veusd.svg';
-import IcVeChain from '../../assets/images/ic_vechain.svg';
-import IcVeBank from '../../assets/images/ic_vebank.svg';
-import IcVtho from '../../assets/images/ic_vtho.svg';
-
-import IcDropdown from '../../assets/images/ic_dropdown.svg';
-
-import ModalSupply from '../supply/ModalSupply';
-import ModalBorrow from '../borrows/ModalBorrow';
-import AssetsRowAction from './AssetsRowAction';
-
 import * as actions from '../../actions';
 
-const AssetsMarket = () => {
+import IcDropdown from '../../assets/images/ic_dropdown.svg';
+import IcVeBank from '../../assets/images/ic_vebank.svg';
 
-    const [openRowAssets, setOpenRowAssets] = useState([]);
+const AccountAssets = () => {
+
+    // const { balanceVET } = useSelector(state => state.contractVET, shallowEqual);
+
+
 
     const dispatch = useDispatch();
 
-    const { web3 } = useSelector(state => state.web3, shallowEqual);
-    const { data } = useSelector(state => state.assetsMarketReducer, shallowEqual);
+    const { account } = useSelector(state => state.web3, shallowEqual);
+    const { data } = useSelector(state => state.accountAssetsReducer, shallowEqual);
+
+    const [showAssets, setShowAssets] = useState(false);
 
     useEffect(() => {
-        if (web3) {
-            fetchMarketAssets();
-        }
-    }, [web3]);
 
-    async function fetchMarketAssets() {
-        await dispatch(actions.getMarketAssets());
-    }
-
-    const onClickShowRowAssets = (assetsAddress) => {
-
-        const listShowChecked = [...openRowAssets];
-        const indexShow = openRowAssets.indexOf(assetsAddress);
-
-        if (indexShow === -1) {
-            listShowChecked.push(assetsAddress);
-        } else {
-            listShowChecked.splice(indexShow, 1);
+        if (account && data.length === 0) {
+            fetchAccountAssets();
+        } else if (!account) {
+            fetchAccountAssets();
         }
 
-        setOpenRowAssets(listShowChecked);
+    }, [account, data]);
 
+    async function fetchAccountAssets() {
+        await dispatch(actions.getAccountAssets());
     }
 
-    const showListAsset = (dataList) => {
+    const handlerClickShowAssets = (e) => {
+        setShowAssets(!showAssets);
+    }
+
+    const renderListAsset = (dataList) => {
 
         if (dataList && dataList.length > 0) {
 
@@ -66,7 +53,7 @@ const AssetsMarket = () => {
                 >
                     <div>
 
-                        <div className="grid grid-cols-6 gap-6 mt-6 bg-[#182844] justify-items-center content-around font-poppins text-lg rounded cursor-pointer" onClick={e => onClickShowRowAssets(item.assetsAddress)}>
+                        <div className="grid grid-cols-5 gap-5 mt-6 bg-[#182844] justify-items-center content-around font-poppins text-lg rounded cursor-pointer" >
 
                             <div className="p-2 flex flex-row justify-center items-center space-x-4 w-full text-right cursor-pointer">
                                 <img className="w-6 h-6" src={item.icon} />
@@ -97,17 +84,11 @@ const AssetsMarket = () => {
                                 </div>
                             </div>
 
-                            <div className="p-2 flex justify-center items-center cursor-pointer" >
+                            {/* <div className="p-2 flex justify-center items-center cursor-pointer" >
                                 <img className="w-3 h-3" src={IcDropdown} />
-                                {/* <BtnOpenBorrow id={"BUSD"} /> */}
-                            </div>
+                            </div> */}
 
                         </div>
-
-
-                        <AssetsRowAction key={item.assetsAddress + '_act'} openRowAssets={openRowAssets} item={item} />
-
-                        {/* {showRowAction(item)} */}
 
                     </div>
 
@@ -118,45 +99,39 @@ const AssetsMarket = () => {
 
     }
 
+
     return (
+        <div className='bg-[#0b1329] mt-10 px-8 py-5 rounded '>
 
-        <div className="w-full min-h-max rounded-lg bg-[#0b1329] mt-16 p-10 fade-in-box">
-
-            <h4 className="font-montserrat text-[30px] leading-9">Vechain assets</h4>
-
-            {/* 
-                <div className="p-3 mt-5">
-
-                    <div className="p-2 flex flex-row justify-start items-center space-x-4 w-full text-right cursor-pointer bg-[#1B1A43]">
-                        <img className="w-6 h-6" src={IcWarning} />
-                        <span className="text-lg font-poppins text-xs">To borrow you need to supply any asset to be used as collateral.</span>
-                    </div>
-
+            <div className='flex flex-row justify-between cursor-pointer' onClick={e => handlerClickShowAssets()}>
+                <div className='font-montserrat text-lg text-[#3FDCA5]'>
+                    Your supply & borrow
                 </div>
-            */}
+                <div className='flex flex-row justify-start items-center space-x-2 ' >
+                    <span className='text-white text-sm'>Show</span>
+                    <img className="w-3 h-3" src={IcDropdown} />
+                </div>
+            </div>
 
-            <div className="tbl-veb mt-8">
+            <div className={`tbl-veb mt-8 ${showAssets === true ? 'h-auto' : "h-0 hidden"}`}>
 
-                <div className="grid grid-cols-6 gap-6 justify-items-center content-around">
+                <div className="grid grid-cols-5 gap-5 justify-items-center content-around">
                     <div className="px-2 py-2">Assets</div>
-                    <div className="px-2 py-2">Total supplied</div>
+                    <div className="px-2 py-2">Supply balance</div>
                     <div className="px-2 py-2">Supply APY</div>
-                    <div className="px-2 py-2">Total borrowed</div>
+                    <div className="px-2 py-2">Borrow balance</div>
                     <div className="px-2 py-2">Borrow APY</div>
-                    <div className=''></div>
+                    {/* <div className=''></div> */}
                 </div>
 
                 <TransitionGroup>
-                    {showListAsset(data)}
+                    {renderListAsset(data)}
                 </TransitionGroup>
 
             </div>
-            <ModalSupply />
-            <ModalBorrow />
-
         </div>
     )
 
 }
 
-export default AssetsMarket;
+export default AccountAssets;
