@@ -309,7 +309,7 @@ export const approveSupply = (dataToken) => async (dispatch, getState) => {
     if (account && contractSupply && dataToken.assetsAddress) {
 
         const approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
-        const approveMethod = connex.thor.account(dataToken.assetsAddress).method(approveABI)
+        const approveMethod = connex.thor.account(dataToken.assetsAddress).method(approveABI);
 
         approveMethod
             .transact(ADDRESS_POOL, web3.utils.toWei(amountMax.toString()))
@@ -363,7 +363,6 @@ export const approveSupply = (dataToken) => async (dispatch, getState) => {
  */
 export const supplyMarket = (dataToken, amount) => async (dispatch, getState) => {
 
-    console.log("supplyMarket assetsAddress", dataToken)
 
     const state = getState();
 
@@ -372,7 +371,6 @@ export const supplyMarket = (dataToken, amount) => async (dispatch, getState) =>
     // let contractGATEWAY = new web3.eth.Contract(ERC20ABI_WETH_GETAWAY, ADDRESS_GATEWAY);
 
     if (connex && account && dataToken.assetsAddress) {
-
 
         dispatch({
             type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
@@ -384,12 +382,7 @@ export const supplyMarket = (dataToken, amount) => async (dispatch, getState) =>
 
         const valueAmount = web3.utils.toWei(amount.toString());
 
-        // methodSupply.value(valueAmount);
-
-        //supply(addressAsset, amount, account, referralCode)
-
-        console.log(dataToken.assetsAddress, valueAmount, account, 0);
-
+        //console.log(dataToken.assetsAddress, valueAmount, account, 0);
         methodSupply.transact(dataToken.assetsAddress, valueAmount, account, 0)
             .comment(`transfer ${amount} ${dataToken.assetsChain} to Supply VeBank`)
             .request()
@@ -399,6 +392,8 @@ export const supplyMarket = (dataToken, amount) => async (dispatch, getState) =>
                     type: marketplaceConstants.MODAL_SUPPLY_MARKET_SUCCESS,
                     transaction: 1
                 });
+
+                dispatch(actions.reloadAccountAssets());
 
                 return transaction;
 
@@ -448,6 +443,9 @@ export const supplyDepositETHMarket = (addressAsset, amount) => async (dispatch,
                     type: marketplaceConstants.MODAL_SUPPLY_MARKET_SUCCESS,
                     transaction: 1
                 });
+
+                dispatch(actions.reloadAccountAssets());
+
 
                 return transaction;
 

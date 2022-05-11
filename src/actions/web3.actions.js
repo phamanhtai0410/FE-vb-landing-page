@@ -22,13 +22,6 @@ const TOKEN_WVET = process.env.REACT_APP_TOKEN_WVET; //WVET(Wrapped VET)
 
 const ADDRESS_PROTOCOL = process.env.REACT_APP_ADDRESS_PROTOCOL; // AaveProtoco
 
-const LIST_ASSETS = [
-    process.env.REACT_APP_TOKEN_WVET,
-    process.env.REACT_APP_TOKEN_VTHO,
-    process.env.REACT_APP_TOKEN_VEUSD,
-    process.env.REACT_APP_TOKEN_VEBANK,
-]
-
 const chainID = process.env.REACT_APP_NETWORK_ID;
 const networks = {
     bsc_testnet: {
@@ -77,10 +70,8 @@ const networks = {
 };
 
 async function checkChainSwitch(web3) {
-
     const chainIdDec = await web3.eth.getChainId();
     return chainID === chainIdDec.toString();
-
 }
 
 async function checkConected(connex, certid) {
@@ -154,11 +145,9 @@ export const web3Connect = (isLogin) => async (dispatch) => {
 
         });
 
-
     }
 
     return _acc;
-
 
 };
 
@@ -326,6 +315,9 @@ export const getAccountAssets = () => async (dispatch, getState) => {
 
             }
 
+            dataUser.accountSupplyBalance = Number(dataUser.accountSupplyBalance.toFixed(2));
+            dataUser.accountBorrowBalance = Number(dataUser.accountBorrowBalance.toFixed(2));
+
         }
 
         dispatch({
@@ -395,17 +387,17 @@ export const getMarketAssets = () => async (dispatch, getState) => {
 
             }
 
-            if (balanceSupply || balanceBorrow) {
-
-                dataList.push({
-                    ...item,
-                    totalSupplied: balanceSupply,
-                    totalBorrowed: balanceBorrow,
-                })
-
-            }
+            dataList.push({
+                ...item,
+                totalSupplied: balanceSupply,
+                totalBorrowed: balanceBorrow,
+            })
 
         }
+
+
+        dataTotal.totalBorrow = dataTotal.totalBorrow.toFixed(2)
+        dataTotal.totalSupply = dataTotal.totalSupply.toFixed(2)
 
         dispatch({
             type: marketplaceConstants.FETCH_ASSETS_MARKET_SUCCESS,
@@ -475,6 +467,33 @@ export const fetchCurrentMSP = () => async (dispatch) => {
         });
     }
 }
+
+
+export const reloadAccountAssets = (addressAsset) => async (dispatch, getState) => {
+
+    const state = getState();
+    const { web3, account } = state.web3;
+
+    if (web3 && account) {
+
+        await dispatch(instantiateVetContracts())
+        await dispatch(instantiateVBContracts())
+
+        await dispatch(getMarketAssets());
+
+        await dispatch(getAccountAssets());
+
+        setTimeout(() => {
+            dispatch(getAccountAssets());
+        }, 1000);
+
+    }
+
+};
+
+
+
+
 
 const formatCur = (value) => {
     return Math.round(value * 100) / 100;

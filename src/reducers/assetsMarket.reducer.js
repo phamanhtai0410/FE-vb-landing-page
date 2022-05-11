@@ -5,12 +5,6 @@ import IcVeChain from '../assets/images/ic_vechain.svg';
 import IcVeBank from '../assets/images/ic_vebank.svg';
 import IcVtho from '../assets/images/ic_vtho.svg';
 
-const LIST_ASSETS = [
-  process.env.REACT_APP_TOKEN_WVET,
-  process.env.REACT_APP_TOKEN_VTHO,
-  process.env.REACT_APP_TOKEN_VEUSD,
-  process.env.REACT_APP_TOKEN_VEBANK,
-]
 
 const listAsset = [
   {
