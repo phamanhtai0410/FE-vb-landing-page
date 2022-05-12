@@ -16,8 +16,9 @@ import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
 
-const TOKEN_AAVE = "0x4964b481dF13471f89781b09550484E82466352C";
+const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
+
 const TOKEN_WVET = process.env.REACT_APP_TOKEN_WVET; //WVET(Wrapped VET)
 
 const ADDRESS_PROTOCOL = process.env.REACT_APP_ADDRESS_PROTOCOL; // AaveProtoco

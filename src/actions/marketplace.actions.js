@@ -18,7 +18,7 @@ import ERC20ABI_VARIBLE_DEBT_TOKEN from '../_contracts/VariableDebtToken.json';
 
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY;//WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
-
+const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 
 // ------------------------ WITHDRAW ------------------------ //
 
@@ -34,36 +34,23 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
     const { web3, account } = state.web3;
 
     let accountBalance = 0;
-    let accountApprove = 0;
+    let accountApprove = 1;
     // let contractBorrow;
     if (!account) {
         return;
     }
 
-    if (dataToken.assetsChain === "VET") {
+    if (dataToken.assetsAddress) {
 
-        const accountCoinVET = await dispatch(actions.instantiateVetContracts());
+        let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
+        const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
 
-        if (accountCoinVET.balance) {
-            accountBalance = ethers.utils.formatEther(accountCoinVET.balance);
-            accountBalance = Math.round(accountBalance * 100) / 100;
+        let balanceSupply = 0;
+        if (accountReserve.currentATokenBalance) {
+            balanceSupply = ethers.utils.formatEther(accountReserve.currentATokenBalance);
+            balanceSupply = Math.round(balanceSupply * 100) / 100;
+            accountBalance = Number(balanceSupply);
         }
-
-
-    } else {
-
-        const contractBorrow = new web3.eth.Contract(ERC20ABI_VB, dataToken.assetsAddress);
-
-        if (contractBorrow && account) {
-            const balanceBigN = await contractBorrow.methods.balanceOf(account).call();
-            accountBalance = ethers.utils.formatEther(balanceBigN);
-            accountBalance = Math.round(accountBalance * 100) / 100;
-        }
-
-        // get the approved coin MSP account
-        accountApprove = await contractBorrow.methods.allowance(account, ADDRESS_POOL).call();
-        accountApprove = ethers.utils.formatEther(accountApprove);
-        accountApprove = Number(accountApprove)
 
     }
 
@@ -171,7 +158,6 @@ export const withdrawMarket = (dataToken, amount, rateMode) => async (dispatch, 
         let approveMethod = connex.thor.account(process.env.REACT_APP_ATOKEN_VET).method(approveABI);
         const c1_approve = approveMethod.asClause(ADDRESS_GATEWAY, amountWithdraw)
 
-
         const withdrawETH_ABI = ERC20ABI_POOL.find(({ name, type }) => name === "withdraw" && type === "function");
         const methodWithdraw = connex.thor.account(ADDRESS_POOL).method(withdrawETH_ABI);
         const c2_withdraw = methodWithdraw.asClause(dataToken.assetsAddress, amountWithdraw, account)
@@ -192,6 +178,9 @@ export const withdrawMarket = (dataToken, amount, rateMode) => async (dispatch, 
             }).catch((e) => {
 
                 console.log("error----", e);
+                dispatch({
+                    type: marketplaceConstants.MODAL_WITHDRAW_MARKET_ERROR
+                });
                 return e;
 
             });
