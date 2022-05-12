@@ -15,6 +15,8 @@ import IcNext1 from '../../assets/images/ic_factory.svg';
 import BtnBorrow from './BtnBorrow';
 import BtnBorrowApprove from './BtnBorrowApprove';
 
+import * as actions from '../../actions';
+
 const customStyles = {
     content: {
         top: '30%',
@@ -56,6 +58,9 @@ const ModalBorrow = () => {
         dispatch({
             type: marketplaceConstants.MODAL_CLOSE_BORROW_MARKET
         })
+        if (transaction) {
+            dispatch(actions.reloadAccountAssets());
+        }
     };
 
     const closeModalAndDashboard = () => {
@@ -162,7 +167,7 @@ const ModalBorrow = () => {
             overlayClassName="overlay-lur">
 
             <div className="header-modal" >
-                <h2>Borrow BUSD</h2>
+                <h2>Borrow {dataToken ? dataToken.assetsChain : ""}</h2>
                 <button className="btn-modal-close" onClick={closeModal}></button>
             </div>
 

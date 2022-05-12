@@ -14,6 +14,7 @@ import ModalBorrow from '../borrows/ModalBorrow';
 import AssetsRowAction from './AssetsRowAction';
 
 import * as actions from '../../actions';
+import ModalWithdraw from '../withdraw/ModalWithdraw';
 
 const AssetsMarket = () => {
 
@@ -146,6 +147,7 @@ const AssetsMarket = () => {
             </div>
             <ModalSupply />
             <ModalBorrow />
+            <ModalWithdraw />
 
         </div>
     )

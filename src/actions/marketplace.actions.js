@@ -36,10 +36,6 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
     let accountBalance = 0;
     let accountApprove = 0;
     // let contractBorrow;
-
-    let accountStableDebtApprove = 0;
-    let accountVariableDebtApprove = 0;
-
     if (!account) {
         return;
     }
@@ -53,17 +49,6 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
             accountBalance = Math.round(accountBalance * 100) / 100;
         }
 
-        // check approveDelegation
-        let contractStableDebt = new web3.eth.Contract(ERC20ABI_STABLE_DEBT_TOKEN, process.env.REACT_APP_STABLE_DEBT_TOKEN_VET);
-        accountStableDebtApprove = await contractStableDebt.methods.borrowAllowance(account, ADDRESS_GATEWAY).call();
-        accountStableDebtApprove = ethers.utils.formatEther(accountStableDebtApprove);
-        accountStableDebtApprove = Number(accountStableDebtApprove);
-
-        // check approveDelegation
-        let contractVariableDebt = new web3.eth.Contract(ERC20ABI_STABLE_DEBT_TOKEN, process.env.REACT_APP_STABLE_DEBT_TOKEN_VET);
-        accountVariableDebtApprove = await contractVariableDebt.methods.borrowAllowance(account, ADDRESS_GATEWAY).call();
-        accountVariableDebtApprove = ethers.utils.formatEther(accountVariableDebtApprove);
-        accountVariableDebtApprove = Number(accountVariableDebtApprove);
 
     } else {
 
@@ -85,8 +70,6 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
     dispatch({
         type: marketplaceConstants.MODAL_OPEN_WITHDRAW_MARKET,
         accountApprove,
-        accountStableDebtApprove,
-        accountVariableDebtApprove,
         accountBalance: accountBalance,
         dataToken
     });
@@ -181,15 +164,20 @@ export const withdrawMarket = (dataToken, amount, rateMode) => async (dispatch, 
             type: marketplaceConstants.MODAL_WITHDRAW_MARKET_REQUEST
         });
 
-        const borrowABI = ERC20ABI_POOL.find(({ name, type }) => (name === "borrow" && type === "function"));
+        let amountWithdraw = web3.utils.toWei(amount.toString());
 
-        const methodBorrow = connex.thor.account(ADDRESS_POOL).method(borrowABI);
+        // approve Atoken to move my 1e18 wei VeThor
+        let approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
+        let approveMethod = connex.thor.account(process.env.REACT_APP_ATOKEN_VET).method(approveABI);
+        const c1_approve = approveMethod.asClause(ADDRESS_GATEWAY, amountWithdraw)
 
-        let amountBorrow = web3.utils.toWei(amount.toString());
 
-        // console.table([dataToken.assetsAddress, amountBorrow, rateMode, 0, account]);
+        const withdrawETH_ABI = ERC20ABI_POOL.find(({ name, type }) => name === "withdraw" && type === "function");
+        const methodWithdraw = connex.thor.account(ADDRESS_POOL).method(withdrawETH_ABI);
+        const c2_withdraw = methodWithdraw.asClause(dataToken.assetsAddress, amountWithdraw, account)
 
-        methodBorrow.transact(dataToken.assetsAddress, amountBorrow, rateMode, 0, account)
+        connex.vendor
+            .sign('tx', [c1_approve, c2_withdraw])
             .comment(`transfer ${amount} ${dataToken.assetsChain} to Borrow VeBank`)
             .request()
             .then(transaction => {
@@ -222,7 +210,7 @@ export const withdrawMarket = (dataToken, amount, rateMode) => async (dispatch, 
  * borrowETH(PoolAddress, amount, interestRateMode, referralCode) await iWETHGateway.borrowETH("0x", "80000000000000000", 2, 0);
  * "interestRateMode: 0, 1, 2 => 0: None, 1: Stable, 2: Variable"
  */
-export const withdrawETHMarket = (addressAsset, amount, rateMode) => async (dispatch, getState) => {
+export const withdrawETHMarket = (dataToken, amount) => async (dispatch, getState) => {
 
     const state = getState();
 
@@ -236,17 +224,21 @@ export const withdrawETHMarket = (addressAsset, amount, rateMode) => async (disp
             type: marketplaceConstants.MODAL_WITHDRAW_MARKET_REQUEST
         });
 
-        let amountBorrow = web3.utils.toWei(amount.toString());
+        const amountWithdraw = web3.utils.toWei(amount.toString());
 
-        const borrowETH_ABI = ERC20ABI_WETH_GETAWAY.find(({ name, type }) => name === "borrowETH" && type === "function");
-        const methodBorrow = connex.thor.account(ADDRESS_GATEWAY).method(borrowETH_ABI);
+        // approve Atoken to move my 1e18 wei VeThor
+        let approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
+        let approveMethod = connex.thor.account(process.env.REACT_APP_ATOKEN_VET).method(approveABI);
+        const c1_approve = approveMethod.asClause(ADDRESS_GATEWAY, amountWithdraw)
 
-        //console.table([borrowETH_ABI, { ADDRESS_POOL, amountBorrow, rateMode }]);
 
-        methodBorrow.value(amountBorrow);
+        const withdrawETH_ABI = ERC20ABI_WETH_GETAWAY.find(({ name, type }) => name === "withdrawETH" && type === "function");
+        const methodWithdraw = connex.thor.account(ADDRESS_GATEWAY).method(withdrawETH_ABI);
+        const c2_withdraw = methodWithdraw.asClause(ADDRESS_POOL, amountWithdraw, account)
 
-        methodBorrow.transact(ADDRESS_POOL, amountBorrow, rateMode, 0)
-            .comment(`transfer ${amount} VET to borrowETH`)
+        connex.vendor
+            .sign('tx', [c1_approve, c2_withdraw])
+            .comment(`transfer ${amount} VET to withdrawETH`)
             .request()
             .then(transaction => {
 
@@ -260,6 +252,10 @@ export const withdrawETHMarket = (addressAsset, amount, rateMode) => async (disp
             }).catch((e) => {
 
                 console.log("error----", e);
+                dispatch({
+                    type: marketplaceConstants.MODAL_WITHDRAW_MARKET_ERROR
+                });
+
                 return e;
 
             });
@@ -449,6 +445,9 @@ export const borrowMarket = (dataToken, amount, rateMode) => async (dispatch, ge
             }).catch((e) => {
 
                 console.log("error----", e);
+                dispatch({
+                    type: marketplaceConstants.MODAL_BORROW_MARKET_ERROR
+                });
                 return e;
 
             });
@@ -503,8 +502,10 @@ export const borrowETHMarket = (addressAsset, amount, rateMode) => async (dispat
                 return transaction;
 
             }).catch((e) => {
-
                 console.log("error----", e);
+                dispatch({
+                    type: marketplaceConstants.MODAL_BORROW_MARKET_ERROR
+                });
                 return e;
 
             });
@@ -676,6 +677,9 @@ export const supplyMarket = (dataToken, amount) => async (dispatch, getState) =>
             }).catch((e) => {
 
                 console.log("error----", e);
+                dispatch({
+                    type: marketplaceConstants.MODAL_BORROW_MARKET_ERROR
+                });
                 return e;
 
             });
@@ -726,6 +730,9 @@ export const supplyDepositETHMarket = (addressAsset, amount) => async (dispatch,
             }).catch((e) => {
 
                 console.log("error----", e);
+                dispatch({
+                    type: marketplaceConstants.MODAL_BORROW_MARKET_ERROR
+                });
                 return e;
 
             });

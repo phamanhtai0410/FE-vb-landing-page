@@ -478,8 +478,13 @@ export const reloadAccountAssets = (addressAsset) => async (dispatch, getState) 
         await dispatch(instantiateVetContracts());
         await dispatch(instantiateVBContracts());
 
-        await dispatch(getMarketAssets());
-        await dispatch(getAccountAssets());
+        setTimeout(async () => {
+            await dispatch(getAccountAssets());
+        }, 1000);
+
+        setTimeout(async () => {
+            await dispatch(getMarketAssets());
+        }, 2000);
 
 
     }

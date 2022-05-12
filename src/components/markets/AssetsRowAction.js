@@ -50,7 +50,7 @@ const AssetsRowAction = ({ openRowAssets, item }) => {
                         placeholder={"0"}
                         disabled={true}
                     />
-                    <BtnOpenRepay />
+                    <BtnOpenRepay item={item} />
                 </div>
             </div>
 

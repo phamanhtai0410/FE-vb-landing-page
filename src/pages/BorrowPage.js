@@ -1,7 +1,7 @@
 import React from "react";
+
 // import { useDispatch, useSelector } from "react-redux";
 
-import AssetsBorrow from "../components/borrows/AssetsBorrow";
 import ModalBorrow from "../components/borrows/ModalBorrow";
 
 import NetMarket from "../components/partials/NetMarket";
@@ -22,8 +22,6 @@ const BorrowPage = () => {
           <TabMarket />
 
         </div>
-
-        <AssetsBorrow />
 
       </div>
 
