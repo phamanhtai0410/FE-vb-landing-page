@@ -2,9 +2,7 @@ import React from "react";
 import AccountAssets from "../components/account/AccountAssets";
 // import { useDispatch, useSelector } from "react-redux";
 
-
 import ModalBorrow from "../components/borrows/ModalBorrow";
-
 import AssetsMarket from "../components/markets/AssetsMarket";
 import NetMarket from "../components/markets/NetMarket";
 import Overview from "../components/markets/Overview";

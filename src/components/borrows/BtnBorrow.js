@@ -51,7 +51,7 @@ const BtnBorrow = ({ dataToken, amount, pending, rate }) => {
             setIsPending(true);
 
             if (dataToken.assetsChain === "VET") {
-                await dispatch(actions.borrowDepositETHMarket(dataToken, amount, rate)).then(() => {
+                await dispatch(actions.borrowETHMarket(dataToken, amount, rate)).then(() => {
                     setIsPending(false);
                 }).catch((e) => {
                     setIsPending(false);

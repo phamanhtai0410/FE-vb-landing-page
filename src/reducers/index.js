@@ -14,6 +14,7 @@ import { supplyReducer } from './supply.reducer';
 
 import { accountAssetsReducer } from './accountAssets.reducer';
 import { assetsMarketReducer } from './assetsMarket.reducer';
+import { withdrawReducer } from './withdraw.reducer';
 
 const appReducer = combineReducers({
 
@@ -26,7 +27,8 @@ const appReducer = combineReducers({
   assetsMarketReducer,
 
   borrowReducer,
-  supplyReducer
+  supplyReducer,
+  withdrawReducer
 
 });
 

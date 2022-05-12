@@ -9,13 +9,11 @@ import { numberWithCommas } from '../../utils/lib';
 
 import { marketplaceConstants } from '../../constants';
 
-
 import IcNext from '../../assets/images/ic_next.svg';
 import IcNext1 from '../../assets/images/ic_factory.svg';
 
 import BtnBorrow from './BtnBorrow';
 import BtnBorrowApprove from './BtnBorrowApprove';
-
 
 const customStyles = {
     content: {
@@ -39,7 +37,7 @@ const ModalBorrow = () => {
     const [step, setStep] = useState(1);
     const [rate, setRate] = useState(null);
 
-    const { dataToken, accountBalance, accountApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
+    const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
 
     const dispatch = useDispatch();
 
@@ -121,12 +119,32 @@ const ModalBorrow = () => {
         if (dataToken) {
 
             if (dataToken.assetsChain === "VET") {
-                btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
-            } else if (accountApprove === 0) {
-                btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} />
+                if (accountStableDebtApprove === 0 && rate === 1) {
+                    btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
+                } else if (accountStableDebtApprove === 0 && rate === 2) {
+                    btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
+                } else {
+                    btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
+                }
             } else {
-                btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
+                if (accountApprove === 0) {
+                    btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
+                } else {
+                    btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
+                }
             }
+
+            // if (dataToken.assetsChain === "VET" && accountStableDebtApprove === 0 && rate === 1) {
+            //     btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} />
+            // } else if (dataToken.assetsChain === "VET" && accountStableDebtApprove === 0 && rate === 2) {
+            //     btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} />
+            // } else if (dataToken.assetsChain === "VET") {
+            //     btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
+            // } else if (accountApprove === 0) {
+            //     btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} />
+            // } else {
+            //     btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
+            // }
 
         }
         return btn;

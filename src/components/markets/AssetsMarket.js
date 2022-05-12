@@ -6,11 +6,7 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-import IcVeUSD from '../../assets/images/ic_veusd.svg';
-import IcVeChain from '../../assets/images/ic_vechain.svg';
 import IcVeBank from '../../assets/images/ic_vebank.svg';
-import IcVtho from '../../assets/images/ic_vtho.svg';
-
 import IcDropdown from '../../assets/images/ic_dropdown.svg';
 
 import ModalSupply from '../supply/ModalSupply';
@@ -42,7 +38,6 @@ const AssetsMarket = () => {
 
         const listShowChecked = [...openRowAssets];
         const indexShow = openRowAssets.indexOf(assetsAddress);
-
         if (indexShow === -1) {
             listShowChecked.push(assetsAddress);
         } else {

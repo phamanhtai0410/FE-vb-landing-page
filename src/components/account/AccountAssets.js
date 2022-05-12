@@ -60,7 +60,7 @@ const AccountAssets = () => {
                                 <span className="text-lg font-semibold w-12 text-left">{item.assetsChain}</span>
                             </div>
 
-                            <div className="p-2 flex justify-center items-center font-semibold">{item.totalSupplied} M</div>
+                            <div className="p-2 flex justify-center items-center font-semibold">$ {item.totalSupplied} </div>
 
                             <div className="p-2 flex flex-col justify-center items-center content-center">
                                 <div className="text-lg font-semibold">{item.supplyAPY} %</div>
@@ -72,7 +72,7 @@ const AccountAssets = () => {
                                 </div>
                             </div>
 
-                            <div className="p-2 flex justify-center items-center font-semibold">{item.totalBorrowed} M</div>
+                            <div className="p-2 flex justify-center items-center font-semibold">$ {item.totalBorrowed} </div>
 
                             <div className="p-2 flex flex-col justify-center items-center content-center">
                                 <div className="text-lg font-semibold">{item.borrowAPY} %</div>

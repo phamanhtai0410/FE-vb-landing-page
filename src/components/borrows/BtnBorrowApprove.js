@@ -4,23 +4,22 @@ import { Beforeunload } from 'react-beforeunload';
 
 import * as actions from '../../actions';
 
-const BtnBorrowApprove = ({ dataToken, pending }) => {
+const BtnBorrowApprove = ({ dataToken, rate, pending }) => {
 
     const [isPending, setIsPending] = useState(false);
     const dispatch = useDispatch();
 
     const approveHandler = async () => {
-
         if (!isPending) {
             setIsPending(true);
-            await dispatch(actions.approveSupply(dataToken)).then(() => {
+            await dispatch(actions.approveBorrow(dataToken, rate)).then(() => {
                 setIsPending(false);
             }).catch((e) => {
                 setIsPending(false);
             });
         }
-
     }
+
 
     return (
         <>

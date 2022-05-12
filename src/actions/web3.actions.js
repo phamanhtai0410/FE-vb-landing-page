@@ -282,6 +282,7 @@ export const getAccountAssets = () => async (dispatch, getState) => {
             for await (const item of data) {
 
                 const accountReserve = await contractAAVE.methods.getUserReserveData(item.assetsAddress, account).call();
+
                 let balanceSupply = 0;
                 if (accountReserve.currentATokenBalance) {
                     balanceSupply = ethers.utils.formatEther(accountReserve.currentATokenBalance);
@@ -290,7 +291,6 @@ export const getAccountAssets = () => async (dispatch, getState) => {
                 }
 
                 let balanceBorrow = 0;
-
                 if (accountReserve.currentStableDebt || accountReserve.currentVariableDebt) {
 
                     const currentStableDebt = ethers.utils.formatEther(accountReserve.currentStableDebt || '0');
@@ -365,7 +365,7 @@ export const getMarketAssets = () => async (dispatch, getState) => {
             const getReserveData = await contractAAVE.methods.getReserveData(item.assetsAddress).call();
 
             const dataConfig = await contractAAVE.methods.getReserveConfigurationData(item.assetsAddress).call();
-            // console.log(dataConfig);
+            console.log(dataConfig);
 
             let balanceSupply = 0;
             if (getReserveData.totalAToken) {
@@ -394,7 +394,6 @@ export const getMarketAssets = () => async (dispatch, getState) => {
             })
 
         }
-
 
         dataTotal.totalBorrow = dataTotal.totalBorrow.toFixed(2)
         dataTotal.totalSupply = dataTotal.totalSupply.toFixed(2)
@@ -476,16 +475,12 @@ export const reloadAccountAssets = (addressAsset) => async (dispatch, getState) 
 
     if (web3 && account) {
 
-        await dispatch(instantiateVetContracts())
-        await dispatch(instantiateVBContracts())
+        await dispatch(instantiateVetContracts());
+        await dispatch(instantiateVBContracts());
 
         await dispatch(getMarketAssets());
-
         await dispatch(getAccountAssets());
 
-        setTimeout(() => {
-            dispatch(getAccountAssets());
-        }, 1000);
 
     }
 

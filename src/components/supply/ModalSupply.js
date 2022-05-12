@@ -8,6 +8,8 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { numberWithCommas } from '../../utils/lib';
 
 import { marketplaceConstants } from '../../constants';
+import * as actions from '../../actions';
+
 import BtnSupply from './BtnSupply';
 
 import IcExplorer from '../../assets/images/ic_explorer.svg';
@@ -60,14 +62,21 @@ const ModalSupply = () => {
     }
 
     const closeModal = () => {
+
         dispatch({
             type: marketplaceConstants.MODAL_CLOSE_SUPPLY_MARKET
         })
+
+        if (transaction) {
+            dispatch(actions.reloadAccountAssets());
+        }
+
     };
 
     const closeModalAndDashboard = () => {
         closeModal();
         resetFrm();
+        dispatch(actions.reloadAccountAssets());
     }
 
     const onChangeRangeAmount = (values) => {

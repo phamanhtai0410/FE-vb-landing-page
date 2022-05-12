@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { Beforeunload } from 'react-beforeunload';
 
 import * as actions from '../../actions';
@@ -8,20 +8,14 @@ import { marketplaceConstants } from '../../constants';
 
 const BtnOpenSupply = ({ item }) => {
 
+    const [disabledRule, setDisabledRule] = useState(false);
+
     const dispatch = useDispatch();
 
     const handlerOpenModal = async () => {
 
         if (item && item.assetsAddress) {
-
             dispatch(actions.loadModalSupply(item))
-            // setIsPending(true);
-            // await dispatch(actions.buyLUS(boxID)).then(() => {
-            //     setIsPending(false);
-            // }).catch((e) => {
-            //     setIsPending(false);
-            // });
-
         }
     }
 
