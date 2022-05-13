@@ -469,12 +469,10 @@ export const borrowETHMarket = (addressAsset, amount, rateMode) => async (dispat
             type: marketplaceConstants.MODAL_BORROW_MARKET_REQUEST
         });
 
-        let amountBorrow = web3.utils.toWei(amount.toString());
+        const amountBorrow = web3.utils.toWei(amount.toString());
 
         const borrowETH_ABI = ERC20ABI_WETH_GETAWAY.find(({ name, type }) => name === "borrowETH" && type === "function");
         const methodBorrow = connex.thor.account(ADDRESS_GATEWAY).method(borrowETH_ABI);
-
-        //console.table([borrowETH_ABI, { ADDRESS_POOL, amountBorrow, rateMode }]);
 
         methodBorrow.value(amountBorrow);
 

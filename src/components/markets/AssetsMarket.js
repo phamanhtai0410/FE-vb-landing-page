@@ -101,7 +101,6 @@ const AssetsMarket = () => {
 
                         <AssetsRowAction key={item.assetsAddress + '_act'} openRowAssets={openRowAssets} item={item} />
 
-
                     </div>
 
 

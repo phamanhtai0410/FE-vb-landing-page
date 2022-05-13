@@ -286,7 +286,7 @@ export const getAccountAssets = () => async (dispatch, getState) => {
 
                 let balanceSupply = 0;
                 if (accountReserve.currentATokenBalance) {
-                    balanceSupply = ethers.utils.formatEther(accountReserve.currentATokenBalance);
+                    balanceSupply = ethers.utils.formatUnits(accountReserve.currentATokenBalance, item.assetsDecimals);
                     balanceSupply = Math.round(balanceSupply * 100) / 100;
                     dataUser.accountSupplyBalance = dataUser.accountSupplyBalance + Number(balanceSupply)
                 }
@@ -294,8 +294,8 @@ export const getAccountAssets = () => async (dispatch, getState) => {
                 let balanceBorrow = 0;
                 if (accountReserve.currentStableDebt || accountReserve.currentVariableDebt) {
 
-                    const currentStableDebt = ethers.utils.formatEther(accountReserve.currentStableDebt || '0');
-                    const currentVariableDebt = ethers.utils.formatEther(accountReserve.currentVariableDebt || '0');
+                    const currentStableDebt = ethers.utils.formatUnits(accountReserve.currentStableDebt || '0', item.assetsDecimals);
+                    const currentVariableDebt = ethers.utils.formatUnits(accountReserve.currentVariableDebt || '0', item.assetsDecimals);
 
                     balanceBorrow = Number(currentStableDebt) + Number(currentVariableDebt);
                     balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
@@ -365,12 +365,11 @@ export const getMarketAssets = () => async (dispatch, getState) => {
 
             const getReserveData = await contractAAVE.methods.getReserveData(item.assetsAddress).call();
 
-            const dataConfig = await contractAAVE.methods.getReserveConfigurationData(item.assetsAddress).call();
-            console.log(dataConfig);
+            //const dataConfig = await contractAAVE.methods.getReserveConfigurationData(item.assetsAddress).call();
 
             let balanceSupply = 0;
             if (getReserveData.totalAToken) {
-                balanceSupply = ethers.utils.formatEther(getReserveData.totalAToken);
+                balanceSupply = ethers.utils.formatUnits(getReserveData.totalAToken, item.assetsDecimals);
                 balanceSupply = Math.round(balanceSupply * 100) / 100;
                 dataTotal.totalSupply = dataTotal.totalSupply + Number(balanceSupply);
             }
@@ -378,8 +377,8 @@ export const getMarketAssets = () => async (dispatch, getState) => {
             let balanceBorrow = 0;
             if (getReserveData.totalStableDebt || getReserveData.totalVariableDebt) {
 
-                const totalStableDebt = ethers.utils.formatEther(getReserveData.totalStableDebt || '0');
-                const totalVariableDebt = ethers.utils.formatEther(getReserveData.totalVariableDebt || '0');
+                const totalStableDebt = ethers.utils.formatUnits(getReserveData.totalStableDebt || '0', item.assetsDecimals);
+                const totalVariableDebt = ethers.utils.formatUnits(getReserveData.totalVariableDebt || '0', item.assetsDecimals);
 
                 balanceBorrow = Number(totalStableDebt) + Number(totalVariableDebt);
                 balanceBorrow = Math.round((balanceBorrow) * 100) / 100;

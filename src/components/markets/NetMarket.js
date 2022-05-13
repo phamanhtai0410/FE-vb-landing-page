@@ -41,7 +41,7 @@ const NetMarket = () => {
                     />
                     <div className="xs:ml-2 lg:ml-3 font-normal">
                         <div className="font-poppins leading-4 text-[#BFBFBF] text-[16px]">Total borrow</div>
-                        <div className="font-poppins leading-4 text-[#BFBFBF] text-[20px] pt-3"><span className="text-slate-100">{totalBorrow}</span> %</div>
+                        <div className="font-poppins leading-4 text-[#BFBFBF] text-[20px] pt-3">$ <span className="text-slate-100">{totalBorrow}</span></div>
                     </div>
                 </div>
 
