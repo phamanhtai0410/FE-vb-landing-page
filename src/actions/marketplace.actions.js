@@ -15,7 +15,6 @@ import ERC20ABI_POOL from '../_contracts/Pool.json';
 import ERC20ABI_STABLE_DEBT_TOKEN from '../_contracts/StableDebtToken.json';
 import ERC20ABI_VARIBLE_DEBT_TOKEN from '../_contracts/VariableDebtToken.json';
 
-
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY;//WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
@@ -220,7 +219,6 @@ export const withdrawETHMarket = (dataToken, amount) => async (dispatch, getStat
         let approveMethod = connex.thor.account(process.env.REACT_APP_ATOKEN_VET).method(approveABI);
         const c1_approve = approveMethod.asClause(ADDRESS_GATEWAY, amountWithdraw)
 
-
         const withdrawETH_ABI = ERC20ABI_WETH_GETAWAY.find(({ name, type }) => name === "withdrawETH" && type === "function");
         const methodWithdraw = connex.thor.account(ADDRESS_GATEWAY).method(withdrawETH_ABI);
         const c2_withdraw = methodWithdraw.asClause(ADDRESS_POOL, amountWithdraw, account)
@@ -278,23 +276,25 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
         return;
     }
 
-    if (dataToken.assetsChain === "VET") {
+    let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
+    const getReserveData = await contractAAVE.methods.getReserveData(dataToken.assetsAddress).call();
 
-        const accountCoinVET = await dispatch(actions.instantiateVetContracts());
-        if (accountCoinVET.balance) {
-            accountBalance = ethers.utils.formatEther(accountCoinVET.balance);
-            accountBalance = Math.round(accountBalance * 100) / 100;
-        }
+    let balanceTotalSupply = ethers.utils.formatUnits(getReserveData.totalAToken, dataToken.assetsDecimals);
+    accountBalance = Math.round(balanceTotalSupply * 100) / 100;
+
+    if (dataToken.assetsChain === "VET") {
 
         // check approveDelegation
         let contractStableDebt = new web3.eth.Contract(ERC20ABI_STABLE_DEBT_TOKEN, process.env.REACT_APP_STABLE_DEBT_TOKEN_VET);
         accountStableDebtApprove = await contractStableDebt.methods.borrowAllowance(account, ADDRESS_GATEWAY).call();
+        console.log("accountStableDebtApprove", accountStableDebtApprove)
         accountStableDebtApprove = ethers.utils.formatEther(accountStableDebtApprove);
         accountStableDebtApprove = Number(accountStableDebtApprove);
 
         // check approveDelegation
-        let contractVariableDebt = new web3.eth.Contract(ERC20ABI_STABLE_DEBT_TOKEN, process.env.REACT_APP_STABLE_DEBT_TOKEN_VET);
+        let contractVariableDebt = new web3.eth.Contract(ERC20ABI_VARIBLE_DEBT_TOKEN, process.env.REACT_APP_VARIABLE_DEBT_TOKEN_VET);
         accountVariableDebtApprove = await contractVariableDebt.methods.borrowAllowance(account, ADDRESS_GATEWAY).call();
+        console.log("accountVariableDebtApprove", accountVariableDebtApprove)
         accountVariableDebtApprove = ethers.utils.formatEther(accountVariableDebtApprove);
         accountVariableDebtApprove = Number(accountVariableDebtApprove);
 
@@ -302,16 +302,10 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
 
         const contractBorrow = new web3.eth.Contract(ERC20ABI_VB, dataToken.assetsAddress);
 
-        if (contractBorrow && account) {
-            const balanceBigN = await contractBorrow.methods.balanceOf(account).call();
-            accountBalance = ethers.utils.formatUnits(balanceBigN, dataToken.assetsDecimals);
-            accountBalance = Math.round(accountBalance * 100) / 100;
-        }
-
-        // get the approved coin MSP account
-        accountApprove = await contractBorrow.methods.allowance(account, ADDRESS_POOL).call();
-        accountApprove = ethers.utils.formatUnits(accountApprove, dataToken.assetsDecimals);
-        accountApprove = Number(accountApprove);
+        // get the approved ADDRESS_POOL
+        // accountApprove = await contractBorrow.methods.allowance(account, ADDRESS_POOL).call();
+        // accountApprove = ethers.utils.formatUnits(accountApprove, dataToken.assetsDecimals);
+        // accountApprove = Number(accountApprove);
 
     }
 
@@ -340,7 +334,7 @@ export const approveBorrow = (dataToken, rateMode) => async (dispatch, getState)
     const state = getState();
     const { web3, account, connex } = state.web3;
 
-    let amountApprove = 10000000;
+    let amountApprove = 99999999;
 
     if (account && dataToken.assetsAddress && rateMode) {
 
@@ -351,15 +345,17 @@ export const approveBorrow = (dataToken, rateMode) => async (dispatch, getState)
         if (dataToken.assetsChain === "VET") {
 
             TOKEN_APPROVE = ADDRESS_GATEWAY;
-            approveABI = ERC20ABI_STABLE_DEBT_TOKEN.find(({ name, type }) => (name === "approveDelegation" && type === "function"));
 
             if (rateMode === 1) {
+                approveABI = ERC20ABI_STABLE_DEBT_TOKEN.find(({ name, type }) => (name === "approveDelegation" && type === "function"));
                 approveMethod = connex.thor.account(process.env.REACT_APP_STABLE_DEBT_TOKEN_VET).method(approveABI);
             }
 
             if (rateMode === 2) {
+                approveABI = ERC20ABI_VARIBLE_DEBT_TOKEN.find(({ name, type }) => (name === "approveDelegation" && type === "function"));
                 approveMethod = connex.thor.account(process.env.REACT_APP_VARIABLE_DEBT_TOKEN_VET).method(approveABI);
             }
+
 
         } else {
             TOKEN_APPROVE = ADDRESS_POOL;
@@ -372,12 +368,10 @@ export const approveBorrow = (dataToken, rateMode) => async (dispatch, getState)
                 .comment(`approve ${dataToken.assetsChain} on VeBank`)
                 .request()
                 .then(result => {
-
                     dispatch({
                         type: marketplaceConstants.MODAL_OPEN_BORROW_MARKET,
                         accountApprove: amountApprove
                     });
-
                     return result;
 
                 }).catch((e) => {
@@ -387,6 +381,8 @@ export const approveBorrow = (dataToken, rateMode) => async (dispatch, getState)
 
                 });
         }
+
+        
 
     }
 

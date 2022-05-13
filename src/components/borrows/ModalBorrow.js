@@ -39,7 +39,7 @@ const ModalBorrow = () => {
     const [step, setStep] = useState(1);
     const [rate, setRate] = useState(null);
 
-    const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
+    const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, accountVariableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
 
     const dispatch = useDispatch();
 
@@ -125,10 +125,13 @@ const ModalBorrow = () => {
 
             if (dataToken.assetsChain === "VET") {
                 if (accountStableDebtApprove === 0 && rate === 1) {
+                    console.log("1")
                     btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
-                } else if (accountStableDebtApprove === 0 && rate === 2) {
+                } else if (accountVariableDebtApprove === 0 && rate === 2) {
+                    console.log("2")
                     btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
                 } else {
+                    console.log("3")
                     btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
                 }
             } else {
