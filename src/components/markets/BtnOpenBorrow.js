@@ -28,6 +28,10 @@ const BtnOpenBorrow = ({ item }) => {
                 setDisabledRule(true)
             }
         }
+        // Truong hop token nay chua co ai supply 
+        if (item.totalSupplied === 0) {
+            setDisabledRule(true)
+        }
     }
 
     const handlerOpenModal = async () => {

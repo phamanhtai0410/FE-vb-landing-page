@@ -8,14 +8,13 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { numberWithCommas } from '../../utils/lib';
 
 import { marketplaceConstants } from '../../constants';
+import * as actions from '../../actions';
 
 import IcNext from '../../assets/images/ic_next.svg';
 import IcNext1 from '../../assets/images/ic_factory.svg';
 
-import BtnBorrow from './BtnBorrow';
-import BtnBorrowApprove from './BtnBorrowApprove';
-
-import * as actions from '../../actions';
+import BtnWithdraw from './BtnRepay';
+import BtnWithdrawApprove from './BtnRepayApprove';
 
 const customStyles = {
     content: {
@@ -32,14 +31,13 @@ const customStyles = {
     },
 };
 
-const ModalBorrow = () => {
+const ModalRepay = () => {
 
     const [amount, setAmount] = useState(0);
     const [values, setValues] = useState([0]);
     const [step, setStep] = useState(1);
-    const [rate, setRate] = useState(null);
 
-    const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
+    const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.withdrawReducer, shallowEqual);
 
     const dispatch = useDispatch();
 
@@ -51,16 +49,17 @@ const ModalBorrow = () => {
         setAmount(0);
         setValues([0]);
         setStep(1);
-        setRate(null);
     }
 
     const closeModal = () => {
         dispatch({
-            type: marketplaceConstants.MODAL_CLOSE_BORROW_MARKET
+            type: marketplaceConstants.MODAL_CLOSE_WITHDRAW_MARKET
         })
+
         if (transaction) {
             dispatch(actions.reloadAccountAssets());
         }
+
     };
 
     const closeModalAndDashboard = () => {
@@ -79,35 +78,18 @@ const ModalBorrow = () => {
             setAmount(value)
             setValues([value]);
         }
-
     }
 
     const handlerStepToStep = (e) => {
-
         if (step === 1 && amount > 0) {
             setStep(2);
         }
-
-        if (step === 2 && rate > 0) {
-            setStep(3);
-        }
-
-    }
-
-    const handlerChangeRate = (value) => {
-        setRate(value)
     }
 
     const showCheckStepContinue = () => {
-
         if (step === 1 && amount > 0) {
             return true;
         }
-
-        if (step === 2 && (rate === 1 || rate === 2)) {
-            return true;
-        }
-
     }
 
     const showFactor = () => {
@@ -116,7 +98,6 @@ const ModalBorrow = () => {
                 <div className='font-poppins font-light'>New health factor  <span className='font-bold'>1.03</span></div>
             )
         }
-
     }
 
     const showBtnView = () => {
@@ -124,20 +105,13 @@ const ModalBorrow = () => {
         if (dataToken) {
 
             if (dataToken.assetsChain === "VET") {
-                if (accountStableDebtApprove === 0 && rate === 1) {
-                    btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
-                } else if (accountStableDebtApprove === 0 && rate === 2) {
-                    btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
-                } else {
-                    btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
-                }
+                btn = <BtnWithdraw dataToken={dataToken} pending={pending} amount={amount} />
+            } else if (accountApprove === 0) {
+                btn = <BtnWithdrawApprove dataToken={dataToken} pending={pending} />
             } else {
-                if (accountApprove === 0) {
-                    btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
-                } else {
-                    btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
-                }
+                btn = <BtnWithdraw dataToken={dataToken} pending={pending} amount={amount} />
             }
+
 
         }
         return btn;
@@ -155,7 +129,7 @@ const ModalBorrow = () => {
             overlayClassName="overlay-lur">
 
             <div className="header-modal" >
-                <h2>Borrow {dataToken ? dataToken.assetsChain : ""}</h2>
+                <h2>Repay {dataToken ? dataToken.assetsChain : ""}</h2>
                 <button className="btn-modal-close" onClick={closeModal}></button>
             </div>
 
@@ -164,15 +138,15 @@ const ModalBorrow = () => {
                 {/* STEP 1 */}
                 <div className={step === 1 ? "" : "hidden"}>
                     <div className='mt-4'>
-                        <p className='w-full font-montserrat text-center text-lg text-[#A0D911] leading-6'>How much would you like to borrow?</p>
+                        <p className='w-full font-montserrat text-center text-lg text-[#A0D911] leading-6'>Repay from wallet balnace</p>
                         <p className='w-4/5 font-poppins text-base text-center text-[#F5F5F5] leading-6 m-auto pt-6'>
-                            Please enter an amount you would like to borrow. The maximum amount you can borrow is shown below.
+                            Set the amount to repay
                         </p>
                     </div>
 
                     <div className="flex justify-between px-8 mt-12 text-lg font-sf_pro">
                         <div className='text-[#FAFAFA]'>
-                            Available to borrow
+                            Available to repay
                         </div>
                         <div>
                             <span className='font-poppins font-bold'>{accountBalance}</span>
@@ -235,38 +209,9 @@ const ModalBorrow = () => {
                 <div className={step === 2 ? "" : "hidden"}>
 
                     <div className='mt-4'>
-                        <p className='w-full font-montserrat text-center text-lg text-[#A0D911] leading-6'>Please select your interest rate</p>
+                        <p className='w-full font-montserrat text-center text-lg text-[#A0D911] leading-6'>Withdraw overview</p>
                         <p className='w-4/5 font-poppins text-base text-center text-[#F5F5F5] leading-6 m-auto pt-6'>
-                            Choose either stable or variable APY for your loan. Please click on the desired rate type and read the info box for more information on each option.
-                        </p>
-                    </div>
-
-                    <div className="flex flex-row space-x-6 justify-between px-16 my-12 text-lg font-poppins text-[#FAFAFA]">
-                        <div onClick={e => { handlerChangeRate(1) }} className={`basis-1/2 bg-[#20314E] rounded-xl flex flex-col items-center justify-center h-44 cursor-pointer border-[2px] border-solid border-[#373368] ${rate === 1 ? "bg-gradient-border" : ""}`}>
-                            <div className="bg-[#4D4B86] rounded-full w-12 h-12 flex items-center place-content-center">
-                                <img src={IcNext} alt={"next"} className="w-7 h-7" />
-                            </div>
-                            <div className='pt-6 text-base'>Stable APY</div>
-                            <div className='pt-1 font-bold text-sm'>6.21 %</div>
-                        </div>
-                        <div onClick={e => { handlerChangeRate(2) }} className={`basis-1/2 bg-[#20314E] rounded-xl flex flex-col items-center justify-center h-44 cursor-pointer border-[2px] border-solid border-[#373368] ${rate === 2 ? "bg-gradient-border" : ""}`}>
-                            <div className="bg-[#4D4B86] rounded-full w-12 h-12 flex items-center place-content-center">
-                                <img src={IcNext1} alt={"next"} className="w-7 h-7" />
-                            </div>
-                            <div className='pt-6 text-base'>Variable APY</div>
-                            <div className='pt-1 font-bold text-sm'>0.04 %</div>
-                        </div>
-                    </div>
-
-                </div>
-
-                {/* STEP 3 */}
-                <div className={step === 3 ? "" : "hidden"}>
-
-                    <div className='mt-4'>
-                        <p className='w-full font-montserrat text-center text-lg text-[#A0D911] leading-6'>Borrow overview</p>
-                        <p className='w-4/5 font-poppins text-base text-center text-[#F5F5F5] leading-6 m-auto pt-6'>
-                            These are your transaction details. Make sure to check if this is correct before submitting.
+                            These are your transaction details. Make sure to check if this is correct before submitting
                         </p>
                     </div>
 
@@ -274,7 +219,27 @@ const ModalBorrow = () => {
 
                         <div className="flex justify-between text-lg font-poppins">
                             <div className='text-[#FAFAFA] font-light'>
-                                Amount
+                                Amount to repay
+                            </div>
+                            <div className='flex items-center'>
+                                <img className='w-6 h-6' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
+                                <span className='font-poppins font-bold pl-2'>{numberWithCommas(amount)}</span>
+                                <span className='text-[#BFBFBF] pl-2'>VET</span>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between text-lg font-poppins">
+                            <div className='text-[#FAFAFA]'>
+                            </div>
+                            <div>
+                                <span className='font-poppins font-thin text-sm'>{numberWithCommas(amount)}</span>
+                            </div>
+                        </div>
+
+
+                        <div className="flex justify-between text-lg font-poppins">
+                            <div className='text-[#FAFAFA] font-light'>
+                                Remaining to repay
                             </div>
                             <div className='flex items-center'>
                                 <img className='w-6 h-6' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
@@ -293,19 +258,10 @@ const ModalBorrow = () => {
 
                         <div className="flex justify-between text-lg font-poppins pt-4">
                             <div className='text-[#FAFAFA] font-light'>
-                                Interest (APY)
+                                Current Health Factor
                             </div>
                             <div>
-                                <span className='font-poppins font-bold'>0.4</span>
-                            </div>
-                        </div>
-
-                        <div className="flex justify-between text-lg font-poppins pt-4">
-                            <div className='text-[#FAFAFA] font-light'>
-                                Interest rate type
-                            </div>
-                            <div>
-                                <span className='font-poppins font-bold'>Variable</span>
+                                <span className='font-poppins font-bold text-[#52E9A9]'>5,546.74</span>
                             </div>
                         </div>
 
@@ -314,7 +270,7 @@ const ModalBorrow = () => {
                                 New health factor
                             </div>
                             <div>
-                                <span className='font-poppins font-bold text-[#FF4D4F]'>1.03</span>
+                                <span className='font-poppins font-bold'>-</span>
                             </div>
                         </div>
 
@@ -324,7 +280,7 @@ const ModalBorrow = () => {
 
                         <div className="flex justify-between text-lg font-poppins bg-[#0F1B2F]">
                             <div className={`text-[#FAFAFA] text-base text-center font-light  w-1/2 p-1 bg-btn-veb ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
-                                1 Borrow
+                                1 Repay
                             </div>
                             <div className={`text-[#FAFAFA] text-base text-center font-light w-1/2 p-1 ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
                                 2 {pending ? "Pending" : "Finished"}
@@ -336,11 +292,11 @@ const ModalBorrow = () => {
                                 <div className='font-light text-base'>
 
                                     {transaction ?
-                                        <label className='text-[#50e3ab]'>2/2 Borrow</label>
+                                        <label className='text-[#50e3ab]'>2/2 Repay</label>
                                         :
                                         <>
-                                            <label className='text-[#50e3ab]'>1/2 Borrow</label>
-                                            <div className='text-[#FAFAFA] pt-2'>Please submit to borrow</div>
+                                            <label className='text-[#50e3ab]'>1/2 Repay</label>
+                                            <div className='text-[#FAFAFA] pt-2'>Please submit to Repay</div>
                                         </>
                                     }
 
@@ -354,7 +310,7 @@ const ModalBorrow = () => {
                                     <button onClick={e => { closeModalAndDashboard(e) }} className={`btn-modal-veb bg-btn-veb`} type="submit">Dashboard</button>
                                     :
                                     showBtnView()
-                                    // <BtnBorrow pending={pending} amount={amount} rate={rate} />
+                                    // <BtnWithdraw pending={pending} amount={amount} rate={rate} />
                                 }
 
                             </div>
@@ -379,4 +335,4 @@ const ModalBorrow = () => {
     )
 }
 
-export default ModalBorrow;
+export default ModalRepay;

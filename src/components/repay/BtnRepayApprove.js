@@ -4,7 +4,7 @@ import { Beforeunload } from 'react-beforeunload';
 
 import * as actions from '../../actions';
 
-const BtnWithdrawApprove = ({ dataToken, rate, pending }) => {
+const BtnRepayApprove = ({ dataToken, rate, pending }) => {
 
     const [isPending, setIsPending] = useState(false);
     const dispatch = useDispatch();
@@ -12,7 +12,7 @@ const BtnWithdrawApprove = ({ dataToken, rate, pending }) => {
     const approveHandler = async () => {
         if (!isPending) {
             setIsPending(true);
-            await dispatch(actions.approveWithdraw(dataToken, rate)).then(() => {
+            await dispatch(actions.approveBorrow(dataToken, rate)).then(() => {
                 setIsPending(false);
             }).catch((e) => {
                 setIsPending(false);
@@ -30,4 +30,4 @@ const BtnWithdrawApprove = ({ dataToken, rate, pending }) => {
     )
 }
 
-export default BtnWithdrawApprove;
+export default BtnRepayApprove;

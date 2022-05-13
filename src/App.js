@@ -33,9 +33,8 @@ function App() {
           <Route path="*" index element={<MarketPage />} />
         </Route> */}
 
-        <Route path="/borrows" element={<BorrowPage />} />
-
-        <Route path="/supply" element={<SupplyPage />} />
+        {/* <Route path="/borrows" element={<BorrowPage />} />
+        <Route path="/supply" element={<SupplyPage />} /> */}
 
         <Route path="*" element={<Navigate to="/" />} />
 
