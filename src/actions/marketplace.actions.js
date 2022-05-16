@@ -181,21 +181,24 @@ export const repayETHMarket = (dataToken, amount, rateMode = 2) => async (dispat
             type: marketplaceConstants.MODAL_WITHDRAW_MARKET_REQUEST
         });
 
-        //const amountRepay = web3.utils.toWei(amount.toString());
-        const amountRepay = '100000000000000000';
-
-
+        const amountRepay = web3.utils.toWei(amount.toString());
+        let amountApprove = 999999999;
 
         // approve Atoken to move my 1e18 wei VeThor
         const approveABI = ERC20ABI_VARIBLE_DEBT_TOKEN.find(({ name, type }) => (name === "approveDelegation" && type === "function"));
         let approveMethod = connex.thor.account(process.env.REACT_APP_VARIABLE_DEBT_TOKEN_VET).method(approveABI);
 
         // console.log(process.env.REACT_APP_VARIABLE_DEBT_TOKEN_VET, ADDRESS_GATEWAY, amountRepay);
-        const c1_approve = approveMethod.asClause(ADDRESS_GATEWAY, amountRepay);
+        const c1_approve = approveMethod.asClause(ADDRESS_GATEWAY, web3.utils.toWei(amountApprove.toString()));
 
         const repayETH_ABI = ERC20ABI_WETH_GETAWAY.find(({ name, type }) => name === "repayETH" && type === "function");
+        //console.log(repayETH_ABI)
         const methodRepay = connex.thor.account(ADDRESS_GATEWAY).method(repayETH_ABI);
+
+        methodRepay.value(amountRepay);
         const c2_repay = methodRepay.asClause(ADDRESS_POOL, amountRepay, rateMode, account);
+
+        //console.log(ADDRESS_POOL, amountRepay, rateMode, account);
 
         // console.log(ADDRESS_GATEWAY, ADDRESS_POOL, amountRepay, rateMode, account);
 
@@ -428,11 +431,10 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
     if (dataToken.assetsChain === "VET") {
 
         // check approveDelegation
-        // let contractStableDebt = new web3.eth.Contract(ERC20ABI_STABLE_DEBT_TOKEN, process.env.REACT_APP_STABLE_DEBT_TOKEN_VET);
-        // accountStableDebtApprove = await contractStableDebt.methods.borrowAllowance(account, ADDRESS_GATEWAY).call();
-        // console.log("accountStableDebtApprove", accountStableDebtApprove)
-        // accountStableDebtApprove = ethers.utils.formatEther(accountStableDebtApprove);
-        // accountStableDebtApprove = Number(accountStableDebtApprove);
+        let contractStableDebt = new web3.eth.Contract(ERC20ABI_STABLE_DEBT_TOKEN, process.env.REACT_APP_STABLE_DEBT_TOKEN_VET);
+        accountStableDebtApprove = await contractStableDebt.methods.borrowAllowance(account, ADDRESS_GATEWAY).call();
+        accountStableDebtApprove = ethers.utils.formatEther(accountStableDebtApprove);
+        accountStableDebtApprove = Number(accountStableDebtApprove);
 
         // check approveDelegation
         let contractVariableDebt = new web3.eth.Contract(ERC20ABI_VARIBLE_DEBT_TOKEN, process.env.REACT_APP_VARIABLE_DEBT_TOKEN_VET);

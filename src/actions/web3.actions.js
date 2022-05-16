@@ -113,7 +113,7 @@ export const web3Connect = (isLogin) => async (dispatch) => {
     let _sign = localStorage.getItem('_sign');
 
     const connex = new Connex({
-        node: 'https://testnet.veblocks.net/',
+        node: 'https://testnet.veblocks.net',
         network: 'test'
     })
 
