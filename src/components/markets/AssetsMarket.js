@@ -9,12 +9,10 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import IcVeBank from '../../assets/images/ic_vebank.svg';
 import IcDropdown from '../../assets/images/ic_dropdown.svg';
 
-import ModalSupply from '../supply/ModalSupply';
-import ModalBorrow from '../borrows/ModalBorrow';
 import AssetsRowAction from './AssetsRowAction';
 
 import * as actions from '../../actions';
-import ModalWithdraw from '../withdraw/ModalWithdraw';
+
 
 const AssetsMarket = () => {
 
@@ -143,9 +141,6 @@ const AssetsMarket = () => {
                 </TransitionGroup>
 
             </div>
-            <ModalSupply />
-            <ModalBorrow />
-            <ModalWithdraw />
 
         </div>
     )

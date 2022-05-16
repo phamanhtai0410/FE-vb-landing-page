@@ -36,6 +36,7 @@ const AssetsRowAction = ({ openRowAssets, item }) => {
                         className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
                         type="text"
                         placeholder={"0"}
+                        disabled={true}
                     />
                     <BtnOpenSupply item={item} />
                 </div>
@@ -61,6 +62,7 @@ const AssetsRowAction = ({ openRowAssets, item }) => {
                         className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
                         type="text"
                         placeholder={"0"}
+                        disabled={true}
                     />
                     <BtnOpenBorrow item={item} />
                 </div>

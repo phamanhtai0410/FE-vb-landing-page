@@ -37,7 +37,7 @@ const ModalBorrow = () => {
     const [amount, setAmount] = useState(0);
     const [values, setValues] = useState([0]);
     const [step, setStep] = useState(1);
-    const [rate, setRate] = useState(null);
+    const [rate, setRate] = useState(2);
 
     const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, accountVariableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
 
@@ -51,7 +51,7 @@ const ModalBorrow = () => {
         setAmount(0);
         setValues([0]);
         setStep(1);
-        setRate(null);
+        setRate(2);
     }
 
     const closeModal = () => {
@@ -125,13 +125,10 @@ const ModalBorrow = () => {
 
             if (dataToken.assetsChain === "VET") {
                 if (accountStableDebtApprove === 0 && rate === 1) {
-                    console.log("1")
                     btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
                 } else if (accountVariableDebtApprove === 0 && rate === 2) {
-                    console.log("2")
                     btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
                 } else {
-                    console.log("3")
                     btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
                 }
             } else {
@@ -244,14 +241,14 @@ const ModalBorrow = () => {
                         </p>
                     </div>
 
-                    <div className="flex flex-row space-x-6 justify-between px-16 my-12 text-lg font-poppins text-[#FAFAFA]">
-                        <div onClick={e => { handlerChangeRate(1) }} className={`basis-1/2 bg-[#20314E] rounded-xl flex flex-col items-center justify-center h-44 cursor-pointer border-[2px] border-solid border-[#373368] ${rate === 1 ? "bg-gradient-border" : ""}`}>
+                    <div className="flex flex-row space-x-6 justify-center px-16 my-12 text-lg font-poppins text-[#FAFAFA]">
+                        {/* <div onClick={e => { handlerChangeRate(1) }} className={`basis-1/2 bg-[#20314E] rounded-xl flex flex-col items-center justify-center h-44 cursor-pointer border-[2px] border-solid border-[#373368] ${rate === 1 ? "bg-gradient-border" : ""}`}>
                             <div className="bg-[#4D4B86] rounded-full w-12 h-12 flex items-center place-content-center">
                                 <img src={IcNext} alt={"next"} className="w-7 h-7" />
                             </div>
                             <div className='pt-6 text-base'>Stable APY</div>
                             <div className='pt-1 font-bold text-sm'>6.21 %</div>
-                        </div>
+                        </div> */}
                         <div onClick={e => { handlerChangeRate(2) }} className={`basis-1/2 bg-[#20314E] rounded-xl flex flex-col items-center justify-center h-44 cursor-pointer border-[2px] border-solid border-[#373368] ${rate === 2 ? "bg-gradient-border" : ""}`}>
                             <div className="bg-[#4D4B86] rounded-full w-12 h-12 flex items-center place-content-center">
                                 <img src={IcNext1} alt={"next"} className="w-7 h-7" />
@@ -290,7 +287,7 @@ const ModalBorrow = () => {
                             <div className='text-[#FAFAFA]'>
                             </div>
                             <div>
-                                <span className='font-poppins font-thin text-sm'>{numberWithCommas(amount)}</span>
+                                <span className='font-poppins font-thin text-sm'>{numberWithCommas(amount)} $</span>
                             </div>
                         </div>
 

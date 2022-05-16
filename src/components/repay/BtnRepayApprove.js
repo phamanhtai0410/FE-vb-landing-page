@@ -12,11 +12,11 @@ const BtnRepayApprove = ({ dataToken, rate, pending }) => {
     const approveHandler = async () => {
         if (!isPending) {
             setIsPending(true);
-            await dispatch(actions.approveBorrow(dataToken, rate)).then(() => {
-                setIsPending(false);
-            }).catch((e) => {
-                setIsPending(false);
-            });
+            // await dispatch(actions.approveRepay(dataToken, rate)).then(() => {
+            //     setIsPending(false);
+            // }).catch((e) => {
+            //     setIsPending(false);
+            // });
         }
     }
 

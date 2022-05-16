@@ -2,11 +2,17 @@ import React from "react";
 import AccountAssets from "../components/account/AccountAssets";
 // import { useDispatch, useSelector } from "react-redux";
 
-import ModalBorrow from "../components/borrows/ModalBorrow";
+
 import AssetsMarket from "../components/markets/AssetsMarket";
 import NetMarket from "../components/markets/NetMarket";
 import Overview from "../components/markets/Overview";
 import TabMarket from "../components/markets/TabMarket";
+
+
+import ModalBorrow from "../components/borrows/ModalBorrow";
+import ModalWithdraw from "../components/withdraw/ModalWithdraw";
+import ModalSupply from "../components/supply/ModalSupply";
+import ModalRepay from "../components/repay/ModalRepay";
 
 const MarketPage = () => {
 
@@ -33,6 +39,10 @@ const MarketPage = () => {
       </div>
 
       <ModalBorrow />
+      <ModalSupply />
+      <ModalWithdraw />
+      <ModalRepay />
+
 
     </section>
 

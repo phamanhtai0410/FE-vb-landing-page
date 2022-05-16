@@ -13,8 +13,8 @@ import * as actions from '../../actions';
 import IcNext from '../../assets/images/ic_next.svg';
 import IcNext1 from '../../assets/images/ic_factory.svg';
 
-import BtnWithdraw from './BtnRepay';
-import BtnWithdrawApprove from './BtnRepayApprove';
+import BtnRepay from './BtnRepay';
+import BtnRepayApprove from './BtnRepayApprove';
 
 const customStyles = {
     content: {
@@ -34,16 +34,17 @@ const customStyles = {
 const ModalRepay = () => {
 
     const [amount, setAmount] = useState(0);
+    const [remain, setRemain] = useState(0);//Remaining to repay
     const [values, setValues] = useState([0]);
     const [step, setStep] = useState(1);
 
-    const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.withdrawReducer, shallowEqual);
+    const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.repayReducer, shallowEqual);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
         resetFrm();
-    }, [dataToken]);
+    }, [isOpen]);
 
     const resetFrm = () => {
         setAmount(0);
@@ -52,8 +53,9 @@ const ModalRepay = () => {
     }
 
     const closeModal = () => {
+
         dispatch({
-            type: marketplaceConstants.MODAL_CLOSE_WITHDRAW_MARKET
+            type: marketplaceConstants.MODAL_CLOSE_REPAY_MARKET
         })
 
         if (transaction) {
@@ -70,6 +72,7 @@ const ModalRepay = () => {
     const onChangeRangeAmount = (values) => {
         setValues(values);
         setAmount(values[0]);
+
     }
 
     const onChangeAmount = (e) => {
@@ -77,8 +80,20 @@ const ModalRepay = () => {
         if (value <= accountBalance) {
             setAmount(value)
             setValues([value]);
+            onChangeRemainAmount(value)
+
         }
     }
+    const onChangeRemainAmount = (values) => {
+
+        if (values) {
+            setRemain(accountBalance - Number(values));
+        } else {
+            setRemain(accountBalance);
+        }
+
+    }
+
 
     const handlerStepToStep = (e) => {
         if (step === 1 && amount > 0) {
@@ -105,13 +120,12 @@ const ModalRepay = () => {
         if (dataToken) {
 
             if (dataToken.assetsChain === "VET") {
-                btn = <BtnWithdraw dataToken={dataToken} pending={pending} amount={amount} />
+                btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
             } else if (accountApprove === 0) {
-                btn = <BtnWithdrawApprove dataToken={dataToken} pending={pending} />
+                btn = <BtnRepayApprove dataToken={dataToken} pending={pending} />
             } else {
-                btn = <BtnWithdraw dataToken={dataToken} pending={pending} amount={amount} />
+                btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
             }
-
 
         }
         return btn;
@@ -182,7 +196,7 @@ const ModalRepay = () => {
                         <Range
                             step={1}
                             min={0}
-                            max={accountBalance}
+                            max={accountBalance > 0 ? accountBalance : null}
                             values={values}
                             onChange={(values) => {
                                 onChangeRangeAmount(values)
@@ -209,7 +223,7 @@ const ModalRepay = () => {
                 <div className={step === 2 ? "" : "hidden"}>
 
                     <div className='mt-4'>
-                        <p className='w-full font-montserrat text-center text-lg text-[#A0D911] leading-6'>Withdraw overview</p>
+                        <p className='w-full font-montserrat text-center text-lg text-[#A0D911] leading-6'>Repay overview</p>
                         <p className='w-4/5 font-poppins text-base text-center text-[#F5F5F5] leading-6 m-auto pt-6'>
                             These are your transaction details. Make sure to check if this is correct before submitting
                         </p>
@@ -223,7 +237,7 @@ const ModalRepay = () => {
                             </div>
                             <div className='flex items-center'>
                                 <img className='w-6 h-6' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
-                                <span className='font-poppins font-bold pl-2'>{numberWithCommas(amount)}</span>
+                                <span className='font-poppins font-bold pl-2'>{amount}</span>
                                 <span className='text-[#BFBFBF] pl-2'>VET</span>
                             </div>
                         </div>
@@ -232,10 +246,9 @@ const ModalRepay = () => {
                             <div className='text-[#FAFAFA]'>
                             </div>
                             <div>
-                                <span className='font-poppins font-thin text-sm'>{numberWithCommas(amount)}</span>
+                                <span className='font-poppins font-thin text-sm'>{amount} $</span>
                             </div>
                         </div>
-
 
                         <div className="flex justify-between text-lg font-poppins">
                             <div className='text-[#FAFAFA] font-light'>
@@ -243,7 +256,7 @@ const ModalRepay = () => {
                             </div>
                             <div className='flex items-center'>
                                 <img className='w-6 h-6' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
-                                <span className='font-poppins font-bold pl-2'>{numberWithCommas(amount)}</span>
+                                <span className='font-poppins font-bold pl-2'>{remain} $</span>
                                 <span className='text-[#BFBFBF] pl-2'>VET</span>
                             </div>
                         </div>
@@ -252,7 +265,7 @@ const ModalRepay = () => {
                             <div className='text-[#FAFAFA]'>
                             </div>
                             <div>
-                                <span className='font-poppins font-thin text-sm'>{numberWithCommas(amount)}</span>
+                                <span className='font-poppins font-thin text-sm'>{remain}</span>
                             </div>
                         </div>
 
@@ -310,7 +323,7 @@ const ModalRepay = () => {
                                     <button onClick={e => { closeModalAndDashboard(e) }} className={`btn-modal-veb bg-btn-veb`} type="submit">Dashboard</button>
                                     :
                                     showBtnView()
-                                    // <BtnWithdraw pending={pending} amount={amount} rate={rate} />
+                                    // <BtnRepay pending={pending} amount={amount} rate={rate} />
                                 }
 
                             </div>

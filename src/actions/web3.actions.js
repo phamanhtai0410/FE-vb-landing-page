@@ -11,6 +11,8 @@ import getWeb3 from '../utils/getWeb3';
 
 import ERC20ABI_VB from '../_contracts/VB.json';
 import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
+import ERC20ABI_ISEER_ORACLE from '../_contracts/SeerOracle.json';
+
 
 
 // VET : dung de staking duy tri he thong
@@ -24,6 +26,14 @@ const TOKEN_WVET = process.env.REACT_APP_TOKEN_WVET; //WVET(Wrapped VET)
 const ADDRESS_PROTOCOL = process.env.REACT_APP_ADDRESS_PROTOCOL; // AaveProtoco
 
 const chainID = process.env.REACT_APP_NETWORK_ID;
+
+const ListKeyISeerOracle = {
+    "VET": process.env.REACT_APP_ISO_VET,
+    "VETHO": process.env.REACT_APP_ISO_VETHO,
+    "VB": process.env.REACT_APP_ISO_VB,
+    "VEUSD": process.env.REACT_APP_ISO_VEUSD,
+}
+
 const networks = {
     bsc_testnet: {
         chainId: `0x${Number(97).toString(16)}`, // A 0x-prefixed hexadecimal string
@@ -292,12 +302,19 @@ export const getAccountAssets = () => async (dispatch, getState) => {
                 }
 
                 let balanceBorrow = 0;
+                let accountVariableDebt = 0;
+                let accountStableDebt = 0;
+
                 if (accountReserve.currentStableDebt || accountReserve.currentVariableDebt) {
 
                     const currentStableDebt = ethers.utils.formatUnits(accountReserve.currentStableDebt || '0', item.assetsDecimals);
-                    const currentVariableDebt = ethers.utils.formatUnits(accountReserve.currentVariableDebt || '0', item.assetsDecimals);
+                    accountStableDebt = Number(currentStableDebt);
 
-                    balanceBorrow = Number(currentStableDebt) + Number(currentVariableDebt);
+                    const currentVariableDebt = ethers.utils.formatUnits(accountReserve.currentVariableDebt || '0', item.assetsDecimals);
+                    accountVariableDebt = Number(currentVariableDebt);
+
+                    //balanceBorrow = accountStableDebt + accountVariableDebt;
+                    balanceBorrow = accountVariableDebt;
                     balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
 
                     dataUser.accountBorrowBalance = dataUser.accountBorrowBalance + Number(balanceBorrow);
@@ -305,13 +322,13 @@ export const getAccountAssets = () => async (dispatch, getState) => {
                 }
 
                 if (balanceSupply || balanceBorrow) {
-
                     dataList.push({
                         ...item,
                         totalSupplied: balanceSupply,
                         totalBorrowed: balanceBorrow,
+                        accountStableDebt: accountStableDebt,
+                        accountVariableDebt: accountVariableDebt,
                     })
-
                 }
 
             }
@@ -343,7 +360,7 @@ export const getAccountAssets = () => async (dispatch, getState) => {
 
 };
 
-export const getMarketAssets = () => async (dispatch, getState) => {
+export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
 
     const state = getState();
 
@@ -360,10 +377,16 @@ export const getMarketAssets = () => async (dispatch, getState) => {
     if (web3 && TOKEN_AAVE && data.length > 0) {
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
-
+        const currentPriceUSD = 0;
         for await (const item of data) {
 
             const getReserveData = await contractAAVE.methods.getReserveData(item.assetsAddress).call();
+
+            if (isCurrentUSD && ListKeyISeerOracle[item.assetsChain]) {
+                let contractISeerOracle = new web3.eth.Contract(ERC20ABI_ISEER_ORACLE, ListKeyISeerOracle[item.assetsChain]);
+                const currentPrice = await contractISeerOracle.methods.latestAnswer().call();
+                console.log(currentPrice);
+            }
 
             //const dataConfig = await contractAAVE.methods.getReserveConfigurationData(item.assetsAddress).call();
 
@@ -377,10 +400,11 @@ export const getMarketAssets = () => async (dispatch, getState) => {
             let balanceBorrow = 0;
             if (getReserveData.totalStableDebt || getReserveData.totalVariableDebt) {
 
-                const totalStableDebt = ethers.utils.formatUnits(getReserveData.totalStableDebt || '0', item.assetsDecimals);
+                // const totalStableDebt = ethers.utils.formatUnits(getReserveData.totalStableDebt || '0', item.assetsDecimals);
                 const totalVariableDebt = ethers.utils.formatUnits(getReserveData.totalVariableDebt || '0', item.assetsDecimals);
 
-                balanceBorrow = Number(totalStableDebt) + Number(totalVariableDebt);
+                // balanceBorrow = Number(totalStableDebt) + Number(totalVariableDebt);
+                balanceBorrow = Number(totalVariableDebt);
                 balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
 
                 dataTotal.totalBorrow = dataTotal.totalBorrow + Number(balanceBorrow);

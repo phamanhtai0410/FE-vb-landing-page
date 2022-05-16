@@ -22,14 +22,16 @@ const BtnOpenBorrow = ({ item }) => {
 
     // Rule không dc borrow token đã supply
     const checkRuleBtn = (dataAssets) => {
-        // if (dataAssets.length > 0) {
-        //     const provided = dataAssets.find(e => e.assetsAddress === item.assetsAddress);
-        //     if (provided) {
-        //         setDisabledRule(true)
-        //     }
-        // }
-        // Truong hop token nay chua co ai supply 
-        if (item.totalSupplied === 0) {
+
+        if (dataAssets.length > 0) {
+            const provided = dataAssets.find(e => e.assetsAddress === item.assetsAddress);
+            if (provided && provided.totalSupplied > 0) {
+                setDisabledRule(true)
+            }
+        }
+
+        // Truong hop token nay chua co ai supply
+        if (item && item.totalSupplied === 0) {
             setDisabledRule(true)
         }
     }

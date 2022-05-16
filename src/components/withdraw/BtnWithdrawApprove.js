@@ -12,11 +12,11 @@ const BtnWithdrawApprove = ({ dataToken, rate, pending }) => {
     const approveHandler = async () => {
         if (!isPending) {
             setIsPending(true);
-            await dispatch(actions.approveWithdraw(dataToken, rate)).then(() => {
-                setIsPending(false);
-            }).catch((e) => {
-                setIsPending(false);
-            });
+            // await dispatch(actions.approveWithdraw(dataToken, rate)).then(() => {
+            //     setIsPending(false);
+            // }).catch((e) => {
+            //     setIsPending(false);
+            // });
         }
     }
 

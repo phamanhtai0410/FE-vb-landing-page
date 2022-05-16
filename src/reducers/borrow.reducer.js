@@ -11,6 +11,9 @@ const initialState = {
 
   accountBalance: 0,
   accountApprove: 0,
+  accountStableDebtApprove: 0,
+  accountVariableDebtApprove: 0,
+
   dataToken: null,
   data: {}
 

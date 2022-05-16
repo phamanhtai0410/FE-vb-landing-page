@@ -20,10 +20,16 @@ const BtnOpenWithdraw = ({ item }) => {
     // Rule : có supply thì mới dc withdraw
     const checkRuleBtn = (dataAssets) => {
         if (dataAssets && dataAssets.length > 0) {
-            const provided = dataAssets.find(e => ((e.assetsAddress === item.assetsAddress) && e.totalSupplied > 0));
+
+            const provided = dataAssets.find(e => ((e.assetsAddress === item.assetsAddress)));
             if (!provided) {
                 setDisabledRule(true);
             }
+
+            if (provided && provided.totalSupplied === 0) {
+                setDisabledRule(true);
+            }
+
         }
     }
 

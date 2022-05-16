@@ -8,8 +8,9 @@ const initialState = {
   transaction: null,
   errorCode: null,
   message: null,
-
-  accountBalance: 0,
+  accountBalanceStableDebt: null,
+  accountBalanceVariableDebt: null,
+  accountBalance: null,
   accountApprove: 0,
   dataToken: null,
   data: {}
