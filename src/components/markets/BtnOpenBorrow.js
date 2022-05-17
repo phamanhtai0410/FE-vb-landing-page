@@ -12,7 +12,7 @@ const BtnOpenBorrow = ({ item }) => {
 
     const [disabledRule, setDisabledRule] = useState(false);
 
-    const { data } = useSelector(state => state.accountAssetsReducer, shallowEqual);
+    const { data, accountSupplyBalance } = useSelector(state => state.accountAssetsReducer, shallowEqual);
 
     useEffect(() => {
         if (data) {
@@ -22,6 +22,10 @@ const BtnOpenBorrow = ({ item }) => {
 
     // Rule không dc borrow token đã supply
     const checkRuleBtn = (dataAssets) => {
+
+        if (accountSupplyBalance === 0) {
+            setDisabledRule(true)
+        }
 
         if (dataAssets.length > 0) {
             const provided = dataAssets.find(e => e.assetsAddress === item.assetsAddress);
