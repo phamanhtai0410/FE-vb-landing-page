@@ -30,8 +30,6 @@ const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
  */
 export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
 
-    console.log("?loadModalRepay", dataToken)
-
     const state = getState();
     const { web3, account } = state.web3;
 
@@ -59,7 +57,7 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
 
         if (accountReserve.currentVariableDebt !== "0") {
             accountBalanceVariableDebt = ethers.utils.formatUnits(accountReserve.currentVariableDebt, dataToken.assetsDecimals);
-            console.log("accountBalanceVariableDebt", accountBalanceVariableDebt)
+            // console.log("accountBalanceVariableDebt", accountBalanceVariableDebt)
             // accountBalanceVariableDebt = Math.round(accountBalanceVariableDebt * 100) / 100;
             // accountBalanceVariableDebt = Number(accountBalanceVariableDebt);
         }
@@ -166,8 +164,6 @@ export const repayMarket = (dataToken, amount, rateMode = 2) => async (dispatch,
  */
 export const repayETHMarket = (dataToken, amount, rateMode = 2) => async (dispatch, getState) => {
 
-    console.log("repayETHMarket")
-
     const state = getState();
 
     const { web3, account, connex } = state.web3;
@@ -192,15 +188,10 @@ export const repayETHMarket = (dataToken, amount, rateMode = 2) => async (dispat
         const c1_approve = approveMethod.asClause(ADDRESS_GATEWAY, web3.utils.toWei(amountApprove.toString()));
 
         const repayETH_ABI = ERC20ABI_WETH_GETAWAY.find(({ name, type }) => name === "repayETH" && type === "function");
-        //console.log(repayETH_ABI)
         const methodRepay = connex.thor.account(ADDRESS_GATEWAY).method(repayETH_ABI);
 
         methodRepay.value(amountRepay);
         const c2_repay = methodRepay.asClause(ADDRESS_POOL, amountRepay, rateMode, account);
-
-        //console.log(ADDRESS_POOL, amountRepay, rateMode, account);
-
-        // console.log(ADDRESS_GATEWAY, ADDRESS_POOL, amountRepay, rateMode, account);
 
         connex.vendor
             .sign('tx', [c1_approve, c2_repay])
@@ -258,7 +249,8 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
 
         let balanceSupply = 0;
         if (accountReserve.currentATokenBalance) {
-            balanceSupply = ethers.utils.formatEther(accountReserve.currentATokenBalance);
+            balanceSupply = ethers.utils.formatUnits(accountReserve.currentATokenBalance, dataToken.assetsDecimals);
+            // balanceSupply = ethers.utils.formatEther(accountReserve.currentATokenBalance);
             balanceSupply = Math.round(balanceSupply * 100) / 100;
             accountBalance = Number(balanceSupply);
         }
