@@ -34,7 +34,10 @@ const BtnOpenRepay = ({ item }) => {
                 setDisabledRule(true);
             }
 
+        } else {
+            setDisabledRule(true);
         }
+
 
     }
 
