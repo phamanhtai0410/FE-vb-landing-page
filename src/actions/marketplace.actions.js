@@ -446,6 +446,7 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
 
     }
 
+
     dispatch({
         type: marketplaceConstants.MODAL_OPEN_BORROW_MARKET,
         accountApprove,
@@ -467,6 +468,8 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
  */
 
 export const approveBorrow = (dataToken, rateMode) => async (dispatch, getState) => {
+
+    console.log("approveBorrow", dataToken, rateMode);
 
     const state = getState();
     const { web3, account, connex } = state.web3;

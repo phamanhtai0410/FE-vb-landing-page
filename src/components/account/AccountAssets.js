@@ -13,24 +13,18 @@ const AccountAssets = () => {
 
     // const { balanceVET } = useSelector(state => state.contractVET, shallowEqual);
 
-
-
     const dispatch = useDispatch();
 
-    const { account } = useSelector(state => state.web3, shallowEqual);
+    const { web3 } = useSelector(state => state.web3, shallowEqual);
     const { data } = useSelector(state => state.accountAssetsReducer, shallowEqual);
 
     const [showAssets, setShowAssets] = useState(false);
 
     useEffect(() => {
-
-        if (account && data.length === 0) {
-            fetchAccountAssets();
-        } else if (!account) {
+        if (web3) {
             fetchAccountAssets();
         }
-
-    }, [account, data]);
+    }, [web3]);
 
     async function fetchAccountAssets() {
         await dispatch(actions.getAccountAssets());
