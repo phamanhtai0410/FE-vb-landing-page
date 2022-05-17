@@ -52,6 +52,7 @@ const ModalWithdraw = () => {
     }
 
     const closeModal = () => {
+
         dispatch({
             type: marketplaceConstants.MODAL_CLOSE_WITHDRAW_MARKET
         })
@@ -101,9 +102,9 @@ const ModalWithdraw = () => {
     }
 
     const showBtnView = () => {
+
         let btn = "";
         if (dataToken) {
-
             if (dataToken.assetsChain === "VET") {
                 btn = <BtnWithdraw dataToken={dataToken} pending={pending} amount={amount} />
             } else if (accountApprove === 0) {
@@ -111,9 +112,8 @@ const ModalWithdraw = () => {
             } else {
                 btn = <BtnWithdraw dataToken={dataToken} pending={pending} amount={amount} />
             }
-
-
         }
+
         return btn;
 
     }

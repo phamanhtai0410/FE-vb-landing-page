@@ -47,6 +47,10 @@ const ModalBorrow = () => {
         resetFrm();
     }, [dataToken]);
 
+    useEffect(() => {
+        setStep(1);
+    }, [isOpen]);
+
     const resetFrm = () => {
         setAmount(0);
         setValues([0]);

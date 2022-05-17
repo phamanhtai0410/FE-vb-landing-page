@@ -178,6 +178,9 @@ export const web3Disconnect = () => async (dispatch, getState) => {
         account: null
     });
 
+    dispatch(getAccountAssets());
+
+
     // setTimeout(() => {
     //     dispatch({ type: destroyConstants.DESTROY_SESSION });
     // }, 1000);
@@ -372,7 +375,7 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
         totalBorrow: 0
     }
 
-    let dataList = [];
+    let dataList = [].concat(data);
 
     if (web3 && TOKEN_AAVE && data.length > 0) {
 
