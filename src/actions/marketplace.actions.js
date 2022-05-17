@@ -431,9 +431,11 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
         // check approveDelegation
         let contractVariableDebt = new web3.eth.Contract(ERC20ABI_VARIBLE_DEBT_TOKEN, process.env.REACT_APP_VARIABLE_DEBT_TOKEN_VET);
         accountVariableDebtApprove = await contractVariableDebt.methods.borrowAllowance(account, ADDRESS_GATEWAY).call();
-
+        console.log("accountVariableDebtApprove 111", accountVariableDebtApprove)
         accountVariableDebtApprove = ethers.utils.formatEther(accountVariableDebtApprove);
         accountVariableDebtApprove = Number(accountVariableDebtApprove);
+
+        accountApprove = accountVariableDebtApprove;
 
     } else {
 
@@ -445,7 +447,6 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
         accountApprove = Number(accountApprove);
 
     }
-
 
     dispatch({
         type: marketplaceConstants.MODAL_OPEN_BORROW_MARKET,

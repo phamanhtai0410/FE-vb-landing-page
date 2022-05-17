@@ -504,11 +504,13 @@ export const reloadAccountAssets = (addressAsset) => async (dispatch, getState) 
 
         setTimeout(async () => {
             await dispatch(getAccountAssets());
-        }, 1000);
-
-        setTimeout(async () => {
             await dispatch(getMarketAssets());
         }, 2000);
+
+        setTimeout(async () => {
+            await dispatch(getAccountAssets());
+            await dispatch(getMarketAssets());
+        }, 4500);
 
 
     }
