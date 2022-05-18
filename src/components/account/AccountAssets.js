@@ -54,10 +54,16 @@ const AccountAssets = () => {
                             </div>
 
                             <div className="p-2 flex flex-col justify-center items-center font-semibold">
-                                <div className="text-lg font-semibold">{item.totalSupplied}</div>
-                                <div className="flex flex-row justify-start items-center space-x-2" >
-                                    <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalSuppliedUSD ? item.totalSuppliedUSD.toFixed(2) : 0}</span>
-                                </div>
+
+                                {
+                                    item.totalSupplied ? <>
+                                        <div className="text-lg font-semibold">{item.totalSupplied}</div>
+                                        <div className="flex flex-row justify-start items-center space-x-2" >
+                                            <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalSuppliedUSD ? item.totalSuppliedUSD.toFixed(2) : 0}</span>
+                                        </div>
+                                    </> : <div className="text-lg font-semibold">-</div>
+                                }
+
                             </div>
 
                             <div className="p-2 flex flex-col justify-center items-center content-center">
@@ -71,10 +77,13 @@ const AccountAssets = () => {
                             </div>
 
                             <div className="p-2 flex flex-col justify-center items-center font-semibold">
-                                <div className="text-lg font-semibold">{item.totalBorrowed}</div>
-                                <div className="flex flex-row justify-start items-center space-x-2" >
-                                    <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalBorrowedUSD ? item.totalBorrowedUSD.toFixed(2) : 0}</span>
-                                </div>
+                                {item.totalBorrowed ? <>  <div className="text-lg font-semibold">{item.totalBorrowed}</div>
+                                    <div className="flex flex-row justify-start items-center space-x-2" >
+                                        <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalBorrowedUSD ? item.totalBorrowedUSD.toFixed(2) : 0}</span>
+                                    </div></> :
+                                    <div className="text-lg font-semibold">-</div>
+                                }
+
                             </div>
 
                             {/* <div className="p-2 flex justify-center items-center font-semibold">{item.totalBorrowed} </div> */}
@@ -115,8 +124,8 @@ const AccountAssets = () => {
                     Your supply & borrow
                 </div>
                 <div className='flex flex-row justify-start items-center space-x-2 ' >
-                    <span className='text-white text-sm'>Show</span>
-                    <img className="w-3 h-3" src={IcDropdown} />
+                    <span className='text-white text-sm'>{showAssets ? "Hidden" : "Show"} </span>
+                    <img className={`w-3 h-3 cursor-pointer transition-transform delay-350 ${showAssets ? 'rotate-180' : ""}`} src={IcDropdown} />
                 </div>
             </div>
 

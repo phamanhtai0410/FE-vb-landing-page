@@ -267,7 +267,6 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
 };
 
 
-
 /**
  * 
  * @param {number} id 

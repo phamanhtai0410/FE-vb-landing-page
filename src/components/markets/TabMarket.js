@@ -15,7 +15,7 @@ const TabMarket = () => {
         } else if (location.hash === "#native") {
             setKeyHash(location.hash);
         } else {
-            setKeyHash("usd");
+            setKeyHash("#native");
         }
     }, [location]);
 

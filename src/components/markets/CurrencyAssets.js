@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 import { useEffect, useState } from 'react';
 import { useSelector, shallowEqual } from "react-redux";
 import { NavLink, useLocation } from 'react-router-dom';
@@ -28,9 +22,13 @@ const CurrencyAssets = ({ currencyBalance, assetsAddress }) => {
         }
     }, [location]);
 
+    if (!currencyBalance) {
+        return "-"
+    }
+
     return (
         <>
-            {keyHash === "#usd" && dataPrice ? <>$ {(currencyBalance * dataPrice[assetsAddress])}</> : currencyBalance}
+            {keyHash === "#usd" && dataPrice ? <>$ {(currencyBalance * dataPrice[assetsAddress]).toFixed(2)}</> : currencyBalance}
         </>
     )
 }

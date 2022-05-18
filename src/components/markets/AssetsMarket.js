@@ -50,6 +50,12 @@ const AssetsMarket = () => {
 
     }
 
+    const checkShowDown = (assetsAddress) => {
+        return !(openRowAssets.indexOf(assetsAddress) === -1);
+    }
+
+
+
     const showListAsset = (dataList) => {
 
         if (dataList && dataList.length > 0) {
@@ -84,7 +90,9 @@ const AssetsMarket = () => {
                                 </div>
                             </div>
 
-                            <div className="p-2 flex justify-center items-center font-semibold">$ {item.totalBorrowed}</div>
+                            <div className="p-2 flex justify-center items-center font-semibold">
+                                <CurrencyAssets currencyBalance={item.totalBorrowed} assetsAddress={item.assetsAddress} />
+                            </div>
 
                             <div className="p-2 flex flex-col justify-center items-center content-center">
                                 <div className="text-lg font-semibold">{item.borrowAPY} %</div>
@@ -97,7 +105,7 @@ const AssetsMarket = () => {
                             </div>
 
                             <div className="p-2 flex justify-center items-center cursor-pointer" >
-                                <img className="w-3 h-3" src={IcDropdown} />
+                                <img className={`w-3 h-3 transition-transform delay-350 ${checkShowDown(item.assetsAddress) ? 'rotate-180' : ""}`} src={IcDropdown} />
                             </div>
 
                         </div>
