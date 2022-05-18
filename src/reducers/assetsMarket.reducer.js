@@ -5,7 +5,6 @@ import IcVeChain from '../assets/images/ic_vechain.svg';
 import IcVeBank from '../assets/images/ic_vebank.svg';
 import IcVtho from '../assets/images/ic_vtho.svg';
 
-
 const listAsset = [
   {
     icon: IcVeChain,

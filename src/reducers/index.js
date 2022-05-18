@@ -9,11 +9,12 @@ import { web3 } from './web3.reducer';
 import { contractVB } from './contractVB.reducer';
 import { contractVET } from './contractVET.reducer';
 
-import { borrowReducer } from './borrow.reducer';
-import { supplyReducer } from './supply.reducer';
-
 import { accountAssetsReducer } from './accountAssets.reducer';
 import { assetsMarketReducer } from './assetsMarket.reducer';
+import { assetsPriceReducer } from './assetsPrice.reducer';
+
+import { borrowReducer } from './borrow.reducer';
+import { supplyReducer } from './supply.reducer';
 import { withdrawReducer } from './withdraw.reducer';
 import { repayReducer } from './repay.reducer';
 
@@ -26,6 +27,7 @@ const appReducer = combineReducers({
 
   accountAssetsReducer,
   assetsMarketReducer,
+  assetsPriceReducer,
 
   borrowReducer,
   supplyReducer,

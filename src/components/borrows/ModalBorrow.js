@@ -295,7 +295,7 @@ const ModalBorrow = () => {
                             <div className='flex items-center'>
                                 <img className='w-6 h-6' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
                                 <span className='font-poppins font-bold pl-2'>{numberWithCommas(amount)}</span>
-                                <span className='text-[#BFBFBF] pl-2'>VET</span>
+                                <span className='text-[#BFBFBF] pl-2'>{dataToken ? dataToken.assetsChain : ""}</span>
                             </div>
                         </div>
 

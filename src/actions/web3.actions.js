@@ -29,9 +29,9 @@ const chainID = process.env.REACT_APP_NETWORK_ID;
 
 const ListKeyISeerOracle = {
     "VET": process.env.REACT_APP_ISO_VET,
-    "VETHO": process.env.REACT_APP_ISO_VETHO,
+    "VTHO": process.env.REACT_APP_ISO_VETHO,
     "VB": process.env.REACT_APP_ISO_VB,
-    "VEUSD": process.env.REACT_APP_ISO_VEUSD,
+    "VEUSD": process.env.REACT_APP_ISO_VEUSD
 }
 
 const networks = {
@@ -271,23 +271,24 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
 export const getAccountAssets = () => async (dispatch, getState) => {
 
     const state = getState();
-    const { web3, account } = state.web3;
 
+    const { web3, account } = state.web3;
     const { data } = state.assetsMarketReducer;
+
+    const dataPrice = state.assetsPriceReducer.data;
 
     let dataUser = {
         accountSupplyBalance: 0,
         accountBorrowBalance: 0,
     }
-
     let dataList = [];
 
-    if (web3 && account) {
+    if (web3 && account && dataPrice) {
 
-        dispatch({
-            type: marketplaceConstants.FETCH_ACCOUNT_ASSETS_REQUEST,
-            query: {}
-        });
+        // dispatch({
+        //     type: marketplaceConstants.FETCH_ACCOUNT_ASSETS_REQUEST,
+        //     query: {}
+        // });
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
 
@@ -298,13 +299,17 @@ export const getAccountAssets = () => async (dispatch, getState) => {
                 const accountReserve = await contractAAVE.methods.getUserReserveData(item.assetsAddress, account).call();
 
                 let balanceSupply = 0;
+                let balanceSupplyUSD = 0;
                 if (accountReserve.currentATokenBalance) {
                     balanceSupply = ethers.utils.formatUnits(accountReserve.currentATokenBalance, item.assetsDecimals);
                     balanceSupply = Math.round(balanceSupply * 100) / 100;
-                    dataUser.accountSupplyBalance = dataUser.accountSupplyBalance + Number(balanceSupply)
+                    balanceSupplyUSD = dataPrice[item.assetsAddress] * balanceSupply;
+                    dataUser.accountSupplyBalance = dataUser.accountSupplyBalance + Number(balanceSupplyUSD);
+
                 }
 
                 let balanceBorrow = 0;
+                let balanceBorrowUSD = 0;
                 let accountVariableDebt = 0;
                 let accountStableDebt = 0;
 
@@ -320,7 +325,9 @@ export const getAccountAssets = () => async (dispatch, getState) => {
                     balanceBorrow = accountVariableDebt;
                     balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
 
-                    dataUser.accountBorrowBalance = dataUser.accountBorrowBalance + Number(balanceBorrow);
+                    balanceBorrowUSD = dataPrice[item.assetsAddress] * balanceBorrow;
+
+                    dataUser.accountBorrowBalance = dataUser.accountBorrowBalance + Number(balanceBorrowUSD);
 
                 }
 
@@ -329,6 +336,10 @@ export const getAccountAssets = () => async (dispatch, getState) => {
                         ...item,
                         totalSupplied: balanceSupply,
                         totalBorrowed: balanceBorrow,
+
+                        totalSuppliedUSD: balanceSupplyUSD,
+                        totalBorrowedUSD: balanceBorrowUSD,
+
                         accountStableDebt: accountStableDebt,
                         accountVariableDebt: accountVariableDebt,
                     })
@@ -375,21 +386,21 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
         totalBorrow: 0
     }
 
-    let dataList = [].concat(data);
+    let dataList = [];
 
     if (web3 && TOKEN_AAVE && data.length > 0) {
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
-        const currentPriceUSD = 0;
+
         for await (const item of data) {
 
             const getReserveData = await contractAAVE.methods.getReserveData(item.assetsAddress).call();
 
-            if (isCurrentUSD && ListKeyISeerOracle[item.assetsChain]) {
-                let contractISeerOracle = new web3.eth.Contract(ERC20ABI_ISEER_ORACLE, ListKeyISeerOracle[item.assetsChain]);
-                const currentPrice = await contractISeerOracle.methods.latestAnswer().call();
-                console.log(currentPrice);
-            }
+            // if (isCurrentUSD && ListKeyISeerOracle[item.assetsChain]) {
+            //     let contractISeerOracle = new web3.eth.Contract(ERC20ABI_ISEER_ORACLE, ListKeyISeerOracle[item.assetsChain]);
+            //     const currentPrice = await contractISeerOracle.methods.latestAnswer().call();
+            //     console.log(currentPrice);
+            // }
 
             //const dataConfig = await contractAAVE.methods.getReserveConfigurationData(item.assetsAddress).call();
 
@@ -438,8 +449,48 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
         dispatch({
             type: marketplaceConstants.FETCH_ASSETS_MARKET_SUCCESS,
             ...dataTotal,
+            data
+        });
+    }
+
+    return dataList;
+
+};
+
+export const getCurrentAssets = () => async (dispatch, getState) => {
+
+    const state = getState();
+
+    const { web3 } = state.web3;
+    const { data } = state.assetsMarketReducer;
+
+    let dataList = [];
+
+    if (web3 && data.length > 0) {
+
+        for await (const item of data) {
+
+            if (ListKeyISeerOracle[item.assetsChain]) {
+
+                let contractISeerOracle = new web3.eth.Contract(ERC20ABI_ISEER_ORACLE, ListKeyISeerOracle[item.assetsChain]);
+                let currentPriceUSD = await contractISeerOracle.methods.latestAnswer().call();
+
+                if (item.assetsChain === "VEUSD") {
+                    currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 6);;
+                } else {
+                    currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 12);;
+                }
+
+                dataList[item.assetsAddress] = currentPriceUSD;
+            }
+
+        }
+
+        dispatch({
+            type: marketplaceConstants.FETCH_ASSETS_PRICE_SUCCESS,
             data: dataList
         });
+
     }
 
     return dataList;
@@ -494,7 +545,6 @@ export const fetchCurrentMSP = () => async (dispatch) => {
     }
 }
 
-
 export const reloadAccountAssets = (addressAsset) => async (dispatch, getState) => {
 
     const state = getState();
@@ -519,10 +569,6 @@ export const reloadAccountAssets = (addressAsset) => async (dispatch, getState) 
     }
 
 };
-
-
-
-
 
 const formatCur = (value) => {
     return Math.round(value * 100) / 100;

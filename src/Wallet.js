@@ -28,6 +28,7 @@ const Wallet = () => {
 
     async function fetchWeb3Init(loadDefault) {
         await dispatch(actions.web3Connect(loadDefault));// true is account conected reload contract
+        await dispatch(actions.getCurrentAssets())
     }
 
     async function fetchAccountInit() {

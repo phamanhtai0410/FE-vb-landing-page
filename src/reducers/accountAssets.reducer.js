@@ -4,9 +4,17 @@ const initialState = {
   requesting: false,
   success: false,
   message: null,
+
+  totalSupplied: null,
+  totalBorrowed: null,
+
+  totalSuppliedUSD: null,
+  totalBorrowedUSD: null,
+
   query: {},
   total: 0,
   data: []
+
 }
 
 export function accountAssetsReducer(state = initialState, payload) {

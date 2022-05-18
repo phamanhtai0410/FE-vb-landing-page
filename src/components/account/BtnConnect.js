@@ -3,6 +3,7 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux";
 
 import * as actions from '../../actions';
 import IcLogout from '../../assets/images/ic_logout.svg';
+import IcWallet from '../../assets/images/ic_wallet.svg';
 
 const BtnConnect = () => {
 
@@ -35,9 +36,9 @@ const BtnConnect = () => {
 
                 <>
                     <button
-                        className="border-2 border-solid border-[#2A9F89] rounded-full bg-transparent px-4 py-[10px] font-poppins text-sm leading-5"
+                        className="flex flex-row items-center justify-center border-2 border-solid border-[#2A9F89] rounded-full bg-transparent px-4 py-[10px] font-poppins text-sm leading-5"
                         type="submit">
-
+                        <img className='mr-[10px] w-4 h-4' src={IcWallet} alt="icon Wallet" />
                         {`${account.slice(0, 6)}...${account.slice(
                             account.length - 4,
                             account.length

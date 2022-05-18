@@ -1,14 +1,47 @@
 
 
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 
 import IcNet from '../../assets/images/ic_net.svg';
 import IcVeChain from '../../assets/images/ic_vechain.svg';
 
 
+
 const NetMarket = () => {
 
-    const { totalSupply, totalBorrow } = useSelector(state => state.assetsMarketReducer, shallowEqual);
+    const [totalSupply, setTotalSupply] = useState(null);
+    const [totalBorrow, setTotalBorrow] = useState(null);
+
+    const dataAssets = useSelector(state => state.assetsMarketReducer.data, shallowEqual);
+    const dataPrice = useSelector(state => state.assetsPriceReducer.data, shallowEqual);
+
+    useEffect(() => {
+
+        if (dataAssets && dataPrice) {
+            showTotal()
+        }
+
+    }, [dataAssets, dataPrice]);
+
+    const showTotal = () => {
+
+        let tblSupply = 0;
+        let tblBorrow = 0;
+
+        for (const item of dataAssets) {
+            if (dataPrice[item.assetsAddress]) {
+                tblSupply = Number(dataPrice[item.assetsAddress] * item.totalSupplied) + tblSupply;
+                tblBorrow = Number(dataPrice[item.assetsAddress] * item.totalBorrowed) + tblBorrow;
+            }
+
+        }
+
+        setTotalSupply(tblSupply.toFixed(2));
+        setTotalBorrow(tblBorrow.toFixed(2));
+
+    }
+
 
     return (
 

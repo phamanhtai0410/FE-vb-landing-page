@@ -11,20 +11,19 @@ import IcVeBank from '../../assets/images/ic_vebank.svg';
 
 const AccountAssets = () => {
 
-    // const { balanceVET } = useSelector(state => state.contractVET, shallowEqual);
-
     const dispatch = useDispatch();
-
-    const { web3 } = useSelector(state => state.web3, shallowEqual);
-    const { data } = useSelector(state => state.accountAssetsReducer, shallowEqual);
 
     const [showAssets, setShowAssets] = useState(false);
 
+    const { web3 } = useSelector(state => state.web3, shallowEqual);
+    const { data } = useSelector(state => state.accountAssetsReducer, shallowEqual);
+    const dataPrice = useSelector(state => state.assetsPriceReducer.data, shallowEqual);
+
     useEffect(() => {
-        if (web3) {
+        if (web3 && dataPrice) {
             fetchAccountAssets();
         }
-    }, [web3]);
+    }, [web3, dataPrice]);
 
     async function fetchAccountAssets() {
         await dispatch(actions.getAccountAssets());
@@ -54,7 +53,12 @@ const AccountAssets = () => {
                                 <span className="text-lg font-semibold w-12 text-left">{item.assetsChain}</span>
                             </div>
 
-                            <div className="p-2 flex justify-center items-center font-semibold">$ {item.totalSupplied} </div>
+                            <div className="p-2 flex flex-col justify-center items-center font-semibold">
+                                <div className="text-lg font-semibold">{item.totalSupplied}</div>
+                                <div className="flex flex-row justify-start items-center space-x-2" >
+                                    <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalSuppliedUSD ? item.totalSuppliedUSD.toFixed(2) : 0}</span>
+                                </div>
+                            </div>
 
                             <div className="p-2 flex flex-col justify-center items-center content-center">
                                 <div className="text-lg font-semibold">{item.supplyAPY} %</div>
@@ -66,7 +70,14 @@ const AccountAssets = () => {
                                 </div>
                             </div>
 
-                            <div className="p-2 flex justify-center items-center font-semibold">$ {item.totalBorrowed} </div>
+                            <div className="p-2 flex flex-col justify-center items-center font-semibold">
+                                <div className="text-lg font-semibold">{item.totalBorrowed}</div>
+                                <div className="flex flex-row justify-start items-center space-x-2" >
+                                    <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalBorrowedUSD ? item.totalBorrowedUSD.toFixed(2) : 0}</span>
+                                </div>
+                            </div>
+
+                            {/* <div className="p-2 flex justify-center items-center font-semibold">{item.totalBorrowed} </div> */}
 
                             <div className="p-2 flex flex-col justify-center items-center content-center">
                                 <div className="text-lg font-semibold">{item.borrowAPY} %</div>
@@ -78,9 +89,11 @@ const AccountAssets = () => {
                                 </div>
                             </div>
 
-                            {/* <div className="p-2 flex justify-center items-center cursor-pointer" >
-                                <img className="w-3 h-3" src={IcDropdown} />
-                            </div> */}
+                            {/* 
+                                <div className="p-2 flex justify-center items-center cursor-pointer" >
+                                    <img className="w-3 h-3" src={IcDropdown} />
+                                </div> 
+                            */}
 
                         </div>
 

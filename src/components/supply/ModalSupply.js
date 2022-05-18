@@ -105,7 +105,6 @@ const ModalSupply = () => {
     const showBtnView = () => {
         let btn = "";
         if (dataToken) {
-
             if (dataToken.assetsChain === "VET") {
                 btn = <BtnSupply dataToken={dataToken} pending={pending} amount={amount} />
             } else if (accountApprove === 0) {
@@ -113,7 +112,6 @@ const ModalSupply = () => {
             } else {
                 btn = <BtnSupply dataToken={dataToken} pending={pending} amount={amount} />
             }
-
         }
         return btn;
 
@@ -127,8 +125,8 @@ const ModalSupply = () => {
             ariaHideApp={false}
             style={customStyles}
             portalClassName="modal-veb"
-            overlayClassName="overlay-lur">
-
+            overlayClassName="overlay-lur"
+        >
             <div className="header-modal" >
                 <h2>Supply {dataToken ? dataToken.assetsChain : ""}</h2>
                 <button className="btn-modal-close" onClick={closeModal}></button>

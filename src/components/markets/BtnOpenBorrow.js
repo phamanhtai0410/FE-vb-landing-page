@@ -27,12 +27,12 @@ const BtnOpenBorrow = ({ item }) => {
             setDisabledRule(true)
         }
 
-        if (dataAssets.length > 0) {
-            const provided = dataAssets.find(e => e.assetsAddress === item.assetsAddress);
-            if (provided && provided.totalSupplied > 0) {
-                setDisabledRule(true)
-            }
-        }
+        // if (dataAssets.length > 0) {
+        //     const provided = dataAssets.find(e => e.assetsAddress === item.assetsAddress);
+        //     if (provided && provided.totalSupplied > 0) {
+        //         setDisabledRule(true)
+        //     }
+        // }
 
         // Truong hop token nay chua co ai supply
         if (item && item.totalSupplied === 0) {

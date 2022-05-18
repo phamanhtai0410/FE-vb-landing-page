@@ -9,8 +9,6 @@ import IcDropdown from '../../assets/images/ic_dropdown.svg';
 
 const Overview = () => {
 
-    const balanceVB = useSelector(state => state.contractVB.balance, shallowEqual);
-
     const { accountSupplyBalance, accountBorrowBalance } = useSelector(state => state.accountAssetsReducer, shallowEqual);
 
     return (
@@ -21,28 +19,28 @@ const Overview = () => {
 
                 {accountSupplyBalance || accountBorrowBalance ? <>
                     <div className='flex-1'>
-                        <p className='text-sm font-normal text-slate-50'>Net APY</p>
+                        <p className='text-xs font-normal text-slate-50'>Net APY</p>
                         <span className='text-xl font-bold'>4.57K %</span>
                     </div>|
                 </> : ""}
 
                 <div className='flex-1'>
-                    <p className='text-sm font-normal text-slate-50'>Supply balance</p>
+                    <p className='text-xs font-normal text-slate-50'>Supply balance</p>
                     <span className='text-xl font-bold'>$ {accountSupplyBalance}</span>
                 </div>
                 |
                 <div className='flex-1'>
-                    <p className='text-sm font-normal text-slate-50'>Borrow balance</p>
+                    <p className='text-xs font-normal text-slate-50'>Borrow balance</p>
                     <span className='text-xl font-bold'>$ {accountBorrowBalance}</span>
                 </div>
 
                 {accountSupplyBalance || accountBorrowBalance ? <>|<div className='flex-1'>
-                    <p className='text-sm font-normal text-slate-50'>Health factor</p>
+                    <p className='text-xs font-normal text-slate-50'>Health factor</p>
                     <span className='text-xl font-bold'>1.08</span>
                 </div> </> : ""}
 
                 {accountSupplyBalance || accountBorrowBalance ? <>|<div className='flex-1'>
-                    <p className='text-sm font-normal text-slate-50'>Available rewards</p>
+                    <p className='text-xs font-normal text-slate-50'>Available rewards</p>
                     <span className='text-xl font-bold'>0 %</span>
                 </div></> : ""}
 
