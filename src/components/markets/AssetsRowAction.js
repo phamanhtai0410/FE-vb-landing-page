@@ -20,7 +20,7 @@ const AssetsRowAction = ({ openRowAssets, item }) => {
                 <h4>Earn</h4>
                 <div className='flex flex-row mt-3'>
                     <input
-                        className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
+                        className="bg-transparent rounded focus:outline-none placeholder-slate-300 font-poppins appearance-none text-base w-full mr-4"
                         type="text"
                         placeholder={"0"}
                         disabled={true}
@@ -33,7 +33,7 @@ const AssetsRowAction = ({ openRowAssets, item }) => {
                 <h4>Balance</h4>
                 <div className='flex flex-row mt-3'>
                     <input
-                        className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
+                        className="bg-transparent rounded focus:outline-none placeholder-slate-300 font-poppins appearance-none text-base w-full mr-4"
                         type="text"
                         placeholder={"0"}
                         disabled={true}
@@ -46,7 +46,7 @@ const AssetsRowAction = ({ openRowAssets, item }) => {
                 <h4>Debt</h4>
                 <div className='flex flex-row mt-3'>
                     <input
-                        className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
+                        className="bg-transparent rounded focus:outline-none placeholder-slate-300 font-poppins appearance-none text-base w-full mr-4"
                         type="text"
                         placeholder={"0"}
                         disabled={true}
@@ -59,7 +59,7 @@ const AssetsRowAction = ({ openRowAssets, item }) => {
                 <h4>Balance</h4>
                 <div className='flex flex-row mt-3'>
                     <input
-                        className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
+                        className="bg-transparent rounded focus:outline-none placeholder-slate-300 font-poppins appearance-none text-base w-full mr-4"
                         type="text"
                         placeholder={"0"}
                         disabled={true}

@@ -90,8 +90,8 @@
 }
 
 .bg-btn-veb-disabled {
-    background: #00051e59 !important;
-    color: #b2b2b2a6 !important;
+    background: #232E49 !important;
+    color: #4B5C86 !important;
 }
 
 .bg-success {
@@ -196,9 +196,8 @@ footer {
     height: auto;
     border: 1px solid #D2C0F14D;
     background-color: rgba(255, 255, 255, 0.08);
-
     padding: 4px;
-    border-radius: 24px;
+    border-radius: 4px;
 }
 
 .tab-market a {
@@ -215,7 +214,7 @@ footer {
 
 .tab-market .active {
     background: linear-gradient(91.96deg, #0FE3E3 0%, #02A4FF 100%);
-    border-radius: 32px;
+    border-radius: 4px;
 }
 
 .box_home {

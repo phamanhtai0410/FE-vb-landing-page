@@ -45,7 +45,7 @@ const BtnOpenWithdraw = ({ item }) => {
 
     return (<>
         {
-            disabledRule ? <button className="btn-veb h-10 bg-btn-veb-disabled" disabled={disabledRule} type="submit">Withdraw </button>
+            disabledRule ? <button className="btn-veb h-10 bg-btn-veb-disabled border-[1px] border-[#4B5C86]" disabled={disabledRule} type="submit">Withdraw </button>
                 : <button onClick={e => { handlerOpenModal(e) }} className="btn-veb h-10" type="submit">Withdraw </button>
         }
     </>)
