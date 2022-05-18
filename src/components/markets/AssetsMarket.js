@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { useLocation } from 'react-router-dom';
 
 import IcVeBank from '../../assets/images/ic_vebank.svg';
 import IcDropdown from '../../assets/images/ic_dropdown.svg';
@@ -12,6 +13,7 @@ import IcDropdown from '../../assets/images/ic_dropdown.svg';
 import AssetsRowAction from './AssetsRowAction';
 
 import * as actions from '../../actions';
+import CurrencyAssets from './CurrencyAssets';
 
 
 const AssetsMarket = () => {
@@ -37,6 +39,7 @@ const AssetsMarket = () => {
 
         const listShowChecked = [...openRowAssets];
         const indexShow = openRowAssets.indexOf(assetsAddress);
+
         if (indexShow === -1) {
             listShowChecked.push(assetsAddress);
         } else {
@@ -67,7 +70,9 @@ const AssetsMarket = () => {
                                 <span className="text-lg font-semibold w-12 text-left">{item.assetsChain}</span>
                             </div>
 
-                            <div className="p-2 flex justify-center items-center font-semibold">$ {item.totalSupplied}</div>
+                            <div className="p-2 flex justify-center items-center font-semibold">
+                                <CurrencyAssets currencyBalance={item.totalSupplied} assetsAddress={item.assetsAddress} />
+                            </div>
 
                             <div className="p-2 flex flex-col justify-center items-center content-center">
                                 <div className="text-lg font-semibold">{item.supplyAPY} %</div>
@@ -101,8 +106,8 @@ const AssetsMarket = () => {
 
                     </div>
 
-
                 </CSSTransition>
+
             );
         }
 
@@ -113,17 +118,6 @@ const AssetsMarket = () => {
         <div className="w-full min-h-max rounded-lg bg-[#0b1329] mt-16 p-10 fade-in-box">
 
             <h4 className="font-montserrat text-[30px] leading-9">Vechain assets</h4>
-
-            {/* 
-                <div className="p-3 mt-5">
-
-                    <div className="p-2 flex flex-row justify-start items-center space-x-4 w-full text-right cursor-pointer bg-[#1B1A43]">
-                        <img className="w-6 h-6" src={IcWarning} />
-                        <span className="text-lg font-poppins text-xs">To borrow you need to supply any asset to be used as collateral.</span>
-                    </div>
-
-                </div>
-            */}
 
             <div className="tbl-veb mt-8">
 

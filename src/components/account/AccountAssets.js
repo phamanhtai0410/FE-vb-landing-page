@@ -20,7 +20,7 @@ const AccountAssets = () => {
     const dataPrice = useSelector(state => state.assetsPriceReducer.data, shallowEqual);
 
     useEffect(() => {
-        if (web3 && dataPrice) {
+        if (web3 && dataPrice && dataPrice.length === 0) {
             fetchAccountAssets();
         }
     }, [web3, dataPrice]);
