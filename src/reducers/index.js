@@ -10,6 +10,8 @@ import { contractVB } from './contractVB.reducer';
 import { contractVET } from './contractVET.reducer';
 
 import { accountAssetsReducer } from './accountAssets.reducer';
+import { accountOverviewReducer } from './accountOverview.reducer';
+
 import { assetsMarketReducer } from './assetsMarket.reducer';
 import { assetsPriceReducer } from './assetsPrice.reducer';
 
@@ -25,7 +27,9 @@ const appReducer = combineReducers({
   contractVB,
   contractVET,
 
+  accountOverviewReducer,
   accountAssetsReducer,
+
   assetsMarketReducer,
   assetsPriceReducer,
 

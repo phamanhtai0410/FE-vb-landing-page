@@ -21,10 +21,7 @@ import ERC20ABI_POOL from '../_contracts/Pool.json';
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
 
-const TOKEN_WVET = process.env.REACT_APP_TOKEN_WVET; //WVET(Wrapped VET)
-
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL; // AaveProtoco
-const chainID = process.env.REACT_APP_NETWORK_ID;
 
 const ListKeyISeerOracle = {
     "VET": process.env.REACT_APP_ISO_VET,
@@ -33,91 +30,19 @@ const ListKeyISeerOracle = {
     "VEUSD": process.env.REACT_APP_ISO_VEUSD
 }
 
-const networks = {
-    bsc_testnet: {
-        chainId: `0x${Number(97).toString(16)}`, // A 0x-prefixed hexadecimal string
-        chainName: "Binance Smart Chain Testnet",
-        nativeCurrency: {
-            name: "Binance Chain Native Token",
-            symbol: "tBNB", // 2-6 characters long
-            decimals: 18,
-        },
-        rpcUrls: [
-            "https://data-seed-prebsc-1-s1.binance.org:8545",
-            "https://data-seed-prebsc-2-s1.binance.org:8545",
-            "https://data-seed-prebsc-1-s2.binance.org:8545",
-            "https://data-seed-prebsc-2-s2.binance.org:8545",
-            "https://data-seed-prebsc-1-s3.binance.org:8545",
-            "https://data-seed-prebsc-2-s3.binance.org:8545"
-        ],
-        blockExplorerUrls: ["https://testnet.bscscan.com"],
-    },
-    bsc: {
-        chainId: `0x${Number(56).toString(16)}`,
-        chainName: "Binance Smart Chain Mainnet",
-        nativeCurrency: {
-            name: "Binance Chain Native Token",
-            symbol: "BNB",
-            decimals: 18
-        },
-        rpcUrls: [
-            "https://bsc-dataseed1.binance.org",
-            "https://bsc-dataseed2.binance.org",
-            "https://bsc-dataseed3.binance.org",
-            "https://bsc-dataseed4.binance.org",
-            "https://bsc-dataseed1.defibit.io",
-            "https://bsc-dataseed2.defibit.io",
-            "https://bsc-dataseed3.defibit.io",
-            "https://bsc-dataseed4.defibit.io",
-            "https://bsc-dataseed1.ninicoin.io",
-            "https://bsc-dataseed2.ninicoin.io",
-            "https://bsc-dataseed3.ninicoin.io",
-            "https://bsc-dataseed4.ninicoin.io",
-            "wss://bsc-ws-node.nariox.org"
-        ],
-        blockExplorerUrls: ["https://bscscan.com"]
-    }
-};
-
-async function checkChainSwitch(web3) {
-    const chainIdDec = await web3.eth.getChainId();
-    return chainID === chainIdDec.toString();
-}
-
-async function checkConected(connex, certid) {
-
-    connex.vendor.sign('cert', {
-        purpose: 'identification',
-        payload: {
-            type: 'text',
-            content: 'random generated string'
-        }
-    }).link(`https://connex.vecha.in/${certid}`) // User will be back to the app by the url https://connex.vecha.in/0xffff....
-        .request()
-        .then(result => {
-
-            return result;
-        })
-
-
-}
-
 export const web3Connect = (isLogin) => async (dispatch) => {
 
     const web3 = await getWeb3();
-    const PK = "Kocanbiet082429!@#";
 
-    let signer;
     let _acc = localStorage.getItem('_acc');
     let _sign = localStorage.getItem('_sign');
 
     const connex = new Connex({
-        node: 'https://testnet.veblocks.net',
-        network: 'test'
+        node: process.env.REACT_APP_CHAIN_NETWORK,
+        network: process.env.REACT_APP_NAME_NETWORK
     })
 
     if (_acc && _sign) {
-
         // console.log("_acc && _sign");
         dispatch({
             type: web3Constants.WEB3_CONNECT,
@@ -126,7 +51,6 @@ export const web3Connect = (isLogin) => async (dispatch) => {
             signer: JSON.parse(_sign),
             account: _acc
         });
-
     }
 
     if (!_acc && isLogin) {
@@ -267,6 +191,53 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
 
 };
 
+export const getAccountOverview = () => async (dispatch, getState) => {
+
+    const state = getState();
+
+    const { web3, account } = state.web3;
+    const dataPrice = state.assetsPriceReducer.data;
+
+
+
+    let healthFactor = 0;
+
+    let dataList = [];
+
+    if (web3 && account && dataPrice) {
+
+        const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
+
+        if (contractPOOL && account) {
+
+            const accountPool = await contractPOOL.methods.getUserAccountData(account).call();
+            console.log("accountPool", accountPool);
+
+            if (accountPool.healthFactor) {
+                healthFactor = ethers.utils.formatUnits(accountPool.healthFactor || '0', 18);
+            }
+
+        }
+
+        dispatch({
+            type: marketplaceConstants.FETCH_ACCOUNT_OVERVIEW_SUCCESS,
+            data: {
+                healthFactor: 1.8
+            }
+        });
+
+    } else {
+
+        dispatch({
+            type: marketplaceConstants.FETCH_ACCOUNT_OVERVIEW_SUCCESS,
+            healthFactor
+        });
+    }
+
+    return dataList;
+
+};
+
 export const getAccountAssets = () => async (dispatch, getState) => {
 
     const state = getState();
@@ -290,13 +261,8 @@ export const getAccountAssets = () => async (dispatch, getState) => {
         // });
 
         const contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
-        const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
 
-        if (contractPOOL && contractAAVE && account) {
-
-            const accountPool = await contractPOOL.methods.getUserAccountData(account).call();
-
-            console.log("accountPool", accountPool);
+        if (contractAAVE && account) {
 
 
             for await (const item of data) {
@@ -373,6 +339,8 @@ export const getAccountAssets = () => async (dispatch, getState) => {
             data: dataList
         });
     }
+
+    dispatch(getAccountOverview());
 
     return dataList;
 

@@ -16,7 +16,7 @@ import ERC20ABI_STABLE_DEBT_TOKEN from '../_contracts/StableDebtToken.json';
 import ERC20ABI_VARIBLE_DEBT_TOKEN from '../_contracts/VariableDebtToken.json';
 
 
-const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; //WETHGateway (chinh là VET Asset)
+const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 

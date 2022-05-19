@@ -6,45 +6,7 @@ import Web3 from 'web3';
 
 const getWeb3 = async () => {
 
-    let web3;
-
-    web3 = thorify(new Web3(), "https://testnet.veblocks.net");
-
-    // Wait for loading completion to avoid race conditions with web3 injection timing.
-    // if (window.ethereum) {
-
-    //     try {
-    //         // web3 = new Web3(window.ethereum);
-    //         // web3 = thorify(new Web3(), "https://testnet.veblocks.net");
-    //         web3 = thorify(new Web3(), "https://testnet.veblocks.net");
-
-    //         //web3.eth.getBlock().then(res => console.log(res));
-
-    //         // web3.eth.getChainTag().then(result => {
-    //         //     console.log(result)
-    //         // })
-
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-
-    // }
-    // // Legacy dapp browsers...
-    // else if (window.web3) {
-    //     // Use Mist/MetaMask's provider.
-    //     web3 = window.web3;
-    //     console.log('Injected web3 detected.');
-    // }
-
-    // // Fallback to localhost; use dev console port by default...
-    // else {
-    //     const provider = new Web3.providers.HttpProvider('http://127.0.0.1:8545');
-    //     web3 = new Web3(provider);
-
-    //     console.log('No web3 instance injected, using Local web3.');
-
-    // }
-
+    let web3 = thorify(new Web3(), process.env.REACT_APP_CHAIN_NETWORK);
 
     return web3;
 };

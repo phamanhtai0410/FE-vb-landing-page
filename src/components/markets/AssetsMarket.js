@@ -8,7 +8,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { useLocation } from 'react-router-dom';
 
 import IcVeBank from '../../assets/images/ic_vebank.svg';
-import IcDropdown from '../../assets/images/ic_dropdown.svg';
+import IcDropdown from '../../assets/images/ic_down_asset.svg';
 
 import AssetsRowAction from './AssetsRowAction';
 
@@ -105,7 +105,7 @@ const AssetsMarket = () => {
                             </div>
 
                             <div className="p-2 flex justify-center items-center cursor-pointer" >
-                                <img className={`w-3 h-3 transition-transform delay-350 ${checkShowDown(item.assetsAddress) ? 'rotate-180' : ""}`} src={IcDropdown} />
+                                <img className={`w-4 h-4 transition-transform delay-350 ${checkShowDown(item.assetsAddress) ? 'rotate-180' : ""}`} src={IcDropdown} />
                             </div>
 
                         </div>
