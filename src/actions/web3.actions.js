@@ -12,7 +12,7 @@ import getWeb3 from '../utils/getWeb3';
 import ERC20ABI_VB from '../_contracts/VB.json';
 import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
 import ERC20ABI_ISEER_ORACLE from '../_contracts/SeerOracle.json';
-
+import ERC20ABI_POOL from '../_contracts/Pool.json';
 
 
 // VET : dung de staking duy tri he thong
@@ -23,8 +23,7 @@ const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
 
 const TOKEN_WVET = process.env.REACT_APP_TOKEN_WVET; //WVET(Wrapped VET)
 
-const ADDRESS_PROTOCOL = process.env.REACT_APP_ADDRESS_PROTOCOL; // AaveProtoco
-
+const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL; // AaveProtoco
 const chainID = process.env.REACT_APP_NETWORK_ID;
 
 const ListKeyISeerOracle = {
@@ -290,9 +289,16 @@ export const getAccountAssets = () => async (dispatch, getState) => {
         //     query: {}
         // });
 
-        let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
+        const contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
+        const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
 
-        if (contractAAVE && account) {
+        if (contractPOOL && contractAAVE && account) {
+
+
+            const accountPool = await contractPOOL.methods.getUserAccountData(account).call();
+
+            console.log("accountPool", accountPool);
+
 
             for await (const item of data) {
 
@@ -482,6 +488,7 @@ export const getCurrentAssets = () => async (dispatch, getState) => {
                 }
 
                 dataList[item.assetsAddress] = currentPriceUSD;
+
             }
 
         }

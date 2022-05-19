@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSelector, shallowEqual } from "react-redux";
 import { NavLink, useLocation } from 'react-router-dom';
 
-import IcSearch from '../../assets/images/ic_search.png';
+import { nFormatter } from '../../utils/lib';
 
 const CurrencyAssets = ({ currencyBalance, assetsAddress }) => {
 
@@ -28,7 +28,7 @@ const CurrencyAssets = ({ currencyBalance, assetsAddress }) => {
 
     return (
         <>
-            {keyHash === "#usd" && dataPrice ? <>$ {(currencyBalance * dataPrice[assetsAddress]).toFixed(2)}</> : currencyBalance}
+            {keyHash === "#usd" && dataPrice ? <>$ {nFormatter(currencyBalance * dataPrice[assetsAddress], 2)}</> : nFormatter(currencyBalance, 2)}
         </>
     )
 }

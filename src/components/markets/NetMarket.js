@@ -6,7 +6,7 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import IcNet from '../../assets/images/ic_net.svg';
 import IcVeChain from '../../assets/images/ic_vechain.svg';
 
-
+import { nFormatter } from '../../utils/lib';
 
 const NetMarket = () => {
 
@@ -37,8 +37,8 @@ const NetMarket = () => {
 
         }
 
-        setTotalSupply(tblSupply.toFixed(2));
-        setTotalBorrow(tblBorrow.toFixed(2));
+        setTotalSupply(nFormatter(tblSupply, 2));
+        setTotalBorrow(nFormatter(tblBorrow, 2));
 
     }
 

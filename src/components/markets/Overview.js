@@ -7,6 +7,10 @@ import IcNet from '../../assets/images/ic_net.svg';
 import IcDropdown from '../../assets/images/ic_dropdown.svg';
 
 
+import { nFormatter } from '../../utils/lib';
+
+
+
 const Overview = () => {
 
     const { accountSupplyBalance, accountBorrowBalance } = useSelector(state => state.accountAssetsReducer, shallowEqual);
@@ -26,12 +30,12 @@ const Overview = () => {
 
                 <div className='flex-1'>
                     <p className='text-xs font-normal text-slate-50'>Supply balance</p>
-                    <span className='text-xl font-bold'>$ {accountSupplyBalance}</span>
+                    <span className='text-xl font-bold'>$ {nFormatter(accountSupplyBalance, 2)}</span>
                 </div>
                 |
                 <div className='flex-1'>
                     <p className='text-xs font-normal text-slate-50'>Borrow balance</p>
-                    <span className='text-xl font-bold'>$ {accountBorrowBalance}</span>
+                    <span className='text-xl font-bold'>$ {nFormatter(accountBorrowBalance, 2)}</span>
                 </div>
 
                 {accountSupplyBalance || accountBorrowBalance ? <>|<div className='flex-1'>
