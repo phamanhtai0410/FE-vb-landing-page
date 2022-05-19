@@ -6,8 +6,12 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import * as actions from '../../actions';
 
+import { nFormatter } from '../../utils/lib';
+
 import IcDropdown from '../../assets/images/ic_dropdown.svg';
 import IcVeBank from '../../assets/images/ic_vebank.svg';
+
+
 
 const AccountAssets = () => {
 
@@ -57,9 +61,9 @@ const AccountAssets = () => {
 
                                 {
                                     item.totalSupplied ? <>
-                                        <div className="text-lg font-semibold">{item.totalSupplied}</div>
+                                        <div className="text-lg font-semibold">{nFormatter(item.totalSupplied, 2)}</div>
                                         <div className="flex flex-row justify-start items-center space-x-2" >
-                                            <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalSuppliedUSD ? item.totalSuppliedUSD.toFixed(2) : 0}</span>
+                                            <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalSuppliedUSD ? nFormatter(item.totalSuppliedUSD, 2) : 0}</span>
                                         </div>
                                     </> : <div className="text-lg font-semibold">-</div>
                                 }
@@ -77,9 +81,9 @@ const AccountAssets = () => {
                             </div>
 
                             <div className="p-2 flex flex-col justify-center items-center font-semibold">
-                                {item.totalBorrowed ? <>  <div className="text-lg font-semibold">{item.totalBorrowed}</div>
+                                {item.totalBorrowed ? <>  <div className="text-lg font-semibold">{nFormatter(item.totalBorrowed, 2)}</div>
                                     <div className="flex flex-row justify-start items-center space-x-2" >
-                                        <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalBorrowedUSD ? item.totalBorrowedUSD.toFixed(2) : 0}</span>
+                                        <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalBorrowedUSD ? nFormatter(item.totalBorrowedUSD) : 0}</span>
                                     </div></> :
                                     <div className="text-lg font-semibold">-</div>
                                 }

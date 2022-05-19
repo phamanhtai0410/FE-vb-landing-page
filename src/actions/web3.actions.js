@@ -294,7 +294,6 @@ export const getAccountAssets = () => async (dispatch, getState) => {
 
         if (contractPOOL && contractAAVE && account) {
 
-
             const accountPool = await contractPOOL.methods.getUserAccountData(account).call();
 
             console.log("accountPool", accountPool);
@@ -332,7 +331,6 @@ export const getAccountAssets = () => async (dispatch, getState) => {
                     balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
 
                     balanceBorrowUSD = dataPrice[item.assetsAddress] * balanceBorrow;
-
                     dataUser.accountBorrowBalance = dataUser.accountBorrowBalance + Number(balanceBorrowUSD);
 
                 }

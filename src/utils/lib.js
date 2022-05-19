@@ -30,7 +30,6 @@ export function formatUriSecure(url) {
 
 }
 
-
 export function nFormatter(num, digits) {
     var si = [
         { value: 1, symbol: "" },
