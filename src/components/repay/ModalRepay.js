@@ -119,13 +119,15 @@ const ModalRepay = () => {
         let btn = "";
         if (dataToken) {
 
-            if (dataToken.assetsChain === "VET") {
-                btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
-            } else if (accountApprove === 0) {
-                btn = <BtnRepayApprove dataToken={dataToken} pending={pending} />
-            } else {
-                btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
-            }
+            btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
+
+            // if (dataToken.assetsChain === "VET") {
+            //     btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
+            // } else if (accountApprove === 0) {
+            //     btn = <BtnRepayApprove dataToken={dataToken} pending={pending} />
+            // } else {
+            //     btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
+            // }
 
         }
         return btn;
@@ -337,7 +339,7 @@ const ModalRepay = () => {
             </div>
 
             {
-                (step === 1 || step === 2) ?
+                (step === 1) ?
                     <div className="footer-modal px-8 py-12">
                         <button
                             onClick={e => { handlerStepToStep(e) }}
