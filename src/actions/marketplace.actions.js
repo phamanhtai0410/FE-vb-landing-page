@@ -53,7 +53,7 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
     if (dataToken.assetsAddress && contractAAVE) {
 
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
-        console.log("accountReserve", accountReserve);
+        console.log("getUserReserveData", accountReserve);
 
         if (accountReserve.currentVariableDebt !== "0") {
             accountBalanceVariableDebt = ethers.utils.formatUnits(accountReserve.currentVariableDebt, dataToken.assetsDecimals);
@@ -248,12 +248,12 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
-
+        console.log("getUserReserveData", accountReserve);
         let balanceSupply = 0;
         if (accountReserve.currentATokenBalance) {
             balanceSupply = ethers.utils.formatUnits(accountReserve.currentATokenBalance, dataToken.assetsDecimals);
             // balanceSupply = ethers.utils.formatEther(accountReserve.currentATokenBalance);
-            balanceSupply = Math.round(balanceSupply * 100) / 100;
+            // balanceSupply = Math.round(balanceSupply * 100) / 100;
             accountBalance = Number(balanceSupply);
         }
 
@@ -419,6 +419,7 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
     }
     const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
     let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
+
     const getReserveData = await contractAAVE.methods.getReserveData(dataToken.assetsAddress).call();
 
     let balanceTotalSupply = ethers.utils.formatUnits(getReserveData.totalAToken, dataToken.assetsDecimals);
@@ -428,7 +429,7 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
     console.log(`accountReserve`, accountReserve);
 
     const accountData = await contractPOOL.methods.getUserAccountData(account).call();
-    console.log(`accountData`, accountData);
+    console.log(`getUserAccountData`, accountData);
 
 
     if (dataToken.assetsChain === "VET") {

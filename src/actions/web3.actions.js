@@ -8,19 +8,16 @@ import { alertActions } from './alert.actions';
 import { web3Constants, destroyConstants, marketplaceConstants } from '../constants';
 import getWeb3 from '../utils/getWeb3';
 
-
 import ERC20ABI_VB from '../_contracts/VB.json';
 import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
 import ERC20ABI_ISEER_ORACLE from '../_contracts/SeerOracle.json';
 import ERC20ABI_POOL from '../_contracts/Pool.json';
-
 
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
 
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
-
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL; // AaveProtoco
 
 const ListKeyISeerOracle = {
@@ -200,6 +197,7 @@ export const getAccountOverview = () => async (dispatch, getState) => {
     const state = getState();
 
     const { web3, account } = state.web3;
+
     const dataPrice = state.assetsPriceReducer.data;
 
     let healthFactor = 0;
