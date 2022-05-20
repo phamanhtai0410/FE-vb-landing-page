@@ -43,6 +43,7 @@ export const web3Connect = (isLogin) => async (dispatch) => {
     })
 
     if (_acc && _sign) {
+        console.log("vao 1")
         // console.log("_acc && _sign");
         dispatch({
             type: web3Constants.WEB3_CONNECT,
@@ -51,6 +52,8 @@ export const web3Connect = (isLogin) => async (dispatch) => {
             signer: JSON.parse(_sign),
             account: _acc
         });
+
+        return _acc;
     }
 
     if (!_acc && isLogin) {
@@ -62,26 +65,27 @@ export const web3Connect = (isLogin) => async (dispatch) => {
                 type: 'text',
                 content: 'agreement'
             }
-        }).request().then((signer) => {
-            _acc = signer.annex.signer;
-            _sign = JSON.stringify(signer);
+        }).request()
+            .then((signer) => {
+                _acc = signer.annex.signer;
+                _sign = JSON.stringify(signer);
 
-            localStorage.setItem('_acc', _acc);
-            localStorage.setItem('_sign', _sign);
+                localStorage.setItem('_acc', _acc);
+                localStorage.setItem('_sign', _sign);
 
-            dispatch({
-                type: web3Constants.WEB3_CONNECT,
-                connex,
-                web3,
-                signer,
-                account: _acc
+                dispatch({
+                    type: web3Constants.WEB3_CONNECT,
+                    connex,
+                    web3,
+                    signer,
+                    account: _acc
+                });
+
+                return _acc;
+
             });
-
-        });
-
     }
 
-    return _acc;
 
 };
 
@@ -198,8 +202,6 @@ export const getAccountOverview = () => async (dispatch, getState) => {
     const { web3, account } = state.web3;
     const dataPrice = state.assetsPriceReducer.data;
 
-
-
     let healthFactor = 0;
 
     let dataList = [];
@@ -211,7 +213,6 @@ export const getAccountOverview = () => async (dispatch, getState) => {
         if (contractPOOL && account) {
 
             const accountPool = await contractPOOL.methods.getUserAccountData(account).call();
-            console.log("accountPool", accountPool);
 
             if (accountPool.healthFactor) {
                 healthFactor = ethers.utils.formatUnits(accountPool.healthFactor || '0', 18);

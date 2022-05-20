@@ -219,7 +219,8 @@ const ModalSupply = () => {
                             <div className={`text-[#FAFAFA] bg-[#39355F] text-base text-center font-light  w-1/2 p-1 bg-btn-veb ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
                                 1 Supply
                             </div>
-                            <div className={`text-[#FAFAFA] bg-[#39355F] text-base text-center font-light w-1/2 p-1 ${pending === true ? "bg-pending ml-1" : ""} ${transaction ? "bg-success" : ""}`}>
+                            <div className='w-[1px] h-full bg-[#1D1A3F]'></div>
+                            <div className={`text-[#FAFAFA] bg-[#39355F] text-base text-center font-light w-1/2 p-1 ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
                                 2  {pending ? "Pending" : "Finished"}
                             </div>
                         </div>

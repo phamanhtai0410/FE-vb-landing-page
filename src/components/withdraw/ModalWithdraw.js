@@ -236,6 +236,7 @@ const ModalWithdraw = () => {
                             <div className={`text-[#FAFAFA] text-base text-center font-light  w-1/2 p-1 bg-btn-veb ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
                                 1 Withdraw
                             </div>
+                            <div className='w-[1px] h-full bg-[#1D1A3F]'></div>
                             <div className={`text-[#FAFAFA] text-base text-center font-light w-1/2 p-1 ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
                                 2 {pending ? "Pending" : "Finished"}
                             </div>

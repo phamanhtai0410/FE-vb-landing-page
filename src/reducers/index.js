@@ -14,6 +14,7 @@ import { accountOverviewReducer } from './accountOverview.reducer';
 
 import { assetsMarketReducer } from './assetsMarket.reducer';
 import { assetsPriceReducer } from './assetsPrice.reducer';
+import { assetsPoolReducer } from './assetsPool.reducer';
 
 import { borrowReducer } from './borrow.reducer';
 import { supplyReducer } from './supply.reducer';
@@ -32,6 +33,7 @@ const appReducer = combineReducers({
 
   assetsMarketReducer,
   assetsPriceReducer,
+  assetsPoolReducer,
 
   borrowReducer,
   supplyReducer,

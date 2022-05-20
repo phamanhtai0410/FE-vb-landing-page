@@ -95,7 +95,7 @@
 }
 
 .bg-success {
-    background: #3c8260;
+    background: #69bf1acd;
 }
 
 .bg-pending {
@@ -260,4 +260,9 @@ footer {
 
 .bg-overview {
     background: linear-gradient(116.38deg, #0DB6FF 16.58%, #2183E0 83.42%);
+}
+
+input:checked~.dot {
+    transform: translateX(100%);
+    background-color: #48bb78;
 }

@@ -7,10 +7,9 @@ import { history } from './_helpers';
 import MainLayout from './layouts/MainLayout';
 
 import HomePage from './pages/HomePage';
-import BorrowPage from './pages/BorrowPage';
+import PoolPage from './pages/PoolPage';
 
 import Page404 from './pages/Page404';
-import SupplyPage from './pages/SupplyPage';
 import MarketPage from './pages/MarketPage';
 
 function App() {
@@ -26,6 +25,11 @@ function App() {
         <Route path="/" element={<HomePage />} />
 
         <Route path="/markets" element={<MarketPage />} />
+
+        <Route path="/pool" element={<PoolPage />} />
+
+
+
 
         {/* <Route path="/markets" >
           <Route path="native" element={<MarketPage />} />

@@ -135,7 +135,7 @@ const AssetsMarket = () => {
                     <div className="px-2 py-2">Supply APY</div>
                     <div className="px-2 py-2">Total borrowed</div>
                     <div className="px-2 py-2">Borrow APY</div>
-                    <div className=''></div>
+                    <div className='col-end-auto'></div>
                 </div>
 
                 <TransitionGroup>
