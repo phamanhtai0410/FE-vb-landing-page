@@ -289,11 +289,12 @@ export const withdrawMarket = (dataToken, amount, rateMode) => async (dispatch, 
         });
 
         let amountWithdraw = web3.utils.toWei(amount.toString());
+        let amountApprove = 999999999;
 
         // approve Atoken to move my 1e18 wei VeThor
         let approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
         let approveMethod = connex.thor.account(process.env.REACT_APP_ATOKEN_VET).method(approveABI);
-        const c1_approve = approveMethod.asClause(ADDRESS_GATEWAY, amountWithdraw)
+        const c1_approve = approveMethod.asClause(ADDRESS_GATEWAY, web3.utils.toWei(amountApprove.toString()))
 
         const withdrawETH_ABI = ERC20ABI_POOL.find(({ name, type }) => name === "withdraw" && type === "function");
         const methodWithdraw = connex.thor.account(ADDRESS_POOL).method(withdrawETH_ABI);
@@ -351,11 +352,13 @@ export const withdrawETHMarket = (dataToken, amount) => async (dispatch, getStat
         });
 
         const amountWithdraw = web3.utils.toWei(amount.toString());
+        let amountApprove = 999999999;
+
 
         // approve Atoken to move my 1e18 wei VeThor
         let approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
         let approveMethod = connex.thor.account(process.env.REACT_APP_ATOKEN_VET).method(approveABI);
-        const c1_approve = approveMethod.asClause(ADDRESS_GATEWAY, amountWithdraw)
+        const c1_approve = approveMethod.asClause(ADDRESS_GATEWAY, web3.utils.toWei(amountApprove.toString()))
 
         const withdrawETH_ABI = ERC20ABI_WETH_GETAWAY.find(({ name, type }) => name === "withdrawETH" && type === "function");
         const methodWithdraw = connex.thor.account(ADDRESS_GATEWAY).method(withdrawETH_ABI);
