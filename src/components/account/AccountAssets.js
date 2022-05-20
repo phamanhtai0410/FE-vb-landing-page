@@ -31,6 +31,8 @@ const AccountAssets = () => {
 
     async function fetchAccountAssets() {
         await dispatch(actions.getAccountAssets());
+        await dispatch(actions.getAccountOverview());
+
     }
 
     const handlerClickShowAssets = (e) => {

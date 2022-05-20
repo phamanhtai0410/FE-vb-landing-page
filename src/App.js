@@ -1,52 +1,45 @@
 
-import React from 'react';
+import React, { Suspense } from 'react';
+
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { history } from './_helpers';
 
 import MainLayout from './layouts/MainLayout';
 
-import HomePage from './pages/HomePage';
-import PoolPage from './pages/PoolPage';
-
 import Page404 from './pages/Page404';
-import MarketPage from './pages/MarketPage';
+
+const HomePage = React.lazy(() => import('./pages/HomePage'));
+const PoolPage = React.lazy(() => import('./pages/PoolPage'));
+const MarketPage = React.lazy(() => import('./pages/MarketPage'));
 
 function App() {
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes history={history} >
 
-    <Routes history={history} >
+        <Route path="/" element={<MainLayout />} >
 
-      <Route path="/" element={<MainLayout />} >
+          <Route path="/home" element={<Navigate to="/" />} />
 
-        <Route path="/home" element={<Navigate to="/" />} />
+          <Route path="/" element={<HomePage />} />
 
-        <Route path="/" element={<HomePage />} />
+          <Route path="/markets" element={<MarketPage />} />
 
-        <Route path="/markets" element={<MarketPage />} />
+          <Route path="/pool" element={<PoolPage />} />
 
-        <Route path="/pool" element={<PoolPage />} />
+          <Route path="*" element={<Navigate to="/" />} />
+
+        </Route>
+
+        <Route path="*" element={<Page404 />} />
+
+      </Routes>
+
+    </Suspense>
 
 
-
-
-        {/* <Route path="/markets" >
-          <Route path="native" element={<MarketPage />} />
-          <Route path="usd" element={<MarketPage />} />
-          <Route path="*" index element={<MarketPage />} />
-        </Route> */}
-
-        {/* <Route path="/borrows" element={<BorrowPage />} />
-        <Route path="/supply" element={<SupplyPage />} /> */}
-
-        <Route path="*" element={<Navigate to="/" />} />
-
-      </Route>
-
-      <Route path="*" element={<Page404 />} />
-
-    </Routes>
 
   );
 }
