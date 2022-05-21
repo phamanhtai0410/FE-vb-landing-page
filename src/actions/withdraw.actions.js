@@ -47,6 +47,7 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
     if (dataToken.assetsAddress) {
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
+
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
 
         // get balance A Token your account withdrawal is allowed
@@ -61,9 +62,14 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
 
         const contractATOKEN = new web3.eth.Contract(ABI_ATOKEN, process.env.REACT_APP_ATOKEN_VET);
         accountApprove = await contractATOKEN.methods.allowance(account, TOKEN_APPROVE).call();
-
-        accountApprove = ethers.utils.formatUnits(accountApprove, dataToken.assetsDecimals);
+        accountApprove = ethers.utils.formatUnits(accountApprove, 18);
         accountApprove = Number(accountApprove);
+
+        accountApprove = 0;
+        if (accountApprove < Number(accountBalance)) {
+            accountApprove = 0;
+        }
+
 
     }
 
@@ -144,6 +150,7 @@ export const withdrawMarket = (dataToken, amount) => async (dispatch, getState) 
         });
 
         let amountWithdraw = web3.utils.toWei(amount.toString());
+
         const withdrawETH_ABI = ERC20ABI_POOL.find(({ name, type }) => name === "withdraw" && type === "function");
         const methodWithdraw = connex.thor.account(ADDRESS_POOL).method(withdrawETH_ABI);
 

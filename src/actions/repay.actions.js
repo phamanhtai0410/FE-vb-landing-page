@@ -17,7 +17,6 @@ import ERC20ABI_VARIBLE_DEBT_TOKEN from '../_contracts/VariableDebtToken.json';
 import ABI_ATOKEN from '../_contracts/AToken.json';
 
 
-
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
@@ -52,7 +51,6 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
     let accountVariableDebtApprove = 0;
     let accountStableDebtApprove = 0;
 
-
     if (dataToken.assetsAddress && contractAAVE) {
 
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
@@ -80,6 +78,8 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
         accountVariableDebtApprove = ethers.utils.formatEther(accountVariableDebtApprove);
         accountVariableDebtApprove = Number(accountVariableDebtApprove);
         accountApprove = accountVariableDebtApprove;
+
+
 
     }
 
@@ -120,7 +120,7 @@ export const repayMarket = (dataToken, amount, rateMode = 2) => async (dispatch,
         let amountRepay = web3.utils.toWei(amount.toString());
         let amountApprove = 999999999;
 
-        // approve Atoken to move my 1e18 wei VeThor
+        // approve Atoken 
         let approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
         // let approveMethod = connex.thor.account(process.env.REACT_APP_ATOKEN_VET).method(approveABI);
 

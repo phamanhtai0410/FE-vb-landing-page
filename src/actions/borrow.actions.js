@@ -33,6 +33,9 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
     const state = getState();
     const { web3, account } = state.web3;
 
+    const dataPrice = state.assetsPriceReducer.data;
+    const { accountSupplyBalance } = state.accountAssetsReducer;
+
     let accountBalance = 0;
     let accountApprove = 0;
     // let contractBorrow;
@@ -47,16 +50,22 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
     const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
     let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
 
-    const getReserveData = await contractAAVE.methods.getReserveData(dataToken.assetsAddress).call();
+    // const getReserveData = await contractAAVE.methods.getReserveData(dataToken.assetsAddress).call();
+    // let balanceTotalSupply = ethers.utils.formatUnits(getReserveData.totalAToken, dataToken.assetsDecimals);
+    // accountBalance = Math.round(balanceTotalSupply * 100) / 100;
 
-    let balanceTotalSupply = ethers.utils.formatUnits(getReserveData.totalAToken, dataToken.assetsDecimals);
-    accountBalance = Math.round(balanceTotalSupply * 100) / 100;
-
-    const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
-    console.log(`getUserReserveData`, accountReserve);
+    // const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
+    // console.log(`getUserReserveData`, accountReserve);
 
     const accountData = await contractPOOL.methods.getUserAccountData(account).call();
-    console.log(`getUserAccountData`, accountData);
+    // console.log(`getUserAccountData`, accountData);
+    // console.log(`dataPrice[dataToken.assetsAddress]`, dataPrice[dataToken.assetsAddress]);
+
+    if (accountData.availableBorrowsBase) {
+        // accountBalance = ethers.utils.formatUnits(accountData.availableBorrowsBase, 12);
+        accountBalance = accountSupplyBalance / dataPrice[dataToken.assetsAddress];
+    }
+
 
     if (dataToken.assetsChain === "VET") {
 
@@ -70,12 +79,11 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
         let contractVariableDebt = new web3.eth.Contract(ERC20ABI_VARIBLE_DEBT_TOKEN, process.env.REACT_APP_VARIABLE_DEBT_TOKEN_VET);
         accountVariableDebtApprove = await contractVariableDebt.methods.borrowAllowance(account, ADDRESS_GATEWAY).call();
 
-        console.log("accountVariableDebtApprove", accountVariableDebtApprove);
-
         accountVariableDebtApprove = ethers.utils.formatEther(accountVariableDebtApprove);
         accountVariableDebtApprove = Number(accountVariableDebtApprove);
 
         accountApprove = accountVariableDebtApprove;
+
 
     } else {
 
