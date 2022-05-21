@@ -39,7 +39,7 @@ const Overview = () => {
                 {accountSupplyBalance || accountBorrowBalance ? <>|<div className='flex-1'>
                     <p className='text-xs font-normal text-slate-50'>Health factor</p>
                     <span className='text-xl font-bold'>
-                        {healthFactor ? nFormatter(healthFactor, 2) : 0} %
+                        {healthFactor ? nFormatter(healthFactor, 2) : 0}
                     </span>
                 </div> </> : ""}
 

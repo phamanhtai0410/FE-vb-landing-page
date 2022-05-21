@@ -124,38 +124,19 @@ const ModalBorrow = () => {
     }
 
     const showBtnView = () => {
+
         let btn = "";
+
         if (dataToken) {
 
-            btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
-
-            // if (dataToken.assetsChain === "VET") {
-            //     // if (accountStableDebtApprove === 0 && rate === 1) {
-            //     //     btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
-            //     // } else
-            //     if (accountVariableDebtApprove === 0 && rate === 2) {
-            //         console.log("accountVariableDebtApprove")
-            //         btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
-            //     } else {
-            //         btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
-            //     }
-            // } else {
-            //     if (accountApprove === 0) {
-            //         btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />
-            //     } else {
-            //         btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />
-            //     }
-            // }
-
-            // if (dataToken.assetsChain === "VET") {
-            //     btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} />
-            // } else if (accountApprove === 0) {
-            //     btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} />
-            // } else {
-            //     btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} />
-            // }
+            if (accountApprove === 0) {
+                btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />;
+            } else {
+                btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />;
+            }
 
         }
+
         return btn;
 
     }

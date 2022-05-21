@@ -10,9 +10,6 @@ import { numberWithCommas } from '../../utils/lib';
 import { marketplaceConstants } from '../../constants';
 import * as actions from '../../actions';
 
-import IcNext from '../../assets/images/ic_next.svg';
-import IcNext1 from '../../assets/images/ic_factory.svg';
-
 import BtnWithdraw from './BtnWithdraw';
 import BtnWithdrawApprove from './BtnWithdrawApprove';
 
@@ -44,6 +41,10 @@ const ModalWithdraw = () => {
     useEffect(() => {
         resetFrm();
     }, [dataToken]);
+
+    useEffect(() => {
+        resetFrm();
+    }, [isOpen]);
 
     const resetFrm = () => {
         setAmount(0);
@@ -105,13 +106,15 @@ const ModalWithdraw = () => {
 
         let btn = "";
         if (dataToken) {
-            if (dataToken.assetsChain === "VET") {
-                btn = <BtnWithdraw dataToken={dataToken} pending={pending} amount={amount} />
-            } else if (accountApprove === 0) {
+
+            //btn = <BtnWithdraw dataToken={dataToken} pending={pending} amount={amount} />
+
+            if (accountApprove === 0) {
                 btn = <BtnWithdrawApprove dataToken={dataToken} pending={pending} />
             } else {
                 btn = <BtnWithdraw dataToken={dataToken} pending={pending} amount={amount} />
             }
+
         }
 
         return btn;
@@ -224,7 +227,7 @@ const ModalWithdraw = () => {
                             <div className='flex items-center'>
                                 <img className='w-6 h-6' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
                                 <span className='font-poppins font-bold pl-2'>{numberWithCommas(amount)}</span>
-                                <span className='text-[#BFBFBF] pl-2'>VET</span>
+                                <span className='text-[#BFBFBF] pl-2'>{dataToken ? dataToken.assetsChain : ""}</span>
                             </div>
                         </div>
 
@@ -278,7 +281,7 @@ const ModalWithdraw = () => {
             </div>
 
             {
-                (step === 1 || step === 2) ?
+                (step === 1) ?
                     <div className="footer-modal px-8 py-12">
                         <button
                             onClick={e => { handlerStepToStep(e) }}

@@ -1,3 +1,7 @@
 export * from './web3.actions';
 export * from './alert.actions';
 export * from './marketplace.actions';
+export * from './borrow.actions';
+export * from './withdraw.actions';
+export * from './supply.actions';
+export * from './repay.actions';
