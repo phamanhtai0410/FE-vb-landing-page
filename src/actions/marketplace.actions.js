@@ -237,8 +237,6 @@ export const getAccountAssets = () => async (dispatch, getState) => {
 
                 const accountReserve = await contractAAVE.methods.getUserReserveData(item.assetsAddress, account).call();
 
-                console.table(`getUserReserveData ${item.assetsChain}`, accountReserve);
-
                 let balanceSupply = 0;
                 let balanceSupplyUSD = 0;
                 if (accountReserve.currentATokenBalance !== "0") {
@@ -328,12 +326,12 @@ export const reloadAccountAssets = (addressAsset) => async (dispatch, getState) 
         setTimeout(async () => {
             await dispatch(getAccountAssets());
             await dispatch(getMarketAssets());
-        }, 2000);
+        }, 3000);
 
         setTimeout(async () => {
             await dispatch(getAccountAssets());
             await dispatch(getMarketAssets());
-        }, 4500);
+        }, 6000);
 
 
     }

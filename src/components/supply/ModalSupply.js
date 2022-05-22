@@ -85,8 +85,8 @@ const ModalSupply = () => {
 
     const onChangeAmount = (e) => {
         const { value } = e.target;
-        if (value <= accountBalance) {
-            setAmount(value)
+        if (Number(value) <= Number(accountBalance)) {
+            setAmount(Number(value))
         }
     }
 

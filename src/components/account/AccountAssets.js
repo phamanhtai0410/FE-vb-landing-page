@@ -11,8 +11,6 @@ import { nFormatter } from '../../utils/lib';
 import IcDropdown from '../../assets/images/ic_dropdown.svg';
 import IcVeBank from '../../assets/images/ic_vebank.svg';
 
-
-
 const AccountAssets = () => {
 
     const dispatch = useDispatch();

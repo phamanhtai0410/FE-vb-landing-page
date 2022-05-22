@@ -43,6 +43,7 @@ export const loadModalSupply = (dataToken) => async (dispatch, getState) => {
 
         if (accountCoinVET.balance) {
             accountBalance = ethers.utils.formatEther(accountCoinVET.balance);
+
             //accountBalance = Math.round(accountBalance * 100) / 100;
         }
 

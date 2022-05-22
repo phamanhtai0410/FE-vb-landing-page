@@ -151,11 +151,6 @@ const AssetsMarket = () => {
                         <span>Borrow APY</span>
                         <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
                     </div>
-                    {/* <div className="px-2 py-2">Assets</div>
-                    <div className="px-2 py-2">Total supplied</div>
-                    <div className="px-2 py-2">Supply APY</div>
-                    <div className="px-2 py-2">Total borrowed</div>
-                    <div className="px-2 py-2">Borrow APY</div> */}
                     <div className='col-end-auto'></div>
                 </div>
 
