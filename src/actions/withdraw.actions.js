@@ -50,6 +50,7 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
 
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
 
+        console.log("getUserReserveData", accountReserve)
 
         // get balance A Token your account withdrawal is allowed
         if (accountReserve.currentATokenBalance) {
