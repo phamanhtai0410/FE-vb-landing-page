@@ -8,7 +8,8 @@ import { web3Constants, marketplaceConstants } from '../constants';
 import * as actions from '.';
 
 import ERC20ABI_VB from '../_contracts/VB.json';
-import ERC20ABI_VEUSD from '../_contracts/VEUSD.json';
+
+
 import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
 import ERC20ABI_WETH_GETAWAY from '../_contracts/WETHGateway.json';
 import ERC20ABI_POOL from '../_contracts/Pool.json';
@@ -47,21 +48,21 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
         return;
     }
 
-    const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
+    //const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
     let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
 
     // const getReserveData = await contractAAVE.methods.getReserveData(dataToken.assetsAddress).call();
     // let balanceTotalSupply = ethers.utils.formatUnits(getReserveData.totalAToken, dataToken.assetsDecimals);
     // accountBalance = Math.round(balanceTotalSupply * 100) / 100;
 
-    // const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
-    // console.log(`getUserReserveData`, accountReserve);
+    const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
+    console.log(`getUserReserveData`, accountReserve);
 
-    const accountData = await contractPOOL.methods.getUserAccountData(account).call();
-    // console.log(`getUserAccountData`, accountData);
-    // console.log(`dataPrice[dataToken.assetsAddress]`, dataPrice[dataToken.assetsAddress]);
+    // const accountData = await contractPOOL.methods.getUserAccountData(account).call();
+    // console.log(accountData);
 
-    if (accountData.availableBorrowsBase) {
+
+    if (accountSupplyBalance) {
         // accountBalance = ethers.utils.formatUnits(accountData.availableBorrowsBase, 12);
         accountBalance = accountSupplyBalance / dataPrice[dataToken.assetsAddress];
     }
@@ -78,6 +79,8 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
         // check approveDelegation
         let contractVariableDebt = new web3.eth.Contract(ERC20ABI_VARIBLE_DEBT_TOKEN, process.env.REACT_APP_VARIABLE_DEBT_TOKEN_VET);
         accountVariableDebtApprove = await contractVariableDebt.methods.borrowAllowance(account, ADDRESS_GATEWAY).call();
+
+        console.log(accountVariableDebtApprove)
 
         accountVariableDebtApprove = ethers.utils.formatEther(accountVariableDebtApprove);
         accountVariableDebtApprove = Number(accountVariableDebtApprove);

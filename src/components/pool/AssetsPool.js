@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-import IcVeBank from '../../assets/images/ic_vebank.svg';
 import IcDropdown from '../../assets/images/ic_down_asset.svg';
+import IcCaretDown from '../../assets/images/ic_caret_down-fill.svg';
 
 import PoolRowAction from './PoolRowAction';
 
@@ -119,11 +119,26 @@ const AssetsPool = () => {
             <div className="tbl-veb mt-8">
 
                 <div className="grid grid-cols-12 justify-items-center content-around font-poppins text-[14px]">
-                    <div className="px-2 py-2 col-span-3">Assets</div>
-                    <div className="px-2 py-2 col-span-2">Liquidity</div>
-                    <div className="px-2 py-2 col-span-2">Volume (24H)</div>
-                    <div className="px-2 py-2 col-span-2">Fees (24H)</div>
-                    <div className="px-2 py-2 col-span-2">APR</div>
+                    <div className="px-2 py-2 col-span-3 flex">
+                        <span>Assets</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className="px-2 py-2 col-span-2 flex">
+                        <span>Liquidity</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className="px-2 py-2 col-span-2 flex">
+                        <span>Volume (24H)</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className="px-2 py-2 col-span-2 flex">
+                        <span>Fees (24H)</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className="px-2 py-2 col-span-2 flex">
+                        <span>APR</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
                     <div className='col-span-1'></div>
                 </div>
 

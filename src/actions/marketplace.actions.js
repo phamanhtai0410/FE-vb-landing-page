@@ -126,17 +126,22 @@ export const getCurrentAssets = () => async (dispatch, getState) => {
             if (ListKeyISeerOracle[item.assetsChain]) {
 
                 let contractISeerOracle = new web3.eth.Contract(ERC20ABI_ISEER_ORACLE, ListKeyISeerOracle[item.assetsChain]);
+
                 let currentPriceUSD = await contractISeerOracle.methods.latestAnswer().call();
 
-                if (item.assetsChain === "VEUSD") {
-                    currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 6);;
-                } else {
-                    currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 12);;
-                }
 
-                dataList[item.assetsAddress] = currentPriceUSD;
+                // if (item.assetsChain === "VEUSD") {
+                //     currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 6);;
+                // } else {
+                //     currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 12);;
+                // }
+
+                currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 18);;
+
+                dataList[item.assetsAddress] = Number(currentPriceUSD);
 
             }
+
 
         }
 
@@ -165,17 +170,21 @@ export const getAccountOverview = () => async (dispatch, getState) => {
 
     if (web3 && account && dataPrice) {
 
-        const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
+        const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, "0x4a96d989CB4726B89F3B3C83d5961545e792ddE7");
 
         if (contractPOOL && account) {
 
-            const accountPool = await contractPOOL.methods.getUserAccountData(account).call();
+            try {
+                const accountPool = await contractPOOL.methods.getUserAccountData(account).call();
+                // console.log("getUserAccountData", accountPool)
 
-            console.table("getUserAccountData", accountPool)
-
-            if (accountPool && accountPool.healthFactor) {
-                healthFactor = ethers.utils.formatUnits(accountPool.healthFactor || '0', 18);
+            } catch (error) {
+                console.log("getUserAccountData", error)
             }
+
+            // if (accountPool && accountPool.healthFactor) {
+            //     healthFactor = ethers.utils.formatUnits(accountPool.healthFactor || '0', 18);
+            // }
 
         }
 
@@ -232,11 +241,11 @@ export const getAccountAssets = () => async (dispatch, getState) => {
 
                 let balanceSupply = 0;
                 let balanceSupplyUSD = 0;
-                if (accountReserve.currentATokenBalance) {
+                if (accountReserve.currentATokenBalance !== "0") {
                     balanceSupply = ethers.utils.formatUnits(accountReserve.currentATokenBalance, item.assetsDecimals);
-                    balanceSupply = Math.round(balanceSupply * 100) / 100;
-                    balanceSupplyUSD = dataPrice[item.assetsAddress] * balanceSupply;
-                    dataUser.accountSupplyBalance = dataUser.accountSupplyBalance + Number(balanceSupplyUSD);
+                    balanceSupply = Number(balanceSupply);
+                    balanceSupplyUSD = dataPrice[item.assetsAddress] * Number(balanceSupply);
+                    dataUser.accountSupplyBalance = dataUser.accountSupplyBalance + balanceSupplyUSD;
 
                 }
 
@@ -255,7 +264,7 @@ export const getAccountAssets = () => async (dispatch, getState) => {
 
                     //balanceBorrow = accountStableDebt + accountVariableDebt;
                     balanceBorrow = accountVariableDebt;
-                    balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
+                    // balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
 
                     balanceBorrowUSD = dataPrice[item.assetsAddress] * balanceBorrow;
                     dataUser.accountBorrowBalance = dataUser.accountBorrowBalance + Number(balanceBorrowUSD);

@@ -50,6 +50,7 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
 
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
 
+
         // get balance A Token your account withdrawal is allowed
         if (accountReserve.currentATokenBalance) {
             accountBalance = ethers.utils.formatUnits(accountReserve.currentATokenBalance, dataToken.assetsDecimals);
@@ -149,7 +150,9 @@ export const withdrawMarket = (dataToken, amount) => async (dispatch, getState) 
             type: marketplaceConstants.MODAL_WITHDRAW_MARKET_REQUEST
         });
 
-        let amountWithdraw = web3.utils.toWei(amount.toString());
+        //let amountWithdraw = web3.utils.toWei(amount.toString());
+
+        const amountWithdraw = ethers.utils.parseUnits(amount.toString(), dataToken.assetsDecimals);
 
         const withdrawETH_ABI = ERC20ABI_POOL.find(({ name, type }) => name === "withdraw" && type === "function");
         const methodWithdraw = connex.thor.account(ADDRESS_POOL).method(withdrawETH_ABI);

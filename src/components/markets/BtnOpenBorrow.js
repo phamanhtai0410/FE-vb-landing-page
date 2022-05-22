@@ -11,7 +11,6 @@ const BtnOpenBorrow = ({ item }) => {
     const dispatch = useDispatch();
 
     const [disabledRule, setDisabledRule] = useState(false);
-
     const { data, accountSupplyBalance } = useSelector(state => state.accountAssetsReducer, shallowEqual);
 
     useEffect(() => {

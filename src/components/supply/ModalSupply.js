@@ -105,9 +105,7 @@ const ModalSupply = () => {
     const showBtnView = () => {
         let btn = "";
         if (dataToken) {
-            if (dataToken.assetsChain === "VET") {
-                btn = <BtnSupply dataToken={dataToken} pending={pending} amount={amount} />
-            } else if (accountApprove === 0) {
+            if (accountApprove === 0) {
                 btn = <BtnSupplyApprove dataToken={dataToken} pending={pending} />
             } else {
                 btn = <BtnSupply dataToken={dataToken} pending={pending} amount={amount} />

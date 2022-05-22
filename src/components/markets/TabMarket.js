@@ -7,7 +7,7 @@ import IcSearch from '../../assets/images/ic_search.png';
 const TabMarket = () => {
 
     const location = useLocation();
-    const [keyHash, setKeyHash] = useState("usd");
+    const [keyHash, setKeyHash] = useState("#native");
 
     useEffect(() => {
         if (location.hash === "#usd") {

@@ -8,7 +8,7 @@ import { nFormatter } from '../../utils/lib';
 const CurrencyAssets = ({ currencyBalance, assetsAddress }) => {
 
     const location = useLocation();
-    const [keyHash, setKeyHash] = useState("usd");
+    const [keyHash, setKeyHash] = useState("native");
 
     const dataPrice = useSelector(state => state.assetsPriceReducer.data, shallowEqual);
 
@@ -18,7 +18,7 @@ const CurrencyAssets = ({ currencyBalance, assetsAddress }) => {
         } else if (location.hash === "#native") {
             setKeyHash(location.hash);
         } else {
-            setKeyHash("#usd");
+            setKeyHash("#native");
         }
     }, [location]);
 
@@ -28,7 +28,7 @@ const CurrencyAssets = ({ currencyBalance, assetsAddress }) => {
 
     return (
         <>
-            {keyHash === "#usd" && dataPrice ? <>$ {nFormatter(currencyBalance * dataPrice[assetsAddress], 2)}</> : nFormatter(currencyBalance, 2)}
+            {keyHash === "#usd" && dataPrice ? <>$ {nFormatter(currencyBalance * dataPrice[assetsAddress])}</> : nFormatter(currencyBalance, 2)}
         </>
     )
 }

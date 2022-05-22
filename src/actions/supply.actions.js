@@ -10,6 +10,7 @@ import * as actions from '.';
 import ERC20ABI_VB from '../_contracts/VB.json';
 import ERC20ABI_WETH_GETAWAY from '../_contracts/WETHGateway.json';
 import ERC20ABI_POOL from '../_contracts/Pool.json';
+import ABI_ATOKEN from '../_contracts/AToken.json';
 
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
@@ -34,6 +35,7 @@ export const loadModalSupply = (dataToken) => async (dispatch, getState) => {
     if (!account) {
         return;
     }
+    contractSupply = new web3.eth.Contract(ERC20ABI_VB, dataToken.assetsAddress);
 
     if (dataToken.assetsChain === "VET") {
 
@@ -41,26 +43,23 @@ export const loadModalSupply = (dataToken) => async (dispatch, getState) => {
 
         if (accountCoinVET.balance) {
             accountBalance = ethers.utils.formatEther(accountCoinVET.balance);
-            accountBalance = Math.round(accountBalance * 100) / 100;
+            //accountBalance = Math.round(accountBalance * 100) / 100;
         }
 
     } else {
 
-        contractSupply = new web3.eth.Contract(ERC20ABI_VB, dataToken.assetsAddress);
-
         if (contractSupply && account) {
             const balanceBigN = await contractSupply.methods.balanceOf(account).call();
             accountBalance = ethers.utils.formatUnits(balanceBigN, dataToken.assetsDecimals);
-            accountBalance = Math.round(accountBalance * 100) / 100;
-
+            //accountBalance = Math.round(accountBalance * 100) / 100;
         }
 
-        // get the approved coin MSP account
-        accountApprove = await contractSupply.methods.allowance(account, ADDRESS_POOL).call();
-        accountApprove = ethers.utils.formatEther(accountApprove);
-        accountApprove = Number(accountApprove);
-
     }
+
+    // get the approved coin MSP account
+    accountApprove = await contractSupply.methods.allowance(account, ADDRESS_POOL).call();
+    accountApprove = ethers.utils.formatEther(accountApprove);
+    accountApprove = Number(accountApprove);
 
     dispatch({
         type: marketplaceConstants.MODAL_OPEN_SUPPLY_MARKET,
@@ -80,15 +79,20 @@ export const approveSupply = (dataToken) => async (dispatch, getState) => {
 
     const { contractSupply } = state.supplyReducer;
 
-    const amountMax = 10000;
+    const amountMax = 1000000000;
 
     if (account && contractSupply && dataToken.assetsAddress) {
 
         const approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
         const approveMethod = connex.thor.account(dataToken.assetsAddress).method(approveABI);
 
+        let TOKEN_APPROVE = ADDRESS_POOL;
+        // if (dataToken.assetsChain === "VET") {
+        //     TOKEN_APPROVE = process.env.REACT_APP_ADDRESS_GATEWAY;
+        // }
+
         approveMethod
-            .transact(ADDRESS_POOL, web3.utils.toWei(amountMax.toString()))
+            .transact(TOKEN_APPROVE, web3.utils.toWei(amountMax.toString()))
             .comment(`approve ${dataToken.assetsChain} on VeBank`)
             .request()
             .then(result => {
@@ -184,7 +188,7 @@ export const supplyDepositETHMarket = (addressAsset, amount) => async (dispatch,
 
     const { web3, account, connex } = state.web3;
 
-    if (connex && account) {
+    if (connex && account && amount) {
 
         dispatch({
             type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
@@ -194,6 +198,7 @@ export const supplyDepositETHMarket = (addressAsset, amount) => async (dispatch,
         const methodDepositETH = connex.thor.account(ADDRESS_GATEWAY).method(depositETH_ABI);
 
         methodDepositETH.value(web3.utils.toWei(amount.toString()));
+
         methodDepositETH.transact(ADDRESS_POOL, account, 0)
             .comment(`transfer ${amount} VET to DepositETH`)
             .request()

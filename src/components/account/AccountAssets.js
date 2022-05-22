@@ -65,7 +65,7 @@ const AccountAssets = () => {
                                     item.totalSupplied ? <>
                                         <div className="text-lg font-semibold">{nFormatter(item.totalSupplied, 2)}</div>
                                         <div className="flex flex-row justify-start items-center space-x-2" >
-                                            <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalSuppliedUSD ? nFormatter(item.totalSuppliedUSD, 2) : 0}</span>
+                                            <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalSuppliedUSD ? nFormatter(item.totalSuppliedUSD, 6) : 0}</span>
                                         </div>
                                     </> : <div className="text-lg font-semibold">-</div>
                                 }

@@ -43,7 +43,6 @@ export const web3Connect = (isLogin) => async (dispatch) => {
     })
 
     if (_acc && _sign) {
-        console.log("vao 1")
         // console.log("_acc && _sign");
         dispatch({
             type: web3Constants.WEB3_CONNECT,

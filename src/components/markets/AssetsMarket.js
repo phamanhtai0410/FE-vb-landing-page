@@ -9,6 +9,7 @@ import { useLocation } from 'react-router-dom';
 
 import IcVeBank from '../../assets/images/ic_vebank.svg';
 import IcDropdown from '../../assets/images/ic_down_asset.svg';
+import IcCaretDown from '../../assets/images/ic_caret_down-fill.svg';
 
 import AssetsRowAction from './AssetsRowAction';
 
@@ -130,11 +131,31 @@ const AssetsMarket = () => {
             <div className="tbl-veb mt-8">
 
                 <div className="grid grid-cols-6 gap-6 justify-items-center content-around">
-                    <div className="px-2 py-2">Assets</div>
+                    <div className="px-2 py-2 flex">
+                        <span>Assets</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className="px-2 py-2 flex">
+                        <span>Total supplied</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className="px-2 py-2 flex">
+                        <span>Supply APY</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className="px-2 py-2 flex">
+                        <span>Total borrowed</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className="px-2 py-2 flex">
+                        <span>Borrow APY</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    {/* <div className="px-2 py-2">Assets</div>
                     <div className="px-2 py-2">Total supplied</div>
                     <div className="px-2 py-2">Supply APY</div>
                     <div className="px-2 py-2">Total borrowed</div>
-                    <div className="px-2 py-2">Borrow APY</div>
+                    <div className="px-2 py-2">Borrow APY</div> */}
                     <div className='col-end-auto'></div>
                 </div>
 

@@ -38,7 +38,6 @@ const BtnOpenWithdraw = ({ item }) => {
 
     const handlerOpenModal = async () => {
         if (item && item.assetsAddress && disabledRule === false) {
-            console.log("loadModalWithdraw")
             dispatch(actions.loadModalWithdraw(item));
         }
     }
