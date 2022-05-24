@@ -12,6 +12,7 @@ import Page404 from './pages/Page404';
 const HomePage = React.lazy(() => import('./pages/HomePage'));
 const PoolPage = React.lazy(() => import('./pages/PoolPage'));
 const MarketPage = React.lazy(() => import('./pages/MarketPage'));
+const FarmPage = React.lazy(() => import('./pages/FarmPage'));
 
 function App() {
 
@@ -28,6 +29,8 @@ function App() {
           <Route path="/markets" element={<MarketPage />} />
 
           <Route path="/pool" element={<PoolPage />} />
+
+          <Route path="/farm" element={<FarmPage/>} />
 
           <Route path="*" element={<Navigate to="/" />} />
 
