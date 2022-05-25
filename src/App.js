@@ -14,6 +14,7 @@ const PoolPage = React.lazy(() => import('./pages/PoolPage'));
 const MarketPage = React.lazy(() => import('./pages/MarketPage'));
 const FarmPage = React.lazy(() => import('./pages/FarmPage'));
 const TradePage = React.lazy(() => import('./pages/TradePage'));
+const StakingPage = React.lazy(() => import('./pages/StakingPage'));
 
 function App() {
 
@@ -34,6 +35,8 @@ function App() {
           <Route path="/farm" element={<FarmPage/>} />
 
           <Route path="/trade" element={<TradePage />} />
+
+          <Route path="/stake" element={<StakingPage />} />
 
           <Route path="*" element={<Navigate to="/" />} />
 
