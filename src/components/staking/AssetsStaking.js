@@ -64,22 +64,6 @@ const AssetsStaking = () => {
                             className="bg-[#182844] justify-items-center content-around font-poppins text-base rounded cursor-pointer"
                             onClick={e => onClickShowRowAssets(item.assetsPoolAddress)}>
 
-                            <div className="grid grid-cols-12 pt-2 text-[#678BCA]">
-                                <div className="col-span-3"/>
-                                <div className="col-span-2 flex justify-center items-center text-sm">
-                                    Pending Rewards
-                                </div>
-                                <div className="col-span-2 flex justify-center items-center text-sm">
-                                   Staked
-                                </div>
-                                <div className="col-span-2 flex justify-center items-center text-sm">
-                                   APR
-                                </div>
-                                <div className="col-span-2 flex justify-center items-center text-sm">
-                                   Total Staked
-                                </div>
-                                <div className="col-span-1"/>
-                            </div>
                             <div className="grid grid-cols-12 py-2">
                                 <div
                                     className="col-span-3 flex flex-row justify-center items-center space-x-4 w-full text-right cursor-pointer">
@@ -89,19 +73,39 @@ const AssetsStaking = () => {
                                     <span className="text-lg font-semibold text-left w-28">{item.assetStakeName}</span>
                                 </div>
 
-                                <div className="col-span-2 flex justify-center items-center font-semibold text-[#3EE8FF]">
-                                    {item.pendingReward} {item.assetStakeName}
+                                {/*<span className="inline-flex mt-[1px] mx-3 h-5 w-[1px] bg-[#2A9F89]" />*/}
+
+                                <div className="col-span-2 flex flex-col justify-start items-center space-y-2">
+                                    <div className="text-sm text-[#678BCA]">
+                                          Pending Rewards
+                                    </div>
+                                    <div className="font-semibold text-[#3EE8FF]">
+                                        {item.pendingReward} {item.assetStakeName}
+                                    </div>
                                 </div>
 
-                                <div className="col-span-2 flex justify-center items-center font-semibold text-[#3EE8FF]">
-                                    {item.staked} {item.assetStakeName}
+                                <div className="col-span-2 flex flex-col justify-start items-center space-y-2">
+                                    <div className="text-sm text-[#678BCA]">
+                                        Staked
+                                    </div>
+                                    <div className="font-semibold text-[#3EE8FF]">
+                                        {item.staked} {item.assetStakeName}
+                                    </div>
                                 </div>
 
-                                <div className="col-span-2 flex justify-center items-center font-semibold text-[#3EE8FF]">
-                                    {item.apr}%
+                                <div className="col-span-2 flex flex-col justify-start items-center space-y-2">
+                                    <div className="text-sm text-[#678BCA]">
+                                        APR
+                                    </div>
+                                    <div className="font-semibold text-[#3EE8FF]">
+                                        {item.apr}%
+                                    </div>
                                 </div>
 
-                                <div className="col-span-2 flex flex-col justify-center items-center">
+                                <div className="col-span-2 flex flex-col flex-col justify-start items-center space-y-2">
+                                    <div className="text-sm text-[#678BCA]">
+                                        Total Staked
+                                    </div>
                                     <div className="font-semibold text-[#3EE8FF]">
                                         ~${item.totalStaked.usd}
                                     </div>
