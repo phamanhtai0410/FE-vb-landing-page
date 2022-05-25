@@ -28,7 +28,7 @@ const StakingRowAction = ({openRowAssets, item}) => {
                                 ?
                                 <BtnOpenHarvest item={item} />
                                 :
-                                <BtnConnectInPage />
+                                <BtnConnectInPage className="btn-veb h-12"/>
                         }
                     </div>
                 </div>
@@ -48,7 +48,7 @@ const StakingRowAction = ({openRowAssets, item}) => {
                                     <BtnOpenAddLiquidity item={item} />
                                 </>
                                 :
-                                <BtnConnectInPage />
+                                <BtnConnectInPage className="btn-veb h-12"/>
                         }
                     </div>
                 </div>
