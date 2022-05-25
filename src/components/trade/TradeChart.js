@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import IcExchange from "../../assets/images/ic_exchange.svg";
 import IcExpand from "../../assets/images/ic_expand.svg";
 import {AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from 'recharts';
@@ -64,7 +64,7 @@ const TradeChart = ({swapToken}) => {
                     <img className="w-10" src={IcExchange} alt=""/>
                     <p className="text-lg text-white font-bold">BASIC</p>
                 </div>
-                <img className="w-6" src={IcExpand} alt=""/>
+                <img className="w-6 cursor-pointer" src={IcExpand} alt=""/>
             </div>
             <div className="flex items-center space-x-4">
                 <p className="text-4xl font-bold text-[#a0d911]">52.81</p>

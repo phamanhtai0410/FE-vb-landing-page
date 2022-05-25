@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import IcSwap from "../../assets/images/ic_swap.svg";
 import IcDropDown from "../../assets/images/ic_dropdown.svg";
-
+import IcReload from "../../assets/images/ic_reload.svg";
+import IcSetting from "../../assets/images/ic_setting.svg";
 import {shallowEqual, useSelector} from "react-redux";
 import BtnConnectInPage from "../account/BtnConnectInPage";
 import BtnOpenSwap from "./BtnOpenSwap";
@@ -49,12 +50,8 @@ const TradeSwap = ({coinType, getSwapToken}) => {
             <div className="flex justify-between w-full">
                 <h2 className="font-bold">Swap</h2>
                 <div className="flex space-x-2">
-                    <h2>
-                        reload
-                    </h2>
-                    <h2>
-                        setting
-                    </h2>
+                    <img className="cursor-pointer" src={IcReload} alt=""/>
+                    <img className="cursor-pointer" src={IcSetting} alt=""/>
                 </div>
             </div>
 
