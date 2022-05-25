@@ -1,45 +1,46 @@
-import React from 'react';
+import React, {useState} from 'react';
 import BtnOpenAddLiquidity from "../farm/BtnOpenAddLiquidity";
 import BtnOpenStartFarming from "./BtnOpenStartFarming";
 import BtnOpenHarvest from "./BtnOpenHarvest";
+import ModalFarming from "./ModalFarming";
 
 const FarmRowAction = ({openRowAssets, item}) => {
+
+    const [isOpenStartFarming, setIsOpenStartFarming] = useState(false);
 
     if (openRowAssets.indexOf(item.assetsPoolAddress) === -1) {
         return <></>;
     }
 
     return (
-
-        <div className='bg-[#182844] p-6 mt-2 fade-in-box flex flex-col lg:flex-row'>
-            <div className="w-full lg:w-1/2 p-4">
-                <div className='bg-[#26355A] p-6 rounded flex justify-between rounded space-x-4'>
-                    <div>
-                        <label className='font-poppins text-[14px] text-[#678BCA]'>Pending Rewards</label>
-                        <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 VB</div>
-                    </div>
-                    <div className='flex flex-col justify-center items-center'>
-                        <BtnOpenHarvest item={item} />
+        <>
+            <div className='bg-[#182844] mt-2 fade-in-box flex flex-col lg:flex-row'>
+                <div className="w-full lg:w-1/2 p-4 pr-2">
+                    <div className='bg-[#26355A] p-4 rounded flex justify-between rounded space-x-4'>
+                        <div>
+                            <label className='font-poppins text-[14px] text-[#678BCA]'>Pending Rewards</label>
+                            <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 VB</div>
+                        </div>
+                        <div className='flex flex-col justify-center items-center'>
+                            <BtnOpenHarvest item={item} />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="w-full lg:w-1/2 p-4">
-                <div className='bg-[#26355A] p-6 rounded flex justify-between rounded space-x-4'>
-                    <div>
-                        <label className='font-poppins text-[14px] text-[#678BCA]'>Available LP</label>
-                        <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 LB</div>
-                    </div>
-                    <div className='flex flex-row justify-end items-center w-2/3 space-x-2'>
-
-                            <BtnOpenStartFarming item={item} />
-
+                <div className="w-full lg:w-1/2 p-4 pl-2">
+                    <div className='bg-[#26355A] p-4 rounded flex justify-between rounded space-x-4'>
+                        <div>
+                            <label className='font-poppins text-[14px] text-[#678BCA]'>Available LP</label>
+                            <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 LB</div>
+                        </div>
+                        <div className='flex flex-row justify-end items-center w-2/3 space-x-2'>
+                            <BtnOpenStartFarming item={item} setIsOpenStartFarming={setIsOpenStartFarming}/>
                             <BtnOpenAddLiquidity item={item} />
-
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
+            <ModalFarming isOpen={isOpenStartFarming} closeModal={() => setIsOpenStartFarming(false)}/>
+        </>
     )
 };
 

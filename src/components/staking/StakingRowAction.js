@@ -15,9 +15,9 @@ const StakingRowAction = ({openRowAssets, item}) => {
 
     return (
 
-        <div className='bg-[#182844] p-6 mt-2 fade-in-box flex flex-col lg:flex-row'>
-            <div className="w-full lg:w-1/2 p-4">
-                <div className='bg-[#26355A] p-6 rounded flex justify-between rounded space-x-4'>
+        <div className='bg-[#182844] mt-2 fade-in-box flex flex-col lg:flex-row'>
+            <div className="w-full lg:w-1/2 p-4 pr-2">
+                <div className='bg-[#26355A] p-4 rounded flex justify-between rounded space-x-4'>
                     <div>
                         <label className='font-poppins text-[14px] text-[#678BCA]'>Pending Rewards</label>
                         <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 VB</div>
@@ -33,8 +33,8 @@ const StakingRowAction = ({openRowAssets, item}) => {
                     </div>
                 </div>
             </div>
-            <div className="w-full lg:w-1/2 p-4">
-                <div className='bg-[#26355A] p-6 rounded flex justify-between rounded space-x-4'>
+            <div className="w-full lg:w-1/2 p-4 pl-2">
+                <div className='bg-[#26355A] p-4 rounded flex justify-between rounded space-x-4'>
                     <div>
                         <label className='font-poppins text-[14px] text-[#678BCA]'>Start Staking</label>
                         <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 VB</div>

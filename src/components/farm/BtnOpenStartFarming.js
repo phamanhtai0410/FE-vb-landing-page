@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import {useDispatch} from "react-redux";
 
-const BtnOpenStartFarming = () => {
+const BtnOpenStartFarming = ({setIsOpenStartFarming}) => {
     const btnLabel = "Start Farming";
 
     const dispatch = useDispatch();
 
-    const [disabledRule, setDisabledRule] = useState(true);
+    const [disabledRule, setDisabledRule] = useState(false);
 
     // const { data, accountSupplyBalance } = useSelector(state => state.accountAssetsReducer, shallowEqual);
 
@@ -37,7 +37,7 @@ const BtnOpenStartFarming = () => {
     }
 
     const handlerOpenModal = async () => {
-
+        setIsOpenStartFarming(true);
     }
 
     return (
