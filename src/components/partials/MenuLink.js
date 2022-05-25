@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 const MenuLink = () => {
     return (
-        <ul className="box-menus flex flex-col lg:flex-row  items-center justify-center lg:my-auto lg:space-x-4">
+        <ul className="box-menus flex flex-col lg:flex-row  items-center justify-center lg:my-auto lg:space-x-4 font-semibold">
             {/* // <ul className="flex flex-col items-center justify-between "> */}
 
             <li className="p-4 lg:p-0">

@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {useDispatch} from "react-redux";
 
-const BtnOpenStartFarming = ({setIsOpenStartFarming}) => {
-    const btnLabel = "Start Farming";
+const BtnOpenAddLiquidity = ({item}) => {
+    const btnLabel = "Add Liquidity";
 
     const dispatch = useDispatch();
 
@@ -37,7 +37,7 @@ const BtnOpenStartFarming = ({setIsOpenStartFarming}) => {
     }
 
     const handlerOpenModal = async () => {
-        setIsOpenStartFarming(true);
+
     }
 
     return (
@@ -65,4 +65,4 @@ const BtnOpenStartFarming = ({setIsOpenStartFarming}) => {
     );
 };
 
-export default BtnOpenStartFarming;
+export default BtnOpenAddLiquidity;
