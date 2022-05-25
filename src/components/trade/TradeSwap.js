@@ -2,7 +2,14 @@ import React, {useEffect, useState} from 'react';
 import IcSwap from "../../assets/images/ic_swap.svg";
 import IcDropDown from "../../assets/images/ic_dropdown.svg";
 
+import {shallowEqual, useSelector} from "react-redux";
+import BtnConnectInPage from "../account/BtnConnectInPage";
+import BtnOpenSwap from "./BtnOpenSwap";
+import SwapInfo from "./SwapInfo";
+
 const TradeSwap = ({coinType, getSwapToken}) => {
+
+    const { account } = useSelector(state => state.web3, shallowEqual);
 
     const [swapToken, setSwapToken] = useState({
         from: {
@@ -16,6 +23,7 @@ const TradeSwap = ({coinType, getSwapToken}) => {
             price: coinType[1].price
         }
     });
+    const [inputAmount, setInputAmount] = useState("0.0");
 
     const handleChangeTokenSwap = () => {
         setSwapToken({
@@ -60,6 +68,8 @@ const TradeSwap = ({coinType, getSwapToken}) => {
                 <input
                     className="bg-transparent focus:outline-none placeholder-slate-400 font-poppins appearance-none text-base w-full"
                     type="text"
+                    value={inputAmount}
+                    onChange={(event) => setInputAmount(event.target.value)}
                     placeholder="0.0"
                 />
                 <div className="flex justify-center items-center space-x-2">
@@ -101,6 +111,8 @@ const TradeSwap = ({coinType, getSwapToken}) => {
                 <input
                     className="bg-transparent focus:outline-none placeholder-slate-400 font-poppins appearance-none text-base w-full"
                     type="text"
+                    value={inputAmount}
+                    onChange={(event) => setInputAmount(event.target.value)}
                     placeholder="0.0"
                 />
             </div>
@@ -117,7 +129,25 @@ const TradeSwap = ({coinType, getSwapToken}) => {
 
 
             <div className="flex justify-center">
-                <button className="btn-veb h-10 w-full">Connect Wallet</button>
+                {
+                    !account ?
+                        <BtnConnectInPage className="w-full btn-veb h-12"/>
+                        :
+                        parseFloat(inputAmount) !== 0
+                            ?
+                            <div className="flex flex-col w-full space-y-5">
+                                <BtnOpenSwap className="w-full btn-veb h-12"/>
+
+                                <SwapInfo swapToken={swapToken} />
+                            </div>
+                            :
+                            <button
+                                className="btn-veb h-12 text-sm bg-btn-veb-disabled border-[1px] border-[#4B5C86]"
+                                disabled={true}
+                            >
+                                Enter an amount to see more trading details.
+                            </button>
+                }
             </div>
         </div>
     );

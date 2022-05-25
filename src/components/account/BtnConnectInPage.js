@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 
 import * as actions from '../../actions';
 
-const BtnConnectInPage = () => {
+const BtnConnectInPage = ({...props}) => {
 
     const [isConnecting, setIsConnecting] = useState(false);
 
@@ -24,8 +24,8 @@ const BtnConnectInPage = () => {
     return (
         <>
             <button
+                {...props}
                 onClick={connectWalletHandler}
-                className="btn-veb h-10"
                 type="submit">
                 {isConnecting ? "Connecting..." : "Connect to a wallet"}
             </button>
