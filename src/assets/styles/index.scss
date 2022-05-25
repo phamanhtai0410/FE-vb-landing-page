@@ -217,6 +217,31 @@ footer {
     border-radius: 4px;
 }
 
+.launchpad-filter-tab {
+    width: fit-content;
+    height: auto;
+    border: 1px solid #D2C0F14D;
+    background-color: rgba(255, 255, 255, 0.08);
+    padding: 4px;
+    border-radius: 24px;
+}
+
+.launchpad-filter-tab a {
+    font-family: "Poppins";
+    line-height: 24px;
+    font-weight: 500;
+    font-size: 13px;
+    text-align: center;
+    color: #FFFFFF;
+    padding: 0.45rem 1.5rem;
+    display: inline-block;
+}
+
+.launchpad-filter-tab .active {
+    background: linear-gradient(91.96deg, #0FE3E3 0%, #02A4FF 100%);
+    border-radius: 24px;
+}
+
 .box_home {
     background-image: url('../images/home/bg_home.png');
     background-repeat: no-repeat;
