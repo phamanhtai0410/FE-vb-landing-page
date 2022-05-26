@@ -20,7 +20,7 @@ const LaunchPadPage = React.lazy(() => import('./pages/LaunchPadPage'));
 function App() {
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="bg-[#0b1329] min-h-screen min-w-full"/>}>
       <Routes history={history} >
 
         <Route path="/" element={<MainLayout />} >
