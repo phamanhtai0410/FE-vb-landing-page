@@ -4,6 +4,7 @@ import AccountAssets from "../components/account/AccountAssets";
 
 import AssetsPool from "../components/pool/AssetsPool";
 import FrmSearchPool from "../components/pool/FrmSearchPool";
+import ModalAddLiquidity from "../components/pool/ModalAddLiquidity";
 
 const PoolPage = () => {
 
@@ -41,6 +42,7 @@ const PoolPage = () => {
         </div>
 
         <AssetsPool />
+        <ModalAddLiquidity />
 
       </div>
 

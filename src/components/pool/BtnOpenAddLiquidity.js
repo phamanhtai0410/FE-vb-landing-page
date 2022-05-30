@@ -44,9 +44,9 @@ const BtnOpenAddLiquidity = ({ item }) => {
     }
 
     const handlerOpenModal = async () => {
-        if (item && item.assetsAddress && disabledRule === false) {
-            dispatch(actions.loadModalBorrow(item));
-        }
+        // if (item && item.assetsAddress && disabledRule === false) {
+            dispatch(actions.loadModalAddLiquidity(item));
+        // }
     }
 
     return (<>

@@ -20,6 +20,7 @@ import { borrowReducer } from './borrow.reducer';
 import { supplyReducer } from './supply.reducer';
 import { withdrawReducer } from './withdraw.reducer';
 import { repayReducer } from './repay.reducer';
+import {poolReducer} from './pool.reducer'
 
 const appReducer = combineReducers({
 
@@ -39,6 +40,8 @@ const appReducer = combineReducers({
   supplyReducer,
   withdrawReducer,
   repayReducer,
+
+  poolReducer,
 
 });
 
