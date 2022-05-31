@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import {useDispatch} from "react-redux";
+import * as actions from '../../actions';
 
-const BtnOpenAddLiquidity = ({item}) => {
-    const btnLabel = "Add Liquidity";
+const BtnOpenStake = ({item}) => {
+    const btnLabel = "Stake";
 
     const dispatch = useDispatch();
 
@@ -37,7 +38,7 @@ const BtnOpenAddLiquidity = ({item}) => {
     }
 
     const handlerOpenModal = async () => {
-
+        dispatch(actions.loadModalStake(item))
     }
 
     return (
@@ -46,7 +47,7 @@ const BtnOpenAddLiquidity = ({item}) => {
                 disabledRule
                     ?
                     <button
-                        className="btn-veb h-10 bg-btn-veb-disabled border-[1px] border-[#4B5C86]"
+                        className="btn-veb flex-1 h-10 bg-btn-veb-disabled border-[1px] border-[#4B5C86]"
                         disabled={disabledRule}
                         type="submit"
                     >
@@ -55,7 +56,7 @@ const BtnOpenAddLiquidity = ({item}) => {
                     :
                     <button
                         onClick={e => handlerOpenModal(e)}
-                        className="btn-veb h-10"
+                        className="btn-veb flex-1 h-10"
                         type="submit"
                     >
                         {btnLabel}
@@ -65,4 +66,4 @@ const BtnOpenAddLiquidity = ({item}) => {
     );
 };
 
-export default BtnOpenAddLiquidity;
+export default BtnOpenStake;

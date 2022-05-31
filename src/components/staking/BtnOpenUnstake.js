@@ -46,7 +46,7 @@ const BtnOpenUnstake = () => {
                 disabledRule
                     ?
                     <button
-                        className="btn-veb h-10 bg-btn-veb-disabled border-[1px] border-[#4B5C86]"
+                        className="btn-veb flex-1 bg-btn-veb-disabled border-[1px] border-[#4B5C86]"
                         disabled={disabledRule}
                         type="submit"
                     >
@@ -55,7 +55,7 @@ const BtnOpenUnstake = () => {
                     :
                     <button
                         onClick={e => handlerOpenModal(e)}
-                        className="btn-veb h-10"
+                        className="btn-veb flex-1"
                         type="submit"
                     >
                         {btnLabel}

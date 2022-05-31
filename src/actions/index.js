@@ -6,3 +6,4 @@ export * from './withdraw.actions';
 export * from './supply.actions';
 export * from './repay.actions';
 export * from './pool.action';
+export * from './stake.action'
