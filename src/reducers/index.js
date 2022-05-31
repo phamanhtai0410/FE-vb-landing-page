@@ -21,6 +21,7 @@ import { withdrawReducer } from "./withdraw.reducer";
 import { repayReducer } from "./repay.reducer";
 import { poolReducer } from "./pool.reducer";
 import { stakeReducer } from "./stake.reducer";
+import { unStakeReducer } from "./unstake.reducer";
 
 const appReducer = combineReducers({
   alert,
@@ -42,6 +43,7 @@ const appReducer = combineReducers({
 
   poolReducer,
   stakeReducer,
+  unStakeReducer,
 });
 
 const rootReducer = (state, action) => {
