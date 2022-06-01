@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { Range } from "react-range";
 import { TailSpin } from "react-loading-icons";
+import IcWarningCircle from "../../assets/images/ic-warning-circle.svg";
 
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { numberWithCommas } from "../../utils/lib";
 
-import { marketplaceConstants } from "../../constants";
+import { stakeConstants } from "../../constants";
 import { selectUnStakeReducer } from "../../reducers/unstake.reducer";
 
 import IcNext from "../../assets/images/ic_next.svg";
@@ -70,7 +71,7 @@ const ModalUnStake = () => {
 
   const closeModal = (e) => {
     dispatch({
-      type: marketplaceConstants.MODAL_CLOSE_UNSTAKE_MARKET,
+      type: stakeConstants.MODAL_CLOSE_UNSTAKE,
     });
     if (transaction) {
       dispatch(actions.reloadAccountAssets());
@@ -169,7 +170,14 @@ const ModalUnStake = () => {
           </div> */}
 
           <div className="flex justify-between px-8 mt-6 text-lg font-sf_pro">
-            <div className="text-[#FAFAFA]">Staked</div>
+            <div className="flex items-center space-x-2">
+              <p className="text-[#FAFAFA]">Balance</p>
+              <img
+                src={IcWarningCircle}
+                alt=""
+                className="w-4 h-4 cursor-pointer"
+              />
+            </div>
             <div>
               <span className="font-poppins font-bold">{accountBalance}</span>
               <span className="text-[#BFBFBF] pl-2">

@@ -6,8 +6,9 @@ import { TailSpin } from "react-loading-icons";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { numberWithCommas } from "../../utils/lib";
 
-import { marketplaceConstants } from "../../constants";
+import { stakeConstants } from "../../constants";
 import { selectStakeReducer } from "../../reducers/stake.reducer";
+import IcWarningCircle from "../../assets/images/ic-warning-circle.svg";
 
 import IcNext from "../../assets/images/ic_next.svg";
 import IcNext1 from "../../assets/images/ic_factory.svg";
@@ -70,7 +71,7 @@ const ModalStake = () => {
 
   const closeModal = (e) => {
     dispatch({
-      type: marketplaceConstants.MODAL_CLOSE_STAKE_MARKET,
+      type: stakeConstants.MODAL_CLOSE_STAKE,
     });
     if (transaction) {
       dispatch(actions.reloadAccountAssets());
@@ -152,7 +153,7 @@ const ModalStake = () => {
       overlayClassName="overlay-lur"
     >
       <div className="header-modal">
-        <h2>Stake {dataToken ? dataToken?.assetsChain : ""}</h2>
+        <h2>Stake</h2>
         <button className="btn-modal-close" onClick={closeModal}></button>
       </div>
 
@@ -169,7 +170,14 @@ const ModalStake = () => {
           </div> */}
 
           <div className="flex justify-between px-8 mt-6 text-lg font-sf_pro">
-            <div className="text-[#FAFAFA]">Balance</div>
+            <div className="flex items-center space-x-2">
+              <p className="text-[#FAFAFA]">Balance</p>
+              <img
+                src={IcWarningCircle}
+                alt=""
+                className="w-4 h-4 cursor-pointer"
+              />
+            </div>
             <div>
               <span className="font-poppins font-bold">{accountBalance}</span>
               <span className="text-[#BFBFBF] pl-2">

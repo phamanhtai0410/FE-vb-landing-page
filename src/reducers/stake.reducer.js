@@ -1,4 +1,4 @@
-import { marketplaceConstants } from "../constants";
+import { stakeConstants } from "../constants";
 
 const initialState = {
   isOpen: false,
@@ -19,7 +19,7 @@ const initialState = {
 
 export function stakeReducer(state = initialState, action) {
   switch (action.type) {
-    case marketplaceConstants.MODAL_OPEN_STAKE_MARKET:
+    case stakeConstants.MODAL_OPEN_STAKE:
       return {
         ...state,
         isOpen: true,
@@ -29,7 +29,7 @@ export function stakeReducer(state = initialState, action) {
         ...action,
       };
 
-    case marketplaceConstants.MODAL_CLOSE_STAKE_MARKET:
+    case stakeConstants.MODAL_CLOSE_STAKE:
       return {
         ...state,
         isOpen: false,
@@ -37,21 +37,21 @@ export function stakeReducer(state = initialState, action) {
         pending: true,
       };
 
-    case marketplaceConstants.MODAL_STAKE_MARKET_REQUEST:
+    case stakeConstants.MODAL_STAKE_REQUEST:
       return {
         ...state,
         pending: false,
         transaction: action.transaction,
       };
 
-    case marketplaceConstants.MODAL_STAKE_MARKET_SUCCESS:
+    case stakeConstants.MODAL_STAKE_SUCCESS:
       return {
         ...state,
         pending: false,
         ...action,
       };
 
-    case marketplaceConstants.MODAL_STAKE_MARKET_ERROR:
+    case stakeConstants.MODAL_STAKE_ERROR:
       return {
         ...state,
         isOpen: false,

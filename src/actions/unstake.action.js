@@ -2,7 +2,7 @@ import queryString from "query-string";
 import { ethers } from "ethers";
 
 import { alertActions } from "./alert.actions";
-import { web3Constants, marketplaceConstants } from "../constants";
+import { web3Constants, stakeConstants } from "../constants";
 
 import * as actions from ".";
 
@@ -91,7 +91,7 @@ export const loadModalUnStake = (dataToken) => async (dispatch, getState) => {
   // }
 
   dispatch({
-    type: marketplaceConstants.MODAL_OPEN_UNSTAKE_MARKET,
+    type: stakeConstants.MODAL_OPEN_UNSTAKE,
     accountApprove,
     accountStableDebtApprove,
     accountVariableDebtApprove,
