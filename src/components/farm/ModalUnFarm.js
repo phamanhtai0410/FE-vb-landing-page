@@ -3,8 +3,8 @@ import Modal from "react-modal";
 import { shallowEqual, useSelector, useDispatch } from "react-redux";
 import IcWarningCircle from "../../assets/images/ic-warning-circle.svg";
 import IcVeBank from "../../assets/images/ic_vebank.svg";
-import { selectFarmReducer } from "../../reducers/farm.reducer";
 import { farmConstants } from "../../constants";
+import { selectUnFarmReducer } from "../../reducers/unfarm.reducer";
 
 import * as actions from "../../actions";
 
@@ -23,7 +23,7 @@ const customStyles = {
   },
 };
 
-const ModalFarming = () => {
+const ModalUnFarm = () => {
   const dispatch = useDispatch();
   const {
     dataToken,
@@ -36,7 +36,7 @@ const ModalFarming = () => {
     transaction,
     pending,
     isOpen,
-  } = useSelector(selectFarmReducer, shallowEqual);
+  } = useSelector(selectUnFarmReducer, shallowEqual);
 
   const [amount, setAmount] = useState("0");
 
@@ -46,7 +46,7 @@ const ModalFarming = () => {
 
   const closeModal = async (e) => {
     dispatch({
-      type: farmConstants.MODAL_CLOSE_FARM,
+      type: farmConstants.MODAL_CLOSE_UNFARM,
     });
     clearValue();
     if (transaction) {
@@ -59,6 +59,9 @@ const ModalFarming = () => {
   };
 
   const onConfirmClicked = (e) => {
+    if (parseFloat(amount) <= 0.0) {
+      return;
+    }
     // TODO: Farm the entered value
     closeModal();
   };
@@ -72,14 +75,14 @@ const ModalFarming = () => {
       overlayClassName="overlay-lur"
     >
       <div className="header-modal">
-        <h2>Farm</h2>
+        <h2>Unfarm</h2>
         <button className="btn-modal-close" onClick={closeModal} />
       </div>
 
       <div className="content-modal px-6 space-y-4 pb-4">
         <div className="flex justify-between">
           <div className="flex items-center space-x-2">
-            <p>Balance</p>
+            <p>Staked</p>
             <img
               src={IcWarningCircle}
               alt=""
@@ -89,7 +92,11 @@ const ModalFarming = () => {
           <p>5,000 LP</p>
         </div>
         <div className="bg-gradient-search rounded-lg flex flex-row p-4 justify-between">
-          {/* <img className="w-12 h-8 pr-3" src={IcVeBank} alt="Token VEBank" /> */}
+          {/* <img
+            className="w-12 h-8 pr-3"
+            src={dataToken.iconOringin}
+            alt="Token VEBank"
+          /> */}
           <div className="flex -space-x-2 overflow-hidden">
             <img
               className="inline-block h-8 w-8 rounded-full z-10"
@@ -135,4 +142,4 @@ const ModalFarming = () => {
   );
 };
 
-export default ModalFarming;
+export default ModalUnFarm;

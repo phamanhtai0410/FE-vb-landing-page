@@ -3,6 +3,7 @@ import BtnOpenAddLiquidity from "../farm/BtnOpenAddLiquidity";
 import BtnOpenStartFarming from "./BtnOpenStartFarming";
 import BtnOpenHarvest from "./BtnOpenHarvest";
 import ModalFarming from "./ModalFarming";
+import BtnOpenUnFarm from "./BtnOpenUnFarm";
 
 const FarmRowAction = ({ openRowAssets, item }) => {
   if (openRowAssets.indexOf(item.assetsPoolAddress) === -1) {
@@ -38,6 +39,7 @@ const FarmRowAction = ({ openRowAssets, item }) => {
               </div>
             </div>
             <div className="flex flex-row justify-end items-center w-2/3 space-x-2">
+              <BtnOpenUnFarm item={item} />
               <BtnOpenStartFarming item={item} />
               <BtnOpenAddLiquidity item={item} />
             </div>

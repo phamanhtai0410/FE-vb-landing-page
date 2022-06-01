@@ -9,3 +9,4 @@ export * from "./pool.action";
 export * from "./stake.action";
 export * from "./unstake.action";
 export * from "./farm.action";
+export * from "./unfarm.action";
