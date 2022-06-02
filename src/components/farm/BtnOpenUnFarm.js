@@ -43,7 +43,7 @@ const BtnOpenUnFarm = ({ item }) => {
     <SecondaryButton
       label={btnLabel}
       onClick={handlerOpenModal}
-      className="px-4 py-1"
+      className="px-5 py-5"
     />
     // <>
     //   {disabledRule ? (

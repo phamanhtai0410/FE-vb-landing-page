@@ -8,6 +8,7 @@ import { farmConstants } from "../../constants";
 
 import * as actions from "../../actions";
 import SecondaryButton from "../partials/SecondaryButton";
+import LiquidPairIcon from "../partials/LiquidPairIcon";
 
 const customStyles = {
   content: {
@@ -91,7 +92,7 @@ const ModalFarming = () => {
         </div>
         <div className="bg-gradient-search rounded-lg flex flex-row p-4 justify-between">
           {/* <img className="w-12 h-8 pr-3" src={IcVeBank} alt="Token VEBank" /> */}
-          <div className="flex -space-x-2 overflow-hidden">
+          {/* <div className="flex -space-x-2 overflow-hidden">
             <img
               className="inline-block h-8 w-8 rounded-full z-10"
               src={dataToken?.iconOrigin}
@@ -102,7 +103,11 @@ const ModalFarming = () => {
               src={dataToken?.iconAssets}
               alt=""
             />
-          </div>
+          </div> */}
+          <LiquidPairIcon
+            iconAsset1={dataToken?.iconOrigin}
+            iconAsset2={dataToken?.iconAssets}
+          />
           <input
             value={amount}
             onChange={(event) => setAmount(event.target.value)}

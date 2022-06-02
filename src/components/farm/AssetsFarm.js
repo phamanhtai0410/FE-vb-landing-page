@@ -9,6 +9,7 @@ import IcVeChain from "../../assets/images/ic_vechain.svg";
 import IcVeUSD from "../../assets/images/ic_veusd.svg";
 import IcVtho from "../../assets/images/ic_vtho.svg";
 import IcVeBank from "../../assets/images/ic_vebank.svg";
+import LiquidPairIcon from "../partials/LiquidPairIcon";
 
 const ASSETS_FARM_HEADER = [
   {
@@ -143,7 +144,7 @@ const AssetsFarm = () => {
               onClick={(e) => onClickShowRowAssets(item.assetsPoolAddress)}
             >
               <div className="p-4 col-span-3 flex flex-row justify-center items-center space-x-4 w-full text-right cursor-pointer">
-                <div className="flex -space-x-2 overflow-hidden">
+                {/* <div className="flex -space-x-2 overflow-hidden">
                   <img
                     className="inline-block h-8 w-8 rounded-full"
                     src={item.iconOrigin}
@@ -154,7 +155,11 @@ const AssetsFarm = () => {
                     src={item.iconAssets}
                     alt=""
                   />
-                </div>
+                </div> */}
+                <LiquidPairIcon
+                  iconAsset1={item.iconOrigin}
+                  iconAsset2={item.iconAssets}
+                />
                 <span className="text-lg font-semibold text-left w-28">
                   {item.assetsPoolName}
                 </span>

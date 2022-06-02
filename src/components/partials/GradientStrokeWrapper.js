@@ -1,4 +1,5 @@
 import React from "react";
+import { PartialConstants } from "../../constants/partial.constants";
 
 const borderId = "borderId";
 
@@ -8,17 +9,14 @@ const GradientStrokeWrapper = ({
   x2 = "1",
   y2 = "0.5",
   angle = 0,
-  stop = [
-    { offset: "0%", stopColor: "#0FE3E3" },
-    { offset: "51.04%", stopColor: "#02A4FF" },
-  ],
+  colors = PartialConstants.PRIMARY_GRADIENT_COLOR_LIST,
   borderRadius = "0.5rem", // 8px
   strokeWidth = 1,
   style,
   className = "",
 }) => {
   return (
-    <svg width="0" height="0" style={style} className={`${className}`}>
+    <svg width="0" height="0" style={style} className={`svg-bg ${className}`}>
       <defs>
         <linearGradient
           id="grad1"
@@ -28,7 +26,7 @@ const GradientStrokeWrapper = ({
           y2={y2}
           gradientTransform={`rotate(${angle})`}
         >
-          {stop?.map((item, index) => (
+          {colors?.map((item, index) => (
             <stop
               key={index}
               offset={item?.offset ? item?.offset : null}
