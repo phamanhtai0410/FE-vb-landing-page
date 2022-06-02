@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import * as actions from "../../actions";
 import SecondaryButton from "../../components/partials/SecondaryButton";
 
-const btnLabel = "-";
+const btnLabel = "–";
 const BtnOpenUnFarm = ({ item }) => {
   const dispatch = useDispatch();
 
@@ -34,23 +34,27 @@ const BtnOpenUnFarm = ({ item }) => {
     // }
   };
 
-  const handlerOpenModal = async () => {
+  const handlerOpenModal = () => {
     // setIsOpenStartFarming(true);
     dispatch(actions.loadModalUnFarm(item));
   };
 
   return (
-    // <SecondaryButton label="-" onClick={handlerOpenModal} />
+    <SecondaryButton
+      label={btnLabel}
+      onClick={handlerOpenModal}
+      className="px-4 py-1"
+    />
     // <>
     //   {disabledRule ? (
-    <button
-      onClick={(e) => handlerOpenModal(e)}
-      className="btn-veb h-10 bg-btn-veb-disabled border-[1px] border-[#4B5C86]"
-      // disabled={disabledRule}
-      type="submit"
-    >
-      {btnLabel}
-    </button>
+    // <button
+    //   onClick={(e) => handlerOpenModal(e)}
+    //   className="btn-veb h-10 bg-btn-veb-disabled border-[1px] border-[#4B5C86]"
+    //   // disabled={disabledRule}
+    //   type="submit"
+    // >
+    //   {btnLabel}
+    // </button>
     //   ) : (
     //     <button
     //       onClick={(e) => handlerOpenModal(e)}

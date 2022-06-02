@@ -17,6 +17,7 @@ import IcNext1 from "../../assets/images/ic_factory.svg";
 // import BtnBorrowApprove from './BtnBorrowApprove';
 
 import * as actions from "../../actions";
+import SecondaryButton from "../partials/SecondaryButton";
 
 const customStyles = {
   content: {
@@ -249,18 +250,23 @@ const ModalUnStake = () => {
         {/* <button
             onClick={e => { handlerStepToStep(e) }}
             className={`btn-modal-veb w-full ${showCheckStepContinue() ? "bg-btn-veb" : ""} `} >Continue</button> */}
-        <div className="flex flex-row btn-modal-2nd flex-1 justify-end items-center space-x-2">
+        <div className="flex flex-row btn-modal-2nd flex-1 justify-end items-center space-x-11">
           {/* <SecondaryButton
             label="Cancel"
             onClick={closeModal}
             className="flex-1"
           /> */}
-          <button onClick={closeModal} className="flex-1 btn-modal-veb">
+          <SecondaryButton
+            label="Cancel"
+            onClick={closeModal}
+            className="w-full btn-modal-secondary h-11"
+          />
+          {/* <button onClick={closeModal} className="flex-1 btn-modal-veb">
             Cancel
-          </button>
+          </button> */}
           <button
             onClick={showCheckStepContinue() && onConfirmClicked}
-            className={`btn-modal-veb flex-1 ${
+            className={`w-full btn-modal-veb ${
               showCheckStepContinue() ? "bg-btn-veb" : ""
             }`}
           >

@@ -6,19 +6,16 @@ const SecondaryButton = ({
   onClick = () => {},
   className = "",
 }) => (
-  <Fragment className={`relative ${className}`}>
-    <GradientStrokeWrapper
-      borderRadius={8}
-      style={{
-        top: 0,
-        left: 0,
-        overflow: "visible",
-      }}
-    />
-    <div className="relative flex-1">
-      <button onClick={onClick}>{label}</button>
-    </div>
-  </Fragment>
+  <div className={`flex justify-center relative ${className}`}>
+    <GradientStrokeWrapper className="flex flex-shrink svg-bg" />
+    <button
+      className={`relative w-full`}
+      onClick={onClick}
+      style={{ zIndex: "10", color: "white", fontSize: "16px" }}
+    >
+      {label}
+    </button>
+  </div>
 );
 
 export default SecondaryButton;

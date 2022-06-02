@@ -85,6 +85,22 @@
     display: block;
 }
 
+.btn-modal-secondary {
+    padding: .5rem 2.5rem;
+}
+
+.svg-bg {
+    position: absolute;
+    overflow: visible;
+    left: 0;
+    width: 100%;
+    top: 0;
+    height: 100%;
+    fill: none;
+    stroke: url(#grad1);
+    stroke-width: 1px;
+}
+
 .bg-btn-veb {
     background: linear-gradient(91.96deg, #0FE3E3 0%, #02A4FF 100%);
 }

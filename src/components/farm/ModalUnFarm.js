@@ -5,6 +5,7 @@ import IcWarningCircle from "../../assets/images/ic-warning-circle.svg";
 import IcVeBank from "../../assets/images/ic_vebank.svg";
 import { farmConstants } from "../../constants";
 import { selectUnFarmReducer } from "../../reducers/unfarm.reducer";
+import SecondaryButton from "../partials/SecondaryButton";
 
 import * as actions from "../../actions";
 
@@ -123,13 +124,18 @@ const ModalUnFarm = () => {
             Max
           </span>
         </div>
-        <div className="flex flex-1 justify-between space-x-5 pt-5">
-          <button onClick={closeModal} className="flex flex-1 btn-modal-veb">
+        <div className="flex flex-1 justify-between space-x-11 pt-5">
+          {/* <button onClick={closeModal} className="flex flex-1 btn-modal-veb">
             Cancel
-          </button>
+          </button> */}
+          <SecondaryButton
+            label="Cancel"
+            onClick={closeModal}
+            className="w-full btn-modal-secondary h-11"
+          />
           <button
             onClick={onConfirmClicked}
-            className={`flex flex-1 btn-modal-veb ${
+            className={`w-full btn-modal-veb ${
               parseFloat(amount) > 0 ? "bg-btn-veb" : ""
             }`}
             disabled={parseFloat(amount) <= 0}
