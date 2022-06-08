@@ -1,25 +1,26 @@
+import queryString from "query-string";
+import { ethers } from "ethers";
 
-import queryString from 'query-string';
-import { ethers } from 'ethers';
+import { alertActions } from "./alert.actions";
+import {
+  web3Constants,
+  marketplaceConstants,
+  poolConstants,
+} from "../constants";
 
-import { alertActions } from './alert.actions';
-import { web3Constants, marketplaceConstants } from '../constants';
+import * as actions from ".";
 
-import * as actions from '.';
+import ERC20ABI_VB from "../_contracts/VB.json";
 
-import ERC20ABI_VB from '../_contracts/VB.json';
-
-
-import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
-import ERC20ABI_WETH_GETAWAY from '../_contracts/WETHGateway.json';
-import ERC20ABI_POOL from '../_contracts/Pool.json';
-import ERC20ABI_STABLE_DEBT_TOKEN from '../_contracts/StableDebtToken.json';
-import ERC20ABI_VARIBLE_DEBT_TOKEN from '../_contracts/VariableDebtToken.json';
+import ERC20ABI_AAVE from "../_contracts/AaveProtocolDataProvider.json";
+import ERC20ABI_WETH_GETAWAY from "../_contracts/WETHGateway.json";
+import ERC20ABI_POOL from "../_contracts/Pool.json";
+import ERC20ABI_STABLE_DEBT_TOKEN from "../_contracts/StableDebtToken.json";
+import ERC20ABI_VARIBLE_DEBT_TOKEN from "../_contracts/VariableDebtToken.json";
 
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
-
 
 // ------------------------ BORROW ------------------------ //
 
@@ -29,8 +30,8 @@ const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
  * @returns dispatch strore
  *
  */
-export const loadModalAddLiquidity = (dataToken) => async (dispatch, getState) => {
-
+export const loadModalAddLiquidity =
+  (dataToken) => async (dispatch, getState) => {
     const state = getState();
     const { web3, account } = state.web3;
 
@@ -61,12 +62,10 @@ export const loadModalAddLiquidity = (dataToken) => async (dispatch, getState) =
     // const accountData = await contractPOOL.methods.getUserAccountData(account).call();
     // console.log("getUserAccountData", accountData);
 
-
     // if (accountData.availableBorrowsBase) {
     //     accountBalance = ethers.utils.formatUnits(accountData.availableBorrowsBase, 18);
     //     accountBalance = accountBalance / dataPrice[dataToken.assetsAddress];
     // }
-
 
     // if (dataToken.assetsChain === "VET") {
 
@@ -85,7 +84,6 @@ export const loadModalAddLiquidity = (dataToken) => async (dispatch, getState) =
 
     //     accountApprove = accountVariableDebtApprove;
 
-
     // } else {
 
     //     const contractBorrow = new web3.eth.Contract(ERC20ABI_VB, dataToken.assetsAddress);
@@ -98,12 +96,17 @@ export const loadModalAddLiquidity = (dataToken) => async (dispatch, getState) =
     // }
 
     dispatch({
-        type: marketplaceConstants.MODAL_OPEN_ADD_LIQUIDITY_MARKET,
-        accountApprove,
-        accountStableDebtApprove,
-        accountVariableDebtApprove,
-        accountBalance: accountBalance,
-        dataToken
+      type: poolConstants.MODAL_OPEN_ADD_LIQUIDITY,
+      accountApprove,
+      accountStableDebtApprove,
+      accountVariableDebtApprove,
+      accountBalance: accountBalance,
+      dataToken,
     });
+  };
 
+export const closeLiquidity = () => {
+  return {
+    type: poolConstants.MODAL_CLOSE_ADD_LIQUIDITY,
+  };
 };

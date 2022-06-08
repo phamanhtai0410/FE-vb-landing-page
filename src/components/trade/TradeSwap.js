@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import IcSwap from "../../assets/images/ic_swap.svg";
 import IcDropDown from "../../assets/images/ic_dropdown.svg";
 import IcReload from "../../assets/images/ic_reload.svg";
-import IcSetting from "../../assets/images/ic_setting.svg";
+import IcSetting from "../../assets/images/buttons/ic_setting_outline.svg";
 import {shallowEqual, useSelector} from "react-redux";
 import BtnConnectInPage from "../account/BtnConnectInPage";
 import BtnOpenSwap from "./BtnOpenSwap";

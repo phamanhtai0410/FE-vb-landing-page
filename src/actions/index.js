@@ -6,6 +6,7 @@ export * from "./withdraw.actions";
 export * from "./supply.actions";
 export * from "./repay.actions";
 export * from "./pool.action";
+export * from "./liquid.actions";
 export * from "./stake.action";
 export * from "./unstake.action";
 export * from "./farm.action";

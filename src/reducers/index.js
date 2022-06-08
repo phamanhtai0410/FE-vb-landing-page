@@ -20,6 +20,7 @@ import { supplyReducer } from "./supply.reducer";
 import { withdrawReducer } from "./withdraw.reducer";
 import { repayReducer } from "./repay.reducer";
 import { poolReducer } from "./pool.reducer";
+import { liquidReducer } from "./liquid.reducer";
 import { stakeReducer } from "./stake.reducer";
 import { unStakeReducer } from "./unstake.reducer";
 import { farmReducer } from "./farm.reducer";
@@ -44,6 +45,7 @@ const appReducer = combineReducers({
   repayReducer,
 
   poolReducer,
+  liquidReducer,
 
   stakeReducer,
   unStakeReducer,

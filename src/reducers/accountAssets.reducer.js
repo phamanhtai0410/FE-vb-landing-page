@@ -1,4 +1,7 @@
-import { marketplaceConstants } from '../constants';
+import { createSelector } from "reselect";
+import { marketplaceConstants } from "../constants";
+import { selectListAssets } from "./assetsMarket.reducer";
+import { selectAssetPrice } from "./assetsPrice.reducer";
 
 const initialState = {
   requesting: false,
@@ -13,12 +16,10 @@ const initialState = {
 
   query: {},
   total: 0,
-  data: []
-
-}
+  data: [],
+};
 
 export function accountAssetsReducer(state = initialState, payload) {
-
   switch (payload.type) {
     case marketplaceConstants.FETCH_ACCOUNT_ASSETS_REQUEST:
       return {
@@ -40,10 +41,30 @@ export function accountAssetsReducer(state = initialState, payload) {
       return {
         ...state,
         requesting: false,
-        message: payload.message
+        message: payload.message,
       };
 
     default:
       return state;
   }
 }
+
+export const selectAccountAssetsReducer = (state) => state.accountAssetsReducer;
+export const selectAccountSupplyBalance = (state) =>
+  state.accountAssetsReducer.accountSupplyBalance;
+export const selectAccountBorrowBalance = (state) =>
+  state.accountAssetsReducer.accountBorrowBalance;
+  const _selectUserAssets = createSelector(
+    [selectListAssets, selectAssetPrice],
+    (listAssets, listPrice) => {
+      return listAssets && listAssets.length > 0
+        ? listAssets.map((asset) => {
+            return {
+              ...asset,
+              balance: listPrice[asset.assetsAddress],
+            };
+          })
+        : [];
+    }
+  );
+  export const selectUserAssets = (state) => _selectUserAssets(state);

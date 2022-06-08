@@ -117,7 +117,7 @@ export const getCurrentAssets = () => async (dispatch, getState) => {
     const { web3 } = state.web3;
     const { data } = state.assetsMarketReducer;
 
-    let dataList = [];
+    let dataList = {};
 
     if (web3 && data.length > 0) {
 

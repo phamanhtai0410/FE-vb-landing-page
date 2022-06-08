@@ -1,7 +1,6 @@
-import { marketplaceConstants } from '../constants';
+import { poolConstants } from "../constants";
 
 const initialState = {
-
   isOpen: false,
   pending: false,
 
@@ -15,57 +14,55 @@ const initialState = {
   accountVariableDebtApprove: 0,
 
   dataToken: null,
-  data: {}
-
+  data: {},
 };
 
 export function poolReducer(state = initialState, action) {
-
   switch (action.type) {
-
-    case marketplaceConstants.MODAL_OPEN_ADD_LIQUIDITY_MARKET:
+    case poolConstants.MODAL_OPEN_ADD_LIQUIDITY:
       return {
         ...state,
         isOpen: true,
         pending: false,
         errorCode: null,
         message: null,
-        ...action
+        ...action,
       };
 
-    case marketplaceConstants.MODAL_ADD_LIQUIDITY_MARKET_REQUEST:
+    case poolConstants.MODAL_ADD_LIQUIDITY_REQUEST:
       return {
         ...state,
         transaction: null,
-        pending: true
+        pending: true,
       };
 
-    case marketplaceConstants.MODAL_ADD_LIQUIDITY_MARKET_SUCCESS:
+    case poolConstants.MODAL_ADD_LIQUIDITY_SUCCESS:
       return {
         ...state,
         pending: false,
-        transaction: action.transaction
+        transaction: action.transaction,
       };
 
-
-    case marketplaceConstants.MODAL_ADD_LIQUIDITY_MARKET_ERROR:
+    case poolConstants.MODAL_ADD_LIQUIDITY_ERROR:
       return {
         ...state,
         pending: false,
-        ...action
+        ...action,
       };
 
-    case marketplaceConstants.MODAL_CLOSE_ADD_LIQUIDITY_MARKET:
+    case poolConstants.MODAL_CLOSE_ADD_LIQUIDITY:
       return {
         ...state,
         isOpen: false,
         pending: false,
         transaction: null,
         data: {},
-        message: null
+        message: null,
       };
 
     default:
       return state;
   }
 }
+
+export const selectPoolReducer = (state) => state.poolReducer;
