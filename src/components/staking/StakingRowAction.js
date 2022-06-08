@@ -1,6 +1,6 @@
 import React from 'react';
 import BtnOpenHarvest from "./BtnOpenHarvest";
-import BtnOpenAddLiquidity from "./BtnOpenAddLiquidity";
+import BtnOpenStake from "./BtnOpenStake";
 import BtnOpenUnstake from "./BtnOpenUnstake";
 import {shallowEqual, useSelector} from "react-redux";
 import BtnConnectInPage from "../account/BtnConnectInPage";
@@ -39,13 +39,13 @@ const StakingRowAction = ({openRowAssets, item}) => {
                         <label className='font-poppins text-[14px] text-[#678BCA]'>Start Staking</label>
                         <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 VB</div>
                     </div>
-                    <div className='flex flex-row justify-end items-center w-2/3 space-x-2'>
+                    <div className='flex flex-row justify-end items-center w-1/2 space-x-2'>
                         {
                             account
                                 ?
                                 <>
                                     <BtnOpenUnstake item={item} />
-                                    <BtnOpenAddLiquidity item={item} />
+                                    <BtnOpenStake item={item} />
                                 </>
                                 :
                                 <BtnConnectInPage className="btn-veb h-12"/>

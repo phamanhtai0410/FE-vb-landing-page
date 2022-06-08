@@ -1,5 +1,6 @@
+import { createSelector } from 'reselect';
 import { marketplaceConstants } from '../constants';
-
+import { selectListAssets } from './assetsMarket.reducer';
 
 const initialState = {
   requesting: false,
@@ -39,3 +40,5 @@ export function assetsPriceReducer(state = initialState, payload) {
       return state;
   }
 }
+
+export const selectAssetPrice = state => state.assetsPriceReducer.data

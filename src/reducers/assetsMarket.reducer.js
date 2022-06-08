@@ -1,14 +1,15 @@
-import { marketplaceConstants } from '../constants';
+import { marketplaceConstants } from "../constants";
 
-import IcVeUSD from '../assets/images/ic_veusd.svg';
-import IcVeChain from '../assets/images/ic_vechain.svg';
-import IcVeBank from '../assets/images/ic_vebank.svg';
-import IcVtho from '../assets/images/ic_vtho.svg';
+import IcVeUSD from "../assets/images/ic_veusd.svg";
+import IcVeChain from "../assets/images/ic_vechain.svg";
+import IcVeBank from "../assets/images/ic_vebank.svg";
+import IcVtho from "../assets/images/ic_vtho.svg";
 
 const listAsset = [
   {
     icon: IcVeChain,
     assetsChain: "VET",
+    assetNetwork: "VeChain",
     assetsAddress: process.env.REACT_APP_TOKEN_WVET,
     assetsDecimals: 18,
     totalSupplied: 0,
@@ -21,6 +22,7 @@ const listAsset = [
   {
     icon: IcVeUSD,
     assetsChain: "VEUSD",
+    assetNetwork: "VeUSD",
     assetsAddress: process.env.REACT_APP_TOKEN_VEUSD,
     assetsDecimals: 6,
     totalSupplied: 0,
@@ -33,6 +35,7 @@ const listAsset = [
   {
     icon: IcVtho,
     assetsChain: "VTHO",
+    assetNetwork: "VeThor",
     assetsAddress: process.env.REACT_APP_TOKEN_VTHO,
     assetsDecimals: 18,
     totalSupplied: 0,
@@ -45,6 +48,7 @@ const listAsset = [
   {
     icon: IcVeBank,
     assetsChain: "VB",
+    assetNetwork: "VeBank",
     assetsAddress: process.env.REACT_APP_TOKEN_VEBANK,
     assetsDecimals: 18,
     totalSupplied: 0,
@@ -53,8 +57,8 @@ const listAsset = [
     borrowAPY: "4.03",
     interestBorrow: "1.8",
     totalBorrowed: 0,
-  }
-]
+  },
+];
 
 const initialState = {
   requesting: false,
@@ -64,13 +68,11 @@ const initialState = {
   totalSupply: 0,
   totalBorrow: 0,
   total: 0,
-  data: listAsset || []
-}
+  data: listAsset || [],
+};
 
 export function assetsMarketReducer(state = initialState, payload) {
-
   switch (payload.type) {
-
     case marketplaceConstants.FETCH_ASSETS_MARKET_REQUEST:
       return {
         ...state,
@@ -86,17 +88,19 @@ export function assetsMarketReducer(state = initialState, payload) {
         data: payload.data,
         totalSupply: payload.totalSupply,
         totalBorrow: payload.totalBorrow,
-        total: payload.total
+        total: payload.total,
       };
 
     case marketplaceConstants.FETCH_ASSETS_MARKET_ERROR:
       return {
         ...state,
         requesting: false,
-        message: payload.message
+        message: payload.message,
       };
 
     default:
       return state;
   }
 }
+
+export const selectListAssets = (state) => state.assetsMarketReducer.data;
