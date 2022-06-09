@@ -153,6 +153,7 @@ export function liquidReducer(state = initialState, action) {
 }
 
 export const selectLiquidReducer = (state) => state.liquidReducer;
+export const selectOpenChooseTokenState = state => state.liquidReducer.isSelectTokenModalOpen
 export const selectOpenAddLiquidState = state => state.liquidReducer.isAddLiquidModalOpen
 export const selectFirstToken = (state) => state.liquidReducer.firstToken;
 export const selectSecondToken = (state) => state.liquidReducer.secondToken;
