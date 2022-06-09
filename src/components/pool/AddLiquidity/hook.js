@@ -50,57 +50,44 @@ const useAddLiquidFacade = () => {
   };
 
   const closeModalAndDashboard = () => {
-    closeModal();
-    resetFrm();
+    if (step === 1) {
+      closeModal();
+      resetFrm();
+    } else if (step === 2) {
+      setStep(1);
+      setPrimaryButtonLabel("Continue");
+    } else if (step === 4) {
+      setStep(2);
+      setPrimaryButtonLabel("Confirm Supply");
+    }
   };
 
   const handlerStepToStep = (e) => {
     if (
       step === 1 &&
-      //   firstToken &&
-      //   secondToken &&
+      firstToken &&
+      secondToken &&
       firstTokenVolume > 0 &&
       secondTokenVolume > 0
     ) {
       setStep(2);
+      setPrimaryButtonLabel("Confirm Supply");
     }
 
-    // if (step === 2) {
-    //   setStep(3);
-    // }
-  };
-
-  const showCheckStepContinue = () => {
-    console.log("Checking Step", step);
-    switch (step) {
-      case 1: {
-        if (!firstToken || !secondToken) {
-          setPrimaryButtonLabel("Invalid pair");
-        } else if (
-          firstTokenVolume.length === 0 ||
-          secondTokenVolume.length === 0 ||
-          firstTokenVolume <= 0 ||
-          secondTokenVolume <= 0
-        ) {
-          setPrimaryButtonLabel("Enter an amount");
-        } else {
-          setPrimaryButtonLabel("Continue");
-          return true;
-        }
-        return false;
-      }
-      case 2: {
-        break;
-      }
-      default: {
-        break;
-      }
+    if (step === 2) {
+      setStep(3);
+      setTimeout(() => {
+        setStep(4);
+        setPrimaryButtonLabel("+ Add Liquidity");
+      }, 2000);
     }
-
-    //    if (step === 2) {
-    //      return true;
-    //    }
   };
+
+  const removeLiquidity = () => {};
+
+  const handleAddLiquidity = () => {};
+
+  const findOtherLiquidPoolTokens = () => {};
 
   useEffect(() => {
     setStep(1);
@@ -145,13 +132,13 @@ const useAddLiquidFacade = () => {
     secondTokenVolume,
     primaryButtonLabel,
     closeModal,
+    removeLiquidity,
+    handleAddLiquidity,
     handlerStepToStep,
     closeModalAndDashboard,
-    showCheckStepContinue,
     onSelectFirstCurrency,
     onSelectSecondCurrency,
-    setFirstTokenVolume,
-    setSecondTokenVolume,
+    findOtherLiquidPoolTokens,
     onChangeFirstTokenAmount,
     onChangeSecondTokenAmount,
   };

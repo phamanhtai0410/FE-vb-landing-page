@@ -34,7 +34,7 @@ const Assets = ({
           ) : (
             <span className="text-[#FAFAFA] text-base">Select a currency</span>
           )}
-          <img src={IcDropDown} alt={"Dropdown"} className="w-4 h-4" />
+          <img src={IcDropDown} alt={"Dropdown"} className="w-2 h-2" />
         </div>
         <div className="flex flex-row space-x-1">
           <span className="text-[#BFBFBF] text-xl">

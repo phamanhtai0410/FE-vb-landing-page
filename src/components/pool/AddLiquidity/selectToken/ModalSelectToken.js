@@ -1,34 +1,16 @@
 import { useEffect, useState } from "react";
 import Modal from "react-modal";
-import { Range } from "react-range";
-import { TailSpin } from "react-loading-icons";
 import "../styles.scss";
 
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { numberWithCommas } from "../../../../utils/lib";
 import IcQuestionOutline from "../../../../assets/images/buttons/ic_question_outline.svg";
 
-import IcNext1 from "../../../../assets/images/ic_factory.svg";
-
-// import BtnBorrow from './BtnBorrow';
-// import BtnBorrowApprove from './BtnBorrowApprove';
-
 import * as actions from "../../../../actions";
-import {
-  selectFirstToken,
-  selectLiquidReducer,
-  selectSecondToken,
-} from "../../../../reducers/liquid.reducer";
+import { selectOpenChooseTokenState } from "../../../../reducers/liquid.reducer";
 import SearchBar from "../../../partials/SearchBar";
-
-import IcVeUSD from "../../../../assets/images/ic_veusd.svg";
-import IcVeChain from "../../../../assets/images/ic_vechain.svg";
-import IcVeBank from "../../../../assets/images/ic_vebank.svg";
-import IcVtho from "../../../../assets/images/ic_vtho.svg";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { selectUserAssets } from "../../../../reducers/accountAssets.reducer";
-import { selectListAssets } from "../../../../reducers/assetsMarket.reducer";
-import { selectAssetPrice } from "../../../../reducers/assetsPrice.reducer";
 
 const customStyles = {
   content: {
@@ -51,18 +33,7 @@ const ModalSelectToken = () => {
   const [step, setStep] = useState(1);
   const [rate, setRate] = useState(2);
 
-  const {
-    dataToken,
-    accountBalance,
-    accountApprove,
-    accountStableDebtApprove,
-    accountVariableDebtApprove,
-    errorCode,
-    message,
-    transaction,
-    pending,
-    isSelectTokenModalOpen,
-  } = useSelector(selectLiquidReducer, shallowEqual);
+  const isSelectTokenModalOpen = useSelector(selectOpenChooseTokenState);
 
   const assetList = useSelector(selectUserAssets, shallowEqual);
   // const assetPriceList = useSelector(selectAssetPrice, shallowEqual);
@@ -70,101 +41,23 @@ const ModalSelectToken = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    resetFrm();
-  }, [dataToken]);
-
-  useEffect(() => {
     setStep(1);
   }, [isSelectTokenModalOpen]);
 
-  useEffect(() => {
-    fetchUserAssets();
-  }, []);
+  useEffect(() => fetchUserAssets(), []);
 
   const fetchUserAssets = async () => {
     await dispatch(actions.getCurrentAssets());
   };
 
-
-  const resetFrm = () => {
-    setAmount(0);
-    setValues([0]);
-    setStep(1);
-    setRate(2);
-  };
-
   const closeModal = () => {
     dispatch(actions.closeSelectToken());
-    if (transaction) {
-      dispatch(actions.reloadAccountAssets());
-    }
+    // if (transaction) {
+    //   dispatch(actions.reloadAccountAssets());
+    // }
   };
 
-  const closeModalAndDashboard = () => {
-    closeModal();
-    resetFrm();
-  };
-
-  const onChangeRangeAmount = (values) => {
-    setValues(values);
-    setAmount(values[0]);
-  };
-
-  const onChangeAmount = (e) => {
-    const { value } = e.target;
-    if (value <= accountBalance) {
-      setAmount(value);
-      setValues([value]);
-    }
-  };
-
-  const handlerStepToStep = (e) => {
-    if (step === 1 && amount > 0) {
-      setStep(2);
-    }
-
-    if (step === 2 && rate > 0) {
-      setStep(3);
-    }
-  };
-
-  const handlerChangeRate = (value) => {
-    setRate(value);
-  };
-
-  const showCheckStepContinue = () => {
-    if (step === 1 && amount > 0) {
-      return true;
-    }
-
-    if (step === 2 && (rate === 1 || rate === 2)) {
-      return true;
-    }
-  };
-
-  const showFactor = () => {
-    if (step === 1 && amount > 0) {
-      return (
-        <div className="font-poppins font-light">
-          New health factor <span className="font-bold">1.03</span>
-        </div>
-      );
-    }
-  };
-
-  const showBtnView = () => {
-    let btn = "";
-
-    if (dataToken) {
-      if (accountApprove === 0) {
-        // btn = <BtnBorrowApprove dataToken={dataToken} pending={pending} rate={rate} />;
-      } else {
-        // btn = <BtnBorrow dataToken={dataToken} pending={pending} amount={amount} rate={rate} />;
-      }
-    }
-
-    return btn;
-  };
+  const handlerStepToStep = (e) => {};
 
   const onTokenSelected = (tokenData) => {
     dispatch(actions.selectToken(tokenData));
