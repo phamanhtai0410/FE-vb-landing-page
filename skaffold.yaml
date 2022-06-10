@@ -38,7 +38,7 @@ profiles:
       - image: [CONTAINER_REPO]
         context: .
         docker:
-          dockerfile: Dockerfile
+          dockerfile: Dockerfile-prod
     deploy:
         # Using Helm as the deployment strategy
         statusCheckDeadlineSeconds: 300

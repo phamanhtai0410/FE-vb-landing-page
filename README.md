@@ -68,3 +68,13 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+https://codesandbox.io/s/00e8qu?file=/src/App.js:1472-1538
+
+https://codesandbox.io/s/wnht6f?file=/package.json
+
+https://medium.com/coinmonks/how-to-interact-with-a-vechain-smart-contract-from-the-web-a61296aafa7d
+
+https://gitlab.com/ifavo/smart-contract-crud-react-example/-/blob/master/src/components/Contract/index.js

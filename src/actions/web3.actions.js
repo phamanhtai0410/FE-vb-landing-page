@@ -1,207 +1,89 @@
 
-import { ethers } from 'ethers';
+import { ethers } from "@vechain/ethers";
 import Connex from '@vechain/connex';
 
 import { Certificate, blake2b256, secp256k1 } from 'thor-devkit';
 
 import { alertActions } from './alert.actions';
-import { web3Constants } from '../constants';
+import { web3Constants, destroyConstants, marketplaceConstants } from '../constants';
 import getWeb3 from '../utils/getWeb3';
 
-import ERC20ABI from '../_contracts/abi-erc20.json';
-
 import ERC20ABI_VB from '../_contracts/VB.json';
+import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
+import ERC20ABI_ISEER_ORACLE from '../_contracts/SeerOracle.json';
+import ERC20ABI_POOL from '../_contracts/Pool.json';
 
+
+import * as actions from './';
 
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
 
-const TOKEN_BUSD = process.env.REACT_APP_TOKEN_BUSD;
-
+const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
+const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL; // AaveProtoco
 
-const chainID = process.env.REACT_APP_NETWORK_ID;
-const networks = {
-    bsc_testnet: {
-        chainId: `0x${Number(97).toString(16)}`, // A 0x-prefixed hexadecimal string
-        chainName: "Binance Smart Chain Testnet",
-        nativeCurrency: {
-            name: "Binance Chain Native Token",
-            symbol: "tBNB", // 2-6 characters long
-            decimals: 18,
-        },
-        rpcUrls: [
-            "https://data-seed-prebsc-1-s1.binance.org:8545",
-            "https://data-seed-prebsc-2-s1.binance.org:8545",
-            "https://data-seed-prebsc-1-s2.binance.org:8545",
-            "https://data-seed-prebsc-2-s2.binance.org:8545",
-            "https://data-seed-prebsc-1-s3.binance.org:8545",
-            "https://data-seed-prebsc-2-s3.binance.org:8545"
-        ],
-        blockExplorerUrls: ["https://testnet.bscscan.com"],
-    },
-    bsc: {
-        chainId: `0x${Number(56).toString(16)}`,
-        chainName: "Binance Smart Chain Mainnet",
-        nativeCurrency: {
-            name: "Binance Chain Native Token",
-            symbol: "BNB",
-            decimals: 18
-        },
-        rpcUrls: [
-            "https://bsc-dataseed1.binance.org",
-            "https://bsc-dataseed2.binance.org",
-            "https://bsc-dataseed3.binance.org",
-            "https://bsc-dataseed4.binance.org",
-            "https://bsc-dataseed1.defibit.io",
-            "https://bsc-dataseed2.defibit.io",
-            "https://bsc-dataseed3.defibit.io",
-            "https://bsc-dataseed4.defibit.io",
-            "https://bsc-dataseed1.ninicoin.io",
-            "https://bsc-dataseed2.ninicoin.io",
-            "https://bsc-dataseed3.ninicoin.io",
-            "https://bsc-dataseed4.ninicoin.io",
-            "wss://bsc-ws-node.nariox.org"
-        ],
-        blockExplorerUrls: ["https://bscscan.com"]
-    }
-};
-
-async function checkChainSwitch(web3) {
-
-    const chainIdDec = await web3.eth.getChainId();
-    return chainID === chainIdDec.toString();
-
+const ListKeyISeerOracle = {
+    "VET": process.env.REACT_APP_ISO_VET,
+    "VTHO": process.env.REACT_APP_ISO_VETHO,
+    "VB": process.env.REACT_APP_ISO_VB,
+    "VEUSD": process.env.REACT_APP_ISO_VEUSD
 }
-
-async function checkConected(connex, certid) {
-
-    connex.vendor.sign('cert', {
-        purpose: 'identification',
-        payload: {
-            type: 'text',
-            content: 'random generated string'
-        }
-    })
-        .link(`https://connex.vecha.in/${certid}`) // User will be back to the app by the url https://connex.vecha.in/0xffff....
-        .request()
-        .then(result => {
-
-            return result;
-        })
-
-
-}
-
 
 export const web3Connect = (isLogin) => async (dispatch) => {
 
     const web3 = await getWeb3();
 
-    const PK = "Kocanbiet082429!@#";
-
-    let signer;
     let _acc = localStorage.getItem('_acc');
     let _sign = localStorage.getItem('_sign');
 
     const connex = new Connex({
-        node: 'https://testnet.veblocks.net/',
-        network: 'test'
+        node: process.env.REACT_APP_CHAIN_NETWORK,
+        network: process.env.REACT_APP_NAME_NETWORK
     })
 
     if (_acc && _sign) {
+        // console.log("_acc && _sign");
+        dispatch({
+            type: web3Constants.WEB3_CONNECT,
+            web3,
+            connex,
+            signer: JSON.parse(_sign),
+            account: _acc
+        });
 
-        console.log("_acc && _sign")
-
-        const acc = connex.thor.account(_acc);
-        acc.get().then(accInfo => {
-
-            dispatch({
-                type: web3Constants.WEB3_CONNECT,
-                web3,
-                signer: JSON.parse(_sign),
-                balanceVeT: "",
-                accInfo: accInfo,
-
-                account: _acc
-            });
-
-            setTimeout(() => {
-                dispatch(instantiateVBContracts())
-            }, 500);
-
-            return _acc;
-
-        })
-
-
+        return _acc;
     }
 
     if (!_acc && isLogin) {
 
         // Ask user to sign the agreement
-        signer = await connex.vendor.sign('cert', {
+        connex.vendor.sign('cert', {
             purpose: 'agreement',
             payload: {
                 type: 'text',
                 content: 'agreement'
             }
-        }).request();
+        }).request()
+            .then((signer) => {
+                _acc = signer.annex.signer;
+                _sign = JSON.stringify(signer);
 
-        _acc = signer.annex.signer;
-        _sign = JSON.stringify(signer);
+                localStorage.setItem('_acc', _acc);
+                localStorage.setItem('_sign', _sign);
 
-        // console.log(blake2b256(jsonStr))
-        // const signature = secp256k1.sign(blake2b256(jsonStr), PK);
-        //sconsole.log("signature", blake2b256(jsonStr).toString('hex'));
+                dispatch({
+                    type: web3Constants.WEB3_CONNECT,
+                    connex,
+                    web3,
+                    signer,
+                    account: _acc
+                });
 
-        localStorage.setItem('_acc', _acc);
-        localStorage.setItem('_sign', _sign);
+                return _acc;
 
-        dispatch({
-            type: web3Constants.WEB3_CONNECT,
-            web3,
-            signer,
-            account: _acc
-        });
-
-    } else {
-
-        // const recoveredAddress = await web3.eth.accounts.recover('agreement', _sign);
-        // if (recoveredAddress) {
-        //     dispatch({
-        //         type: web3Constants.WEB3_CONNECT,
-        //         web3,
-        //         signer: _acc,
-        //         account: signer.annex.signer
-        //     });
-        // }
-
-        //const sign = web3.eth.accounts.sign('agreement', _sign);
-        // const acc = connex.thor.account(_acc);
-
-        // acc.get().then(accInfo => {
-        //     console.log(accInfo)
-        // });
-
-        // acc.getCode().then(code => {
-        //     console.log("code", code)
-        // });
-
-        // // 3: check results, compare both address
-        // if (web3.utils.toChecksumAddress(recoveredAddress) === _acc) {
-        //     console.log('SUCCESS');
-        // } else {
-        //     console.log('FAILED');
-        // }
-
-        // const signCert = checkConected(connex, _sign);
-        // console.log(signCert)
-
+            });
     }
-
-
-    return _acc;
 
 
 };
@@ -217,53 +99,60 @@ export const web3Disconnect = () => async (dispatch, getState) => {
 
     dispatch({
         type: web3Constants.WEB3_DISCONNECT,
+        connex: null,
         web3: null,
         account: null
     });
 
-    dispatch({
-        type: web3Constants.INIT_CONTRACT_BUSD,
-        contractBusd: null,
-        balance: 0
-    });
+    dispatch(actions.getAccountAssets());
 
-    dispatch({
-        type: web3Constants.INIT_CONTRACT_VB,
-        contractVB: null,
-        balance: 0
-    });
+
+    // setTimeout(() => {
+    //     dispatch({ type: destroyConstants.DESTROY_SESSION });
+    // }, 1000);
 
 };
 
-export const instantiateBUSDContracts = () => async (dispatch, getState) => {
+export const instantiateVetContracts = () => async (dispatch, getState) => {
 
     const state = getState();
 
-    const { web3, account } = state.web3;
+    const { connex, account } = state.web3;
 
-    if (web3 && account) {
+    if (account) {
 
-        let contractBUSD = new web3.eth.Contract(ERC20ABI, TOKEN_BUSD);
+        const accInfo = await connex.thor.account(account).get();
 
-        let balance = 0;
+        let balanceVET = 0;
+        let balanceVTHO = 0;
 
-        if (contractBUSD && account) {
+        if (accInfo && accInfo.balance && accInfo.energy) {
 
-            const balanceBigN = await contractBUSD.methods.balanceOf(account).call();
+            balanceVET = ethers.utils.formatEther(accInfo.balance);
+            balanceVET = Math.round(balanceVET * 100) / 100;
 
-            balance = ethers.utils.formatEther(balanceBigN);
-
-            balance = Math.round(balance * 100) / 100;
+            balanceVTHO = ethers.utils.formatEther(accInfo.energy);
+            balanceVTHO = Math.round(balanceVTHO * 100) / 100;
 
         }
 
         dispatch({
-            type: web3Constants.INIT_CONTRACT_BUSD,
-            contractBUSD,
-            balance
+            type: web3Constants.INIT_CONTRACT_VET,
+            balanceVET,
+            balanceVTHO
         });
 
+
+        return accInfo;
+
+
     }
+
+    dispatch({
+        type: web3Constants.INIT_CONTRACT_VET,
+        balanceVET: 0,
+        balanceVTHO: 0
+    });
 
 };
 
@@ -282,7 +171,6 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
         if (contractVB && account) {
 
             const balanceBigN = await contractVB.methods.balanceOf(account).call();
-
             balance = ethers.utils.formatEther(balanceBigN);
             balance = Math.round(balance * 100) / 100;
 
@@ -294,9 +182,18 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
             balance
         });
 
+        return balance;
+
     }
 
+    dispatch({
+        type: web3Constants.INIT_CONTRACT_VB,
+        contractVB: null,
+        balance: 0
+    });
+
 };
+
 
 export const fetchCurrentMSP = () => async (dispatch) => {
 

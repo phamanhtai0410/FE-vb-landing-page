@@ -8,34 +8,36 @@ import * as actions from './actions';
 const Wallet = () => {
 
     const { account } = useSelector(state => state.web3, shallowEqual);
-
     const dispatch = useDispatch();
 
     useEffect(() => {
 
         if (window.ethereum && window.ethereum.isMetaMask) {
-
             window.ethereum.on('accountsChanged', accountChangeHandler);
-
             window.ethereum.on('chainChanged', chainChangeHandler);
-
         }
 
-        const timer = setTimeout(() => {
-            fetchWeb3Init(false);
-        }, 1000);
-
-        return () => clearTimeout(timer);
+        fetchWeb3Init(false);
 
     }, []);
 
+    useEffect(() => {
+        fetchAccountInit();
+    }, [account]);
+
+
     async function fetchWeb3Init(loadDefault) {
-
-        console.log("fetchWeb3Init")
-
         await dispatch(actions.web3Connect(loadDefault));// true is account conected reload contract
-        // await dispatch(actions.instantiateLUSContracts());
-        // await dispatch(actions.instantiateBUSDContracts());
+        await dispatch(actions.getCurrentAssets())
+    }
+
+    async function fetchAccountInit() {
+
+        setTimeout(async () => {
+            await dispatch(actions.instantiateVBContracts());
+            await dispatch(actions.instantiateVetContracts());
+            // await dispatch(actions.getOverview());
+        }, 500);
 
     }
 
@@ -51,9 +53,9 @@ const Wallet = () => {
                 fetchWeb3Init(false)
             }
 
-            // if (accounts[0] !== account && account) {
-            //     await dispatch(actions.instantiateLUWAContracts());
-            // }
+            if (accounts[0] !== account && account) {
+                fetchAccountInit();
+            }
 
         } else {
             await dispatch(actions.web3Disconnect());

@@ -9,186 +9,331 @@ import * as actions from './';
 
 
 import ERC20ABI_VB from '../_contracts/VB.json';
+import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
+import ERC20ABI_ISEER_ORACLE from '../_contracts/SeerOracle.json';
+import ERC20ABI_POOL from '../_contracts/Pool.json';
 
+// VET : dung de staking duy tri he thong
+// VTH0 : dung de tra vi chay smart Contract
+
+const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
+const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL; // AaveProtoco
 
-/**
- * 
- * @param {number} id 
- * @returns dispatch strore
- * 
- */
-export const borrowMarket = (price) => async (dispatch, getState) => {
+const ListKeyISeerOracle = {
+    "VET": process.env.REACT_APP_ISO_VET,
+    "VTHO": process.env.REACT_APP_ISO_VETHO,
+    "VB": process.env.REACT_APP_ISO_VB,
+    "VEUSD": process.env.REACT_APP_ISO_VEUSD
+}
 
+export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
 
     const state = getState();
 
-    const { web3, account } = state.web3;
+    const { web3 } = state.web3;
+    const { data } = state.assetsMarketReducer;
 
-    dispatch({
-        type: marketplaceConstants.MODAL_BORROW_MARKET_REQUEST
-    })
+    let dataTotal = {
+        totalSupply: 0,
+        totalBorrow: 0
+    }
 
-    setTimeout(() => {
+    let dataList = [];
+
+    if (web3 && TOKEN_AAVE && data.length > 0) {
+
+        let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
+
+        for await (const item of data) {
+
+            const getReserveData = await contractAAVE.methods.getReserveData(item.assetsAddress).call();
+
+            // if (isCurrentUSD && ListKeyISeerOracle[item.assetsChain]) {
+            //     let contractISeerOracle = new web3.eth.Contract(ERC20ABI_ISEER_ORACLE, ListKeyISeerOracle[item.assetsChain]);
+            //     const currentPrice = await contractISeerOracle.methods.latestAnswer().call();
+            //     console.log(currentPrice);
+            // }
+
+            //const dataConfig = await contractAAVE.methods.getReserveConfigurationData(item.assetsAddress).call();
+
+            let balanceSupply = 0;
+            if (getReserveData.totalAToken) {
+                balanceSupply = ethers.utils.formatUnits(getReserveData.totalAToken, item.assetsDecimals);
+                //balanceSupply = Math.round(balanceSupply * 100) / 100;
+                dataTotal.totalSupply = dataTotal.totalSupply + Number(balanceSupply);
+            }
+
+            let balanceBorrow = 0;
+            if (getReserveData.totalStableDebt || getReserveData.totalVariableDebt) {
+
+                // const totalStableDebt = ethers.utils.formatUnits(getReserveData.totalStableDebt || '0', item.assetsDecimals);
+                const totalVariableDebt = ethers.utils.formatUnits(getReserveData.totalVariableDebt || '0', item.assetsDecimals);
+
+                // balanceBorrow = Number(totalStableDebt) + Number(totalVariableDebt);
+                balanceBorrow = Number(totalVariableDebt);
+                //balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
+
+                dataTotal.totalBorrow = dataTotal.totalBorrow + Number(balanceBorrow);
+
+            }
+
+            dataList.push({
+                ...item,
+                totalSupplied: balanceSupply,
+                totalBorrowed: balanceBorrow,
+            })
+
+        }
+
+        dataTotal.totalBorrow = dataTotal.totalBorrow.toFixed(2)
+        dataTotal.totalSupply = dataTotal.totalSupply.toFixed(2)
+
         dispatch({
-            type: marketplaceConstants.MODAL_BORROW_MARKET_SUCCESS,
-            transaction: 1
+            type: marketplaceConstants.FETCH_ASSETS_MARKET_SUCCESS,
+            ...dataTotal,
+            contractAAVE,
+            data: dataList
         });
-        return true;
-    }, 2000);
 
-    // const { web3, account } = state.web3;
 
-    // let { contractLUWA } = state.saleReducer;
 
-    // const tokenID = String(id);
+    } else {
+        dispatch({
+            type: marketplaceConstants.FETCH_ASSETS_MARKET_SUCCESS,
+            ...dataTotal,
+            data
+        });
+    }
 
-    // if (web3 && contractLUWA && tokenID) {
-
-    //     dispatch({
-    //         type: marketplaceConstants.MODAL_SALE_ON_MARKET_REQUEST
-    //     })
-
-    //     const dataInfo = await contractLUWA.methods.tokenDetails(tokenID).call();
-
-    //     if (dataInfo.on_market === "1") {
-    //         const message = `Warning the Basket ID ${id} has on marketplace !!`;
-    //         const errorCode = "ERROR_SOLD";
-    //         dispatch({
-    //             type: marketplaceConstants.MODAL_SALE_ON_MARKET_ERROR,
-    //             errorCode,
-    //             message
-    //         })
-    //         return;
-    //     }
-
-    //     if (dataInfo.is_opened === "1") {
-    //         const message = `Warning the Basket ID ${id} has been opened !!`;
-    //         const errorCode = "ERROR_SOLD";
-    //         dispatch({
-    //             type: marketplaceConstants.MODAL_SALE_ON_MARKET_ERROR,
-    //             errorCode,
-    //             message
-    //         })
-    //         return;
-    //     }
-
-    //     await contractLUWA.methods
-    //         .sale(tokenID, price)
-    //         .send({ from: account })
-    //         .then((transaction) => {
-
-    //             dispatch({
-    //                 type: marketplaceConstants.MODAL_SALE_ON_MARKET_SUCCESS,
-    //                 transaction
-    //             });
-
-    //             return transaction;
-
-    //         }).catch((e) => {
-
-    //             console.log("------error saleLUS", e);
-
-    //             if (e.code === 4001) {
-    //                 dispatch(alertActions.error(e.message))
-    //             }
-
-    //             dispatch({
-    //                 type: marketplaceConstants.MODAL_SALE_ON_MARKET_ERROR
-    //             })
-
-    //             return e;
-    //         });
-
-    // }
+    return dataList;
 
 };
 
-
-
-/**
- * 
- * @param {number} id 
- * @returns dispatch strore
- * depositETH(PoolAddress,UserAddress, referralCode) await iWETHGateway.depositETH("0x...","0x.....", 0, {value: "100000000000000000"})
- * 
- */
-export const loadModalSupply = (token_address) => async (dispatch, getState) => {
+export const getCurrentAssets = () => async (dispatch, getState) => {
 
     const state = getState();
 
-    const { web3, account } = state.web3;
+    const { web3 } = state.web3;
+    const { data } = state.assetsMarketReducer;
 
-    let contractVB = new web3.eth.Contract(ERC20ABI_VB, token_address);
+    let dataList = {};
 
-    let balance = 0;
+    if (web3 && data.length > 0) {
 
-    if (contractVB && account) {
+        for await (const item of data) {
 
-        const balanceBigN = await contractVB.methods.balanceOf(account).call();
+            if (ListKeyISeerOracle[item.assetsChain]) {
 
-        balance = ethers.utils.formatEther(balanceBigN);
+                let contractISeerOracle = new web3.eth.Contract(ERC20ABI_ISEER_ORACLE, ListKeyISeerOracle[item.assetsChain]);
 
-        balance = Math.round(balance * 100) / 100;
+                let currentPriceUSD = await contractISeerOracle.methods.latestAnswer().call();
 
-        console.log(balance)
+
+                // if (item.assetsChain === "VEUSD") {
+                //     currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 6);;
+                // } else {
+                //     currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 12);;
+                // }
+
+                currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 18);;
+
+                dataList[item.assetsAddress] = Number(currentPriceUSD);
+
+            }
+
+
+        }
+
+        dispatch({
+            type: marketplaceConstants.FETCH_ASSETS_PRICE_SUCCESS,
+            data: dataList
+        });
 
     }
 
-
-    dispatch({
-        type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
-    });
-
-    setTimeout(() => {
-        dispatch({
-            type: marketplaceConstants.MODAL_SUPPLY_MARKET_SUCCESS,
-            transaction: 1
-        });
-        return true;
-    }, 2000);
+    return dataList;
 
 };
 
-
-/**
- * 
- * @param {number} id 
- * @returns dispatch strore
- * depositETH(PoolAddress,UserAddress, referralCode) await iWETHGateway.depositETH("0x...","0x.....", 0, {value: "100000000000000000"})
- * 
- */
-export const supplyMarket = (price) => async (dispatch, getState) => {
+export const getAccountOverview = () => async (dispatch, getState) => {
 
     const state = getState();
 
     const { web3, account } = state.web3;
 
-    let contractVB = new web3.eth.Contract(ERC20ABI_VB, TOKEN_VEBANK);
+    const dataPrice = state.assetsPriceReducer.data;
 
-    let balance = 0;
+    let healthFactor = 0;
 
-    if (contractVB && account) {
+    let dataList = [];
 
-        const balanceBigN = await contractVB.methods.balanceOf(account).call();
+    if (web3 && account && dataPrice) {
 
-        balance = ethers.utils.formatEther(balanceBigN);
+        const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, "0x4a96d989CB4726B89F3B3C83d5961545e792ddE7");
 
-        balance = Math.round(balance * 100) / 100;
+        if (contractPOOL && account) {
 
+            try {
+                const accountPool = await contractPOOL.methods.getUserAccountData(account).call();
+                // console.log("getUserAccountData", accountPool)
+
+            } catch (error) {
+                console.log("getUserAccountData", error)
+            }
+
+            // if (accountPool && accountPool.healthFactor) {
+            //     healthFactor = ethers.utils.formatUnits(accountPool.healthFactor || '0', 18);
+            // }
+
+        }
+
+        dispatch({
+            type: marketplaceConstants.FETCH_ACCOUNT_OVERVIEW_SUCCESS,
+            data: {
+                healthFactor: 1.8
+            }
+        });
+
+    } else {
+
+        dispatch({
+            type: marketplaceConstants.FETCH_ACCOUNT_OVERVIEW_SUCCESS,
+            healthFactor
+        });
+    }
+
+    return dataList;
+
+};
+
+export const getAccountAssets = () => async (dispatch, getState) => {
+
+    const state = getState();
+
+    const { web3, account } = state.web3;
+    const { data } = state.assetsMarketReducer;
+
+    const dataPrice = state.assetsPriceReducer.data;
+
+    let dataUser = {
+        accountSupplyBalance: 0,
+        accountBorrowBalance: 0,
+    }
+    let dataList = [];
+
+    if (web3 && account && dataPrice) {
+
+        // dispatch({
+        //     type: marketplaceConstants.FETCH_ACCOUNT_ASSETS_REQUEST,
+        //     query: {}
+        // });
+
+        const contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
+
+        if (contractAAVE && account) {
+
+            for await (const item of data) {
+
+                const accountReserve = await contractAAVE.methods.getUserReserveData(item.assetsAddress, account).call();
+
+                let balanceSupply = 0;
+                let balanceSupplyUSD = 0;
+                if (accountReserve.currentATokenBalance !== "0") {
+                    balanceSupply = ethers.utils.formatUnits(accountReserve.currentATokenBalance, item.assetsDecimals);
+                    balanceSupply = Number(balanceSupply);
+                    balanceSupplyUSD = dataPrice[item.assetsAddress] * Number(balanceSupply);
+                    dataUser.accountSupplyBalance = dataUser.accountSupplyBalance + balanceSupplyUSD;
+
+                }
+
+                let balanceBorrow = 0;
+                let balanceBorrowUSD = 0;
+                let accountVariableDebt = 0;
+                let accountStableDebt = 0;
+
+                if (accountReserve.currentStableDebt || accountReserve.currentVariableDebt) {
+
+                    const currentStableDebt = ethers.utils.formatUnits(accountReserve.currentStableDebt || '0', item.assetsDecimals);
+                    accountStableDebt = Number(currentStableDebt);
+
+                    const currentVariableDebt = ethers.utils.formatUnits(accountReserve.currentVariableDebt || '0', item.assetsDecimals);
+                    accountVariableDebt = Number(currentVariableDebt);
+
+                    //balanceBorrow = accountStableDebt + accountVariableDebt;
+                    balanceBorrow = accountVariableDebt;
+                    // balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
+
+                    balanceBorrowUSD = dataPrice[item.assetsAddress] * balanceBorrow;
+                    dataUser.accountBorrowBalance = dataUser.accountBorrowBalance + Number(balanceBorrowUSD);
+
+                }
+
+                if (balanceSupply || balanceBorrow) {
+                    dataList.push({
+                        ...item,
+                        totalSupplied: balanceSupply,
+                        totalBorrowed: balanceBorrow,
+
+                        totalSuppliedUSD: balanceSupplyUSD,
+                        totalBorrowedUSD: balanceBorrowUSD,
+
+                        accountStableDebt: accountStableDebt,
+                        accountVariableDebt: accountVariableDebt,
+                    })
+                }
+
+            }
+
+            dataUser.accountSupplyBalance = Number(dataUser.accountSupplyBalance.toFixed(2));
+            dataUser.accountBorrowBalance = Number(dataUser.accountBorrowBalance.toFixed(2));
+
+        }
+
+        dispatch({
+            type: marketplaceConstants.FETCH_ACCOUNT_ASSETS_SUCCESS,
+            contractAAVE,
+            ...dataUser,
+            data: dataList
+        });
+
+    } else {
+
+        dispatch({
+            type: marketplaceConstants.FETCH_ACCOUNT_ASSETS_SUCCESS,
+            accountSupplyBalance: 0,
+            accountBorrowBalance: 0,
+            ...dataUser,
+            data: dataList
+        });
     }
 
 
-    dispatch({
-        type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
-    });
+    return dataList;
 
-    setTimeout(() => {
-        dispatch({
-            type: marketplaceConstants.MODAL_SUPPLY_MARKET_SUCCESS,
-            transaction: 1
-        });
-        return true;
-    }, 2000);
+};
+
+export const reloadAccountAssets = (addressAsset) => async (dispatch, getState) => {
+
+    const state = getState();
+    const { web3, account } = state.web3;
+
+    if (web3 && account) {
+
+        await dispatch(actions.instantiateVetContracts());
+        await dispatch(actions.instantiateVBContracts());
+
+        setTimeout(async () => {
+            await dispatch(getAccountAssets());
+            await dispatch(getMarketAssets());
+        }, 3000);
+
+        setTimeout(async () => {
+            await dispatch(getAccountAssets());
+            await dispatch(getMarketAssets());
+        }, 6000);
+
+
+    }
 
 };

@@ -8,11 +8,15 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { numberWithCommas } from '../../utils/lib';
 
 import { marketplaceConstants } from '../../constants';
+import * as actions from '../../actions';
+
 import BtnSupply from './BtnSupply';
 
 import IcExplorer from '../../assets/images/ic_explorer.svg';
 import IcSuccess from '../../assets/images/ic_success.svg';
 import IcVeChain from '../../assets/images/ic_vechain.svg';
+
+import BtnSupplyApprove from './BtnSupplyApprove';
 
 const customStyles = {
     content: {
@@ -21,7 +25,7 @@ const customStyles = {
         right: 'auto',
         bottom: 'auto',
         transform: 'translate(-50%, -30%)',
-        background: "#1D1A3F",
+        background: "#182233",
         border: "none",
         borderRadius: "8px",
         padding: 0,
@@ -34,47 +38,55 @@ const IcVeb = IcVeChain;
 const ModalSupply = () => {
 
     const [amount, setAmount] = useState(0);
-    const [values, setValues] = useState([0]);
     const [step, setStep] = useState(1);
-    const [rate, setRate] = useState(null);
 
-    const balanceAccount = 5000;
-
-    const { data, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.supplyReducer, shallowEqual);
+    const { dataToken, accountBalance, accountApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.supplyReducer, shallowEqual);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
         resetFrm();
-    }, [data.id]);
+    }, [dataToken]);
+
+    useEffect(() => {
+        setStep(1);
+    }, [isOpen]);
+
+    // useEffect(() => {
+    //     setValues(accountBalance);
+    // }, [accountBalance]);
 
     const resetFrm = () => {
         setAmount(0);
-        setValues([0]);
         setStep(1);
     }
 
     const closeModal = () => {
+
         dispatch({
             type: marketplaceConstants.MODAL_CLOSE_SUPPLY_MARKET
         })
+
+        if (transaction) {
+            dispatch(actions.reloadAccountAssets());
+        }
+
     };
 
     const closeModalAndDashboard = () => {
         closeModal();
         resetFrm();
+        dispatch(actions.reloadAccountAssets());
     }
 
     const onChangeRangeAmount = (values) => {
-        setValues(values);
         setAmount(values[0]);
     }
 
     const onChangeAmount = (e) => {
         const { value } = e.target;
-        if (value <= balanceAccount) {
-            setAmount(value)
-            setValues([value]);
+        if (Number(value) <= Number(accountBalance)) {
+            setAmount(Number(value))
         }
     }
 
@@ -90,6 +102,19 @@ const ModalSupply = () => {
         }
     }
 
+    const showBtnView = () => {
+        let btn = "";
+        if (dataToken) {
+            if (accountApprove === 0) {
+                btn = <BtnSupplyApprove dataToken={dataToken} pending={pending} />
+            } else {
+                btn = <BtnSupply dataToken={dataToken} pending={pending} amount={amount} />
+            }
+        }
+        return btn;
+
+    }
+
     return (
 
         <Modal
@@ -98,10 +123,10 @@ const ModalSupply = () => {
             ariaHideApp={false}
             style={customStyles}
             portalClassName="modal-veb"
-            overlayClassName="overlay-lur">
-
+            overlayClassName="overlay-lur"
+        >
             <div className="header-modal" >
-                <h2>Supply BUSD</h2>
+                <h2>Supply {dataToken ? dataToken.assetsChain : ""}</h2>
                 <button className="btn-modal-close" onClick={closeModal}></button>
             </div>
 
@@ -121,12 +146,13 @@ const ModalSupply = () => {
                             Available to supply
                         </div>
                         <div>
-                            <span className='font-poppins font-bold'>5,000</span><span className='text-[#BFBFBF] pl-2'>VET</span>
+                            <span className='font-poppins font-bold'>{accountBalance}</span>
+                            <span className='text-[#BFBFBF] pl-2'>{dataToken ? dataToken.assetsChain : ""}</span>
                         </div>
                     </div>
 
                     <div className="bg-gradient-search rounded-lg flex flex-row mt-2 mx-8 py-4 px-4 justify-between">
-                        <img className='w-12 h-8 pr-3' src={IcVeb} alt="Token VEBank" />
+                        <img className='w-12 h-8 pr-3' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
                         <input
                             value={amount}
                             onChange={onChangeAmount}
@@ -135,42 +161,11 @@ const ModalSupply = () => {
                             placeholder={"Amount"}
                         />
                         <span onClick={e => {
-                            onChangeRangeAmount([balanceAccount])
+                            onChangeRangeAmount([accountBalance])
                         }} className='font-poppins font-bold text-[#A0D911] text-lg cursor-pointer'>Max</span>
 
                     </div>
 
-                    {/* <div className='flex justify-between px-8 mt-12 font-poppins text-sm leading-4 text-slate-200'>
-                        <label>Safer</label>
-                        {showFactor()}
-                        <label>Riskier</label>
-                    </div> */}
-                    {/* 
-                    <div className='px-8'>
-                        <Range
-                            step={1}
-                            min={0}
-                            max={balanceAccount}
-                            values={values}
-                            onChange={(values) => {
-                                onChangeRangeAmount(values)
-                            }}
-                            renderTrack={({ props, children }) => (
-                                <div
-                                    {...props}
-                                    className="w-full h-3 pr-2 my-4 bg-gradient-range-amount rounded-md"
-                                >
-                                    {children}
-                                </div>
-                            )}
-                            renderThumb={({ props }) => (
-                                <div
-                                    {...props}
-                                    className="w-3 h-3 transform translate-x-10 bg-slate-50 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                />
-                            )}
-                        />
-                    </div> */}
                 </div>
 
                 {/* STEP 2 */}
@@ -184,16 +179,16 @@ const ModalSupply = () => {
                         </p>
                     </div>
 
-                    <div className='border-2 border-solid border-[#363564] mx-8 p-6 mt-10'>
+                    <div className='border-2 border-solid border-[#4F92A7] mx-8 p-6 mt-10'>
 
                         <div className="flex justify-between text-lg font-poppins">
                             <div className='text-[#FAFAFA] font-light'>
                                 Amount
                             </div>
                             <div className='flex items-center'>
-                                <img className='w-6 h-6' src={IcVeb} alt="Token VEBank" />
+                                <img className='w-6 h-6' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
                                 <span className='font-poppins font-bold pl-2'>{numberWithCommas(amount)}</span>
-                                <span className='text-[#BFBFBF] pl-2'>VET</span>
+                                <span className='text-[#BFBFBF] pl-2'>{dataToken ? dataToken.assetsChain : ""}</span>
                             </div>
                         </div>
 
@@ -201,7 +196,7 @@ const ModalSupply = () => {
                             <div className='text-[#FAFAFA]'>
                             </div>
                             <div>
-                                <span className='font-poppins font-thin text-sm'>{numberWithCommas(amount)}</span>
+                                <span className='font-poppins font-thin text-sm'>{numberWithCommas(amount)} $</span>
                             </div>
                         </div>
 
@@ -216,13 +211,14 @@ const ModalSupply = () => {
 
                     </div>
 
-                    <div className='border-2 border-solid border-[#363564] mx-8 my-12'>
+                    <div className='border-2 border-solid border-[#4F92A7] mx-8 my-12'>
 
                         <div className="flex justify-between text-lg font-poppins">
                             <div className={`text-[#FAFAFA] bg-[#39355F] text-base text-center font-light  w-1/2 p-1 bg-btn-veb ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
                                 1 Supply
                             </div>
-                            <div className={`text-[#FAFAFA] bg-[#39355F] text-base text-center font-light w-1/2 p-1 ${pending === true ? "bg-pending ml-1" : ""} ${transaction ? "bg-success" : ""}`}>
+                            <div className='w-[1px] h-full bg-[#1D1A3F]'></div>
+                            <div className={`text-[#FAFAFA] bg-[#39355F] text-base text-center font-light w-1/2 p-1 ${pending === true ? "bg-pending" : ""} ${transaction ? "bg-success" : ""}`}>
                                 2  {pending ? "Pending" : "Finished"}
                             </div>
                         </div>
@@ -255,16 +251,16 @@ const ModalSupply = () => {
                                     ""
                                 }
 
-                                {(pending === false && transaction === null) ? <BtnSupply pending={pending} amount={amount} /> : ""}
+                                {(pending === false && transaction === null) ? showBtnView() : ""}
 
                             </div>
 
                         </div>
 
                         {transaction || pending === true ?
-                            <div className='flex flex-row border-t-2 border-solid border-[#363564] font-poppins text-base'>
-                                <div className='flex-1 w-32 border-r-2 border-solid border-[#363564] indent-3.5 p-2'>Supply</div>
-                                <div className='flex-1 w-32 border-r-2 border-solid border-[#363564] flex items-center indent-3.5 p-2'>
+                            <div className='flex flex-row border-t-2 border-solid border-[#4F92A7] font-poppins text-base'>
+                                <div className='flex-1 w-32 border-r-2 border-solid border-[#4F92A7] indent-3.5 p-2'>Supply</div>
+                                <div className='flex-1 w-32 border-r-2 border-solid border-[#4F92A7] flex items-center indent-3.5 p-2'>
                                     Pending
                                     {transaction ? <img className='ml-2' src={IcSuccess} alt="icon success" /> : <ThreeDots className='w-6 h-6 ml-2' />}
                                 </div>

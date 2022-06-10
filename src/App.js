@@ -1,49 +1,57 @@
 
-import React from 'react';
+import React, { Suspense } from 'react';
+
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { history } from './_helpers';
 
 import MainLayout from './layouts/MainLayout';
 
-import HomePage from './pages/HomePage';
-import BorrowPage from './pages/BorrowPage';
-
 import Page404 from './pages/Page404';
-import SupplyPage from './pages/SupplyPage';
-import MarketPage from './pages/MarketPage';
+
+const HomePage = React.lazy(() => import('./pages/HomePage'));
+const PoolPage = React.lazy(() => import('./pages/PoolPage'));
+const MarketPage = React.lazy(() => import('./pages/MarketPage'));
+const FarmPage = React.lazy(() => import('./pages/FarmPage'));
+const TradePage = React.lazy(() => import('./pages/TradePage'));
+const StakingPage = React.lazy(() => import('./pages/StakingPage'));
+const LaunchPadPage = React.lazy(() => import('./pages/LaunchPadPage'));
 
 function App() {
 
   return (
+    <Suspense fallback={<div className="bg-[#0b1329] min-h-screen min-w-full"/>}>
+      <Routes history={history} >
 
-    <Routes history={history} >
+        <Route path="/" element={<MainLayout />} >
 
-      <Route path="/" element={<MainLayout />} >
+          <Route path="/home" element={<Navigate to="/" />} />
 
-        <Route path="/home" element={<Navigate to="/" />} />
+          <Route path="/" element={<HomePage />} />
 
-        <Route path="/" element={<HomePage />} />
+          <Route path="/markets" element={<MarketPage />} />
 
-        <Route path="/markets" element={<MarketPage />} />
+          <Route path="/pool" element={<PoolPage />} />
 
-        {/* <Route path="/markets" >
-          <Route path="native" element={<MarketPage />} />
-          <Route path="usd" element={<MarketPage />} />
-          <Route path="*" index element={<MarketPage />} />
-        </Route> */}
+          <Route path="/farm" element={<FarmPage/>} />
 
-        <Route path="/borrows" element={<BorrowPage />} />
+          <Route path="/trade" element={<TradePage />} />
 
-        <Route path="/supply" element={<SupplyPage />} />
+          <Route path="/stake" element={<StakingPage />} />
 
-        <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/launchpad" element={<LaunchPadPage />} />
 
-      </Route>
+          <Route path="*" element={<Navigate to="/" />} />
 
-      <Route path="*" element={<Page404 />} />
+        </Route>
 
-    </Routes>
+        <Route path="*" element={<Page404 />} />
+
+      </Routes>
+
+    </Suspense>
+
+
 
   );
 }

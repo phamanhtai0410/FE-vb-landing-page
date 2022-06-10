@@ -12,17 +12,17 @@ import Wallet from './Wallet';
 //import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store} >
-      <BrowserRouter>
-        {/* <AlertComingSoon />
+
+  <Provider store={store} >
+    <BrowserRouter>
+      {/* <AlertComingSoon />
         <AlertMessages />
         <FireflyContainer /> */}
-        <Wallet />
-        <App />
-      </BrowserRouter>
-    </Provider>
-  </React.StrictMode>,
+      <Wallet />
+      <App />
+    </BrowserRouter>
+  </Provider>
+  ,
   document.getElementById('root')
 );
 

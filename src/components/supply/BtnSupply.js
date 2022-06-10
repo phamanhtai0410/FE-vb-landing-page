@@ -4,26 +4,39 @@ import { Beforeunload } from 'react-beforeunload';
 
 import * as actions from '../../actions';
 
-const BtnSupply = ({ amount, pending }) => {
+const BtnSupply = ({ dataToken, amount, pending }) => {
 
     const [isPending, setIsPending] = useState(false);
+
     const dispatch = useDispatch();
 
     const handlerSubmit = async () => {
 
-        if (isPending === false && amount) {
+        if (isPending === false && dataToken && amount) {
             setIsPending(true);
-            await dispatch(actions.supplyMarket(amount)).then(() => {
-                setIsPending(false);
-            }).catch((e) => {
-                setIsPending(false);
-            });
+
+            if (dataToken.assetsChain === "VET") {
+                await dispatch(actions.supplyDepositETHMarket(dataToken, amount)).then(() => {
+                    setIsPending(false);
+                }).catch((e) => {
+                    setIsPending(false);
+                });
+            } else {
+
+                await dispatch(actions.supplyMarket(dataToken, amount)).then(() => {
+                    setIsPending(false);
+                }).catch((e) => {
+                    setIsPending(false);
+                });
+            }
+
+
         }
     }
 
     return (<>
 
-        {isPending ? <Beforeunload onBeforeunload={(event) => event.preventDefault()} /> : ""}
+        {/* {isPending ? <Beforeunload onBeforeunload={(event) => event.preventDefault()} /> : ""} */}
         <button onClick={e => { handlerSubmit(e) }} disabled={pending} className={`btn-modal-veb ${pending ? "bg-btn-veb-disabled hidden" : "bg-btn-veb"}`} type="submit">
             {isPending ? "Pending..." : "Supply"}
         </button>

@@ -4,12 +4,17 @@ const initialState = {
 
   isOpen: false,
   pending: false,
-  transaction: null,
 
+  transaction: null,
   errorCode: null,
   message: null,
-  contractLUWA: null,
+
   accountBalance: 0,
+  accountApprove: 0,
+  accountStableDebtApprove: 0,
+  accountVariableDebtApprove: 0,
+
+  dataToken: null,
   data: {}
 
 };

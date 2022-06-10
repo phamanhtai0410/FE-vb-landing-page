@@ -1,0 +1,48 @@
+
+import BtnOpenAddLiquidity from './BtnOpenAddLiquidity';
+
+const PoolRowAction = ({ openRowAssets, item }) => {
+
+    if (openRowAssets.indexOf(item.assetsPoolAddress) === -1) {
+        return <></>;
+    }
+
+    return (
+
+        <div className='bg-[#182844] p-6 mt-2 fade-in-box' >
+
+            <div className='bg-[#26355A] p-6 rounded flex flex-row justify-between rounded space-x-4'>
+
+                <div>
+                    <label className='font-poppins text-[14px] text-[#678BCA]'>Your Liquidity</label>
+                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>$0.00</div>
+                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 LB</div>
+                </div>
+
+                <div>
+                    <label className='text-[#678BCA] font-poppins text-[14px]'>Assets Pooled</label>
+                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>$0.00</div>
+                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 LB</div>
+                </div>
+
+                <div>
+                    <label className='text-[#678BCA] font-poppins text-[14px]'>Your Liquidity</label>
+                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0%</div>
+                </div>
+
+                <div className='flex flex-col justify-center items-center'>
+                    <BtnOpenAddLiquidity item={item} />
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    )
+
+
+}
+
+export default PoolRowAction;

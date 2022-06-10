@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.8.2",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1.1",
     "@testing-library/user-event": "^13.5.0",
     "@vechain/connex": "^2.0.9",
+    "@vechain/ethers": "^4.0.27-5",
     "crypto-js": "^4.1.1",
     "ethers": "^5.6.4",
     "react": "^17.0.2",
@@ -20,17 +22,19 @@
     "react-scripts": "5.0.0",
     "react-toastify": "^8.2.0",
     "react-transition-group": "^4.4.2",
+    "recharts": "^2.1.10",
     "redux": "^4.2.0",
     "redux-logger": "^3.0.6",
     "redux-promise": "^0.6.0",
     "redux-thunk": "^2.4.1",
     "thor-devkit": "^2.0.4",
     "thorify": "^1.6.2",
-    "web3": "^1.7.3"
+    "web3": "^1.7.1"
   },
   "scripts": {
     "start": "env-cmd -f .env.development react-app-rewired start",
     "build": "env-cmd -f .env.development react-app-rewired build --nomaps",
+    "build-prod": "env-cmd -f .env.production react-app-rewired build --nomaps",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },

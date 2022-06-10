@@ -10,7 +10,6 @@ import { numberWithCommas } from '../../utils/lib';
 const BalanceVB = () => {
 
     const [balanceAccount, setBalanceAccount] = useState(null);
-
     const balance = useSelector(state => state.contractVB.balance, shallowEqual);
 
     useEffect(() => {
@@ -20,8 +19,8 @@ const BalanceVB = () => {
     return (
 
         <div className="flex flex-row justify-start items-center space-x-2">
-            <img className="w-6 h-6" src={IcVB} alt="Coin VeBank" />
-            <span className="font-light text-base">{balanceAccount ? balanceAccount : 0}</span>
+            {/* <img className="w-6 h-6" src={IcVB} alt="Coin VeBank" /> */}
+            <span className="font-poppins font-medium text-slate-50 text-base">VB {balanceAccount ? balanceAccount : 0}</span>
         </div>
     )
 }

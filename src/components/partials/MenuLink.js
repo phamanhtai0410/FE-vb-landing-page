@@ -1,45 +1,51 @@
-import { NavLink } from 'react-router-dom';
+import {NavLink, useLocation} from 'react-router-dom';
+
+const MENU_LINKS = [
+    {
+        name: "Trade",
+        path: "/trade"
+    },
+    {
+        name: "Lend",
+        path: "/markets"
+    },
+    {
+        name: "Pool",
+        path: "/pool"
+    },
+    {
+        name: "Stake",
+        path: "/stake"
+    },
+    {
+        name: "Farm",
+        path: "/farm"
+    },
+    {
+        name: "Launchpad",
+        path: "/launchpad"
+    },
+];
+
 const MenuLink = () => {
+    const location = useLocation();
+
     return (
-        <ul className="box-menus flex flex-col lg:flex-row  items-center justify-center lg:my-auto lg:space-x-4">
+        <ul className="box-menus flex flex-col lg:flex-row  items-center justify-center lg:my-auto lg:space-x-4 font-semibold">
             {/* // <ul className="flex flex-col items-center justify-between "> */}
 
-            <li className="p-4 lg:p-0">
-                <NavLink to="/trade" className="px-6 text-gray-300 hover:text-gray-100">
-                    Trade
-                </NavLink>
-            </li>
-
-            <li className="p-4 lg:p-0">
-                <NavLink to="/markets" className="px-6 text-gray-300 hover:text-gray-100">
-                    Lend
-                </NavLink>
-            </li>
-
-            <li className="p-4 lg:p-0">
-                <NavLink to="/pool" className="px-6 text-gray-300 hover:text-gray-100">
-                    Pool
-                </NavLink>
-            </li>
-
-
-            <li className="p-4 lg:p-0">
-                <NavLink to="/stake" className="px-6 text-gray-300 hover:text-gray-100">
-                    Stake
-                </NavLink>
-            </li>
-
-            <li className="p-4 lg:p-0">
-                <NavLink to="/farm" className="px-6 text-gray-300 hover:text-gray-100">
-                    Farm
-                </NavLink>
-            </li>
-
-            <li className="p-4 lg:p-0">
-                <NavLink to="/launchpad" className="px-6 text-gray-300 hover:text-gray-100">
-                    Launchpad
-                </NavLink>
-            </li>
+            {
+                MENU_LINKS.map((item) => (
+                    <li className="p-4 lg:p-0">
+                        <NavLink
+                            to={item.path}
+                            className={`px-6 font-bold text-gray-300 hover:brightness-150 ${item.path === location.pathname ? "text-linear" : ""}`}
+                        >
+                            {item.name}
+                        </NavLink>
+                    </li>
+                ))
+            }
 
         </ul >
 

@@ -1,71 +1,61 @@
 
 
-import IcCoin from '../../assets/images/ic_logo.svg';
 
+
+import { useEffect, useState } from 'react';
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { useLocation } from 'react-router-dom';
 
-import IcVeUSD from '../../assets/images/ic_veusd.svg';
-import IcVeChain from '../../assets/images/ic_vechain.svg';
 import IcVeBank from '../../assets/images/ic_vebank.svg';
-import IcVtho from '../../assets/images/ic_vtho.svg';
+import IcDropdown from '../../assets/images/ic_down_asset.svg';
+import IcCaretDown from '../../assets/images/ic_caret_down-fill.svg';
 
-import IcDropdown from '../../assets/images/ic_dropdown.svg';
+import AssetsRowAction from './AssetsRowAction';
 
-import BtnOpenBorrow from './BtnOpenBorrow';
-import BtnOpenWithdraw from './BtnOpenWithdraw';
-import BtnOpenSupply from './BtnOpenSupply';
-import BtnOpenRepay from './BtnOpenRepay';
-import ModalSupply from '../supply/ModalSupply';
-import ModalBorrow from '../borrows/ModalBorrow';
+import * as actions from '../../actions';
+import CurrencyAssets from './CurrencyAssets';
+
 
 const AssetsMarket = () => {
 
-    const listAsset = [
-        {
-            icon: IcVeChain,
-            assetsChain: "VET",
-            assetsAddress: "0x44B5ff695A0343A5c2401E7b97AfDb92395F102A",
-            totalSupplied: "200.50",
-            supplyAPY: "4.03",
-            interestSupply: "1.8",
-            borrowAPY: "4.03 %",
-            interestBorrow: "1.8",
-            totalBorrowed: "200.50",
-        },
-        {
-            icon: IcVeUSD,
-            assetsChain: "VEUSD",
-            assetsAddress: "0xf8D11abFe2085e52b2B3A750EE89CF7EB5cc29Bd",
-            totalSupplied: "200.50",
-            supplyAPY: "4.03",
-            interestSupply: "1.8",
-            borrowAPY: "4.03 %",
-            interestBorrow: "1.8",
-            totalBorrowed: "200.50",
-        },
-        {
-            icon: IcVtho,
-            assetsChain: "VTHO",
-            assetsAddress: "0x0000000000000000000000000000456e65726779",
-            totalSupplied: "200.50",
-            supplyAPY: "4.03",
-            interestSupply: "1.8",
-            borrowAPY: "4.03 %",
-            interestBorrow: "1.8",
-            totalBorrowed: "200.50",
-        },
-        {
-            icon: IcVeBank,
-            assetsChain: "VB",
-            assetsAddress: "0x0fa8DC6200255Fc3382CDDb4B5358d7713D99c8d",
-            totalSupplied: "200.50",
-            supplyAPY: "4.03",
-            interestSupply: "1.8",
-            borrowAPY: "4.03 %",
-            interestBorrow: "1.8",
-            totalBorrowed: "200.50",
+    const [openRowAssets, setOpenRowAssets] = useState([]);
+
+    const dispatch = useDispatch();
+
+    const { web3 } = useSelector(state => state.web3, shallowEqual);
+    const { data } = useSelector(state => state.assetsMarketReducer, shallowEqual);
+
+    useEffect(() => {
+        if (web3) {
+            fetchMarketAssets();
         }
-    ]
+    }, [web3]);
+
+    async function fetchMarketAssets() {
+        await dispatch(actions.getMarketAssets());
+    }
+
+    const onClickShowRowAssets = (assetsAddress) => {
+
+        const listShowChecked = [...openRowAssets];
+        const indexShow = openRowAssets.indexOf(assetsAddress);
+
+        if (indexShow === -1) {
+            listShowChecked.push(assetsAddress);
+        } else {
+            listShowChecked.splice(indexShow, 1);
+        }
+
+        setOpenRowAssets(listShowChecked);
+
+    }
+
+    const checkShowDown = (assetsAddress) => {
+        return !(openRowAssets.indexOf(assetsAddress) === -1);
+    }
+
+
 
     const showListAsset = (dataList) => {
 
@@ -74,24 +64,26 @@ const AssetsMarket = () => {
             return dataList.map((item) =>
 
                 <CSSTransition
-                    key={item._id}
+                    key={item.assetsAddress}
                     timeout={500}
                     classNames="item_asset"
                 >
                     <div>
 
-                        <div className="grid grid-cols-6 gap-6 mt-6 bg-[#182844] justify-items-center content-around font-poppins text-lg rounded">
+                        <div className="grid grid-cols-6 gap-6 mt-6 bg-[#182844] justify-items-center content-around font-poppins text-lg rounded cursor-pointer" onClick={e => onClickShowRowAssets(item.assetsAddress)}>
 
                             <div className="p-2 flex flex-row justify-center items-center space-x-4 w-full text-right cursor-pointer">
                                 <img className="w-6 h-6" src={item.icon} />
                                 <span className="text-lg font-semibold w-12 text-left">{item.assetsChain}</span>
                             </div>
 
-                            <div className="p-2 flex justify-center items-center font-semibold">{item.totalSupplied} M</div>
+                            <div className="p-2 flex justify-center items-center font-semibold">
+                                <CurrencyAssets currencyBalance={item.totalSupplied} assetsAddress={item.assetsAddress} />
+                            </div>
 
                             <div className="p-2 flex flex-col justify-center items-center content-center">
                                 <div className="text-lg font-semibold">{item.supplyAPY} %</div>
-                                <div className="border-2 border-solid border-[#363564] p-1">
+                                <div className="border-2 border-solid border-[#4F92A7] p-1">
                                     <div className="flex flex-row justify-start items-center space-x-2" >
                                         <span className="font-light text-sm">{item.interestSupply} %</span>
                                         <img className="w-4 h-4" src={IcVeBank} />
@@ -99,11 +91,13 @@ const AssetsMarket = () => {
                                 </div>
                             </div>
 
-                            <div className="p-2 flex justify-center items-center font-semibold">{item.totalBorrowed} M</div>
+                            <div className="p-2 flex justify-center items-center font-semibold">
+                                <CurrencyAssets currencyBalance={item.totalBorrowed} assetsAddress={item.assetsAddress} />
+                            </div>
 
                             <div className="p-2 flex flex-col justify-center items-center content-center">
                                 <div className="text-lg font-semibold">{item.borrowAPY} %</div>
-                                <div className="border-2 border-solid border-[#363564] p-1">
+                                <div className="border-2 border-solid border-[#4F92A7] p-1">
                                     <div className="flex flex-row justify-start items-center space-x-2" >
                                         <span className="font-light text-sm">{item.interestBorrow} %</span>
                                         <img className="w-4 h-4" src={IcVeBank} />
@@ -111,83 +105,20 @@ const AssetsMarket = () => {
                                 </div>
                             </div>
 
-                            <div className="p-2 flex justify-center items-center">
-                                <img className="w-3 h-3" src={IcDropdown} />
-                                {/* <BtnOpenBorrow id={"BUSD"} /> */}
+                            <div className="p-2 flex justify-center items-center cursor-pointer" >
+                                <img className={`w-4 h-4 transition-transform delay-350 ${checkShowDown(item.assetsAddress) ? 'rotate-180' : ""}`} src={IcDropdown} />
                             </div>
 
                         </div>
 
-                        {showRowAction(item)}
+                        <AssetsRowAction key={item.assetsAddress + '_act'} openRowAssets={openRowAssets} item={item} />
 
                     </div>
-
 
                 </CSSTransition>
+
             );
         }
-
-    }
-
-    const showRowAction = ({ assetsAddress }) => {
-
-        console.log("showRowAction", assetsAddress)
-
-        return (
-
-            <div className='bg-[#182844] p-4 mt-2 flex flex-row justify-between rounded space-x-4' >
-
-                <div className='bg-[#26355A] p-4 rounded'>
-                    <h4>Earn</h4>
-                    <div className='flex flex-row mt-3'>
-                        <input
-                            className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
-                            type="text"
-                            placeholder={"0"}
-                        />
-                        <BtnOpenWithdraw assetsAddress={assetsAddress} />
-                    </div>
-                </div>
-
-                <div className='bg-[#26355A] p-4 rounded '>
-                    <h4>Balance</h4>
-                    <div className='flex flex-row mt-3'>
-                        <input
-                            className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
-                            type="text"
-                            placeholder={"0"}
-                        />
-                        <BtnOpenSupply assetsAddress={assetsAddress} />
-                    </div>
-                </div>
-
-                <div className='bg-[#26355A] p-4 rounded'>
-                    <h4>Debt</h4>
-                    <div className='flex flex-row mt-3'>
-                        <input
-                            className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
-                            type="text"
-                            placeholder={"0"}
-                        />
-                        <BtnOpenRepay />
-                    </div>
-                </div>
-
-                <div className='bg-[#26355A] p-4 rounded'>
-                    <h4>Balance</h4>
-                    <div className='flex flex-row mt-3'>
-                        <input
-                            className="border-[1px] border-[#01E6FE] bg-transparent rounded indent-3 focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full mr-4"
-                            type="text"
-                            placeholder={"0"}
-                        />
-                        <BtnOpenBorrow assetsAddress={assetsAddress} />
-                    </div>
-                </div>
-
-            </div>
-
-        )
 
     }
 
@@ -197,35 +128,37 @@ const AssetsMarket = () => {
 
             <h4 className="font-montserrat text-[30px] leading-9">Vechain assets</h4>
 
-            {/* 
-                <div className="p-3 mt-5">
-
-                    <div className="p-2 flex flex-row justify-start items-center space-x-4 w-full text-right cursor-pointer bg-[#1B1A43]">
-                        <img className="w-6 h-6" src={IcWarning} />
-                        <span className="text-lg font-poppins text-xs">To borrow you need to supply any asset to be used as collateral.</span>
-                    </div>
-
-                </div>
-            */}
-
             <div className="tbl-veb mt-8">
 
                 <div className="grid grid-cols-6 gap-6 justify-items-center content-around">
-                    <div className="px-2 py-2">Assets</div>
-                    <div className="px-2 py-2">Total supplied</div>
-                    <div className="px-2 py-2">Supply APY</div>
-                    <div className="px-2 py-2">Total borrowed</div>
-                    <div className="px-2 py-2">Borrow APY</div>
-                    <div className=''></div>
+                    <div className="px-2 py-2 flex">
+                        <span>Assets</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className="px-2 py-2 flex">
+                        <span>Total supplied</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className="px-2 py-2 flex">
+                        <span>Supply APY</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className="px-2 py-2 flex">
+                        <span>Total borrowed</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className="px-2 py-2 flex">
+                        <span>Borrow APY</span>
+                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                    </div>
+                    <div className='col-end-auto'></div>
                 </div>
 
-                <TransitionGroup >
-                    {showListAsset(listAsset)}
+                <TransitionGroup>
+                    {showListAsset(data)}
                 </TransitionGroup>
 
             </div>
-            <ModalSupply />
-            <ModalBorrow />
 
         </div>
     )
