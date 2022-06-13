@@ -14,6 +14,21 @@
       format("woff");
 }
 
+@font-face {
+  font-family: "Poppins-Light";
+  font-style: normal;
+  font-weight: 300;
+  src: local("Poppins-Light"),
+    url(../fonts/poppins/Poppins-Light.woff2) format("woff2");
+}
+
+@font-face {
+  font-family: "Poppins-Medium";
+  font-style: normal;
+  font-weight: 500;
+  src: local("Poppins-Medium"),
+    url(../fonts/poppins/Poppins-Medium.woff2) format("woff2");
+}
 
 @font-face {
   font-family: "Poppins-SemiBold";
@@ -75,14 +90,19 @@
   @apply col justify-center
 }
 
+.full-col-center {
+  @apply col-center flex-1
+}
+
 .full-row-center {
   @apply row flex-1 items-center
-
 }
+
 .full-row-between-center {
   @apply full-row-center justify-between
 
 }
+
 .full-row-center-center {
   @apply full-row-center justify-center
 }
@@ -117,11 +137,10 @@
 }
 
 .btn-modal-veb {
-  font-size: 16px;
-  font-family: "Poppins";
+  font-size: 14px;
   line-height: 28px;
   text-align: center;
-  padding: 0.5rem 2.5rem;
+  padding: 0.5rem 2.25rem;
   color: #ffffff;
   border-radius: 8px;
   background-color: #2a364b;

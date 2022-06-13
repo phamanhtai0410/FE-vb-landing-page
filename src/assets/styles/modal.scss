@@ -30,6 +30,15 @@
   position: relative;
 }
 
+.modal-veb .header {
+  @apply flex flex-row flex-1 items-center justify-between
+
+}
+
+.modal-veb .header h2 {
+  @apply font-poppins_medium text-grey-1 text-2xl
+}
+
 .modal-veb .header-modal h2 {
   width: 100%;
   padding: 25px;
@@ -58,5 +67,5 @@
 
 .modal-veb .footer-modal {
   position: relative;
-  min-height: 5rem;
+  // min-height: 5rem;
 }

@@ -172,7 +172,7 @@ const ModalUnStake = () => {
 
           <div className="flex justify-between px-8 mt-6 text-lg font-sf_pro">
             <div className="flex items-center space-x-2">
-              <p className="text-[#FAFAFA]">Balance</p>
+              <p className="text-grey-2">Staked</p>
               <img
                 src={IcWarningCircle}
                 alt=""
