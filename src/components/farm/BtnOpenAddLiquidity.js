@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import SecondaryButton from "../partials/SecondaryButton";
+import * as actions from '../../actions'
 
 const BtnOpenAddLiquidity = ({ item }) => {
   const btnLabel = "Add Liquidity";
@@ -34,7 +35,9 @@ const BtnOpenAddLiquidity = ({ item }) => {
     // }
   };
 
-  const handlerOpenModal = async () => {};
+  const handlerOpenModal = async () => {
+    dispatch(actions.loadModalAddLiquidity(item))
+  };
 
   return (
     <>

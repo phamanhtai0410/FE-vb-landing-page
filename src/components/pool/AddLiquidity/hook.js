@@ -3,7 +3,6 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import * as actions from "../../../actions";
 import {
   selectFirstToken,
-  selectLiquidReducer,
   selectOpenAddLiquidState,
   selectSecondToken,
 } from "../../../reducers/liquid.reducer";
@@ -98,6 +97,7 @@ const useAddLiquidFacade = () => {
       case 1: {
         if (!firstToken || !secondToken) {
           setPrimaryButtonLabel("Invalid pair");
+          setContinueAvailable(false);
         } else if (
           firstTokenVolume.length === 0 ||
           secondTokenVolume.length === 0 ||
@@ -105,11 +105,11 @@ const useAddLiquidFacade = () => {
           secondTokenVolume <= 0
         ) {
           setPrimaryButtonLabel("Enter an amount");
+          setContinueAvailable(false);
         } else {
-          setPrimaryButtonLabel("Continue");
           setContinueAvailable(true);
+          setPrimaryButtonLabel("Supply");
         }
-        setContinueAvailable(false);
         break;
       }
       case 2: {
@@ -121,6 +121,14 @@ const useAddLiquidFacade = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [firstToken, secondToken, firstTokenVolume, secondTokenVolume]);
+
+  useEffect(
+    () => () => {
+    // On unmount
+      closeModalAndDashboard();
+    },
+    []
+  );
 
   return {
     step,
