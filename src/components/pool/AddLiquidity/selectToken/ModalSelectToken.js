@@ -17,15 +17,16 @@ import { PartialConstants } from "../../../../constants/partial.constants";
 
 const customStyles = {
   content: {
-    top: "30%",
+    top: "24%",
     left: "50%",
     right: "auto",
     bottom: "auto",
     transform: "translate(-50%, -30%)",
     background: "#182233",
     borderWidth: "0px",
+    borderRadius: "1rem",
     // borderColor: "#3EE8FF",
-    padding: "2rem",
+    padding: "2.5rem",
     width: "32%",
     position: "relative",
   },
@@ -63,7 +64,7 @@ const ModalSelectToken = () => {
       <GradientStrokeWrapper
         colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
         className="-z-50"
-        borderRadius="0.5rem"
+        borderRadius="1rem"
       />
       <div className="header">
         <h2>Select a token</h2>
@@ -75,12 +76,12 @@ const ModalSelectToken = () => {
         />
       </div>
 
-      <div className="content-modal mt-7">
+      <div className="content-modal mt-12">
         {/* STEP 1 */}
         <SearchBar />
-        <div className="flex flex-row space-x-1.5 mt-6 items-center">
-          <p className="font-poppins_light text-base">Select a currency</p>
-          <img src={IcQuestionOutline} alt="" className="w-3 h-3" />
+        <div className="flex flex-row space-x-2 items-center mt-8">
+          <p className="font-poppins_light text-xl">Select a currency</p>
+          <img src={IcQuestionOutline} alt="" className="w-4 h-4" />
         </div>
 
         <TransitionGroup>
@@ -94,19 +95,19 @@ const ModalSelectToken = () => {
                   classNames="item_asset"
                 >
                   <div
-                    className="flex flex-row justify-between items-center mt-6 cursor-pointer"
+                    className="flex flex-row justify-between items-center mt-8 cursor-pointer"
                     onClick={(_) => onTokenSelected(item)}
                   >
-                    <div className="flex flex-row items-center space-x-3">
-                      <img src={item.icon} alt="" className="w-6 h-6" />
+                    <div className="flex flex-row items-center space-x-4">
+                      <img src={item.icon} alt="" className="w-8 h-8" />
                       <div className="flex flex-col">
-                        <p className="font-poppins_semi_bold text-xs">
+                        <p className="font-poppins_semi_bold text-base">
                           {item.assetsChain}
                         </p>
-                        <p className="text-xs font-poppins_light">{item.assetNetwork}</p>
+                        <p className="text-sm font-poppins_light">{item.assetNetwork}</p>
                       </div>
                     </div>
-                    <p className="text-sm font-poppins_semi_bold">
+                    <p className="text-base font-poppins_semi_bold">
                       {/*item.balance*/}
                       7,000
                     </p>
@@ -117,12 +118,12 @@ const ModalSelectToken = () => {
         </TransitionGroup>
       </div>
 
-      <div className="footer-modal mt-6">
+      <div className="footer-modal mt-8">
         <button
           onClick={(e) => {
             handlerStepToStep(e);
           }}
-          className={"w-full h-12 text-[#22D4EC] text-sm"}
+          className={"w-full h-12 text-[#22D4EC] text-lg font-poppins_medium"}
         >
           Manage Tokens
         </button>

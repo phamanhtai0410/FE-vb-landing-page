@@ -21,6 +21,16 @@ module.exports = {
       "2xl": "1690px",
     },
     extend: {
+      spacing: {
+        '4.5': '1.5rem',
+        '13': '3.25rem',
+        '15': '3.75rem',
+        '16.5': '4.125rem',
+        '17': '4.25rem',
+        '55': '13.75rem',
+        '128': '32rem',
+        '144': '36rem',
+      },
       fontFamily: {
         sans: ['Poppins'],
         montserrat: "'Montserrat', sans-serif",
@@ -45,9 +55,9 @@ module.exports = {
         1: "#ffffff",
         2: "#FAFAFA",
         3: "#F5F5F5",
+        6: "#BFBFBF",
         7: "#8C8C8C",
       },
-      grey7: "#8C8C8C",
       black: colors.black,
       white: colors.white,
       gray: colors.trueGray,

@@ -1,7 +1,6 @@
 import React from "react";
 import { PartialConstants } from "../../constants/partial.constants";
-
-const borderId = "borderId";
+import { getTimeStamp } from "../../utils/lib";
 
 const GradientStrokeWrapper = ({
   x1 = "0",
@@ -11,10 +10,12 @@ const GradientStrokeWrapper = ({
   angle = 0,
   colors = PartialConstants.PRIMARY_GRADIENT_COLOR_LIST,
   borderRadius = "0.5rem", // 8px
-  strokeWidth = 1,
+  strokeWidth = "0.1rem",
   style,
   className = "",
 }) => {
+  // This will ensure the borderId for every entity is unique
+  const _borderId = getTimeStamp();
   return (
     <svg width="0" height="0" style={style} className={`svg-bg ${className}`}>
       <defs>
@@ -35,7 +36,7 @@ const GradientStrokeWrapper = ({
           ))}
         </linearGradient>
       </defs>
-      <symbol overflow="visible" id={borderId}>
+      <symbol overflow="visible" id={_borderId}>
         <rect
           width="100%"
           height="100%"
@@ -46,9 +47,9 @@ const GradientStrokeWrapper = ({
           fill="#00000000"
         ></rect>
       </symbol>
-      <use xlinkHref={`#${borderId}`} />
+      <use xlinkHref={`#${_borderId}`} />
     </svg>
   );
 };
 
-export default GradientStrokeWrapper;
+export default React.memo(GradientStrokeWrapper);

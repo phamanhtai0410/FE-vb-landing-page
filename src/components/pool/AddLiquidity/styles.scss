@@ -37,21 +37,25 @@
   @apply flex flex-col px-4 space-y-2 items-center
 }
 
-.price-pool-item > p {
-  @apply text-[0.8rem]
+.price-pool-item .value {
+  @apply text-lg
+}
+
+.price-pool-item .label {
+  @apply text-base
 }
 
 .price-pool-share-row {
   @apply flex flex-row flex-1 justify-between items-center;
 }
 
-.price-pool-share-row > p, .price-pool-share-row > div >  p {
-  @apply text-[0.87rem]
+.price-pool-share-row p {
+  @apply text-xl
 }
 
 .overlay {
   position: fixed;
-  top: 0;
+  top: 8%;
   left: 0;
   right: 0;
   bottom: 0;

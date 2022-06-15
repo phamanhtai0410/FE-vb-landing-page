@@ -39,7 +39,7 @@ const useAddLiquidFacade = () => {
   }, []);
 
   const closeModal = () => {
-    dispatch(actions.closeLiquidity());
+    dispatch(actions.closeAddLiquidity());
   };
 
   const resetFrm = () => {

@@ -6,6 +6,8 @@ export function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+export const getTimeStamp = () => new Date().getTime().toString();
+
 export function formatNumberEther(amount) {
     const amountN = Number(ethers.utils.formatEther(amount, { commify: true }));
     return numberWithCommas(Math.round(amountN * 100) / 100);

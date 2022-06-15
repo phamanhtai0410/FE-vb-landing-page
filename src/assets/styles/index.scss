@@ -78,6 +78,10 @@
     url(../fonts/blank-space/BlankSpace-Eaggz.woff) format("woff");
 }
 
+html {
+  font-size: 0.75rem;
+}
+
 .row {
   @apply flex flex-row
 }
@@ -137,15 +141,11 @@
 }
 
 .btn-modal-veb {
-  font-size: 14px;
-  line-height: 28px;
   text-align: center;
   padding: 0.5rem 2.25rem;
-  color: #ffffff;
-  border-radius: 8px;
   background-color: #2a364b;
   display: block;
-  @apply disabled:text-grey7
+  @apply disabled:text-grey-7 text-grey-1 text-lg rounded-lg
 }
 
 .btn-modal-secondary {
