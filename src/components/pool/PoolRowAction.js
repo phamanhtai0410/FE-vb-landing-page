@@ -1,5 +1,6 @@
 
 import BtnOpenAddLiquidity from './BtnOpenAddLiquidity';
+import BtnOpenRemoveLiquidity from './BtnOpenRemoveLiquidity';
 
 const PoolRowAction = ({ openRowAssets, item }) => {
 
@@ -30,7 +31,8 @@ const PoolRowAction = ({ openRowAssets, item }) => {
                     <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0%</div>
                 </div>
 
-                <div className='flex flex-col justify-center items-center'>
+                <div className='flex flex-row space-x-6 justify-center items-center'>
+                    <BtnOpenRemoveLiquidity item={item} />
                     <BtnOpenAddLiquidity item={item} />
                 </div>
 

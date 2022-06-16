@@ -6,6 +6,7 @@ import AssetsPool from "../components/pool/AssetsPool";
 import FrmSearchPool from "../components/pool/FrmSearchPool";
 import ModalAddLiquidity from "../components/pool/AddLiquidity/ModalAddLiquidity";
 import ModalSelectToken from "../components/pool/AddLiquidity/selectToken/ModalSelectToken";
+import ModalRemoveLiquidity from "../components/pool/RemoveLiquidity";
 
 const PoolPage = () => {
   return (
@@ -39,6 +40,7 @@ const PoolPage = () => {
         <AssetsPool />
         <ModalAddLiquidity />
         <ModalSelectToken />
+        <ModalRemoveLiquidity />
       </div>
     </section>
   );

@@ -22,11 +22,14 @@ module.exports = {
     },
     extend: {
       spacing: {
-        '4.5': '1.5rem',
+        "4.25": '1.25rem',
+        "4.5": '1.5rem',
         '13': '3.25rem',
         '15': '3.75rem',
         '16.5': '4.125rem',
         '17': '4.25rem',
+        '18': "4.5rem",
+        '19': "4.75rem",
         '55': '13.75rem',
         '128': '32rem',
         '144': '36rem',
@@ -50,6 +53,7 @@ module.exports = {
       secondary: "#0FE3E3",
       transparent: "transparent",
       vbDisableText: "#4B5C86",
+      vbDisabled: "#232E49",
       vbLine: "#3EE8FF",
       grey: {
         1: "#ffffff",
@@ -57,6 +61,7 @@ module.exports = {
         3: "#F5F5F5",
         6: "#BFBFBF",
         7: "#8C8C8C",
+        9: "#262626",
       },
       black: colors.black,
       white: colors.white,

@@ -338,7 +338,7 @@ const ModalAddLiquidity = () => {
             onClick={(e) => {
               handlerStepToStep(e);
             }}
-            className={`btn-modal-veb w-full h-16.5 text-lg font-poppins_medium ${
+            className={`btn-modal-veb w-full ${
               continueAvailable ? "bg-btn-veb" : ""
             }`}
             disabled={!continueAvailable}
