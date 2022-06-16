@@ -8,10 +8,12 @@ const SecondaryButton = ({
   onClick = () => {},
   className = "",
   labelClassName = "",
+  borderRadius = "0.5rem", // 8px,
 }) => (
   <div className={`flex justify-center relative ${className}`}>
     <GradientStrokeWrapper
       colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
+      borderRadius={borderRadius}
     />
     <button
       className={`absolute w-full h-full top-0 z-10 text-[${labelColor}] ${labelClassName}`}

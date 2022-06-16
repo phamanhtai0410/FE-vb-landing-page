@@ -51,8 +51,8 @@ const BtnOpenAddLiquidity = ({ item }) => {
 
     return (<>
         {
-            disabledRule ? <button className="btn-veb h-10 bg-btn-veb-disabled border-[1px] border-[#4B5C86]" disabled={disabledRule} type="submit">{btnLabel} </button>
-                : <button onClick={e => { handlerOpenModal(e) }} className="btn-veb h-10" type="submit">{btnLabel} </button>
+            disabledRule ? <button className="btn-veb h-12 bg-btn-veb-disabled border-[1px] border-[#4B5C86]" disabled={disabledRule} type="submit">{btnLabel} </button>
+                : <button onClick={e => { handlerOpenModal(e) }} className="btn-veb text-base h-12" type="submit">{btnLabel} </button>
         }
 
     </>)

@@ -22,16 +22,16 @@ import { PartialConstants } from "../../../constants/partial.constants";
 
 const customStyles = {
   content: {
-    top: "30%",
+    top: "31%",
     left: "50%",
     right: "auto",
     bottom: "auto",
     transform: "translate(-50%, -30%)",
     background: "#182233",
-    // borderRadius: "0.5rem",
+    borderRadius: "1rem",
     borderWidth: "0px",
     // borderColor: "#3EE8FF",
-    padding: "2rem",
+    padding: "2.5rem",
     position: "relative",
     width: "32%",
     // width: "460px",
@@ -75,10 +75,14 @@ const ModalAddLiquidity = () => {
       overlayClassName="overlay"
     >
       {/*Header*/}
-      <GradientStrokeWrapper colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST} className="-z-50" />
+      <GradientStrokeWrapper
+        colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
+        borderRadius="1rem"
+        className="-z-50"
+      />
       {step !== 1 && step !== 4 ? (
         <div className="flex flex-row flex-1 items-center justify-between">
-          <p className="font-poppins_medium text-white text-2xl">
+          <p className="font-poppins_medium text-white text-3xl">
             You will receive
           </p>
           <img
@@ -92,41 +96,43 @@ const ModalAddLiquidity = () => {
         <div className="flex flex-row flex-1 items-center justify-between">
           {/* <button className="btn-modal-back" onClick={closeModal} /> */}
           <div className="flex flex-row items-center space-x-6">
-            {step < 4 && (
+            {step === 1 && (
               <img
                 src={IcBackWhite}
                 alt="Back"
-                className="cursor-pointer w-10 h-10"
+                className="cursor-pointer w-12 h-12"
                 onClick={closeModalAndDashboard}
               />
             )}
-            <div className="flex flex-col space-y-3">
-              <span className="text-white text-lg font-poppins_medium">
+            <div className="flex flex-col space-y-4">
+              <span className="text-white text-2xl font-poppins_medium">
                 Add Liquidity
               </span>
               <div className="flex flex-row items-center space-x-1">
-                <img
-                  src={IcQuestionCircle}
-                  alt=""
-                  className="w-3 h-3 cursor-pointer"
-                />
-                <span className="text-white text-xs">
-                  Add liquidity to recieve LP tokens{" "}
+                {step !== 4 && (
+                  <img
+                    src={IcQuestionCircle}
+                    alt=""
+                    className="w-4 h-4 cursor-pointer"
+                  />
+                )}
+                <span className="text-white text-base font-poppins_light">
+                  {step !== 4 ? "Add liquidity to receive LP tokens" : "Remove liquidity to receive tokens back"}
                 </span>
               </div>
             </div>
           </div>
-          <div className="flex flex-row space-x-6">
+          <div className="flex flex-row space-x-8">
             <img
               src={IcSettingWhite}
               alt="Setting"
-              className="w-6 h-6 cursor-pointer"
+              className="w-8 h-8 cursor-pointer"
               // onClick={closeModal}
             />
             <img
               src={IcHistoryWhite}
               alt="History"
-              className="w-6 h-6 cursor-pointer"
+              className="w-8 h-8 cursor-pointer"
               // onClick={closeModal}
             />
           </div>
@@ -158,24 +164,24 @@ const ModalAddLiquidity = () => {
             volume={secondTokenVolume}
             onVolumeChange={onChangeSecondTokenAmount}
             onClickSelectCurrency={onSelectSecondCurrency}
-            className="mt-4"
+            className="mt-8"
           />
 
           {firstToken && secondToken && (
             <div className="flex flex-1 flex-col mt-8">
-              <p>Price and pool share</p>
+              <p className="text-xl text-grey-2">Price and pool share</p>
               <div className="flex flex-1 flex-row justify-between items-center mt-4 px-2 py-5 liquid-wrapper">
                 <div className="price-pool-item">
-                  <p>323.366</p>
-                  <p>VEUSB per VET</p>
+                  <p className="value">323.366</p>
+                  <p className="label">VEUSB per VET</p>
                 </div>
                 <div className="price-pool-item">
-                  <p>0.0686648</p>
-                  <p>VET per VEUSD</p>
+                  <p className="value">0.0686648</p>
+                  <p className="label">VET per VEUSD</p>
                 </div>
                 <div className="price-pool-item">
-                  <p>{"<0,01%"}</p>
-                  <p>Share of Pool</p>
+                  <p className="value">{"<0,01%"}</p>
+                  <p className="label">Share of Pool</p>
                 </div>
               </div>
             </div>
@@ -183,32 +189,28 @@ const ModalAddLiquidity = () => {
         </div>
 
         {/* STEP 2 */}
-        <div
-          className={`${
-            step === 2 ? "" : "hidden"
-          } flex flex-col`}
-        >
-          <div className="flex flex-col space-y-4">
+        <div className={`${step === 2 ? "" : "hidden"} flex flex-col`}>
+          <div className="flex flex-col space-y-6">
             <div className="flex flex-row items-center">
-              <p className=" text-3xl font-poppins_medium mr-7">0,0390929</p>
-              <div className="flex flex-row space-x-2">
-                <img src={firstToken?.icon} alt="" className="w-6 h-6" />
-                <img src={secondToken?.icon} alt="" className="w-6 h-6" />
+              <p className=" text-4xl font-poppins_medium mr-8">0,0390929</p>
+              <div className="flex flex-row space-x-3">
+                <img src={firstToken?.icon} alt="" className="w-8 h-8" />
+                <img src={secondToken?.icon} alt="" className="w-8 h-8" />
               </div>
             </div>
-            <p className="text-base">VET/VEUSD Pool Tokens</p>
-            <p className="text-xs text-justify font-poppins_light">
+            <p className="text-xl">VET/VEUSD Pool Tokens</p>
+            <p className="text-base text-justify font-poppins_light">
               Output is estimated. If the price changes by more than 0.5% your
               transaction will revert.
             </p>
           </div>
-          <p className="mt-6 font-poppins text-sm">Price and pool share</p>
-          <div className="flex flex-col mt-3 px-3 py-3 space-y-4 liquid-wrapper">
+          <p className="mt-8 font-poppins text-xl">Price and pool share</p>
+          <div className="flex flex-col mt-4 px-4 py-6 space-y-[1.75rem] liquid-wrapper">
             <div className="price-pool-share-row">
               <p className="font-poppins_light">VET Deposited</p>
               <div className="flex flex-row items-center space-x-4">
-                <img src={firstToken?.icon} alt="" className="w-6 h-6" />
-                <span className="font-poppins_semi_bold text-lg">
+                <img src={firstToken?.icon} alt="" className="w-8 h-8" />
+                <span className="font-poppins_semi_bold text-2xl">
                   {numberWithCommas(firstTokenVolume)}
                 </span>
               </div>
@@ -216,8 +218,8 @@ const ModalAddLiquidity = () => {
             <div className="price-pool-share-row">
               <p className="font-poppins_light">VEUSD Deposited</p>
               <div className="flex flex-row items-center space-x-4">
-                <img src={secondToken?.icon} alt="" className="w-6 h-6" />
-                <span className="font-poppins_semi_bold text-lg">
+                <img src={secondToken?.icon} alt="" className="w-8 h-8" />
+                <span className="font-poppins_semi_bold text-2xl">
                   {numberWithCommas(secondTokenVolume)}
                 </span>
               </div>
@@ -245,14 +247,14 @@ const ModalAddLiquidity = () => {
           <img
             src={IcSandClock}
             alt=""
-            className="transition delay-500 animate-[spin_1.5s_ease-in-out_infinite] w-[10.5rem] h-[10.5rem] self-center my-8"
+            className="transition delay-500 animate-[spin_1.5s_ease-in-out_infinite] w-55 h-55 self-center my-12"
           />
           <div className="flex flex-col space-y-4">
-            <p className="text-[1.7rem] text-center">Waiting For Confirmation</p>
-            <p className="text-sm text-center">
+            <p className="text-4xl text-center">Waiting For Confirmation</p>
+            <p className="text-lg text-center">
               Supplying 5,000 VET and 9,000 VEUSD
             </p>
-            <p className="text-sm text-center text-[#678BCA] cursor-pointer">
+            <p className="text-lg text-center text-[#678BCA] cursor-pointer">
               Confirm this transaction in your wallet
             </p>
           </div>
@@ -264,70 +266,79 @@ const ModalAddLiquidity = () => {
             step === 4 ? "" : "hidden"
           } flex flex-col justify-center`}
         >
-          <div className="liquid-wrapper px-3 py-5 col-center">
+          <div className="liquid-wrapper px-4 py-6 col-center">
             <div className="flex flex-row justify-between items-start">
               <div className="flex flex-col space-y-2">
-                <div className="flex flex-row items-center space-x-3">
+                <div className="flex flex-row items-center space-x-4">
                   <LiquidPairIcon
                     iconAsset1={firstToken?.icon}
                     iconAsset2={secondToken?.icon}
-                    iconSize="6"
+                    iconSize="8"
                   />
-                  <p className="font-poppins_semi_bold text-sm">{`${firstToken?.assetsChain}/${secondToken?.assetsChain}`}</p>
+                  <p className="font-poppins_semi_bold text-xl">{`${firstToken?.assetsChain}/${secondToken?.assetsChain}`}</p>
                 </div>
-                <p className="w-2/3 text-base font-poppins_light">0.03908</p>
+                <p className="w-2/3 text-xl text-grey-2 font-poppins_light">0.03908</p>
               </div>
-              <img src={IcCollapse} alt="" className="w-10 h-10" />
+              <img src={IcCollapse} alt="" className="w-11 h-11" />
             </div>
-            <div className="col mt-8 space-y-4">
+            <div className="col mt-10 space-y-6">
               <div className="full-row-between-center space-x-4">
-                <img src={firstToken?.icon} alt="" className="w-6 h-6"/>
-                <p className="flex-grow font-poppins_semi_bold text-lg">{`Pooled ${firstToken?.assetsChain}`}</p>
-                <p className="text-base font-poppins_light">{numberWithCommas(firstTokenVolume)}</p>
+                <img src={firstToken?.icon} alt="" className="w-8 h-8" />
+                <p className="flex-grow font-poppins_semi_bold text-xl">{`Pooled ${firstToken?.assetsChain}`}</p>
+                <p className="text-xl font-poppins_light">
+                  {numberWithCommas(firstTokenVolume)}
+                </p>
               </div>
               <div className="full-row-between-center space-x-4">
-                <img src={secondToken?.icon} alt="" className="w-6 h-6"/>
-                <p className="flex-grow font-poppins_semi_bold text-lg">{`Pooled ${secondToken?.assetsChain}`}</p>
-                <p className="text-base font-poppins_light">{numberWithCommas(secondTokenVolume)}</p>
+                <img src={secondToken?.icon} alt="" className="w-8 h-8" />
+                <p className="flex-grow font-poppins_semi_bold text-xl">{`Pooled ${secondToken?.assetsChain}`}</p>
+                <p className="text-xl font-poppins_light">
+                  {numberWithCommas(secondTokenVolume)}
+                </p>
               </div>
               <div className="full-row-between-center">
-                <p className="text-vbLine text-base font-poppins_light">Share a Pool</p>
-                <p className="text-vbLine text-base font-poppins_light">{"<0.01%"}</p>
+                <p className="text-vbLine text-xl font-poppins_light">
+                  Share a Pool
+                </p>
+                <p className="text-vbLine text-xl font-poppins_light">
+                  {"<0.01%"}
+                </p>
               </div>
             </div>
             <button
               onClick={removeLiquidity}
-              className="btn-modal-veb w-full h-12 mt-8 text-base bg-btn-veb"
+              className="btn-modal-veb w-full h-16.5 mt-10 text-lg font-poppins_medium bg-btn-veb"
             >
               Remove
             </button>
             <p
               onClick={handleAddLiquidity}
-              className="flex flex-1 self-center text-[#22D4EC] mt-7 text-sm text-center cursor-pointer"
+              className="flex flex-1 self-center text-[#22D4EC] mt-6 text-lg font-poppins_medium text-center cursor-pointer"
             >
               + Add liquidity instead
             </p>
           </div>
-          <p className="mt-8 self-center text-base font-poppins_light text-[#678BCA]">
+          <p className="mt-8 self-center text-xl font-poppins_light text-[#678BCA]">
             Don’t see a pool you joined?
           </p>
           {/* <button className="text-base text-[#0CD2EC] bor"></button> */}
           <SecondaryButton
             label="Find other LP tokens"
             labelColor="#0CD2EC"
-            className="mt-4 w-[35%] h-9 btn-modal-secondary self-center"
-            labelClassName="text-xs"
+            className="mt-4 w-48 h-11 rounded-lg btn-modal-secondary self-center"
+            labelClassName="text-base"
+            borderRadius="0.5rem"
           />
         </div>
       </div>
 
       {step === 1 || step === 2 || step === 4 ? (
-        <div className="footer-modal mt-6">
+        <div className="footer-modal mt-8">
           <button
             onClick={(e) => {
               handlerStepToStep(e);
             }}
-            className={`btn-modal-veb w-full h-13 text-sm font-poppins_medium ${
+            className={`btn-modal-veb w-full ${
               continueAvailable ? "bg-btn-veb" : ""
             }`}
             disabled={!continueAvailable}

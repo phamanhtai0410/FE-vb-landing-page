@@ -1,23 +1,36 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import * as actions from "../../../actions";
 import {
   selectFirstToken,
   selectOpenAddLiquidState,
+  selectOpenRemoveLiquidState,
   selectSecondToken,
 } from "../../../reducers/liquid.reducer";
 
-const useAddLiquidFacade = () => {
+const useRemoveLiquidFacade = () => {
   const dispatch = useDispatch();
 
   const firstToken = useSelector(selectFirstToken, shallowEqual);
   const secondToken = useSelector(selectSecondToken, shallowEqual);
-  const isAddLiquidModalOpen = useSelector(selectOpenAddLiquidState);
+  const isRemoveLiquidModalOpen = useSelector(selectOpenRemoveLiquidState);
+
   const [step, setStep] = useState(1);
+  const [amountPercentage, setAmountPercentage] = useState(0);
   const [continueAvailable, setContinueAvailable] = useState(false);
   const [firstTokenVolume, setFirstTokenVolume] = useState("");
   const [secondTokenVolume, setSecondTokenVolume] = useState("");
-  const [primaryButtonLabel, setPrimaryButtonLabel] = useState("Invalid pair");
+  const [primaryButtonLabel, setPrimaryButtonLabel] =
+    useState("Enter an amount");
+
+  const isEnableBtnEnabled = useMemo(() => {
+    if (amountPercentage === 0) {
+      return false;
+    } else if (continueAvailable) {
+      return false;
+    }
+    return true;
+  }, [continueAvailable, amountPercentage]);
 
   const onSelectFirstCurrency = useCallback((e) => {
     dispatch(actions.selectFirstToken());
@@ -39,58 +52,58 @@ const useAddLiquidFacade = () => {
   }, []);
 
   const closeModal = () => {
-    dispatch(actions.closeAddLiquidity());
+    dispatch(actions.closeRemoveLiquidity());
   };
 
   const resetFrm = () => {
-    setFirstTokenVolume("");
-    setSecondTokenVolume("");
     setStep(1);
+    setContinueAvailable(false);
+    setAmountPercentage(0);
+    setPrimaryButtonLabel("Enter an amount")
   };
 
   const closeModalAndDashboard = () => {
-    if (step === 1) {
+    if (step === 1 || step === 4) {
       closeModal();
       resetFrm();
     } else if (step === 2) {
       setStep(1);
       setPrimaryButtonLabel("Continue");
-    } else if (step === 4) {
-      setStep(2);
-      setPrimaryButtonLabel("Confirm Supply");
     }
   };
 
-  const handlerStepToStep = (e) => {
-    if (
-      step === 1 &&
-      firstToken &&
-      secondToken &&
-      firstTokenVolume > 0 &&
-      secondTokenVolume > 0
-    ) {
+  const handlerStepToStep = () => {
+    if (step === 1) {
       setStep(2);
-      setPrimaryButtonLabel("Confirm Supply");
+      setPrimaryButtonLabel("Continue");
     }
 
     if (step === 2) {
       setStep(3);
       setTimeout(() => {
         setStep(4);
-        setPrimaryButtonLabel("+ Add Liquidity");
+        setPrimaryButtonLabel("Close");
       }, 2000);
     }
   };
 
   const removeLiquidity = () => {};
 
-  const handleAddLiquidity = () => {};
+  const onSelectMileStone = (percentage) => {
+    console.log("🐶🐶  ~ onSelectMileStone ~ percentage", percentage);
+    setAmountPercentage(percentage);
+  };
+
+  const onEnableClicked = () => {
+    setContinueAvailable(true);
+    setPrimaryButtonLabel("Remove");
+  };
 
   const findOtherLiquidPoolTokens = () => {};
 
   useEffect(() => {
     setStep(1);
-  }, [isAddLiquidModalOpen]);
+  }, [isRemoveLiquidModalOpen]);
 
   useEffect(() => {
     switch (step) {
@@ -124,7 +137,7 @@ const useAddLiquidFacade = () => {
 
   useEffect(
     () => () => {
-    // On unmount
+      // On unmount
       closeModalAndDashboard();
     },
     []
@@ -132,16 +145,19 @@ const useAddLiquidFacade = () => {
 
   return {
     step,
+    isEnableBtnEnabled,
+    amountPercentage,
     firstToken,
     secondToken,
     continueAvailable,
-    isAddLiquidModalOpen,
+    isRemoveLiquidModalOpen,
     firstTokenVolume,
     secondTokenVolume,
     primaryButtonLabel,
     closeModal,
+    onEnableClicked,
     removeLiquidity,
-    handleAddLiquidity,
+    onSelectMileStone,
     handlerStepToStep,
     closeModalAndDashboard,
     onSelectFirstCurrency,
@@ -152,4 +168,4 @@ const useAddLiquidFacade = () => {
   };
 };
 
-export default useAddLiquidFacade;
+export default useRemoveLiquidFacade;

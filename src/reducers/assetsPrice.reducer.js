@@ -1,6 +1,4 @@
-import { createSelector } from 'reselect';
 import { marketplaceConstants } from '../constants';
-import { selectListAssets } from './assetsMarket.reducer';
 
 const initialState = {
   requesting: false,

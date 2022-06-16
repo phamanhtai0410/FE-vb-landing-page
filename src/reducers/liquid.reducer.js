@@ -3,6 +3,7 @@ import { poolConstants } from "../constants";
 const initialState = {
   isAddLiquidModalOpen: false,
   isSelectTokenModalOpen: false,
+  isRemoveLiquidModalOpen: false,
   pending: false,
 
   transaction: null,
@@ -62,8 +63,8 @@ export function liquidReducer(state = initialState, action) {
         pending: false,
         transaction: null,
         data: {},
-        firstToken: null,
-        secondToken: null,
+        // firstToken: null,
+        // secondToken: null,
         message: null,
       };
     case poolConstants.MODAL_OPEN_SELECT_TOKEN:
@@ -147,13 +148,60 @@ export function liquidReducer(state = initialState, action) {
         message: null,
       };
 
+    case poolConstants.MODAL_OPEN_REMOVE_LIQUIDITY:
+      return {
+        ...state,
+        isRemoveLiquidModalOpen: true,
+        pending: false,
+        errorCode: null,
+        message: null,
+        ...action,
+      };
+
+    case poolConstants.MODAL_REMOVE_LIQUIDITY_REQUEST:
+      return {
+        ...state,
+        transaction: null,
+        pending: true,
+      };
+
+    case poolConstants.MODAL_REMOVE_LIQUIDITY_SUCCESS:
+      return {
+        ...state,
+        pending: false,
+        transaction: action.transaction,
+      };
+
+    case poolConstants.MODAL_REMOVE_LIQUIDITY_ERROR:
+      return {
+        ...state,
+        pending: false,
+        ...action,
+      };
+
+    case poolConstants.MODAL_CLOSE_REMOVE_LIQUIDITY:
+      return {
+        ...state,
+        isRemoveLiquidModalOpen: false,
+        pending: false,
+        transaction: null,
+        data: {},
+        firstToken: null,
+        secondToken: null,
+        message: null,
+      };
+
     default:
       return state;
   }
 }
 
 export const selectLiquidReducer = (state) => state.liquidReducer;
-export const selectOpenChooseTokenState = state => state.liquidReducer.isSelectTokenModalOpen
-export const selectOpenAddLiquidState = state => state.liquidReducer.isAddLiquidModalOpen
+export const selectOpenChooseTokenState = (state) =>
+  state.liquidReducer.isSelectTokenModalOpen;
+export const selectOpenAddLiquidState = (state) =>
+  state.liquidReducer.isAddLiquidModalOpen;
+export const selectOpenRemoveLiquidState = (state) =>
+  state.liquidReducer.isRemoveLiquidModalOpen;
 export const selectFirstToken = (state) => state.liquidReducer.firstToken;
 export const selectSecondToken = (state) => state.liquidReducer.secondToken;
