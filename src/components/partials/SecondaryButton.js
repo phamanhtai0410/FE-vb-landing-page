@@ -4,18 +4,20 @@ import GradientStrokeWrapper from "./GradientStrokeWrapper";
 
 const SecondaryButton = ({
   label = "Button",
-  labelColor = "white",
+  labelColor = "#fff",
   onClick = () => {},
   className = "",
+  labelClassName = "",
+  borderRadius = "0.5rem", // 8px,
 }) => (
   <div className={`flex justify-center relative ${className}`}>
     <GradientStrokeWrapper
       colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
+      borderRadius={borderRadius}
     />
     <button
-      className={`absolute w-full h-full top-0`}
+      className={`absolute w-full h-full top-0 z-10 text-[${labelColor}] ${labelClassName}`}
       onClick={onClick}
-      style={{ zIndex: "10", color: labelColor, fontSize: "16px" }}
     >
       {label}
     </button>

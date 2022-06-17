@@ -14,6 +14,21 @@
       format("woff");
 }
 
+@font-face {
+  font-family: "Poppins-Light";
+  font-style: normal;
+  font-weight: 300;
+  src: local("Poppins-Light"),
+    url(../fonts/poppins/Poppins-Light.woff2) format("woff2");
+}
+
+@font-face {
+  font-family: "Poppins-Medium";
+  font-style: normal;
+  font-weight: 500;
+  src: local("Poppins-Medium"),
+    url(../fonts/poppins/Poppins-Medium.woff2) format("woff2");
+}
 
 @font-face {
   font-family: "Poppins-SemiBold";
@@ -63,6 +78,10 @@
     url(../fonts/blank-space/BlankSpace-Eaggz.woff) format("woff");
 }
 
+html {
+  font-size: 0.75rem;
+}
+
 .row {
   @apply flex flex-row
 }
@@ -71,18 +90,26 @@
   @apply flex flex-col
 }
 
+.row-center {
+  @apply row items-center
+}
+
 .col-center {
   @apply col justify-center
 }
 
+.full-col-center {
+  @apply col-center flex-1
+}
+
 .full-row-center {
   @apply row flex-1 items-center
-
 }
+
 .full-row-between-center {
   @apply full-row-center justify-between
-
 }
+
 .full-row-center-center {
   @apply full-row-center justify-center
 }
@@ -117,16 +144,11 @@
 }
 
 .btn-modal-veb {
-  font-size: 16px;
-  font-family: "Poppins";
-  line-height: 28px;
   text-align: center;
-  padding: 0.5rem 2.5rem;
-  color: #ffffff;
-  border-radius: 8px;
+  padding: 0.5rem 2.25rem;
   background-color: #2a364b;
   display: block;
-  @apply disabled:text-grey7
+  @apply disabled:text-grey-7 h-14 rounded-lg text-grey-1 text-lg font-poppins_medium
 }
 
 .btn-modal-secondary {
@@ -151,8 +173,8 @@
 }
 
 .bg-btn-veb-disabled {
-  background: #232e49 !important;
-  color: #4b5c86 !important;
+  background: theme('colors.vbDisabled') !important;
+  color: theme('colors.vbDisableText') !important;
 }
 
 .bg-success {
@@ -194,11 +216,9 @@
 
 .btn-veb {
   cursor: pointer;
-  padding: 0.35rem 0.75rem;
+  padding: 0.35rem 1.75rem;
   font-weight: 500;
-  border-radius: 4px;
-  font-size: 16px;
-  line-height: 24px;
+  border-radius: 0.5rem;
   font-family: "Poppins";
   -webkit-transition: all 0.3s ease-in;
   -moz-transition: all 0.3s ease-in;
@@ -206,6 +226,7 @@
   -ms-transition: all 0.3s ease-in;
   transition: all 0.3s ease-in;
   background: linear-gradient(91.96deg, #0fe3e3 0%, #02a4ff 100%);
+  @apply text-base
 }
 
 .box-borrows {

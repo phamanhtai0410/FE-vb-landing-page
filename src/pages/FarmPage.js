@@ -3,6 +3,8 @@ import FormSearchFarm from "../components/farm/FormSearchFarm";
 import AssetsFarm from "../components/farm/AssetsFarm";
 import ModalFarming from "../components/farm/ModalFarming";
 import ModalUnFarm from "../components/farm/ModalUnFarm";
+import ModalAddLiquidity from "../components/pool/AddLiquidity/ModalAddLiquidity";
+import ModalSelectToken from "../components/pool/AddLiquidity/selectToken/ModalSelectToken";
 
 const FarmPage = () => {
   return (
@@ -36,6 +38,8 @@ const FarmPage = () => {
         <AssetsFarm />
         <ModalFarming />
         <ModalUnFarm />
+        <ModalAddLiquidity />
+        <ModalSelectToken />
       </div>
     </section>
   );

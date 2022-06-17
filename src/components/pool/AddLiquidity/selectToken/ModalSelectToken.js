@@ -5,34 +5,34 @@ import "../styles.scss";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { numberWithCommas } from "../../../../utils/lib";
 import IcQuestionOutline from "../../../../assets/images/buttons/ic_question_outline.svg";
+import IcCloseWhite from "../../../../assets/images/buttons/ic_close.svg";
 
 import * as actions from "../../../../actions";
 import { selectOpenChooseTokenState } from "../../../../reducers/liquid.reducer";
 import SearchBar from "../../../partials/SearchBar";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { selectUserAssets } from "../../../../reducers/accountAssets.reducer";
+import GradientStrokeWrapper from "../../../partials/GradientStrokeWrapper";
+import { PartialConstants } from "../../../../constants/partial.constants";
 
 const customStyles = {
   content: {
-    top: "30%",
+    top: "24%",
     left: "50%",
     right: "auto",
     bottom: "auto",
     transform: "translate(-50%, -30%)",
     background: "#182233",
-    borderRadius: "0.5rem",
-    borderWidth: "1px",
-    borderColor: "#3EE8FF",
-    width: "640px",
+    borderWidth: "0px",
+    borderRadius: "1rem",
+    // borderColor: "#3EE8FF",
+    padding: "2.5rem",
+    width: "32%",
+    position: "relative",
   },
 };
 
 const ModalSelectToken = () => {
-  const [amount, setAmount] = useState(0);
-  const [values, setValues] = useState([0]);
-  const [step, setStep] = useState(1);
-  const [rate, setRate] = useState(2);
-
   const isSelectTokenModalOpen = useSelector(selectOpenChooseTokenState);
 
   const assetList = useSelector(selectUserAssets, shallowEqual);
@@ -40,23 +40,13 @@ const ModalSelectToken = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    setStep(1);
-  }, [isSelectTokenModalOpen]);
-
   useEffect(() => fetchUserAssets(), []);
 
   const fetchUserAssets = async () => {
     await dispatch(actions.getCurrentAssets());
   };
 
-  const closeModal = () => {
-    dispatch(actions.closeSelectToken());
-    // if (transaction) {
-    //   dispatch(actions.reloadAccountAssets());
-    // }
-  };
-
+  const closeModal = () => dispatch(actions.closeSelectToken());
   const handlerStepToStep = (e) => {};
 
   const onTokenSelected = (tokenData) => {
@@ -71,17 +61,27 @@ const ModalSelectToken = () => {
       portalClassName="modal-veb"
       overlayClassName="overlay"
     >
-      <div className="header-modal">
+      <GradientStrokeWrapper
+        colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
+        className="-z-50"
+        borderRadius="1rem"
+      />
+      <div className="header">
         <h2>Select a token</h2>
-        <button className="btn-modal-close" onClick={closeModal}></button>
+        <img
+          alt=""
+          src={IcCloseWhite}
+          className="cursor-pointer"
+          onClick={closeModal}
+        />
       </div>
 
-      <div className="content-modal mt-7 mx-6">
+      <div className="content-modal mt-12">
         {/* STEP 1 */}
         <SearchBar />
-        <div className="flex flex-row space-x-1 mt-8">
-          <p className="font-poppins text-xl">Select a currency</p>
-          <img src={IcQuestionOutline} alt="" />
+        <div className="flex flex-row space-x-2 items-center mt-8">
+          <p className="font-poppins_light text-xl">Select a currency</p>
+          <img src={IcQuestionOutline} alt="" className="w-4 h-4" />
         </div>
 
         <TransitionGroup>
@@ -99,15 +99,15 @@ const ModalSelectToken = () => {
                     onClick={(_) => onTokenSelected(item)}
                   >
                     <div className="flex flex-row items-center space-x-4">
-                      <img src={item.icon} alt="" />
+                      <img src={item.icon} alt="" className="w-8 h-8" />
                       <div className="flex flex-col">
-                        <p className="font-bold text-base">
+                        <p className="font-poppins_semi_bold text-base">
                           {item.assetsChain}
                         </p>
-                        <p className="text-sm">{item.assetNetwork}</p>
+                        <p className="text-sm font-poppins_light">{item.assetNetwork}</p>
                       </div>
                     </div>
-                    <p className="text-base font-bold">
+                    <p className="text-base font-poppins_semi_bold">
                       {/*item.balance*/}
                       7,000
                     </p>
@@ -118,12 +118,12 @@ const ModalSelectToken = () => {
         </TransitionGroup>
       </div>
 
-      <div className="footer-modal pt-12">
+      <div className="footer-modal mt-8">
         <button
           onClick={(e) => {
             handlerStepToStep(e);
           }}
-          className={"w-full h-12 text-[#22D4EC] text-lg"}
+          className={"w-full h-12 text-[#22D4EC] text-lg font-poppins_medium"}
         >
           Manage Tokens
         </button>

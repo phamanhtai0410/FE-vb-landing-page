@@ -16,6 +16,7 @@ const FarmPage = React.lazy(() => import('./pages/FarmPage'));
 const TradePage = React.lazy(() => import('./pages/TradePage'));
 const StakingPage = React.lazy(() => import('./pages/StakingPage'));
 const LaunchPadPage = React.lazy(() => import('./pages/LaunchPadPage'));
+const ComingSoon = React.lazy(() => import('./components/partials/ComingSoon'));
 
 function App() {
 
@@ -29,17 +30,17 @@ function App() {
 
           <Route path="/" element={<HomePage />} />
 
-          <Route path="/markets" element={<MarketPage />} />
+          <Route path="/markets" element={<ComingSoon />} />
 
-          <Route path="/pool" element={<PoolPage />} />
+          <Route path="/pool" element={<ComingSoon />} />
 
-          <Route path="/farm" element={<FarmPage/>} />
+          <Route path="/farm" element={<ComingSoon/>} />
 
-          <Route path="/trade" element={<TradePage />} />
+          <Route path="/trade" element={<ComingSoon />} />
 
-          <Route path="/stake" element={<StakingPage />} />
+          <Route path="/stake" element={<ComingSoon />} />
 
-          <Route path="/launchpad" element={<LaunchPadPage />} />
+          <Route path="/launchpad" element={<ComingSoon />} />
 
           <Route path="*" element={<Navigate to="/" />} />
 

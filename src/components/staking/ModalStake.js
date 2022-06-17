@@ -30,7 +30,7 @@ const customStyles = {
     border: "none",
     borderRadius: "8px",
     padding: 0,
-    width: "640px",
+    width: "33%",
   },
 };
 

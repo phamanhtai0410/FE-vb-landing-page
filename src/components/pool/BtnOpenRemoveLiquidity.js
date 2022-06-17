@@ -1,14 +1,18 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import SecondaryButton from "../partials/SecondaryButton";
-import * as actions from '../../actions'
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import { Beforeunload } from "react-beforeunload";
+import ImgRemove from '../../assets/images/buttons/img_remove_btn.svg'
 
-const BtnOpenAddLiquidity = ({ item }) => {
+import * as actions from "../../actions";
+
+import { marketplaceConstants } from "../../constants";
+
+const BtnOpenRemoveLiquidity = ({ item }) => {
   const btnLabel = "Add Liquidity";
 
   const dispatch = useDispatch();
 
-  const [hasAdded, setHasAdded] = useState(false);
+  const [disabledRule, setDisabledRule] = useState(false);
 
   // const { data, accountSupplyBalance } = useSelector(state => state.accountAssetsReducer, shallowEqual);
 
@@ -36,35 +40,18 @@ const BtnOpenAddLiquidity = ({ item }) => {
   };
 
   const handlerOpenModal = async () => {
-    dispatch(actions.loadModalAddLiquidity(item))
+    // if (item && item.assetsAddress && disabledRule === false) {
+    dispatch(actions.loadModalRemoveLiquidity(item));
+    // }
   };
 
   return (
     <>
-      {hasAdded ? (
-        <button
-          className="btn-veb h-10 bg-btn-veb-disabled border-[1px] border-[#4B5C86]"
-          disabled={hasAdded}
-          type="submit"
-        >
-          {btnLabel}
-        </button>
-      ) : (
-        // <SecondaryButton
-        //   label={btnLabel}
-        //   onClick={handlerOpenModal}
-        //   className="px-5 py-2"
-        // />
-        <button
-          onClick={(e) => handlerOpenModal(e)}
-          className="btn-veb text-base h-12"
-          type="submit"
-        >
-          {btnLabel}
-        </button>
+      {disabledRule || (
+        <img src={ImgRemove} alt="" className="w-12 h-12 cursor-pointer" onClick={handlerOpenModal} />
       )}
     </>
   );
 };
 
-export default BtnOpenAddLiquidity;
+export default BtnOpenRemoveLiquidity;
