@@ -24,7 +24,6 @@ const Navbar = () => {
                     </NavLink>
                 </div>
 
-
                 <div className="hidden lg:flex flex-wrap items-center justify-between ">
                     <MenuLink />
                 </div>
