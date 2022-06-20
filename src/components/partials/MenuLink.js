@@ -35,8 +35,8 @@ const MenuLink = () => {
             {/* // <ul className="flex flex-col items-center justify-between "> */}
 
             {
-                MENU_LINKS.map((item) => (
-                    <li className="p-4 lg:p-0">
+                MENU_LINKS.map((item, index) => (
+                    <li key={index} className="p-4 lg:p-0">
                         <NavLink
                             to={item.path}
                             className={`px-6 font-bold text-gray-300 hover:brightness-150 ${item.path === location.pathname ? "text-linear" : ""}`}

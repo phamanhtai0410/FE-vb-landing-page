@@ -106,7 +106,6 @@ export function liquidReducer(state = initialState, action) {
         tokenSelecting: "",
         errorCode: null,
         message: null,
-        ...action,
       };
       if (state.tokenSelecting === poolConstants.FIRST_TOKEN) {
         newState.firstToken = action.payload;

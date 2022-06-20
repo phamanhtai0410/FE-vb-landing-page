@@ -54,9 +54,9 @@ const BtnConnect = () => {
 
                 : <button
                     onClick={connectWalletHandler}
-                    className="btn-connect-wallet px-6 py-3"
+                    className="btn-connect-wallet h-12"
                     type="submit">
-                    {isConnecting ? "Connecting..." : "Connect to a wallet"}
+                    {isConnecting ? "Connecting..." : "Connect wallet"}
                 </button>
             }
         </>

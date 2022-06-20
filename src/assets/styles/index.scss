@@ -79,7 +79,7 @@
 }
 
 html {
-  font-size: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .row {
@@ -88,6 +88,10 @@ html {
 
 .col {
   @apply flex flex-col
+}
+
+.full-col {
+  @apply col flex-1
 }
 
 .row-center {
@@ -99,7 +103,7 @@ html {
 }
 
 .full-col-center {
-  @apply col-center flex-1
+  @apply full-col justify-center
 }
 
 .full-row-center {
@@ -141,6 +145,10 @@ html {
 
 .bg-gradient-border {
   border: 2px solid rgba(35, 210, 126, 1);
+}
+
+.bg-content {
+  background: linear-gradient(109.17deg, #182D52 0%, #172130 100%);
 }
 
 .btn-modal-veb {
@@ -189,8 +197,10 @@ html {
   cursor: pointer;
   font-weight: 500;
   border-radius: 32px;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 24px;
+  padding-left: 2.625rem;
+  padding-right: 2.625rem;
   font-family: "Poppins";
   -webkit-transition: all 0.3s ease-in;
   -moz-transition: all 0.3s ease-in;
