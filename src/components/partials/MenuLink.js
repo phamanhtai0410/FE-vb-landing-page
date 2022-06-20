@@ -39,7 +39,7 @@ const MenuLink = () => {
                     <li className="p-4 lg:p-0">
                         <NavLink
                             to={item.path}
-                            className={`px-6 font-bold text-gray-300 hover:brightness-150 ${item.path === location.pathname ? "text-linear" : ""}`}
+                            className={`px-6 text-base font-bold text-gray-300 hover:brightness-150 ${item.path === location.pathname ? "text-linear" : ""}`}
                         >
                             {item.name}
                         </NavLink>
