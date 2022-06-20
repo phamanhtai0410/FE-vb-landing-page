@@ -322,6 +322,7 @@ export const reloadAccountAssets = (addressAsset) => async (dispatch, getState) 
 
         await dispatch(actions.instantiateVetContracts());
         await dispatch(actions.instantiateVBContracts());
+        await dispatch(actions.instantiateVEUSDContracts());
 
         setTimeout(async () => {
             await dispatch(getAccountAssets());

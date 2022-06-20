@@ -104,3 +104,14 @@ export function assetsMarketReducer(state = initialState, payload) {
 }
 
 export const selectListAssets = (state) => state.assetsMarketReducer.data;
+export const selectAssetByAddress = (state, address) => {
+  if (address) {
+    const _assetList = state.assetsMarketReducer.data;
+    for (let asset of _assetList) {
+      if (asset.assetsAddress === address) {
+        return asset;
+      }
+    }
+  }
+  return null;
+};

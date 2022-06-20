@@ -27,19 +27,19 @@ const MENU_LINKS = [
     },
 ];
 
-const MenuLink = () => {
+const MenuLink = ({menuToggleHandler}) => {
     const location = useLocation();
 
     return (
-        <ul className="box-menus flex flex-col lg:flex-row  items-center justify-center lg:my-auto lg:space-x-4 font-semibold">
+        <ul className="box-menus flex flex-col lg:flex-row items-center justify-center lg:my-auto lg:space-x-4 font-semibold">
             {/* // <ul className="flex flex-col items-center justify-between "> */}
-
             {
-                MENU_LINKS.map((item) => (
-                    <li className="p-4 lg:p-0">
+                MENU_LINKS.map((item, index) => (
+                    <li key={index} className="p-4 lg:p-0">
                         <NavLink
+                         onClick={menuToggleHandler}
                             to={item.path}
-                            className={`px-6 text-base font-bold text-gray-300 hover:brightness-150 ${item.path === location.pathname ? "text-linear" : ""}`}
+                            className={`p-4 md:px-6 inline-block text-2xl md:text-base font-bold text-gray-300 hover:brightness-150 ${item.path === location.pathname ? "text-linear" : ""}`}
                         >
                             {item.name}
                         </NavLink>

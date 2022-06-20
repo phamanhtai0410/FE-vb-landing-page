@@ -147,8 +147,7 @@ const ModalAddLiquidity = () => {
           } flex flex-1 flex-col justify-center`}
         >
           <Assets
-            // inputRef={firstTokenVolume}
-            assetData={firstToken}
+            assetAddress={firstToken}
             volume={firstTokenVolume}
             onVolumeChange={onChangeFirstTokenAmount}
             onClickSelectCurrency={onSelectFirstCurrency}
@@ -159,8 +158,7 @@ const ModalAddLiquidity = () => {
             className="w-8 h-8 mt-4 self-center"
           />
           <Assets
-            // inputRef={secondTokenVolume}
-            assetData={secondToken}
+            assetAddress={secondToken}
             volume={secondTokenVolume}
             onVolumeChange={onChangeSecondTokenAmount}
             onClickSelectCurrency={onSelectSecondCurrency}
