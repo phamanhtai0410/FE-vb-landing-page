@@ -39,7 +39,7 @@ const MenuLink = ({menuToggleHandler}) => {
                         <NavLink
                          onClick={menuToggleHandler}
                             to={item.path}
-                            className={`p-6 md:p-4 md:px-6 inline-block text-2xl md:text-base font-bold text-gray-300 hover:brightness-150 ${item.path === location.pathname ? "text-linear" : ""}`}
+                            className={`p-4 md:px-6 inline-block text-2xl md:text-base font-bold text-gray-300 hover:brightness-150 ${item.path === location.pathname ? "text-linear" : ""}`}
                         >
                             {item.name}
                         </NavLink>
