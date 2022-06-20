@@ -51,9 +51,9 @@ const AssetsPool = () => {
 
   const showListAsset = (dataList) => {
     if (dataList && dataList.length > 0) {
-      return dataList.map((item) => (
+      return dataList.map((item, index) => (
         <CSSTransition
-          key={item.assetsAddress}
+          key={index}
           timeout={500}
           classNames="item_asset"
         >

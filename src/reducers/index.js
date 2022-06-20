@@ -25,6 +25,7 @@ import { stakeReducer } from "./stake.reducer";
 import { unStakeReducer } from "./unstake.reducer";
 import { farmReducer } from "./farm.reducer";
 import { unFarmReducer } from "./unfarm.reducer";
+import accountBalances from "./accountBalance.reducer";
 
 const appReducer = combineReducers({
   alert,
@@ -52,6 +53,7 @@ const appReducer = combineReducers({
 
   farmReducer,
   unFarmReducer,
+  accountBalances,
 });
 
 const rootReducer = (state, action) => {

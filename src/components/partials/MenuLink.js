@@ -34,8 +34,8 @@ const MenuLink = ({menuToggleHandler}) => {
         <ul className="box-menus flex flex-col lg:flex-row items-center justify-center lg:my-auto lg:space-x-4 font-semibold">
             {/* // <ul className="flex flex-col items-center justify-between "> */}
             {
-                MENU_LINKS.map((item) => (
-                    <li className="lg:p-0">
+                MENU_LINKS.map((item, index) => (
+                    <li key={index} className="p-4 lg:p-0">
                         <NavLink
                          onClick={menuToggleHandler}
                             to={item.path}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Modal from "react-modal";
 import "../styles.scss";
 
@@ -11,9 +11,10 @@ import * as actions from "../../../../actions";
 import { selectOpenChooseTokenState } from "../../../../reducers/liquid.reducer";
 import SearchBar from "../../../partials/SearchBar";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { selectUserAssets } from "../../../../reducers/accountAssets.reducer";
 import GradientStrokeWrapper from "../../../partials/GradientStrokeWrapper";
 import { PartialConstants } from "../../../../constants/partial.constants";
+import { selectUserAssetsBalance } from "../../../../reducers/accountBalance.reducer";
+import AssetExcerpt from "./AssetExcerpt";
 
 const customStyles = {
   content: {
@@ -35,7 +36,7 @@ const customStyles = {
 const ModalSelectToken = () => {
   const isSelectTokenModalOpen = useSelector(selectOpenChooseTokenState);
 
-  const assetList = useSelector(selectUserAssets, shallowEqual);
+  const assetList = useSelector(selectUserAssetsBalance, shallowEqual);
   // const assetPriceList = useSelector(selectAssetPrice, shallowEqual);
 
   const dispatch = useDispatch();
@@ -44,14 +45,18 @@ const ModalSelectToken = () => {
 
   const fetchUserAssets = async () => {
     await dispatch(actions.getCurrentAssets());
+    // await dispatch(actions.fetchAccountInit());
   };
 
   const closeModal = () => dispatch(actions.closeSelectToken());
   const handlerStepToStep = (e) => {};
 
-  const onTokenSelected = (tokenData) => {
-    dispatch(actions.selectToken(tokenData));
-  };
+  const onTokenSelected = useCallback(
+    (tokenData) => {
+      dispatch(actions.selectToken(tokenData));
+    },
+    [dispatch]
+  );
 
   return (
     <Modal
@@ -87,34 +92,13 @@ const ModalSelectToken = () => {
         <TransitionGroup>
           {assetList &&
             assetList.length > 0 &&
-            assetList.map((item) => {
-              return (
-                <CSSTransition
-                  key={item.assetsAddress}
-                  timeout={500}
-                  classNames="item_asset"
-                >
-                  <div
-                    className="flex flex-row justify-between items-center mt-8 cursor-pointer"
-                    onClick={(_) => onTokenSelected(item)}
-                  >
-                    <div className="flex flex-row items-center space-x-4">
-                      <img src={item.icon} alt="" className="w-8 h-8" />
-                      <div className="flex flex-col">
-                        <p className="font-poppins_semi_bold text-base">
-                          {item.assetsChain}
-                        </p>
-                        <p className="text-sm font-poppins_light">{item.assetNetwork}</p>
-                      </div>
-                    </div>
-                    <p className="text-base font-poppins_semi_bold">
-                      {/*item.balance*/}
-                      7,000
-                    </p>
-                  </div>
-                </CSSTransition>
-              );
-            })}
+            assetList.map((item) => (
+              <AssetExcerpt
+                key={item.assetsAddress}
+                id={item.assetsAddress}
+                onTokenSelected={onTokenSelected}
+              />
+            ))}
         </TransitionGroup>
       </div>
 
