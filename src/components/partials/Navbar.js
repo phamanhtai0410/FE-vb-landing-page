@@ -12,6 +12,10 @@ const Navbar = () => {
 
     const [isNavOpen, setIsNavOpen] = useState(false);
 
+    const menuToggleHandler = () => {
+        setIsNavOpen((isNavOpen) => !isNavOpen);
+    };
+
     return (
 
         <nav className="py-4 flex justify-between">
@@ -69,7 +73,7 @@ const Navbar = () => {
                             <line x1="6" y1="6" x2="18" y2="18" />
                         </svg>
                     </div>
-                    <MenuLink />
+                    <MenuLink menuToggleHandler={menuToggleHandler} />
                 </div>
             </section>
             <style>{`
@@ -83,12 +87,15 @@ const Navbar = () => {
                 height: 100vh;
                 top: 0;
                 left: 0;
-                background: #141432;
+                background: rgba(5,10,25,.91);
                 z-index: 10;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-evenly;
                 align-items: center;
+                backdrop-filter: blur(2px);
+                transform: translate(0);
+                transition: 0.3s ease transform;
             }`}
             </style>
         </nav>
