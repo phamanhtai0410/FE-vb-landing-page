@@ -1,5 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { approveFirstTokenAddLiquidity, approveSecondTokenAddLiquidity, loadDetailAddLiquidity } from "../actions";
+import { addLiquidity, approveFirstTokenAddLiquidity, approveSecondTokenAddLiquidity, loadDetailAddLiquidity } from "../actions";
 import { poolConstants } from "../constants";
 import { selectAssetByAddress } from "./assetsMarket.reducer";
 
@@ -21,6 +21,8 @@ const initialState = {
   tokenSelecting: "",
 
   isApproving: false,
+  isAddingLiquidity: false,
+  isAddingLiquiditySuccess: false,
 
   dataToken: null,
   data: {},
@@ -193,10 +195,21 @@ export function liquidReducer(state = initialState, action) {
         message: null,
       };
 
+    case loadDetailAddLiquidity.pending.type: {
+      return {
+        ...state,
+      };
+    }
     case loadDetailAddLiquidity.fulfilled.type: {
       return {
         ...state,
+        isAddingLiquidity: false,
         ...action.payload,
+      };
+    }
+    case loadDetailAddLiquidity.rejected.type: {
+      return {
+        ...state,
       };
     }
 
@@ -208,7 +221,6 @@ export function liquidReducer(state = initialState, action) {
 
     }
     case approveFirstTokenAddLiquidity.fulfilled.type: {
-      console.log("FullFilled");
       return {
         ...state,
         isApproving: false,
@@ -230,7 +242,6 @@ export function liquidReducer(state = initialState, action) {
 
     }
     case approveSecondTokenAddLiquidity.fulfilled.type: {
-      console.log("FullFilled");
       return {
         ...state,
         isApproving: false,
@@ -242,7 +253,27 @@ export function liquidReducer(state = initialState, action) {
         ...state,
         isApproving: false,
       };
+    }
 
+    case addLiquidity.pending.type: {
+      return {
+        ...state,
+        isAddingLiquidity: true,
+      }
+    }
+    case addLiquidity.fulfilled.type: {
+      return {
+        ...state,
+        isAddingLiquidity: false,
+        isAddingLiquiditySuccess: true,
+      }
+    }
+    case addLiquidity.rejected.type: {
+      return {
+        ...state,
+        isAddingLiquidity: false,
+        isAddingLiquiditySuccess: false,
+      }
     }
 
 

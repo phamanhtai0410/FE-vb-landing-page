@@ -3,7 +3,6 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import * as actions from "../../../actions";
 import {
   selectFirstToken,
-  selectOpenAddLiquidState,
   selectSecondToken,
 } from "../../../reducers/liquid.reducer";
 
@@ -12,7 +11,6 @@ const useAddLiquidFacade = () => {
 
   const firstToken = useSelector(selectFirstToken, shallowEqual);
   const secondToken = useSelector(selectSecondToken, shallowEqual);
-  const isAddLiquidModalOpen = useSelector(selectOpenAddLiquidState);
   const [step, setStep] = useState(1);
   const [continueAvailable, setContinueAvailable] = useState(false);
   const [firstTokenVolume, setFirstTokenVolume] = useState("");
@@ -21,10 +19,10 @@ const useAddLiquidFacade = () => {
 
   const onSelectFirstCurrency = useCallback((e) => {
     dispatch(actions.selectFirstToken());
-  }, []);
+  }, [dispatch]);
   const onSelectSecondCurrency = useCallback((e) => {
     dispatch(actions.selectSecondToken());
-  }, []);
+  }, [dispatch]);
 
   const onChangeFirstTokenAmount = useCallback((value) => {
     // if (value <= accountBalance) {
@@ -98,10 +96,6 @@ const useAddLiquidFacade = () => {
   const findOtherLiquidPoolTokens = () => {};
 
   useEffect(() => {
-    setStep(1);
-  }, [isAddLiquidModalOpen]);
-
-  useEffect(() => {
     switch (step) {
       case 1: {
         if (!firstToken || !secondToken) {
@@ -144,7 +138,6 @@ const useAddLiquidFacade = () => {
     firstToken,
     secondToken,
     continueAvailable,
-    isAddLiquidModalOpen,
     firstTokenVolume,
     secondTokenVolume,
     primaryButtonLabel,
