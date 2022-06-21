@@ -6,7 +6,7 @@ import * as actions from "../../../actions";
 import { selectApproveState } from "../../../reducers/liquid.reducer";
 import { selectAssetByAddress } from "../../../reducers/assetsMarket.reducer";
 
-const BtnLiquidityApproveB = ({ tokenAddress, pending }) => {
+const BtnLiquidityApproveB = ({ tokenAddress }) => {
   const isApproving = useSelector(selectApproveState);
   const tokenInfo = useSelector((state) =>
     selectAssetByAddress(state, tokenAddress)
@@ -31,7 +31,7 @@ const BtnLiquidityApproveB = ({ tokenAddress, pending }) => {
           approveHandler(e);
         }}
         className={`btn-modal-veb w-full ${
-          pending ? "bg-btn-veb-disabled hidden" : "bg-btn-veb"
+            isApproving ? "bg-btn-veb-disabled hidden" : "bg-btn-veb"
         }`}
         type="submit"
 

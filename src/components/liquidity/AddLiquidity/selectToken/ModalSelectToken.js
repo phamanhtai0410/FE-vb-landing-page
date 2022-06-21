@@ -52,8 +52,9 @@ const ModalSelectToken = () => {
   const handlerStepToStep = (e) => {};
 
   const onTokenSelected = useCallback(
-    (tokenData) => {
-      dispatch(actions.selectToken(tokenData));
+    async (tokenData) => {
+      await dispatch(actions.selectToken(tokenData));
+      dispatch(actions.loadDetailAddLiquidity());
     },
     [dispatch]
   );

@@ -5,6 +5,7 @@ import { Beforeunload } from 'react-beforeunload';
 import * as actions from '../../actions';
 
 import { marketplaceConstants } from '../../constants';
+import { useNavigate } from 'react-router-dom';
 
 const BtnOpenAddLiquidity = ({ item }) => {
 
@@ -12,6 +13,8 @@ const BtnOpenAddLiquidity = ({ item }) => {
     const btnLabel = "Add Liquidity";
 
     const dispatch = useDispatch();
+
+    const navigate = useNavigate();
 
     const [disabledRule, setDisabledRule] = useState(false);
 
@@ -45,7 +48,8 @@ const BtnOpenAddLiquidity = ({ item }) => {
 
     const handlerOpenModal = async () => {
         // if (item && item.assetsAddress && disabledRule === false) {
-            dispatch(actions.loadModalAddLiquidity(item));
+            // dispatch(actions.loadModalAddLiquidity(item));
+            navigate("/liquidity-add")
         // }
     }
 

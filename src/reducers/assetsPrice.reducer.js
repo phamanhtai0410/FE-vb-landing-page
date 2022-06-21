@@ -40,3 +40,4 @@ export function assetsPriceReducer(state = initialState, payload) {
 }
 
 export const selectAssetPrice = state => state.assetsPriceReducer.data
+export const selectPriceByTokenAddress = (state, tokenAddress) => state.assetsPriceReducer.data[tokenAddress]

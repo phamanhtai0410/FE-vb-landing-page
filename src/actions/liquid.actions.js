@@ -171,16 +171,16 @@ export const approveFirstTokenAddLiquidity = createAsyncThunk(
         .comment(`approve ${tokenInfo.assetsChain} on VeBank`)
         .request();
 
-        return { result, approveTokenA: 1 };
-        // .then((result) => {
-        //   console.log("🐶🐶  ~ result", result);
+      return { result, approveTokenA: 1 };
+      // .then((result) => {
+      //   console.log("🐶🐶  ~ result", result);
 
-        //   return { result, approveTokenA: 1 };
-        // })
-        // .catch((e) => {
-        //   console.log("error----", e);
-        //   return e;
-        // });
+      //   return { result, approveTokenA: 1 };
+      // })
+      // .catch((e) => {
+      //   console.log("error----", e);
+      //   return e;
+      // });
     }
   }
 );
@@ -220,21 +220,12 @@ export const approveSecondTokenAddLiquidity = createAsyncThunk(
         .account(tokenAddress)
         .method(approveABI);
 
-      const result = approveMethod
+      const result = await approveMethod
         .transact(ADDRESS_ROUTER, web3.utils.toWei(amountMax.toString()))
         .comment(`approve ${tokenInfo.assetsChain} on VeBank`)
-        .request()
+        .request();
 
-        return { result, approveTokenB: 1 };
-        // .then((result) => {
-        //   console.log("🐶🐶  ~ result", result);
-
-
-        // })
-        // .catch((e) => {
-        //   console.log("error----", e);
-        //   return e;
-        // });
+      return { result, approveTokenB: 1 };
     }
   }
 );
@@ -256,6 +247,7 @@ export const loadDetailAddLiquidity = createAsyncThunk(
       approveTokenA = await contractAddLiquidityA.methods
         .allowance(account, ADDRESS_ROUTER)
         .call();
+      // TODO: Replace hard coded number with decimal digits of the token
       approveTokenA = ethers.utils.formatUnits(approveTokenA, 18);
       approveTokenA = Number(approveTokenA);
     }
@@ -268,6 +260,7 @@ export const loadDetailAddLiquidity = createAsyncThunk(
       approveTokenB = await contractAddLiquidityB.methods
         .allowance(account, ADDRESS_ROUTER)
         .call();
+      // TODO: Replace hard coded number with decimal digits of the token
       approveTokenB = ethers.utils.formatUnits(approveTokenB, 18);
       approveTokenB = Number(approveTokenB);
     }
@@ -300,9 +293,10 @@ export const addLiquidity = createAsyncThunk(
     //     uint deadline
     // )"
 
-    const transactionFee = "10000000000000000000";
-    const amountAMin = "10000000000000000000";
-    const amountBMin = "10000000000000000000";
+    const min = 10_000_000_000_000_000_000;
+    const transactionFee = min.toString();
+    const amountAMin = min.toString();
+    const amountBMin = min.toString();
     const amountA = web3.utils.toWei(firstAmount.toString());
     const amountB = web3.utils.toWei(secondAmount.toString());
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
@@ -318,7 +312,7 @@ export const addLiquidity = createAsyncThunk(
       account,
       deadline
     );
-    methodAddLiquidity
+    const transaction = await methodAddLiquidity
       .transact(
         firstToken,
         secondToken,
@@ -331,17 +325,19 @@ export const addLiquidity = createAsyncThunk(
         deadline
       )
       .comment(`transaction add liquidity to VeBank`)
-      .request()
-      .then((transaction) => {
-        console.log("🐶🐶  ~ .then ~ transaction", transaction);
-        return transaction;
-      })
-      .catch((e) => {
-        console.log("error----", e);
-        // dispatch({
-        //   type: marketplaceConstants.MODAL_SUPPLY_MARKET_ERROR,
-        // });
-        return e;
-      });
+      .request();
+
+    return transaction;
+    // .then((transaction) => {
+    //   console.log("🐶🐶  ~ .then ~ transaction", transaction);
+    //   return transaction;
+    // })
+    // .catch((e) => {
+    //   console.log("error----", e);
+    //   // dispatch({
+    //   //   type: marketplaceConstants.MODAL_SUPPLY_MARKET_ERROR,
+    //   // });
+    //   return e;
+    // });
   }
 );

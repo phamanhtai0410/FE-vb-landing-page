@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import Modal from "react-modal";
 import "./styles.scss";
 
-import { numberWithCommas } from "../../../utils/lib";
+import { nFormatter, numberWithCommas } from "../../../utils/lib";
 import IcCloseWhite from "../../../assets/images/buttons/ic_close.svg";
 import IcWarningCircle from "../../../assets/images/ic-warning-circle.svg";
 import IcBackWhite from "../../../assets/images/buttons/ic_back_white.svg";
@@ -28,6 +28,8 @@ import {
 
 import BtnLiquidityApproveA from "./BtnLiquidityApproveA";
 import BtnLiquidityApproveB from "./BtnLiquidityApproveB";
+import { selectPriceByTokenAddress } from "../../../reducers/assetsPrice.reducer";
+import { useMemo } from "react";
 
 const FrmAddLiquidity = () => {
   const {
@@ -38,7 +40,6 @@ const FrmAddLiquidity = () => {
     continueAvailable,
     secondTokenVolume,
     primaryButtonLabel,
-    isAddLiquidModalOpen,
     onSelectFirstCurrency,
     onSelectSecondCurrency,
     closeModalAndDashboard,
@@ -56,6 +57,22 @@ const FrmAddLiquidity = () => {
   );
   const secondTokenInfo = useSelector((state) =>
     selectAssetByAddress(state, secondToken)
+  );
+
+  const firstTokenPrice = useSelector((state) =>
+    selectPriceByTokenAddress(state, firstToken)
+  );
+  const secondTokenPrice = useSelector((state) =>
+    selectPriceByTokenAddress(state, secondToken)
+  );
+
+  const firstPerSecondTokenPrice = useMemo(
+    () => nFormatter(firstTokenPrice / secondTokenPrice, 6),
+    [firstTokenPrice, secondTokenPrice]
+  );
+  const secondPerFirstTokenPrice = useMemo(
+    () => nFormatter(secondTokenPrice / firstTokenPrice, 6),
+    [firstTokenPrice, secondTokenPrice]
   );
 
   const showConfirmButton = useCallback(() => {
@@ -201,12 +218,12 @@ const FrmAddLiquidity = () => {
               <p className="text-xl text-grey-2">Price and pool share</p>
               <div className="flex flex-1 flex-row justify-between items-center mt-4 px-2 py-5 liquid-wrapper">
                 <div className="price-pool-item">
-                  <p className="value">323.366</p>
-                  <p className="label">VEUSB per VET</p>
+                  <p className="value">{firstPerSecondTokenPrice}</p>
+                  <p className="label">{`${firstTokenInfo?.assetsChain} per ${secondTokenInfo?.assetsChain}`}</p>
                 </div>
                 <div className="price-pool-item">
-                  <p className="value">0.0686648</p>
-                  <p className="label">VET per VEUSD</p>
+                  <p className="value">{secondPerFirstTokenPrice}</p>
+                  <p className="label">{`${secondTokenInfo?.assetsChain} per ${firstTokenInfo?.assetsChain}`}</p>
                 </div>
                 <div className="price-pool-item">
                   <p className="value">{"<0,01%"}</p>
@@ -227,7 +244,7 @@ const FrmAddLiquidity = () => {
                 <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
               </div>
             </div>
-            <p className="text-xl">VET/VEUSD Pool Tokens</p>
+            <p className="text-xl">{`${firstTokenInfo?.assetsChain}/${secondTokenInfo?.assetsChain} Pool Tokens`}</p>
             <p className="text-base text-justify font-poppins_light">
               Output is estimated. If the price changes by more than 0.5% your
               transaction will revert.
@@ -236,7 +253,7 @@ const FrmAddLiquidity = () => {
           <p className="mt-8 font-poppins text-xl">Price and pool share</p>
           <div className="flex flex-col mt-4 px-4 py-6 space-y-[1.75rem] liquid-wrapper">
             <div className="price-pool-share-row">
-              <p className="font-poppins_light">VET Deposited</p>
+              <p className="font-poppins_light">{`${firstTokenInfo?.assetsChain} Deposited`}</p>
               <div className="flex flex-row items-center space-x-4">
                 <img src={firstTokenInfo?.icon} alt="" className="w-8 h-8" />
                 <span className="font-poppins_semi_bold text-2xl">
@@ -245,7 +262,7 @@ const FrmAddLiquidity = () => {
               </div>
             </div>
             <div className="price-pool-share-row">
-              <p className="font-poppins_light">VEUSD Deposited</p>
+              <p className="font-poppins_light">{`${secondTokenInfo?.assetsChain} Deposited`}</p>
               <div className="flex flex-row items-center space-x-4">
                 <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
                 <span className="font-poppins_semi_bold text-2xl">
@@ -256,8 +273,8 @@ const FrmAddLiquidity = () => {
             <div className="price-pool-share-row items-start">
               <p className="self-start font-poppins_light">Rates</p>
               <div className="flex flex-col justify-end">
-                <p className="text-right">1 VET = 565 VEUSD</p>
-                <p className="text-right">1 VEUSD = 0.0234 VET</p>
+                <p className="text-right">{`1 ${firstTokenInfo?.assetsChain} = ${firstPerSecondTokenPrice} ${secondTokenInfo?.assetsChain}`}</p>
+                <p className="text-right">{`1 ${secondTokenInfo?.assetsChain} = ${secondPerFirstTokenPrice} ${firstTokenInfo?.assetsChain}`}</p>
               </div>
             </div>
             <div className="price-pool-share-row">

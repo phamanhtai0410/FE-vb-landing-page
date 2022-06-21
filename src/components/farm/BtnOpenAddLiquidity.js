@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import SecondaryButton from "../partials/SecondaryButton";
 import * as actions from '../../actions'
+import { useNavigate } from "react-router-dom";
 
 const BtnOpenAddLiquidity = ({ item }) => {
   const btnLabel = "Add Liquidity";
 
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const [hasAdded, setHasAdded] = useState(false);
 
@@ -36,7 +39,8 @@ const BtnOpenAddLiquidity = ({ item }) => {
   };
 
   const handlerOpenModal = async () => {
-    dispatch(actions.loadModalAddLiquidity(item))
+    // dispatch(actions.loadModalAddLiquidity(item))
+    navigate("/liquidity-add");
   };
 
   return (
