@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Modal from "react-modal";
 import "./styles.scss";
 
@@ -21,24 +21,13 @@ import GradientStrokeWrapper from "../../partials/GradientStrokeWrapper";
 import { PartialConstants } from "../../../constants/partial.constants";
 import { useSelector } from "react-redux";
 import { selectAssetByAddress } from "../../../reducers/assetsMarket.reducer";
+import {
+  selectApproveFirstToken,
+  selectApproveSecondToken,
+} from "../../../reducers/liquid.reducer";
 
-const customStyles = {
-  content: {
-    top: "31%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    transform: "translate(-50%, -30%)",
-    background: "#182233",
-    borderRadius: "1rem",
-    borderWidth: "0px",
-    // borderColor: "#3EE8FF",
-    padding: "2.5rem",
-    position: "relative",
-    width: "32%",
-    // width: "460px",
-  },
-};
+import BtnLiquidityApproveA from "./BtnLiquidityApproveA";
+import BtnLiquidityApproveB from "./BtnLiquidityApproveB";
 
 const FrmAddLiquidity = () => {
   const {
@@ -60,8 +49,49 @@ const FrmAddLiquidity = () => {
     onChangeSecondTokenAmount,
   } = useAddLiquidFacade();
 
-  const firstTokenInfo = useSelector(state => selectAssetByAddress(state, firstToken));
-  const secondTokenInfo = useSelector(state => selectAssetByAddress(state, secondToken));
+  const approveFirstToken = useSelector(selectApproveFirstToken);
+  const approveSecondToken = useSelector(selectApproveSecondToken);
+  const firstTokenInfo = useSelector((state) =>
+    selectAssetByAddress(state, firstToken)
+  );
+  const secondTokenInfo = useSelector((state) =>
+    selectAssetByAddress(state, secondToken)
+  );
+
+  const showConfirmButton = useCallback(() => {
+    console.log(step);
+
+    if (step === 2) {
+      if (approveFirstToken === 0) {
+        return <BtnLiquidityApproveA tokenAddress={firstToken} />;
+      } else if (approveSecondToken === 0) {
+        return <BtnLiquidityApproveB tokenAddress={secondToken} />;
+      }
+    }
+
+    return (
+      <button
+        onClick={(e) => {
+          handlerStepToStep(e);
+        }}
+        className={`btn-modal-veb w-full ${
+          continueAvailable ? "bg-btn-veb" : ""
+        }`}
+        disabled={!continueAvailable}
+      >
+        {primaryButtonLabel}
+      </button>
+    );
+  }, [
+    step,
+    continueAvailable,
+    primaryButtonLabel,
+    approveFirstToken,
+    approveSecondToken,
+    firstToken,
+    secondToken,
+    handlerStepToStep,
+  ]);
 
   // useEffect(() => {
   //   const firstTokenVolumeValue = firstTokenVolume?.current?.value ?? 0;
@@ -334,19 +364,7 @@ const FrmAddLiquidity = () => {
       </div>
 
       {step === 1 || step === 2 || step === 4 ? (
-        <div className="footer-modal mt-8">
-          <button
-            onClick={(e) => {
-              handlerStepToStep(e);
-            }}
-            className={`btn-modal-veb w-full ${
-              continueAvailable ? "bg-btn-veb" : ""
-            }`}
-            disabled={!continueAvailable}
-          >
-            {primaryButtonLabel}
-          </button>
-        </div>
+        <div className="footer-modal mt-8">{showConfirmButton()}</div>
       ) : (
         ""
       )}

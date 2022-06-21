@@ -69,6 +69,7 @@ const useAddLiquidFacade = () => {
       firstTokenVolume > 0 &&
       secondTokenVolume > 0
     ) {
+      dispatch(actions.loadDetailAddLiquidity());
       setStep(2);
       setPrimaryButtonLabel("Confirm Supply");
     }

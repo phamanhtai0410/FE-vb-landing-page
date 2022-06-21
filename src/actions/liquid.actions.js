@@ -18,6 +18,7 @@ import ERC20ABI_ROUTER from "../_contracts/router.json";
 import ERC20ABI_STABLE_DEBT_TOKEN from "../_contracts/StableDebtToken.json";
 import ERC20ABI_VARIBLE_DEBT_TOKEN from "../_contracts/VariableDebtToken.json";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
 
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_ROUTER = process.env.REACT_APP_ADDRESS_ROUTER;
@@ -130,6 +131,150 @@ export const closeSelectToken = () => {
   };
 };
 
+export const approveFirstTokenAddLiquidity = createAsyncThunk(
+  poolConstants.APPROVE_FIRST_TOKEN,
+  async (tokenAddress, { getState }) => {
+    if (!tokenAddress) return;
+
+    const state = getState();
+
+    const { web3, account, connex } = state.web3;
+
+    const contractAddLiquidity = new web3.eth.Contract(
+      ERC20ABI_VB,
+      tokenAddress
+    );
+
+    const tokenInfo = selectAssetByAddress(state, tokenAddress);
+
+    const amountMax = 1_000_000_000;
+
+    if (account && contractAddLiquidity && tokenAddress) {
+      const approveABI = {
+        constant: false,
+        inputs: [
+          { name: "_spender", type: "address" },
+          { name: "_value", type: "uint256" },
+        ],
+        name: "approve",
+        outputs: [{ name: "success", type: "bool" }],
+        payable: false,
+        stateMutability: "nonpayable",
+        type: "function",
+      };
+      const approveMethod = connex.thor
+        .account(tokenAddress)
+        .method(approveABI);
+
+      const result = await approveMethod
+        .transact(ADDRESS_ROUTER, web3.utils.toWei(amountMax.toString()))
+        .comment(`approve ${tokenInfo.assetsChain} on VeBank`)
+        .request();
+
+        return { result, approveTokenA: 1 };
+        // .then((result) => {
+        //   console.log("🐶🐶  ~ result", result);
+
+        //   return { result, approveTokenA: 1 };
+        // })
+        // .catch((e) => {
+        //   console.log("error----", e);
+        //   return e;
+        // });
+    }
+  }
+);
+
+export const approveSecondTokenAddLiquidity = createAsyncThunk(
+  poolConstants.APPROVE_SECOND_TOKEN,
+  async (tokenAddress, { getState }) => {
+    if (!tokenAddress) return;
+
+    const state = getState();
+
+    const { web3, account, connex } = state.web3;
+
+    const contractAddLiquidity = new web3.eth.Contract(
+      ERC20ABI_VB,
+      tokenAddress
+    );
+
+    const tokenInfo = selectAssetByAddress(state, tokenAddress);
+
+    const amountMax = 1_000_000_000;
+
+    if (account && contractAddLiquidity && tokenAddress) {
+      const approveABI = {
+        constant: false,
+        inputs: [
+          { name: "_spender", type: "address" },
+          { name: "_value", type: "uint256" },
+        ],
+        name: "approve",
+        outputs: [{ name: "success", type: "bool" }],
+        payable: false,
+        stateMutability: "nonpayable",
+        type: "function",
+      };
+      const approveMethod = connex.thor
+        .account(tokenAddress)
+        .method(approveABI);
+
+      const result = approveMethod
+        .transact(ADDRESS_ROUTER, web3.utils.toWei(amountMax.toString()))
+        .comment(`approve ${tokenInfo.assetsChain} on VeBank`)
+        .request()
+
+        return { result, approveTokenB: 1 };
+        // .then((result) => {
+        //   console.log("🐶🐶  ~ result", result);
+
+
+        // })
+        // .catch((e) => {
+        //   console.log("error----", e);
+        //   return e;
+        // });
+    }
+  }
+);
+
+export const loadDetailAddLiquidity = createAsyncThunk(
+  poolConstants.LOAD_DETAIL_ADD_LIQUIDITY,
+  async (_, { getState }) => {
+    const currentState = getState();
+    const { web3, account } = currentState.web3;
+    const { firstToken, secondToken } = currentState.liquidReducer;
+    let approveTokenA = 0;
+    let approveTokenB = 0;
+    if (firstToken) {
+      const contractAddLiquidityA = new web3.eth.Contract(
+        ERC20ABI_VB,
+        firstToken
+      );
+
+      approveTokenA = await contractAddLiquidityA.methods
+        .allowance(account, ADDRESS_ROUTER)
+        .call();
+      approveTokenA = ethers.utils.formatUnits(approveTokenA, 18);
+      approveTokenA = Number(approveTokenA);
+    }
+    if (secondToken) {
+      const contractAddLiquidityB = new web3.eth.Contract(
+        ERC20ABI_VB,
+        secondToken
+      );
+
+      approveTokenB = await contractAddLiquidityB.methods
+        .allowance(account, ADDRESS_ROUTER)
+        .call();
+      approveTokenB = ethers.utils.formatUnits(approveTokenB, 18);
+      approveTokenB = Number(approveTokenB);
+    }
+    return { approveTokenA, approveTokenB };
+  }
+);
+
 export const addLiquidity = createAsyncThunk(
   poolConstants.ADD_LIQUIDITY,
   async ({ firstAmount, secondAmount }, { getState }) => {
@@ -156,8 +301,8 @@ export const addLiquidity = createAsyncThunk(
     // )"
 
     const transactionFee = "10000000000000000000";
-    const amountAMin = 0;
-    const amountBMin = 0;
+    const amountAMin = "10000000000000000000";
+    const amountBMin = "10000000000000000000";
     const amountA = web3.utils.toWei(firstAmount.toString());
     const amountB = web3.utils.toWei(secondAmount.toString());
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
@@ -188,7 +333,7 @@ export const addLiquidity = createAsyncThunk(
       .comment(`transaction add liquidity to VeBank`)
       .request()
       .then((transaction) => {
-        console.log('🐶🐶  ~ .then ~ transaction', transaction)
+        console.log("🐶🐶  ~ .then ~ transaction", transaction);
         return transaction;
       })
       .catch((e) => {

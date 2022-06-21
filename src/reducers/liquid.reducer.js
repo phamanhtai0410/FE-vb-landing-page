@@ -1,4 +1,7 @@
+import { createSelector } from "@reduxjs/toolkit";
+import { approveFirstTokenAddLiquidity, approveSecondTokenAddLiquidity, loadDetailAddLiquidity } from "../actions";
 import { poolConstants } from "../constants";
+import { selectAssetByAddress } from "./assetsMarket.reducer";
 
 const initialState = {
   isAddLiquidModalOpen: false,
@@ -10,14 +13,14 @@ const initialState = {
   errorCode: null,
   message: null,
 
-  accountBalance: 0,
-  accountApprove: 0,
-  accountStableDebtApprove: 0,
-  accountVariableDebtApprove: 0,
+  approveTokenA: 0,
+  approveTokenB: 0,
 
   firstToken: null,
   secondToken: null,
   tokenSelecting: "",
+
+  isApproving: false,
 
   dataToken: null,
   data: {},
@@ -190,6 +193,59 @@ export function liquidReducer(state = initialState, action) {
         message: null,
       };
 
+    case loadDetailAddLiquidity.fulfilled.type: {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    }
+
+    case approveFirstTokenAddLiquidity.pending.type: {
+      return {
+        ...state,
+        isApproving: true,
+      };
+
+    }
+    case approveFirstTokenAddLiquidity.fulfilled.type: {
+      console.log("FullFilled");
+      return {
+        ...state,
+        isApproving: false,
+        approveTokenA: action.payload.approveTokenA,
+      };
+    }
+    case approveFirstTokenAddLiquidity.rejected.type: {
+      return {
+        ...state,
+        isApproving: false,
+      };
+
+    }
+    case approveSecondTokenAddLiquidity.pending.type: {
+      return {
+        ...state,
+        isApproving: true,
+      };
+
+    }
+    case approveSecondTokenAddLiquidity.fulfilled.type: {
+      console.log("FullFilled");
+      return {
+        ...state,
+        isApproving: false,
+        approveTokenB: action.payload.approveTokenB,
+      };
+    }
+    case approveSecondTokenAddLiquidity.rejected.type: {
+      return {
+        ...state,
+        isApproving: false,
+      };
+
+    }
+
+
     default:
       return state;
   }
@@ -204,3 +260,9 @@ export const selectOpenRemoveLiquidState = (state) =>
   state.liquidReducer.isRemoveLiquidModalOpen;
 export const selectFirstToken = (state) => state.liquidReducer.firstToken;
 export const selectSecondToken = (state) => state.liquidReducer.secondToken;
+export const selectApproveFirstToken = (state) => state.liquidReducer.approveTokenA;
+export const selectApproveSecondToken = (state) => state.liquidReducer.approveTokenB;
+export const selectApproveState = (state) => state.liquidReducer.isApproving;
+// export const selectFirstTokenData = createSelector([selectFirstToken], (firstTokenAddress) => {
+//   selectAssetByAddress(state)
+// })
