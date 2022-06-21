@@ -68,6 +68,66 @@ const initialState = {
   totalSupply: 0,
   totalBorrow: 0,
   total: 0,
+  addresses: [
+    process.env.REACT_APP_TOKEN_WVET,
+    process.env.REACT_APP_TOKEN_VEUSD,
+    process.env.REACT_APP_TOKEN_VTHO,
+    process.env.REACT_APP_TOKEN_VEBANK,
+  ],
+  assetEntities: {
+    [process.env.REACT_APP_TOKEN_WVET]: {
+      icon: IcVeChain,
+      assetsChain: "VET",
+      assetNetwork: "VeChain",
+      assetsAddress: process.env.REACT_APP_TOKEN_WVET,
+      assetsDecimals: 18,
+      totalSupplied: 0,
+      supplyAPY: "4.03",
+      interestSupply: "1.8",
+      borrowAPY: "4.03",
+      interestBorrow: "1.8",
+      totalBorrowed: 0,
+    },
+    [process.env.REACT_APP_TOKEN_VEUSD]: {
+      icon: IcVeUSD,
+      assetsChain: "VEUSD",
+      assetNetwork: "VeUSD",
+      assetsAddress: process.env.REACT_APP_TOKEN_VEUSD,
+      assetsDecimals: 6,
+      totalSupplied: 0,
+      supplyAPY: "4.03",
+      interestSupply: "1.8",
+      borrowAPY: "4.03",
+      interestBorrow: "1.8",
+      totalBorrowed: 0,
+    },
+    [process.env.REACT_APP_TOKEN_VTHO]: {
+      icon: IcVtho,
+      assetsChain: "VTHO",
+      assetNetwork: "VeThor",
+      assetsAddress: process.env.REACT_APP_TOKEN_VTHO,
+      assetsDecimals: 18,
+      totalSupplied: 0,
+      supplyAPY: "4.03",
+      interestSupply: "1.8",
+      borrowAPY: "4.03",
+      interestBorrow: "1.8",
+      totalBorrowed: 0,
+    },
+    [process.env.REACT_APP_TOKEN_VEBANK]: {
+      icon: IcVeBank,
+      assetsChain: "VB",
+      assetNetwork: "VeBank",
+      assetsAddress: process.env.REACT_APP_TOKEN_VEBANK,
+      assetsDecimals: 18,
+      totalSupplied: 0,
+      supplyAPY: "4.03",
+      interestSupply: "1.8",
+      borrowAPY: "4.03",
+      interestBorrow: "1.8",
+      totalBorrowed: 0,
+    },
+  },
   data: listAsset || [],
 };
 
@@ -106,12 +166,7 @@ export function assetsMarketReducer(state = initialState, payload) {
 export const selectListAssets = (state) => state.assetsMarketReducer.data;
 export const selectAssetByAddress = (state, address) => {
   if (address) {
-    const _assetList = state.assetsMarketReducer.data;
-    for (let asset of _assetList) {
-      if (asset.assetsAddress === address) {
-        return asset;
-      }
-    }
+    return state.assetsMarketReducer.assetEntities[address];
   }
   return null;
 };

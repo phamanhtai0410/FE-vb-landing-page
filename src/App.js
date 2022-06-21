@@ -16,6 +16,7 @@ const FarmPage = React.lazy(() => import('./pages/FarmPage'));
 const TradePage = React.lazy(() => import('./pages/TradePage'));
 const StakingPage = React.lazy(() => import('./pages/StakingPage'));
 const LaunchPadPage = React.lazy(() => import('./pages/LaunchPadPage'));
+const AddLiquidityPage = React.lazy(() => import('./pages/LiquidityPage'));
 
 function App() {
 
@@ -40,6 +41,8 @@ function App() {
           <Route path="/stake" element={<StakingPage />} />
 
           <Route path="/launchpad" element={<LaunchPadPage />} />
+
+          <Route path="/liquidity-add" element={<AddLiquidityPage />} />
 
           <Route path="*" element={<Navigate to="/" />} />
 

@@ -1,55 +1,97 @@
-import {NavLink, useLocation} from 'react-router-dom';
+import { useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 
 const MENU_LINKS = [
-    {
-        name: "Trade",
-        path: "/trade"
-    },
-    {
-        name: "Lend",
-        path: "/markets"
-    },
-    {
-        name: "Pool",
-        path: "/pool"
-    },
-    {
-        name: "Stake",
-        path: "/stake"
-    },
-    {
-        name: "Farm",
-        path: "/farm"
-    },
-    {
-        name: "Launchpad",
-        path: "/launchpad"
-    },
+  {
+    name: "Trade",
+    path: "/trade",
+  },
+  {
+    name: "Lend",
+    path: "/markets",
+  },
+  {
+    name: "Pool",
+    path: "/pool",
+  },
+  {
+    name: "Stake",
+    path: "/stake",
+  },
+  {
+    name: "Farm",
+    path: "/farm",
+  },
+  {
+    name: "Launchpad",
+    path: "/launchpad",
+  },
 ];
 
 const MenuLink = () => {
-    const location = useLocation();
+  const location = useLocation();
+  const [isMenuHover, setOnMenuHover] = useState(false);
 
-    return (
-        <ul className="box-menus flex flex-col lg:flex-row  items-center justify-center lg:my-auto lg:space-x-4 font-semibold">
-            {/* // <ul className="flex flex-col items-center justify-between "> */}
+  const onMouseOver = (_) => {
+    if (!isMenuHover) setOnMenuHover(true);
+  };
 
-            {
-                MENU_LINKS.map((item, index) => (
-                    <li key={index} className="p-4 lg:p-0">
-                        <NavLink
-                            to={item.path}
-                            className={`px-6 font-bold text-gray-300 hover:brightness-150 ${item.path === location.pathname ? "text-linear" : ""}`}
-                        >
-                            {item.name}
-                        </NavLink>
-                    </li>
-                ))
-            }
+  const onMouseOut = (_) => {
+    if (isMenuHover) {
+      setOnMenuHover(false);
+    }
+  };
 
-        </ul >
+  return (
+    <ul
+      style={{ marginTop: "0px", marginBottom: "0px", height: "100%" }}
+      className="box-menus my-0 flex flex-col lg:flex-row  items-center justify-center lg:my-auto lg:space-x-4 font-semibold"
+    >
+      {/* // <ul className="flex flex-col items-center justify-between "> */}
 
-    )
-}
+      {MENU_LINKS.map((item, index) => (
+        <li
+          key={index}
+          className="flex items-center h-full p-4 lg:p-0 relative"
+          onMouseOver={item.name === "Trade" && onMouseOver}
+          onMouseLeave={item.name === "Trade" && onMouseOut}
+        >
+          <NavLink
+            to={item.path}
+            className={`px-6 font-bold text-gray-300 hover:brightness-150 ${
+              item.path === location.pathname ? "text-linear" : ""
+            }`}
+          >
+            {item.name}
+          </NavLink>
+          {item.name === "Trade" && isMenuHover && (
+            <div
+              className={
+                "col justify-center items-start top-[100%] absolute bg-[#00051e] lg:w-[160px] p-4 lg:p-0 rounded-b-lg"
+              }
+            >
+              <NavLink
+                to="/trade"
+                className={`block px-6 py-2 font-bold text-gray-300 hover:brightness-150 ${
+                  isMenuHover ? "text-linear" : ""
+                }`}
+              >
+                Swap
+              </NavLink>
+              <NavLink
+                to="/liquidity-add"
+                className={`block px-6 py-2 font-bold text-gray-300 hover:brightness-150 ${
+                  isMenuHover ? "text-linear" : ""
+                }`}
+              >
+                Add Liquidity
+              </NavLink>
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+};
 
 export default MenuLink;
