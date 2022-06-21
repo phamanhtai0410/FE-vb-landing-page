@@ -14,12 +14,13 @@ import ERC20ABI_VB from "../_contracts/VB.json";
 
 import ERC20ABI_AAVE from "../_contracts/AaveProtocolDataProvider.json";
 import ERC20ABI_WETH_GETAWAY from "../_contracts/WETHGateway.json";
-import ERC20ABI_POOL from "../_contracts/Pool.json";
+import ERC20ABI_ROUTER from "../_contracts/router.json";
 import ERC20ABI_STABLE_DEBT_TOKEN from "../_contracts/StableDebtToken.json";
 import ERC20ABI_VARIBLE_DEBT_TOKEN from "../_contracts/VariableDebtToken.json";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
-const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
+const ADDRESS_ROUTER = process.env.REACT_APP_ADDRESS_ROUTER;
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 
 // ------------------------ BORROW ------------------------ //
@@ -128,3 +129,74 @@ export const closeSelectToken = () => {
     type: poolConstants.MODAL_CLOSE_SELECT_TOKEN,
   };
 };
+
+export const addLiquidity = createAsyncThunk(
+  poolConstants.ADD_LIQUIDITY,
+  async ({ firstAmount, secondAmount }, { getState }) => {
+    const { firstToken, secondToken } = getState().liquidReducer;
+    const { connex, account, web3 } = getState().web3;
+
+    const addLiquidityABI = ERC20ABI_ROUTER.find(
+      ({ name, type }) => name === "addLiquidity" && type === "function"
+    );
+    const methodAddLiquidity = connex.thor
+      .account(ADDRESS_ROUTER)
+      .method(addLiquidityABI);
+
+    //   "addLiquidity(
+    //     address tokenA,
+    //     address tokenB,
+    //     uint transactionFee,    // set once per pair
+    //     uint amountADesired,
+    //     uint amountBDesired,
+    //     uint amountAMin,
+    //     uint amountBMin,
+    //     address to,
+    //     uint deadline
+    // )"
+
+    const transactionFee = "10000000000000000000";
+    const amountAMin = 0;
+    const amountBMin = 0;
+    const amountA = web3.utils.toWei(firstAmount.toString());
+    const amountB = web3.utils.toWei(secondAmount.toString());
+    const deadline = Math.round(new Date().getTime() / 1000) + 3600;
+
+    console.log(
+      firstToken,
+      secondToken,
+      transactionFee,
+      amountA,
+      amountB,
+      amountAMin,
+      amountBMin,
+      account,
+      deadline
+    );
+    methodAddLiquidity
+      .transact(
+        firstToken,
+        secondToken,
+        transactionFee,
+        amountA,
+        amountB,
+        amountAMin,
+        amountBMin,
+        account,
+        deadline
+      )
+      .comment(`transaction add liquidity to VeBank`)
+      .request()
+      .then((transaction) => {
+        console.log('🐶🐶  ~ .then ~ transaction', transaction)
+        return transaction;
+      })
+      .catch((e) => {
+        console.log("error----", e);
+        // dispatch({
+        //   type: marketplaceConstants.MODAL_SUPPLY_MARKET_ERROR,
+        // });
+        return e;
+      });
+  }
+);

@@ -17,13 +17,13 @@ const PoolRowAction = ({ openRowAssets, item }) => {
                 <div>
                     <label className='font-poppins text-[14px] text-[#678BCA]'>Your Liquidity</label>
                     <div className='font-montserrat text-[16px] text-[#3EE8FF]'>$0.00</div>
-                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 LB</div>
+                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 LP</div>
                 </div>
 
                 <div>
                     <label className='text-[#678BCA] font-poppins text-[14px]'>Assets Pooled</label>
                     <div className='font-montserrat text-[16px] text-[#3EE8FF]'>$0.00</div>
-                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 LB</div>
+                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 LP</div>
                 </div>
 
                 <div>

@@ -75,16 +75,24 @@ const useAddLiquidFacade = () => {
 
     if (step === 2) {
       setStep(3);
-      setTimeout(() => {
-        setStep(4);
-        setPrimaryButtonLabel("+ Add Liquidity");
-      }, 2000);
+      handleAddLiquidity()
+      // setTimeout(() => {
+      //   setStep(4);
+      //   setPrimaryButtonLabel("+ Add Liquidity");
+      // }, 2000);
     }
   };
 
   const removeLiquidity = () => {};
 
-  const handleAddLiquidity = () => {};
+  const handleAddLiquidity = () => {
+    dispatch(
+      actions.addLiquidity({
+        firstAmount: firstTokenVolume,
+        secondAmount: secondTokenVolume,
+      })
+    );
+  };
 
   const findOtherLiquidPoolTokens = () => {};
 
@@ -124,7 +132,7 @@ const useAddLiquidFacade = () => {
 
   useEffect(
     () => () => {
-    // On unmount
+      // On unmount
       closeModalAndDashboard();
     },
     []
