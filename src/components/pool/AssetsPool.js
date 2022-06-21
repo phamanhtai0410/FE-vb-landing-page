@@ -24,12 +24,12 @@ const AssetsPool = () => {
 
   useEffect(() => {
     if (web3) {
-      // fetchMarketAssets();
+      fetchMarketAssets();
     }
   }, [web3]);
 
   async function fetchMarketAssets() {
-    await dispatch(actions.getMarketAssets());
+    await dispatch(actions.getPoolAssets());
   }
 
   const onClickShowRowAssets = (assetsAddress) => {

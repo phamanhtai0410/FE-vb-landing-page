@@ -15,14 +15,57 @@ import ERC20ABI_VB from "../_contracts/VB.json";
 import ERC20ABI_AAVE from "../_contracts/AaveProtocolDataProvider.json";
 import ERC20ABI_WETH_GETAWAY from "../_contracts/WETHGateway.json";
 import ERC20ABI_POOL from "../_contracts/Pool.json";
-import ERC20ABI_STABLE_DEBT_TOKEN from "../_contracts/StableDebtToken.json";
-import ERC20ABI_VARIBLE_DEBT_TOKEN from "../_contracts/VariableDebtToken.json";
+
+import ERC20ABI_FACTORY from "../_contracts/factory.json";
 
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
-const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
+const ADDRESS_FACTORY = process.env.REACT_APP_ADDRESS_FACTORY;
 
-// ------------------------ BORROW ------------------------ //
+// ------------------------ POOL ------------------------ //
+
+export const getPoolAssets = () => async (dispatch, getState) => {
+
+  const state = getState();
+
+  const { web3 } = state.web3;
+  const { data } = state.assetsPoolReducer;
+
+  let dataList = [];
+
+  if (web3 && ADDRESS_FACTORY && data.length > 0) {
+
+      let contractFactory = new web3.eth.Contract(ERC20ABI_FACTORY, ADDRESS_FACTORY);
+
+      for await (const item of data) {
+
+        //"getPair(address tokenA, address tokenB), 
+        const dataPair = await contractFactory.methods.getPair(item.addressTokenA,item.addressTokenB).call();
+        const emptyAddress = /^0x0+$/.test(dataPair); // true chưa có
+
+        console.log("dataPair",emptyAddress, dataPair);
+
+        dataList.push(item);
+
+      }
+
+      dispatch({
+          type: poolConstants.FETCH_POOL_ASSETS_SUCCESS,
+          contractFactory,
+          data: dataList
+      });
+
+
+  } else {
+      dispatch({
+          type: poolConstants.FETCH_POOL_ASSETS_SUCCESS,
+          data
+      });
+  }
+
+  return dataList;
+
+};
 
 /**
  *
@@ -32,6 +75,7 @@ const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
  */
 export const loadModalAddLiquidity =
   (dataToken) => async (dispatch, getState) => {
+
     const state = getState();
     const { web3, account } = state.web3;
 
@@ -103,9 +147,9 @@ export const loadModalAddLiquidity =
       accountBalance: accountBalance,
       dataToken,
     });
-  };
+};
 
-  export const loadModalRemoveLiquidity =
+export const loadModalRemoveLiquidity =
   (dataToken) => async (dispatch, getState) => {
     const state = getState();
     const { web3, account } = state.web3;
@@ -178,7 +222,7 @@ export const loadModalAddLiquidity =
       accountBalance: accountBalance,
       dataToken,
     });
-  };
+};
 
 export const closeAddLiquidity = () => {
   return {
