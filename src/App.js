@@ -31,17 +31,17 @@ function App() {
 
           <Route path="/" element={<HomePage />} />
 
-          <Route path="/markets" element={<ComingSoon />} />
+          <Route path="/markets" element={<MarketPage />} />
 
-          <Route path="/pool" element={<ComingSoon />} />
+          <Route path="/pool" element={<PoolPage />} />
 
-          <Route path="/farm" element={<ComingSoon/>} />
+          <Route path="/farm" element={<FarmPage/>} />
 
-          <Route path="/trade" element={<ComingSoon />} />
+          <Route path="/trade" element={<TradePage />} />
 
-          <Route path="/stake" element={<ComingSoon />} />
+          <Route path="/stake" element={<StakingPage />} />
 
-          <Route path="/launchpad" element={<ComingSoon />} />
+          <Route path="/launchpad" element={<LaunchPadPage />} />
 
           <Route path="/liquidity-add" element={<AddLiquidityPage />} />
 
