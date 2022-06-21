@@ -53,8 +53,8 @@ const MenuLink = ({ menuToggleHandler }) => {
         <li
           key={index}
           className="flex items-center h-full p-4 lg:p-0 relative"
-          onMouseOver={item.name === "Trade" && onMouseOver}
-          onMouseLeave={item.name === "Trade" && onMouseOut}
+          onMouseOver={item.name === "Trade" ? onMouseOver : undefined}
+          onMouseLeave={item.name === "Trade" ? onMouseOut : undefined}
         >
           <NavLink
             to={item.path}
