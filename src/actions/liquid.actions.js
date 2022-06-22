@@ -294,7 +294,7 @@ export const addLiquidity = createAsyncThunk(
     // )"
 
     const min = 1_000_000_000; 
-    const transactionFee = web3.utils.toWei(min.toString()) ;
+    const transactionFee = 100;
     const amountAMin = 0;
     const amountBMin = 0;
     const amountA = web3.utils.toWei(firstAmount.toString());

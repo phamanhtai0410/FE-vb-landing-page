@@ -76,8 +76,6 @@ const FrmAddLiquidity = () => {
   );
 
   const showConfirmButton = useCallback(() => {
-    console.log(step);
-
     if (step === 2) {
       if (approveFirstToken === 0) {
         return <BtnLiquidityApproveA tokenAddress={firstToken} />;
