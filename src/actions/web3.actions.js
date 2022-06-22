@@ -18,6 +18,7 @@ import ERC20ABI_POOL from "../_contracts/Pool.json";
 
 import * as actions from "./";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
 
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
@@ -182,16 +183,19 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
 export const instantiateVEUSDContracts = createAsyncThunk(
   "accountBalance/fetchVEUSD",
   async (_, { getState }) => {
-    const { web3, account } = getState().web3;
+    const currentState = getState();
+    const { web3, account } = currentState.web3;
 
     if (web3 && account) {
       let contractVEUSD = new web3.eth.Contract(ERC20ABI_VB, TOKEN_VEUSD);
 
       let balance = 0;
 
+      const tokenInfo = selectAssetByAddress(currentState, TOKEN_VEUSD)
+
       if (contractVEUSD && account) {
         const balanceBigN = await contractVEUSD.methods.balanceOf(account).call();
-        balance = ethers.utils.formatEther(balanceBigN);
+        balance = ethers.utils.formatUnits(balanceBigN, tokenInfo?.assetsDecimals || 6);
         balance = Math.round(balance * 100) / 100;
       }
       return {balance, contractVEUSD};

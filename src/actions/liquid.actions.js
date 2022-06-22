@@ -26,82 +26,9 @@ const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 
 // ------------------------ BORROW ------------------------ //
 
-/**
- *
- * @param {*} dataToken
- * @returns dispatch strore
- *
- */
 export const loadSelectToken = (dataToken) => async (dispatch, getState) => {
-  const state = getState();
-  const { web3, account } = state.web3;
-
-  const dataPrice = state.assetsPriceReducer.data;
-  const { accountSupplyBalance } = state.accountAssetsReducer;
-
-  let accountBalance = 0;
-  let accountApprove = 0;
-  // let contractBorrow;
-
-  let accountStableDebtApprove = 0;
-  let accountVariableDebtApprove = 0;
-
-  // if (!account) {
-  //     return;
-  // }
-
-  // const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
-  //  let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
-
-  // const getReserveData = await contractAAVE.methods.getReserveData(dataToken.assetsAddress).call();
-  // let balanceTotalSupply = ethers.utils.formatUnits(getReserveData.totalAToken, dataToken.assetsDecimals);
-  // accountBalance = Math.round(balanceTotalSupply * 100) / 100;
-
-  // const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
-  // console.log(`getUserReserveData`, accountReserve);
-
-  // const accountData = await contractPOOL.methods.getUserAccountData(account).call();
-  // console.log("getUserAccountData", accountData);
-
-  // if (accountData.availableBorrowsBase) {
-  //     accountBalance = ethers.utils.formatUnits(accountData.availableBorrowsBase, 18);
-  //     accountBalance = accountBalance / dataPrice[dataToken.assetsAddress];
-  // }
-
-  // if (dataToken.assetsChain === "VET") {
-
-  //     // check approveDelegation
-  //     // let contractStableDebt = new web3.eth.Contract(ERC20ABI_STABLE_DEBT_TOKEN, process.env.REACT_APP_STABLE_DEBT_TOKEN_VET);
-  //     // accountStableDebtApprove = await contractStableDebt.methods.borrowAllowance(account, ADDRESS_GATEWAY).call();
-  //     // accountStableDebtApprove = ethers.utils.formatEther(accountStableDebtApprove);
-  //     // accountStableDebtApprove = Number(accountStableDebtApprove);
-
-  //     // check approveDelegation
-  //     let contractVariableDebt = new web3.eth.Contract(ERC20ABI_VARIBLE_DEBT_TOKEN, process.env.REACT_APP_VARIABLE_DEBT_TOKEN_VET);
-  //     accountVariableDebtApprove = await contractVariableDebt.methods.borrowAllowance(account, ADDRESS_GATEWAY).call();
-
-  //     accountVariableDebtApprove = ethers.utils.formatEther(accountVariableDebtApprove);
-  //     accountVariableDebtApprove = Number(accountVariableDebtApprove);
-
-  //     accountApprove = accountVariableDebtApprove;
-
-  // } else {
-
-  //     const contractBorrow = new web3.eth.Contract(ERC20ABI_VB, dataToken.assetsAddress);
-
-  //     // get the approved ADDRESS_POOL
-  //     accountApprove = await contractBorrow.methods.allowance(account, ADDRESS_POOL).call();
-  //     accountApprove = ethers.utils.formatUnits(accountApprove, dataToken.assetsDecimals);
-  //     accountApprove = Number(accountApprove);
-
-  // }
-
   dispatch({
     type: poolConstants.MODAL_OPEN_SELECT_TOKEN,
-    accountApprove,
-    accountStableDebtApprove,
-    accountVariableDebtApprove,
-    accountBalance: accountBalance,
     dataToken,
   });
 };
@@ -247,8 +174,11 @@ export const loadDetailAddLiquidity = createAsyncThunk(
       approveTokenA = await contractAddLiquidityA.methods
         .allowance(account, ADDRESS_ROUTER)
         .call();
-      // TODO: Replace hard coded number with decimal digits of the token
-      approveTokenA = ethers.utils.formatUnits(approveTokenA, 18);
+      const tokenInfo = selectAssetByAddress(currentState, firstToken);
+      approveTokenA = ethers.utils.formatUnits(
+        approveTokenA,
+        tokenInfo.assetsDecimals
+      );
       approveTokenA = Number(approveTokenA);
     }
     if (secondToken) {
@@ -260,8 +190,11 @@ export const loadDetailAddLiquidity = createAsyncThunk(
       approveTokenB = await contractAddLiquidityB.methods
         .allowance(account, ADDRESS_ROUTER)
         .call();
-      // TODO: Replace hard coded number with decimal digits of the token
-      approveTokenB = ethers.utils.formatUnits(approveTokenB, 18);
+      const tokenInfo = selectAssetByAddress(currentState, secondToken);
+      approveTokenB = ethers.utils.formatUnits(
+        approveTokenB,
+        tokenInfo.assetsDecimals
+      );
       approveTokenB = Number(approveTokenB);
     }
     return { approveTokenA, approveTokenB };
