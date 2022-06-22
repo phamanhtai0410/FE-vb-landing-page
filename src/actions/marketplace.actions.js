@@ -129,7 +129,6 @@ export const getCurrentAssets = () => async (dispatch, getState) => {
 
                 let currentPriceUSD = await contractISeerOracle.methods.latestAnswer().call();
 
-
                 // if (item.assetsChain === "VEUSD") {
                 //     currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 6);;
                 // } else {

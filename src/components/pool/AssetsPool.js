@@ -94,6 +94,7 @@ const AssetsPool = () => {
 
               <div className="p-4 col-span-1 flex justify-center items-center cursor-pointer">
                 <img
+                  alt="sort row"
                   className={`w-4 h-4 transition-transform delay-350 ${
                     checkShowDown(item.assetsPoolAddress) ? "rotate-180" : ""
                   }`}

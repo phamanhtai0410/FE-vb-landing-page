@@ -13,8 +13,9 @@ const listAsset = [
     assetsKey: process.env.REACT_APP_TOKEN_WVET + process.env.REACT_APP_TOKEN_VEUSD,
     addressTokenA: process.env.REACT_APP_TOKEN_WVET,
     addressTokenB: process.env.REACT_APP_TOKEN_VEUSD,
-    assetsPoolAddress: process.env.REACT_APP_TOKEN_VEUSD,
+    assetsPoolAddress: "",
     assetsDecimals: 18,
+    balanceAccount:0,
     liquidity: "87,402,803",
     volume: "87,402,803",
     fees: "199,905",
@@ -28,8 +29,9 @@ const listAsset = [
     assetsKey: process.env.REACT_APP_TOKEN_WVET + process.env.REACT_APP_TOKEN_VTHO,
     addressTokenA: process.env.REACT_APP_TOKEN_WVET,
     addressTokenB: process.env.REACT_APP_TOKEN_VTHO,
-    assetsPoolAddress: process.env.REACT_APP_TOKEN_VTHO,
+    assetsPoolAddress: "",
     assetsDecimals: 18,
+    balanceAccount:0,
     liquidity: "87,402,803",
     volume: "87,402,803",
     fees: "199,905",
@@ -43,8 +45,9 @@ const listAsset = [
     assetsKey: process.env.REACT_APP_TOKEN_WVET + process.env.REACT_APP_TOKEN_VEBANK,
     addressTokenA: process.env.REACT_APP_TOKEN_WVET,
     addressTokenB: process.env.REACT_APP_TOKEN_VEBANK,
-    assetsPoolAddress: process.env.REACT_APP_TOKEN_VEBANK,
+    assetsPoolAddress: "",
     assetsDecimals: 18,
+    balanceAccount:0,
     liquidity: "87,402,803",
     volume: "87,402,803",
     fees: "199,905",
@@ -58,8 +61,9 @@ const listAsset = [
     assetsKey: process.env.REACT_APP_TOKEN_VEBANK + process.env.REACT_APP_TOKEN_VTHO,
     addressTokenA: process.env.REACT_APP_TOKEN_VEBANK,
     addressTokenB: process.env.REACT_APP_TOKEN_VTHO,
-    assetsPoolAddress: process.env.REACT_APP_TOKEN_WVET,
+    assetsPoolAddress: "",
     assetsDecimals: 18,
+    balanceAccount:0,
     liquidity: "87,402,803",
     volume: "87,402,803",
     fees: "199,905",
@@ -72,14 +76,15 @@ const initialState = {
   success: false,
   message: null,
   query: {},
-  totalSupply: 0,
-  totalBorrow: 0,
   total: 0,
-  data: listAsset || [],
+  listAsset,
+  data: [],
 };
 
 export function assetsPoolReducer(state = initialState, payload) {
+
   switch (payload.type) {
+
     case poolConstants.FETCH_POOL_ASSETS_REQUEST:
       return {
         ...state,
@@ -93,16 +98,15 @@ export function assetsPoolReducer(state = initialState, payload) {
         requesting: false,
         success: true,
         data: payload.data,
-        totalSupply: payload.totalSupply,
-        totalBorrow: payload.totalBorrow,
         total: payload.total,
       };
 
     case poolConstants.FETCH_POOL_ASSETS_ERROR:
+
       return {
         ...state,
         requesting: false,
-        message: payload.message,
+        message: payload.message
       };
 
     default:
