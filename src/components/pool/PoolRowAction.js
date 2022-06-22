@@ -22,8 +22,8 @@ const PoolRowAction = ({ openRowAssets, item }) => {
 
                 <div>
                     <label className='text-[#678BCA] font-poppins text-[14px]'>Assets Pooled</label>
-                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>${item.balanceAccount}</div>
-                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>0 LP</div>
+                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>{item.balanceAccount} {item.assetsChainA}</div>
+                    <div className='font-montserrat text-[16px] text-[#3EE8FF]'>{item.balanceAccount} {item.assetsChainB}</div>
                 </div>
 
                 <div>
