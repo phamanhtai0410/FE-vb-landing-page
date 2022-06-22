@@ -28,7 +28,7 @@ const customStyles = {
     borderRadius: "1rem",
     // borderColor: "#3EE8FF",
     padding: "2.5rem",
-    width: "32%",
+    width: "450px",
     position: "relative",
   },
 };

@@ -293,25 +293,28 @@ export const addLiquidity = createAsyncThunk(
     //     uint deadline
     // )"
 
-    const min = 10_000_000_000_000_000_000;
-    const transactionFee = min.toString();
-    const amountAMin = min.toString();
-    const amountBMin = min.toString();
+    const min = 1_000_000_000; 
+    const transactionFee = web3.utils.toWei(min.toString()) ;
+    const amountAMin = 0;
+    const amountBMin = 0;
     const amountA = web3.utils.toWei(firstAmount.toString());
     const amountB = web3.utils.toWei(secondAmount.toString());
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
 
-    console.log(
-      firstToken,
-      secondToken,
-      transactionFee,
-      amountA,
-      amountB,
-      amountAMin,
-      amountBMin,
-      account,
-      deadline
+    console.table(
+      [
+        ["tokenA",firstToken],
+        ["tokenB",secondToken],
+        ["transactionFee",transactionFee],
+        ["amountA",amountA],
+        ["amountB",amountB],
+        ["amountAMin",amountAMin],
+        ["amountBMin",amountBMin],
+        ["account",account],
+        ["deadline",deadline]
+      ]
     );
+
     const transaction = await methodAddLiquidity
       .transact(
         firstToken,
