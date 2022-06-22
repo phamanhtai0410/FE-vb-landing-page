@@ -22,7 +22,7 @@ const initialState = {
 
   isApproving: false,
   isAddingLiquidity: false,
-  isAddingLiquiditySuccess: false,
+  isAddingLiquiditySuccess: null,
 
   dataToken: null,
   data: {},
@@ -294,6 +294,8 @@ export const selectSecondToken = (state) => state.liquidReducer.secondToken;
 export const selectApproveFirstToken = (state) => state.liquidReducer.approveTokenA;
 export const selectApproveSecondToken = (state) => state.liquidReducer.approveTokenB;
 export const selectApproveState = (state) => state.liquidReducer.isApproving;
+export const selectAddingLiquidityState = (state) => state.liquidReducer.isAddingLiquidity
+export const selectAddingLiquidityFinishState = (state) => state.liquidReducer.isAddingLiquiditySuccess
 // export const selectFirstTokenData = createSelector([selectFirstToken], (firstTokenAddress) => {
 //   selectAssetByAddress(state)
 // })

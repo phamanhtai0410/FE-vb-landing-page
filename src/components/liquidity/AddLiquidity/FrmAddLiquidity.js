@@ -40,6 +40,12 @@ const FrmAddLiquidity = () => {
     continueAvailable,
     secondTokenVolume,
     primaryButtonLabel,
+    approveFirstToken,
+    approveSecondToken,
+    firstTokenInfo,
+    secondTokenInfo,
+    firstPerSecondTokenPrice,
+    secondPerFirstTokenPrice,
     onSelectFirstCurrency,
     onSelectSecondCurrency,
     closeModalAndDashboard,
@@ -49,31 +55,6 @@ const FrmAddLiquidity = () => {
     onChangeFirstTokenAmount,
     onChangeSecondTokenAmount,
   } = useAddLiquidFacade();
-
-  const approveFirstToken = useSelector(selectApproveFirstToken);
-  const approveSecondToken = useSelector(selectApproveSecondToken);
-  const firstTokenInfo = useSelector((state) =>
-    selectAssetByAddress(state, firstToken)
-  );
-  const secondTokenInfo = useSelector((state) =>
-    selectAssetByAddress(state, secondToken)
-  );
-
-  const firstTokenPrice = useSelector((state) =>
-    selectPriceByTokenAddress(state, firstToken)
-  );
-  const secondTokenPrice = useSelector((state) =>
-    selectPriceByTokenAddress(state, secondToken)
-  );
-
-  const firstPerSecondTokenPrice = useMemo(
-    () => nFormatter(firstTokenPrice / secondTokenPrice, 6),
-    [firstTokenPrice, secondTokenPrice]
-  );
-  const secondPerFirstTokenPrice = useMemo(
-    () => nFormatter(secondTokenPrice / firstTokenPrice, 6),
-    [firstTokenPrice, secondTokenPrice]
-  );
 
   const showConfirmButton = useCallback(() => {
     console.log(step);
