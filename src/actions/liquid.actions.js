@@ -236,13 +236,13 @@ export const addLiquidity = createAsyncThunk(
     ]);
 
     let transaction;
-    
+
     if(firstToken === process.env.REACT_APP_TOKEN_WVET || secondToken === process.env.REACT_APP_TOKEN_WVET){
 
       const addLiquidityETHABI = ERC20ABI_ROUTER.find( ({ name, type }) => name === "addLiquidityETH" && type === "function");
       const methodAddLiquidityETH = connex.thor.account(ADDRESS_ROUTER).method(addLiquidityETHABI);
 
-      let tokenDesired; 
+      let tokenDesired;
       if(firstToken === process.env.REACT_APP_TOKEN_WVET){
         tokenDesired = {
           address: secondToken,
@@ -268,7 +268,7 @@ export const addLiquidity = createAsyncThunk(
       account,
       deadline
     ).comment(`transaction add LiquidityETH on VeBank`).request();
-      
+
     }else{
 
       const addLiquidityABI = ERC20ABI_ROUTER.find(  ({ name, type }) => name === "addLiquidity" && type === "function");
@@ -284,10 +284,9 @@ export const addLiquidity = createAsyncThunk(
         amountBMin,
         account,
         deadline
-      ).comment(`transaction add liquidity on VeBank`).request();
-
-    }
-
+      )
+      .comment(`transaction add pool ${firstTokenInfo.assetsChain}-${secondTokenInfo.assetsChain} to VeBank`)
+      .request();
 
     return transaction;
     // .then((transaction) => {

@@ -5,22 +5,21 @@ import * as actions from "../../../actions";
 import { selectPoolInfoByAddress } from "../../../reducers/assetsPool.reducer";
 import { selectPriceByTokenAddress } from "../../../reducers/assetsPrice.reducer";
 import {
-  selectFirstToken,
-  selectOpenAddLiquidState,
-  selectOpenRemoveLiquidState,
-  selectSecondToken,
-} from "../../../reducers/liquid.reducer";
+  selectApprovingState,
+  selectPoolApproval,
+  selectRemovingFinishState,
+  selectRemovingState,
+} from "../../../reducers/removeLiquidity.reducer";
+import { selectWeb3 } from "../../../reducers/web3.reducer";
 import { nFormatter } from "../../../utils/lib";
 
 const useRemoveLiquidFacade = () => {
   const dispatch = useDispatch();
-  const { address } = useParams();
+  const { address: poolAddress } = useParams();
 
-  const firstToken = useSelector(selectFirstToken, shallowEqual);
-  const secondToken = useSelector(selectSecondToken, shallowEqual);
-  const isRemoveLiquidModalOpen = useSelector(selectOpenRemoveLiquidState);
+  const web3 = useSelector(selectWeb3);
   const poolData = useSelector((state) =>
-    selectPoolInfoByAddress(state, address)
+    selectPoolInfoByAddress(state, poolAddress)
   );
   const firstTokenPrice = useSelector((state) =>
     selectPriceByTokenAddress(state, poolData?.addressTokenA)
@@ -28,6 +27,10 @@ const useRemoveLiquidFacade = () => {
   const secondTokenPrice = useSelector((state) =>
     selectPriceByTokenAddress(state, poolData?.addressTokenB)
   );
+  const isApproving = useSelector(selectApprovingState);
+  const approvePoolState = useSelector(selectPoolApproval);
+  const isRemoving = useSelector(selectRemovingState);
+  const removePoolSuccessState = useSelector(selectRemovingFinishState);
 
   const firstPerSecondTokenPrice = useMemo(
     () => nFormatter(firstTokenPrice / secondTokenPrice, 5),
@@ -39,40 +42,19 @@ const useRemoveLiquidFacade = () => {
   );
 
   const [step, setStep] = useState(1);
+  const [enableBtnLabel, setEnableBtnLabel] = useState("Enable");
   const [amountPercentage, setAmountPercentage] = useState(0);
   const [continueAvailable, setContinueAvailable] = useState(false);
-  const [firstTokenVolume, setFirstTokenVolume] = useState("");
-  const [secondTokenVolume, setSecondTokenVolume] = useState("");
   const [primaryButtonLabel, setPrimaryButtonLabel] =
     useState("Enter an amount");
 
   const isEnableBtnEnabled = useMemo(() => {
-    if (amountPercentage === 0) {
-      return false;
-    } else if (continueAvailable) {
-      return false;
-    }
-    return true;
-  }, [continueAvailable, amountPercentage]);
+    return amountPercentage !== 0 && !isApproving && approvePoolState === 0;
+  }, [amountPercentage, isApproving, approvePoolState]);
 
-  const onSelectFirstCurrency = useCallback((e) => {
-    dispatch(actions.selectFirstToken());
-  }, []);
-  const onSelectSecondCurrency = useCallback((e) => {
-    dispatch(actions.selectSecondToken());
-  }, []);
-
-  const onChangeFirstTokenAmount = useCallback((value) => {
-    // if (value <= accountBalance) {
-    setFirstTokenVolume(value);
-    // }
-  }, []);
-
-  const onChangeSecondTokenAmount = useCallback((value) => {
-    // if (value <= accountBalance) {
-    setSecondTokenVolume(value);
-    // }
-  }, []);
+  const removeAvailable = useMemo(() => {
+    return amountPercentage !== 0 && approvePoolState !== 0;
+  }, [amountPercentage, approvePoolState]);
 
   const closeModal = () => {
     dispatch(actions.closeRemoveLiquidity());
@@ -98,63 +80,85 @@ const useRemoveLiquidFacade = () => {
   const handlerStepToStep = () => {
     if (step === 1) {
       setStep(2);
-      setPrimaryButtonLabel("Continue");
+      setPrimaryButtonLabel("Confirm");
     }
 
     if (step === 2) {
       setStep(3);
-      setTimeout(() => {
-        setStep(4);
-        setPrimaryButtonLabel("Close");
-      }, 2000);
+      removeLiquidity();
+      // setTimeout(() => {
+      //   setStep(4);
+      //   setPrimaryButtonLabel("Close");
+      // }, 2000);
     }
   };
 
-  const removeLiquidity = () => {};
+  const removeLiquidity = () => {
+    dispatch(
+      actions.removeLiquidity({ amount: amountPercentage, poolAddress })
+    );
+  };
 
   const onSelectMileStone = (percentage) => {
-    console.log("🐶🐶  ~ onSelectMileStone ~ percentage", percentage);
     setAmountPercentage(percentage);
   };
 
-  const onEnableClicked = () => {
-    setContinueAvailable(true);
-    setPrimaryButtonLabel("Remove");
+  const onEnableClicked = async () => {
+    await dispatch(actions.approvePoolLiquidity(poolAddress));
+  };
+
+  const loadPoolApproval = async () => {
+    dispatch(actions.loadDetailRemoveLiquidity(poolAddress));
   };
 
   useEffect(() => {
-    setStep(1);
-  }, [isRemoveLiquidModalOpen]);
+    if (web3) {
+      fetchMarketAssets();
+    }
+  }, [web3]);
+
+  async function fetchMarketAssets() {
+    await dispatch(actions.getPoolAssets());
+  }
 
   useEffect(() => {
-    switch (step) {
-      case 1: {
-        if (!firstToken || !secondToken) {
-          setPrimaryButtonLabel("Invalid pair");
-          setContinueAvailable(false);
-        } else if (
-          firstTokenVolume.length === 0 ||
-          secondTokenVolume.length === 0 ||
-          firstTokenVolume <= 0 ||
-          secondTokenVolume <= 0
-        ) {
-          setPrimaryButtonLabel("Enter an amount");
-          setContinueAvailable(false);
-        } else {
-          setContinueAvailable(true);
-          setPrimaryButtonLabel("Supply");
-        }
-        break;
+    if (amountPercentage !== 0) {
+      setPrimaryButtonLabel("Remove");
+    } else {
+      setPrimaryButtonLabel("Enter an amount");
+    }
+  }, [amountPercentage]);
+
+  useEffect(() => {
+    if (!isApproving) {
+      if (approvePoolState === 0) {
+        setEnableBtnLabel("Enable");
+      } else {
+        setEnableBtnLabel("Enabled");
+        setContinueAvailable(true);
       }
-      case 2: {
-        break;
-      }
-      default: {
-        break;
+    } else {
+      setEnableBtnLabel("Enabling...");
+    }
+  }, [isApproving, approvePoolState]);
+
+  useEffect(() => {
+    if (poolAddress) {
+      loadPoolApproval();
+    }
+  }, [poolAddress]);
+
+  useEffect(() => {
+    if (step === 3 && !isRemoving) {
+      if (removePoolSuccessState === false) {
+        // User decline or adding liquidity failed
+        setStep(2);
+      } else if (removePoolSuccessState === true) {
+        setPrimaryButtonLabel("Close");
+        setStep(4);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstToken, secondToken, firstTokenVolume, secondTokenVolume]);
+  }, [isRemoving, removePoolSuccessState, step]);
 
   useEffect(
     () => () => {
@@ -167,16 +171,13 @@ const useRemoveLiquidFacade = () => {
   return {
     step,
     poolData,
+    enableBtnLabel,
     firstPerSecondTokenPrice,
     secondPerFirstTokenPrice,
+    removeAvailable,
     isEnableBtnEnabled,
     amountPercentage,
-    firstToken,
-    secondToken,
     continueAvailable,
-    isRemoveLiquidModalOpen,
-    firstTokenVolume,
-    secondTokenVolume,
     primaryButtonLabel,
     closeModal,
     onEnableClicked,
@@ -184,10 +185,6 @@ const useRemoveLiquidFacade = () => {
     onSelectMileStone,
     handlerStepToStep,
     closeModalAndDashboard,
-    onSelectFirstCurrency,
-    onSelectSecondCurrency,
-    onChangeFirstTokenAmount,
-    onChangeSecondTokenAmount,
   };
 };
 

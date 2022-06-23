@@ -39,27 +39,19 @@ const ModalRemoveLiquidity = () => {
   const {
     step,
     poolData,
+    removeAvailable,
+    enableBtnLabel,
     firstPerSecondTokenPrice,
     secondPerFirstTokenPrice,
     amountPercentage,
-    firstToken,
-    secondToken,
     isEnableBtnEnabled,
-    firstTokenVolume,
     continueAvailable,
-    secondTokenVolume,
     primaryButtonLabel,
-    isRemoveLiquidModalOpen,
     onSelectMileStone,
     onEnableClicked,
-    onSelectFirstCurrency,
-    onSelectSecondCurrency,
     closeModalAndDashboard,
     handlerStepToStep,
-    handleAddLiquidity,
     removeLiquidity,
-    onChangeFirstTokenAmount,
-    onChangeSecondTokenAmount,
   } = useRemoveLiquidFacade();
 
   // useEffect(() => {
@@ -279,15 +271,15 @@ const ModalRemoveLiquidity = () => {
               }`}
               disabled={!isEnableBtnEnabled}
             >
-              Enable
+              {enableBtnLabel}
             </button>
           )}
           <button
             onClick={step !== 4 ? handlerStepToStep : closeModalAndDashboard}
             className={`btn-modal-veb w-full h-16.5 text-lg font-poppins_medium ${
-              continueAvailable ? "bg-btn-veb" : ""
+              removeAvailable ? "bg-btn-veb" : ""
             }`}
-            disabled={!continueAvailable}
+            disabled={!removeAvailable}
           >
             {primaryButtonLabel}
           </button>

@@ -11,3 +11,4 @@ export * from "./stake.action";
 export * from "./unstake.action";
 export * from "./farm.action";
 export * from "./unfarm.action";
+export * from "./removeLiquidity.action"
