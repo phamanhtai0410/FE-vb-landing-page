@@ -238,18 +238,6 @@ export const addLiquidity = createAsyncThunk(
     // const amountB = web3.utils.toWei(secondAmount.toString());
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
 
-    console.table([
-      ["tokenA", firstToken],
-      ["tokenB", secondToken],
-      ["transactionFee", transactionFee],
-      ["amountA", amountA],
-      ["amountB", amountB],
-      ["amountAMin", amountAMin],
-      ["amountBMin", amountBMin],
-      ["account", account],
-      ["deadline", deadline],
-    ]);
-
     const transaction = await methodAddLiquidity
       .transact(
         firstToken,
@@ -262,7 +250,7 @@ export const addLiquidity = createAsyncThunk(
         account,
         deadline
       )
-      .comment(`transaction add liquidity to VeBank`)
+      .comment(`transaction add pool ${firstTokenInfo.assetsChain}-${secondTokenInfo.assetsChain} to VeBank`)
       .request();
 
     return transaction;
