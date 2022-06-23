@@ -25,10 +25,10 @@ const PoolRowAction = ({ openRowAssets, item }) => {
             Assets Pooled
           </label>
           <div className="font-montserrat text-[16px] text-[#3EE8FF]">
-            {item.balanceAccount} {item.assetsChainA}
+            {item.amountTokenA} {item.assetsChainA}
           </div>
           <div className="font-montserrat text-[16px] text-[#3EE8FF]">
-            {item.balanceAccount} {item.assetsChainB}
+            {item.amountTokenB} {item.assetsChainB}
           </div>
         </div>
 

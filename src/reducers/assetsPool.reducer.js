@@ -5,6 +5,7 @@ import IcVeChain from "../assets/images/ic_vechain.svg";
 import IcVeBank from "../assets/images/ic_vebank.svg";
 import IcVtho from "../assets/images/ic_vtho.svg";
 
+
 const listAsset = [
   {
     iconOrigin: IcVeChain,
@@ -85,9 +86,9 @@ const listAsset = [
   {
     iconOrigin: IcVeUSD,
     iconAssets: IcVtho,
-    assetsPoolName: "VB-VTHO",
+    assetsPoolName: "VEUSD-VTHO",
     assetsKey:
-      process.env.REACT_APP_TOKEN_VEUSD+ process.env.REACT_APP_TOKEN_VTHO,
+    process.env.REACT_APP_TOKEN_VEUSD+ process.env.REACT_APP_TOKEN_VTHO,
     assetsChainA: "VEUSD",
     addressTokenA: process.env.REACT_APP_TOKEN_VEUSD,
     assetsChainB: "VTHO",
@@ -113,6 +114,7 @@ const initialState = {
   entities: {},
   data: [],
 };
+
 
 export function assetsPoolReducer(state = initialState, payload) {
   switch (payload.type) {

@@ -30,7 +30,7 @@ export const getPoolAssets = () => async (dispatch, getState) => {
   const state = getState();
 
   const { web3 ,account} = state.web3;
-  const { listAsset } = state.assetsPoolReducer;
+  const { listAsset ,entities} = state.assetsPoolReducer;
 
   let dataList = [];
 
@@ -47,27 +47,50 @@ export const getPoolAssets = () => async (dispatch, getState) => {
 
         if(!emptyAddress && assetsPoolAddress){
 
-          
           const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, assetsPoolAddress);
-          console.log("contractPair",contractPair);
 
+          //Lấy tổng liquidity
           let totalSupply = await contractPair.methods.totalSupply().call();
           if(totalSupply){
             totalSupply = ethers.utils.formatEther(totalSupply);
           }
 
-          console.log("totalSupply",totalSupply);
-
           let balanceAccount =0;
+          let amountTokenA =0;
+          let amountTokenB =0;
           if(account){
+
+            //Lấy số lượng LP đang nắm giữ của account
             const balanceBigN = await contractPair.methods.balanceOf(account).call();
+            console.log("balanceBigN",balanceBigN);
             balanceAccount = ethers.utils.formatEther(balanceBigN);
+            
+            //Lấy tokenA nắm giữ của account
+            amountTokenA = await contractPair.methods.providerAssets(account,item.addressTokenA).call();
+            console.log("amountTokenA",amountTokenA);
+            if(amountTokenA){
+              amountTokenA = ethers.utils.formatUnits(amountTokenA, process.env.REACT_APP_TOKEN_VEUSD === item.addressTokenA ? 6: 18);
+              console.log("amountTokenA formatUnits",amountTokenA);
+            }
+
+             //Lấy tokenA nắm giữ của account
+            amountTokenB = await contractPair.methods.providerAssets(account,item.addressTokenB).call();
+            console.log("amountTokenB",amountTokenB);
+            if(amountTokenB){
+              //amountTokenB = ethers.utils.formatEther(amountTokenB);
+              amountTokenB = ethers.utils.formatUnits(amountTokenB, process.env.REACT_APP_TOKEN_VEUSD === item.addressTokenB ? 6:18);
+              console.log("amountTokenA amountTokenB",amountTokenB);
+            }
+
           }
+     
 
           dataList.push({
             ...item,
             liquidity:totalSupply,
             balanceAccount,
+            amountTokenA,
+            amountTokenB,
             assetsPoolAddress
           });
 
