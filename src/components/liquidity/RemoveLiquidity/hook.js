@@ -1,19 +1,42 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import { useParams } from "react-router-dom";
 import * as actions from "../../../actions";
+import { selectPoolInfoByAddress } from "../../../reducers/assetsPool.reducer";
+import { selectPriceByTokenAddress } from "../../../reducers/assetsPrice.reducer";
 import {
   selectFirstToken,
   selectOpenAddLiquidState,
   selectOpenRemoveLiquidState,
   selectSecondToken,
 } from "../../../reducers/liquid.reducer";
+import { nFormatter } from "../../../utils/lib";
 
 const useRemoveLiquidFacade = () => {
   const dispatch = useDispatch();
+  const { address } = useParams();
 
   const firstToken = useSelector(selectFirstToken, shallowEqual);
   const secondToken = useSelector(selectSecondToken, shallowEqual);
   const isRemoveLiquidModalOpen = useSelector(selectOpenRemoveLiquidState);
+  const poolData = useSelector((state) =>
+    selectPoolInfoByAddress(state, address)
+  );
+  const firstTokenPrice = useSelector((state) =>
+    selectPriceByTokenAddress(state, poolData?.addressTokenA)
+  );
+  const secondTokenPrice = useSelector((state) =>
+    selectPriceByTokenAddress(state, poolData?.addressTokenB)
+  );
+
+  const firstPerSecondTokenPrice = useMemo(
+    () => nFormatter(firstTokenPrice / secondTokenPrice, 5),
+    [firstTokenPrice, secondTokenPrice]
+  );
+  const secondPerFirstTokenPrice = useMemo(
+    () => nFormatter(secondTokenPrice / firstTokenPrice, 5),
+    [firstTokenPrice, secondTokenPrice]
+  );
 
   const [step, setStep] = useState(1);
   const [amountPercentage, setAmountPercentage] = useState(0);
@@ -59,7 +82,7 @@ const useRemoveLiquidFacade = () => {
     setStep(1);
     setContinueAvailable(false);
     setAmountPercentage(0);
-    setPrimaryButtonLabel("Enter an amount")
+    setPrimaryButtonLabel("Enter an amount");
   };
 
   const closeModalAndDashboard = () => {
@@ -98,8 +121,6 @@ const useRemoveLiquidFacade = () => {
     setContinueAvailable(true);
     setPrimaryButtonLabel("Remove");
   };
-
-  const findOtherLiquidPoolTokens = () => {};
 
   useEffect(() => {
     setStep(1);
@@ -145,6 +166,9 @@ const useRemoveLiquidFacade = () => {
 
   return {
     step,
+    poolData,
+    firstPerSecondTokenPrice,
+    secondPerFirstTokenPrice,
     isEnableBtnEnabled,
     amountPercentage,
     firstToken,
@@ -162,7 +186,6 @@ const useRemoveLiquidFacade = () => {
     closeModalAndDashboard,
     onSelectFirstCurrency,
     onSelectSecondCurrency,
-    findOtherLiquidPoolTokens,
     onChangeFirstTokenAmount,
     onChangeSecondTokenAmount,
   };

@@ -28,7 +28,6 @@ const useAddLiquidFacade = () => {
   const secondTokenInfo = useSelector((state) =>
     selectAssetByAddress(state, secondToken)
   );
-
   const firstTokenPrice = useSelector((state) =>
     selectPriceByTokenAddress(state, firstToken)
   );
@@ -115,10 +114,6 @@ const useAddLiquidFacade = () => {
     if (step === 2) {
       setStep(3);
       handleAddLiquidity();
-      // setTimeout(() => {
-      //   setStep(4);
-      //   setPrimaryButtonLabel("+ Add Liquidity");
-      // }, 2000);
     }
   };
 
@@ -167,12 +162,11 @@ const useAddLiquidFacade = () => {
 
   useEffect(() => {
     if (step === 3 && !isAddingLiquidity) {
-      console.log("🐶🐶  ~ useEffect ~ isAddingLiquidity", isAddingLiquidity);
-      console.log("🐶🐶  ~ useEffect ~ addLiquidityState", addLiquidityState);
       if (addLiquidityState === false) {
         // User decline or adding liquidity failed
         setStep(2);
       } else if (addLiquidityState === true) {
+        setPrimaryButtonLabel("+ Add Liquidity");
         setStep(4);
       }
     }

@@ -6,11 +6,13 @@ import ImgRemove from '../../assets/images/buttons/img_remove_btn.svg'
 import * as actions from "../../actions";
 
 import { marketplaceConstants } from "../../constants";
+import { useNavigate } from "react-router-dom";
 
 const BtnOpenRemoveLiquidity = ({ item }) => {
   const btnLabel = "Add Liquidity";
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [disabledRule, setDisabledRule] = useState(false);
 
@@ -41,7 +43,7 @@ const BtnOpenRemoveLiquidity = ({ item }) => {
 
   const handlerOpenModal = async () => {
     // if (item && item.assetsAddress && disabledRule === false) {
-    dispatch(actions.loadModalRemoveLiquidity(item));
+        navigate(`/liquidity/remove/${item?.assetsPoolAddress}`);
     // }
   };
 

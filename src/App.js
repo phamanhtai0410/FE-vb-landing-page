@@ -17,7 +17,9 @@ const TradePage = React.lazy(() => import('./pages/TradePage'));
 const StakingPage = React.lazy(() => import('./pages/StakingPage'));
 const LaunchPadPage = React.lazy(() => import('./pages/LaunchPadPage'));
 const ComingSoon = React.lazy(() => import('./components/partials/ComingSoon'));
-const AddLiquidityPage = React.lazy(() => import('./pages/LiquidityPage'));
+const LiquidityPage = React.lazy(() => import('./pages/LiquidityPage'));
+const AddLiquidityPage = React.lazy(() => import('./pages/AddLiquidityPage'));
+const RemoveLiquidityPage = React.lazy(() => import('./pages/RemoveLiquidityPage'));
 
 function App() {
 
@@ -43,7 +45,11 @@ function App() {
 
           <Route path="/launchpad" element={<LaunchPadPage />} />
 
-          <Route path="/liquidity-add" element={<AddLiquidityPage />} />
+          <Route path="/liquidity" element={<LiquidityPage />} />
+
+          <Route path="/liquidity/add" element={<AddLiquidityPage />} />
+
+          <Route path="/liquidity/remove/:address" element={<RemoveLiquidityPage />} />
 
           <Route path="*" element={<Navigate to="/" />} />
 

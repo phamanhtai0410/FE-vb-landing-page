@@ -49,7 +49,7 @@ const BtnOpenAddLiquidity = ({ item }) => {
     const handlerOpenModal = async () => {
         // if (item && item.assetsAddress && disabledRule === false) {
             // dispatch(actions.loadModalAddLiquidity(item));
-            navigate("/liquidity-add")
+            navigate("/liquidity/add");
         // }
     }
 

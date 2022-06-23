@@ -1,14 +1,6 @@
-import queryString from "query-string";
 import { ethers } from "ethers";
 
-import { alertActions } from "./alert.actions";
-import {
-  web3Constants,
-  marketplaceConstants,
-  poolConstants,
-} from "../constants";
-
-import * as actions from ".";
+import { poolConstants } from "../constants";
 
 import ERC20ABI_VB from "../_contracts/VB.json";
 
@@ -204,8 +196,9 @@ export const loadDetailAddLiquidity = createAsyncThunk(
 export const addLiquidity = createAsyncThunk(
   poolConstants.ADD_LIQUIDITY,
   async ({ firstAmount, secondAmount }, { getState }) => {
-    const { firstToken, secondToken } = getState().liquidReducer;
-    const { connex, account, web3 } = getState().web3;
+    const currentState = getState();
+    const { firstToken, secondToken } = currentState.liquidReducer;
+    const { connex, account } = currentState.web3;
 
     const addLiquidityABI = ERC20ABI_ROUTER.find(
       ({ name, type }) => name === "addLiquidity" && type === "function"
@@ -213,6 +206,9 @@ export const addLiquidity = createAsyncThunk(
     const methodAddLiquidity = connex.thor
       .account(ADDRESS_ROUTER)
       .method(addLiquidityABI);
+
+    const firstTokenInfo = selectAssetByAddress(currentState, firstToken);
+    const secondTokenInfo = selectAssetByAddress(currentState, secondToken);
 
     //   "addLiquidity(
     //     address tokenA,
@@ -226,27 +222,33 @@ export const addLiquidity = createAsyncThunk(
     //     uint deadline
     // )"
 
-    const min = 1_000_000_000; 
+    const min = 1_000_000_000;
     const transactionFee = 100;
     const amountAMin = 0;
     const amountBMin = 0;
-    const amountA = web3.utils.toWei(firstAmount.toString());
-    const amountB = web3.utils.toWei(secondAmount.toString());
+    // const amountA = web3.utils.toWei(firstAmount.toString());
+    const amountA = ethers.utils.parseUnits(
+      firstAmount.toString(),
+      firstTokenInfo?.assetsDecimals
+    );
+    const amountB = ethers.utils.parseUnits(
+      secondAmount.toString(),
+      secondTokenInfo?.assetsDecimals
+    );
+    // const amountB = web3.utils.toWei(secondAmount.toString());
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
 
-    console.table(
-      [
-        ["tokenA",firstToken],
-        ["tokenB",secondToken],
-        ["transactionFee",transactionFee],
-        ["amountA",amountA],
-        ["amountB",amountB],
-        ["amountAMin",amountAMin],
-        ["amountBMin",amountBMin],
-        ["account",account],
-        ["deadline",deadline]
-      ]
-    );
+    console.table([
+      ["tokenA", firstToken],
+      ["tokenB", secondToken],
+      ["transactionFee", transactionFee],
+      ["amountA", amountA],
+      ["amountB", amountB],
+      ["amountAMin", amountAMin],
+      ["amountBMin", amountBMin],
+      ["account", account],
+      ["deadline", deadline],
+    ]);
 
     const transaction = await methodAddLiquidity
       .transact(
