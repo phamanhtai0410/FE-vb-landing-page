@@ -81,6 +81,25 @@ const listAsset = [
     fees: "199,905",
     apr: 32.12,
   },
+
+  {
+    iconOrigin: IcVeUSD,
+    iconAssets: IcVtho,
+    assetsPoolName: "VB-VTHO",
+    assetsKey:
+      process.env.REACT_APP_TOKEN_VEUSD+ process.env.REACT_APP_TOKEN_VTHO,
+    assetsChainA: "VEUSD",
+    addressTokenA: process.env.REACT_APP_TOKEN_VEUSD,
+    assetsChainB: "VTHO",
+    addressTokenB: process.env.REACT_APP_TOKEN_VTHO,
+    assetsPoolAddress: "",
+    assetsDecimals: 18,
+    balanceAccount: 0,
+    liquidity: "0",
+    volume: "87,402,803",
+    fees: "199,905",
+    apr: 32.12,
+  },
 ];
 
 const initialState = {

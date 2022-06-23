@@ -198,7 +198,7 @@ export const addLiquidity = createAsyncThunk(
   async ({ firstAmount, secondAmount }, { getState }) => {
     const currentState = getState();
     const { firstToken, secondToken } = currentState.liquidReducer;
-    const { connex, account } = currentState.web3;
+    const { connex, account ,web3} = currentState.web3;
 
     const addLiquidityABI = ERC20ABI_ROUTER.find(
       ({ name, type }) => name === "addLiquidity" && type === "function"
@@ -222,20 +222,12 @@ export const addLiquidity = createAsyncThunk(
     //     uint deadline
     // )"
 
-    const min = 1_000_000_000;
-    const transactionFee = 100;
-    const amountAMin = 0;
-    const amountBMin = 0;
-    // const amountA = web3.utils.toWei(firstAmount.toString());
-    const amountA = ethers.utils.parseUnits(
-      firstAmount.toString(),
-      firstTokenInfo?.assetsDecimals
-    );
-    const amountB = ethers.utils.parseUnits(
-      secondAmount.toString(),
-      secondTokenInfo?.assetsDecimals
-    );
-    // const amountB = web3.utils.toWei(secondAmount.toString());
+    const amountA = web3.utils.toWei(firstAmount.toString(),firstTokenInfo?.assetsDecimals ===6 ? 'mwei':'ether');
+    const amountB = web3.utils.toWei(secondAmount.toString(),secondTokenInfo?.assetsDecimals ===6 ? 'mwei':'ether');
+
+    const transactionFee = "50";
+    const amountAMin = amountA;
+    const amountBMin = amountB;
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
 
     console.table([
@@ -249,6 +241,8 @@ export const addLiquidity = createAsyncThunk(
       ["account", account],
       ["deadline", deadline],
     ]);
+
+    
 
     const transaction = await methodAddLiquidity
       .transact(
