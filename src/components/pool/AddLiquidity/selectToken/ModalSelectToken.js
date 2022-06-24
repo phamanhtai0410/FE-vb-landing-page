@@ -34,6 +34,7 @@ const customStyles = {
 };
 
 const ModalSelectToken = () => {
+  
   const isSelectTokenModalOpen = useSelector(selectOpenChooseTokenState);
 
   const assetList = useSelector(selectUserAssetsBalance, shallowEqual);
@@ -41,12 +42,11 @@ const ModalSelectToken = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => fetchUserAssets(), []);
+  // useEffect(() => fetchUserAssets(), []);
 
-  const fetchUserAssets = async () => {
-    await dispatch(actions.getCurrentAssets());
-    // await dispatch(actions.fetchAccountInit());
-  };
+  // const fetchUserAssets = async () => {
+  //   await dispatch(actions.getCurrentAssets());
+  // };
 
   const closeModal = () => dispatch(actions.closeSelectToken());
   const handlerStepToStep = (e) => {};

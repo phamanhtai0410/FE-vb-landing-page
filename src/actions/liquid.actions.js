@@ -159,7 +159,6 @@ export const loadDetailAddLiquidity = createAsyncThunk(
     let approveTokenA = 0;
     let approveTokenB = 0;
     if (firstToken) {
-      console.log("loadDetailAddLiquidity firstToken",firstToken);
       const contractAddLiquidityA = new web3.eth.Contract(
         ERC20ABI_VB,
         firstToken
@@ -180,8 +179,6 @@ export const loadDetailAddLiquidity = createAsyncThunk(
         ERC20ABI_VB,
         secondToken
       );
-
-      console.log("loadDetailAddLiquidity secondToken",secondToken);
 
       approveTokenB = await contractAddLiquidityB.methods
         .allowance(account, ADDRESS_ROUTER)
@@ -219,8 +216,9 @@ export const addLiquidity = createAsyncThunk(
     const amountB = web3.utils.toWei(secondAmount.toString(),secondTokenInfo?.assetsDecimals ===6 ? 'mwei':'ether');
 
     const transactionFee = "50";
-    const amountAMin = checkAddressPool === false? amountA: "0";
-    const amountBMin = checkAddressPool === false? amountB: "0";
+    const amountAMin = checkAddressPool === false? amountA: "0"; // chua có người add pool
+    const amountBMin = checkAddressPool === false? amountB: "0"; // chua có người add pool
+
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
 
     console.table([
@@ -248,16 +246,18 @@ export const addLiquidity = createAsyncThunk(
           address: secondToken,
           amountTokenDesired: amountB,
           amountTokenMin:amountBMin,
-          amountETHMin: amountA
+          amountETHMin: amountAMin
         }
       }else {
         tokenDesired = {
           address: firstToken,
           amountTokenDesired: amountA,
           amountTokenMin:amountAMin,
-          amountETHMin: amountB
+          amountETHMin: amountBMin
         }
       }
+
+    console.log("tokenDesired",tokenDesired);
 
     transaction = await methodAddLiquidityETH.transact(
       tokenDesired.address,
@@ -268,6 +268,8 @@ export const addLiquidity = createAsyncThunk(
       account,
       deadline
     ).comment(`transaction add LiquidityETH on VeBank`).request();
+
+    return transaction;
 
     }else{
 

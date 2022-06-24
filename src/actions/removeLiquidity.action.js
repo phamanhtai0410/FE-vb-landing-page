@@ -68,6 +68,7 @@ export const approvePoolLiquidity = createAsyncThunk(
         stateMutability: "nonpayable",
         type: "function",
       };
+      
       const approveMethod = connex.thor.account(poolAddress).method(approveABI);
 
       const result = await approveMethod
@@ -104,6 +105,8 @@ export const removeLiquidity = createAsyncThunk(
       poolAddress
     );
 
+    console.log("liquidityPool",liquidityPool);
+
     const removeLiquidityABI = ERC20ABI_ROUTER.find(
       ({ name, type }) => name === "removeLiquidity" && type === "function"
     );
@@ -126,9 +129,10 @@ export const removeLiquidity = createAsyncThunk(
     const amountBMin = 0;
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
     const removeAmount = ethers.utils.parseUnits(
-      (liquidityPool * amount / 100).toString(),
-      assetsDecimals
+      (liquidityPool * amount / 100).toString()
     );
+
+    console.log("removeAmount",removeAmount);
 
     const transaction = await methodAddLiquidity
       .transact(

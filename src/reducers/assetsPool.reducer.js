@@ -94,13 +94,33 @@ const listAsset = [
     assetsChainB: "VTHO",
     addressTokenB: process.env.REACT_APP_TOKEN_VTHO,
     assetsPoolAddress: "",
-    assetsDecimals: 18,
+    assetsDecimals: 6,
     balanceAccount: 0,
     liquidity: "0",
     volume: "87,402,803",
     fees: "199,905",
     apr: 32.12,
   },
+
+  {
+    iconOrigin: IcVeUSD,
+    iconAssets: IcVtho,
+    assetsPoolName: "VEUSD-VB",
+    assetsKey:
+    process.env.REACT_APP_TOKEN_VEUSD+ process.env.REACT_APP_TOKEN_VEBANK,
+    assetsChainA: "VEUSD",
+    addressTokenA: process.env.REACT_APP_TOKEN_VEUSD,
+    assetsChainB: "VB",
+    addressTokenB: process.env.REACT_APP_TOKEN_VEBANK,
+    assetsPoolAddress: "",
+    assetsDecimals: 6,
+    balanceAccount: 0,
+    liquidity: "0",
+    volume: "87,402,803",
+    fees: "199,905",
+    apr: 32.12,
+  },
+
 ];
 
 const initialState = {

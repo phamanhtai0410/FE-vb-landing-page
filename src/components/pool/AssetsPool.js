@@ -24,11 +24,11 @@ const AssetsPool = () => {
 
   useEffect(() => {
     if (web3) {
-      fetchMarketAssets();
+      fetchPoolAssets();
     }
   }, [web3]);
 
-  async function fetchMarketAssets() {
+  async function fetchPoolAssets() {
     await dispatch(actions.getPoolAssets());
   }
 
