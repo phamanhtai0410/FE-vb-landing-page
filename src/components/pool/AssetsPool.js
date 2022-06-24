@@ -77,7 +77,7 @@ const AssetsPool = () => {
               </div>
 
               <div className="p-4 col-span-2 flex justify-center items-center font-semibold">
-                ${item.liquidity}
+                {item.liquidity}
               </div>
 
               <div className="p-4 col-span-2 flex flex-col justify-center items-center content-center">

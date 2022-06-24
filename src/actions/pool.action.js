@@ -29,15 +29,14 @@ export const getPoolAssets = () => async (dispatch, getState) => {
 
   const state = getState();
 
-  const { web3 ,account} = state.web3;
-  const { listAsset ,entities} = state.assetsPoolReducer;
+  const { web3 } = state.web3;
+  const { listAsset } = state.assetsPoolReducer;
 
   let dataList = [];
 
   if (web3 && ADDRESS_FACTORY && listAsset.length > 0) {
 
       let contractFactory = new web3.eth.Contract(ERC20ABI_FACTORY, ADDRESS_FACTORY);
-      console.log("contractFactory",contractFactory);
 
       for await (const item of listAsset) {
 
@@ -47,50 +46,22 @@ export const getPoolAssets = () => async (dispatch, getState) => {
 
         if(!emptyAddress && assetsPoolAddress){
 
+          let assetsDecimals = 18;
+          if(item.addressTokenA === process.env.REACT_APP_TOKEN_VEUSD || item.addressTokenB === process.env.REACT_APP_TOKEN_VEUSD){
+            assetsDecimals  = 12;
+          }
+
           const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, assetsPoolAddress);
 
           //Lấy tổng liquidity
           let totalSupply = await contractPair.methods.totalSupply().call();
           if(totalSupply){
-            totalSupply = ethers.utils.formatEther(totalSupply);
+            totalSupply = ethers.utils.formatUnits(totalSupply,assetsDecimals);
           }
-
-          let balanceAccount =0;
-          let amountTokenA =0;
-          let amountTokenB =0;
-          if(account){
-
-            //Lấy số lượng LP đang nắm giữ của account
-            const balanceBigN = await contractPair.methods.balanceOf(account).call();
-            console.log("balanceBigN",balanceBigN);
-            balanceAccount = ethers.utils.formatEther(balanceBigN);
-            
-            //Lấy tokenA nắm giữ của account
-            amountTokenA = await contractPair.methods.providerAssets(account,item.addressTokenA).call();
-            console.log("amountTokenA",amountTokenA);
-            if(amountTokenA){
-              amountTokenA = ethers.utils.formatUnits(amountTokenA, process.env.REACT_APP_TOKEN_VEUSD === item.addressTokenA ? 6: 18);
-              console.log("amountTokenA formatUnits",amountTokenA);
-            }
-
-             //Lấy tokenA nắm giữ của account
-            amountTokenB = await contractPair.methods.providerAssets(account,item.addressTokenB).call();
-            console.log("amountTokenB",amountTokenB);
-            if(amountTokenB){
-              //amountTokenB = ethers.utils.formatEther(amountTokenB);
-              amountTokenB = ethers.utils.formatUnits(amountTokenB, process.env.REACT_APP_TOKEN_VEUSD === item.addressTokenB ? 6:18);
-              console.log("amountTokenA amountTokenB",amountTokenB);
-            }
-
-          }
-     
 
           dataList.push({
             ...item,
             liquidity:totalSupply,
-            balanceAccount,
-            amountTokenA,
-            amountTokenB,
             assetsPoolAddress
           });
 
@@ -104,6 +75,76 @@ export const getPoolAssets = () => async (dispatch, getState) => {
           data: dataList
       });
 
+      dispatch(getPoolAssetsByAccount(dataList));
+
+  } else {
+      dispatch({
+          type: poolConstants.FETCH_POOL_ASSETS_SUCCESS,
+          data:[]
+      });
+  }
+
+  return dataList;
+
+};
+
+export const getPoolAssetsByAccount = (dataAssetPool) => async (dispatch, getState) => {
+
+  const state = getState();
+
+  const { web3 ,account} = state.web3;
+
+  let dataList = [];
+
+  if (web3 && ADDRESS_FACTORY && dataAssetPool.length > 0) {
+
+      for await (const item of dataAssetPool) {
+
+        let assetsDecimals = 18;
+        if(item.addressTokenA === process.env.REACT_APP_TOKEN_VEUSD || item.addressTokenB === process.env.REACT_APP_TOKEN_VEUSD){
+          assetsDecimals  = 12;
+        }
+
+        let balanceAccount = 0;
+        let amountTokenA = 0;
+        let amountTokenB = 0;
+        
+        if(item.assetsPoolAddress && account){
+
+            const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, item.assetsPoolAddress);
+
+            //Lấy số lượng LP đang nắm giữ của account
+            const balanceBigN = await contractPair.methods.balanceOf(account).call();
+            balanceAccount = ethers.utils.formatUnits(balanceBigN,assetsDecimals);
+            // balanceAccount = ethers.utils.formatUnits(balanceAccount,assetsDecimals);
+            
+            //Lấy tokenA nắm giữ của account
+            amountTokenA = await contractPair.methods.providerAssets(account,item.addressTokenA).call();
+            if(amountTokenA){
+              amountTokenA = ethers.utils.formatUnits(amountTokenA, process.env.REACT_APP_TOKEN_VEUSD === item.addressTokenA ? 6: 18);
+            }
+
+            //Lấy tokenA nắm giữ của account
+            amountTokenB = await contractPair.methods.providerAssets(account,item.addressTokenB).call();
+            if(amountTokenB){
+              amountTokenB = ethers.utils.formatUnits(amountTokenB, process.env.REACT_APP_TOKEN_VEUSD === item.addressTokenB ? 6:18);
+            }
+
+          dataList.push({
+            ...item,
+            balanceAccount,
+            amountTokenA,
+            amountTokenB
+          });
+   
+        }
+
+      }
+
+      dispatch({
+          type: poolConstants.FETCH_POOL_ASSETS_SUCCESS,
+          data: dataList
+      });
 
   } else {
       dispatch({
