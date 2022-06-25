@@ -44,11 +44,11 @@ const Assets = ({
           <img src={IcDropDown} alt={"Dropdown"} className="w-2 h-2" />
         </div>
         <div className="flex flex-row space-x-1 items-center">
-          <span className="text-grey-6 font-poppins_light text-xl mr-1.5">
+          <span className="text-grey-6 font-poppins_light text-lg mr-1.5">
             {isBalanceAvailable ? "Balance" : "_"}
           </span>
           {isBalanceAvailable && (
-            <span className="font-poppins_semi_bold text-xl text-grey-1 ml-2">
+            <span className="font-poppins_semi_bold text-lg text-grey-1 ml-2">
               {assetBalance || "0"}
             </span>
           )}
@@ -59,7 +59,7 @@ const Assets = ({
           placeholder="0.0"
           value={volume}
           onChange={(e) => onVolumeChange(e.target.value)}
-          className="flex flex-1 px-4 py-6 focus:outline-none placeholder:text-vbDisableText font-poppins_semi_bold text-2xl border-2 border-[#4F92A7] rounded-lg bg-transparent"
+          className="flex flex-1 px-4 py-6 focus:outline-none placeholder:text-vbDisableText font-poppins_medium text-2xl border-2 border-[#4F92A7] rounded-lg bg-transparent"
           type="number"
         />
         {assetInfo && (

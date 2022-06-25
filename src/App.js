@@ -49,7 +49,7 @@ function App() {
 
           <Route path="/liquidity/add" element={<AddLiquidityPage />} />
 
-          <Route path="/liquidity/remove/:address" element={<RemoveLiquidityPage />} />
+          <Route path="/liquidity/remove/:addressPool" element={<RemoveLiquidityPage />} />
 
           <Route path="*" element={<Navigate to="/" />} />
 

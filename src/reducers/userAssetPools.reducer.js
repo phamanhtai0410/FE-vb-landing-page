@@ -15,13 +15,15 @@ const userAssetPools = createSlice({
       (state, action) => {
         const { data: poolAssetsList } = action;
         for (const poolAsset of poolAssetsList) {
-          const { assetsPoolAddress, balanceAccount } = poolAsset;
+          const { assetsPoolAddress, balanceAccount, amountTokenA, amountTokenB, addressTokenA, addressTokenB } = poolAsset;
           if (!state.addresses.includes(assetsPoolAddress)) {
             state.addresses.push(assetsPoolAddress);
           }
           state.data[assetsPoolAddress] = {
             ...state.data[assetsPoolAddress],
             liquidityPool: balanceAccount,
+            [addressTokenA]: amountTokenA || 0,
+            [addressTokenB]: amountTokenB || 0,
           };
         }
       }

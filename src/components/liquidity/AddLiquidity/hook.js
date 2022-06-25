@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import * as actions from "../../../actions";
 import { selectAssetByAddress } from "../../../reducers/assetsMarket.reducer";
 import { selectPriceByTokenAddress } from "../../../reducers/assetsPrice.reducer";
@@ -15,6 +16,7 @@ import { nFormatter } from "../../../utils/lib";
 
 const useAddLiquidFacade = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const firstToken = useSelector(selectFirstToken, shallowEqual);
   const secondToken = useSelector(selectSecondToken, shallowEqual);
@@ -76,7 +78,7 @@ const useAddLiquidFacade = () => {
   }, []);
 
   const closeModal = () => {
-    dispatch(actions.closeAddLiquidity());
+    navigate(-1);
   };
 
   const resetFrm = () => {

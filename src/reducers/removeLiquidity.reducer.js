@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { approvePoolLiquidity, loadDetailRemoveLiquidity, removeLiquidity } from "../actions";
+import {
+  approvePoolLiquidity,
+  loadDetailRemoveLiquidity,
+  removeLiquidity,
+} from "../actions";
 
 const initialState = {
   poolApproval: 0,
@@ -12,6 +16,15 @@ const initialState = {
 const removeLiquiditySlice = createSlice({
   name: "removeLiquidity",
   initialState,
+  reducers: {
+    initialRemoveLiquidityPage: (state, action) => {
+    console.log('🐶🐶  ~ action', action)
+    const {poolAddress, addressTokenA, addressTokenB} = action.payload;
+      state.poolAddress = poolAddress;
+      state.addressTokenA = addressTokenA;
+      state.addressTokenB = addressTokenB;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(approvePoolLiquidity.pending, (state, _) => {
@@ -25,7 +38,9 @@ const removeLiquiditySlice = createSlice({
         state.isApproving = false;
       })
       .addCase(loadDetailRemoveLiquidity.fulfilled, (state, action) => {
-        state.poolApproval = action.payload.approvePool;
+        const { approvePool, ...amounts } = action.payload;
+        state.poolApproval = approvePool;
+        state = { ...state, ...amounts };
       })
       .addCase(removeLiquidity.pending, (state, _) => {
         state.isRemoving = true;
@@ -43,7 +58,11 @@ const removeLiquiditySlice = createSlice({
 
 export default removeLiquiditySlice.reducer;
 
-export const selectApprovingState = state => state.removeLiquidity.isApproving;
-export const selectRemovingState = state => state.removeLiquidity.isRemoving;
-export const selectRemovingFinishState = state => state.removeLiquidity.isRemoveSuccess;
-export const selectPoolApproval = state => state.removeLiquidity.poolApproval;
+export const selectApprovingState = (state) =>
+  state.removeLiquidity.isApproving;
+export const selectRemovingState = (state) => state.removeLiquidity.isRemoving;
+export const selectRemovingFinishState = (state) =>
+  state.removeLiquidity.isRemoveSuccess;
+export const selectPoolApproval = (state) => state.removeLiquidity.poolApproval;
+
+export const { initialRemoveLiquidityPage } = removeLiquiditySlice.actions;

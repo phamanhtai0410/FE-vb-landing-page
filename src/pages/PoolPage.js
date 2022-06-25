@@ -4,8 +4,8 @@ import AccountAssets from "../components/account/AccountAssets";
 
 import AssetsPool from "../components/pool/AssetsPool";
 import FrmSearchPool from "../components/pool/FrmSearchPool";
-import ModalAddLiquidity from "../components/pool/AddLiquidity/ModalAddLiquidity";
-import ModalSelectToken from "../components/pool/AddLiquidity/selectToken/ModalSelectToken";
+import ModalAddLiquidity from "../components/liquidity/AddLiquidity/ModalAddLiquidity";
+import ModalSelectToken from "../components/liquidity/AddLiquidity/selectToken/ModalSelectToken";
 import ModalRemoveLiquidity from "../components/pool/RemoveLiquidity";
 
 const PoolPage = () => {

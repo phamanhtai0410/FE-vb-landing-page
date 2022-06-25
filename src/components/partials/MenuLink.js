@@ -84,7 +84,7 @@ const MenuLink = ({ menuToggleHandler }) => {
                   isMenuHover ? "text-linear" : ""
                 }`}
               >
-                Add Liquidity
+                Liquidity
               </NavLink>
             </div>
           )}

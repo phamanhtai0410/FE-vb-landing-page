@@ -32,7 +32,7 @@ export const getPoolAssets = () => async (dispatch, getState) => {
 
       for await (const item of dataAssets) {
 
-        //"getPair(address tokenA, address tokenB), 
+        //"getPair(address tokenA, address tokenB),
         const assetsPoolAddress = await contractFactory.methods.getPair(item.addressTokenA,item.addressTokenB).call();
         const emptyAddress = /^0x0+$/.test(assetsPoolAddress); // true chưa có
 
@@ -100,7 +100,7 @@ export const getPoolAssetsByAccount = (dataAssetPool) => async (dispatch, getSta
         let balanceAccount = 0;
         let amountTokenA = 0;
         let amountTokenB = 0;
-        
+
         if(item.assetsPoolAddress && account){
 
             const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, item.assetsPoolAddress);
@@ -110,11 +110,12 @@ export const getPoolAssetsByAccount = (dataAssetPool) => async (dispatch, getSta
             if(balanceBigN){
               balanceAccount = ethers.utils.formatUnits(balanceBigN,assetsDecimals);
             }
-            
+
             // balanceAccount = ethers.utils.formatUnits(balanceAccount,assetsDecimals);
 
             //Lấy tokenA nắm giữ của account
             amountTokenA = await contractPair.methods.providerAssets(account,item.addressTokenA).call();
+            console.log('🐶🐶  ~ forawait ~ amountTokenA', amountTokenA)
             if(amountTokenA){
               amountTokenA = ethers.utils.formatUnits(amountTokenA, process.env.REACT_APP_TOKEN_VEUSD === item.addressTokenA ? 6: 18);
             }
@@ -131,7 +132,7 @@ export const getPoolAssetsByAccount = (dataAssetPool) => async (dispatch, getSta
             amountTokenA,
             amountTokenB
           });
-   
+
         }
 
       }
@@ -141,7 +142,7 @@ export const getPoolAssetsByAccount = (dataAssetPool) => async (dispatch, getSta
           data: dataList
       });
 
-  } 
+  }
 
   return dataList;
 

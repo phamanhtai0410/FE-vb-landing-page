@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { Beforeunload } from "react-beforeunload";
-import ImgRemove from '../../assets/images/buttons/img_remove_btn.svg'
+import ImgRemove from "../../assets/images/buttons/img_remove_btn.svg";
 
 import * as actions from "../../actions";
 
 import { marketplaceConstants } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import { initialRemoveLiquidityPage } from "../../reducers/removeLiquidity.reducer";
 
 const BtnOpenRemoveLiquidity = ({ item }) => {
   const btnLabel = "Add Liquidity";
@@ -43,14 +44,19 @@ const BtnOpenRemoveLiquidity = ({ item }) => {
 
   const handlerOpenModal = async () => {
     // if (item && item.assetsAddress && disabledRule === false) {
-        navigate(`/liquidity/remove/${item?.assetsPoolAddress}`);
+    navigate(`/liquidity/remove/${item?.assetsPoolAddress}`);
     // }
   };
 
   return (
     <>
       {disabledRule || (
-        <img src={ImgRemove} alt="" className="w-12 h-12 cursor-pointer" onClick={handlerOpenModal} />
+        <img
+          src={ImgRemove}
+          alt=""
+          className="w-12 h-12 cursor-pointer"
+          onClick={handlerOpenModal}
+        />
       )}
     </>
   );

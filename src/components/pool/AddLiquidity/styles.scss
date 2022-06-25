@@ -34,15 +34,15 @@
 }
 
 .price-pool-item {
-  @apply flex flex-col px-4 space-y-2 items-center
+  @apply flex flex-col px-4 space-y-2 items-center;
 }
 
 .price-pool-item .value {
-  @apply text-lg
+  @apply text-lg;
 }
 
 .price-pool-item .label {
-  @apply text-base
+  @apply text-base;
 }
 
 .price-pool-share-row {
@@ -50,7 +50,11 @@
 }
 
 .price-pool-share-row p {
-  @apply text-xl
+  @apply text-xl;
+}
+
+.gradient_liquidity {
+  background: linear-gradient(135deg, #182d52 0%, #172130 100%);
 }
 
 .overlay {

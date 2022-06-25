@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as actions from "../../../actions";
 import { selectPoolInfoByAddress } from "../../../reducers/assetsPool.reducer";
 import { selectPriceByTokenAddress } from "../../../reducers/assetsPrice.reducer";
@@ -15,7 +15,10 @@ import { nFormatter } from "../../../utils/lib";
 
 const useRemoveLiquidFacade = () => {
   const dispatch = useDispatch();
-  const { address: poolAddress } = useParams();
+  const { addressPool: poolAddress, addressTokenA, addressTokenB } = useParams();
+  console.log('🐶🐶  ~ useRemoveLiquidFacade ~ addressTokenB', addressTokenB)
+  console.log('🐶🐶  ~ useRemoveLiquidFacade ~ addressTokenA', addressTokenA)
+  const navigation = useNavigate();
 
   const web3 = useSelector(selectWeb3);
   const poolData = useSelector((state) =>
@@ -57,7 +60,7 @@ const useRemoveLiquidFacade = () => {
   }, [amountPercentage, approvePoolState]);
 
   const closeModal = () => {
-    dispatch(actions.closeRemoveLiquidity());
+    navigation(-1)
   };
 
   const resetFrm = () => {

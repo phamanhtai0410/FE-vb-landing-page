@@ -45,13 +45,11 @@ const ModalRemoveLiquidity = () => {
     secondPerFirstTokenPrice,
     amountPercentage,
     isEnableBtnEnabled,
-    continueAvailable,
     primaryButtonLabel,
     onSelectMileStone,
     onEnableClicked,
     closeModalAndDashboard,
     handlerStepToStep,
-    removeLiquidity,
   } = useRemoveLiquidFacade();
 
   // useEffect(() => {
@@ -78,9 +76,7 @@ const ModalRemoveLiquidity = () => {
   }, []);
 
   return (
-    <div
-      className="w-full lg:w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative z-50"
-    >
+    <div className="w-full lg:w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative z-50">
       {/*Header*/}
       <GradientStrokeWrapper
         colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
@@ -113,7 +109,8 @@ const ModalRemoveLiquidity = () => {
             )}
             <div className="flex flex-col space-y-4">
               <span className="text-white text-2xl font-poppins_medium">
-                Remove {poolData?.assetsChainA}-{poolData?.assetsChainB} liquidity
+                Remove {poolData?.assetsChainA}-{poolData?.assetsChainB}{" "}
+                liquidity
               </span>
               <div className="flex flex-row items-center space-x-1">
                 {step !== 4 && (
@@ -124,7 +121,8 @@ const ModalRemoveLiquidity = () => {
                   />
                 )}
                 <span className="text-grey-1 text-base font-poppins_light">
-                  To receive {poolData?.assetsChainA} and {poolData?.assetsChainB}
+                  To receive {poolData?.assetsChainA} and{" "}
+                  {poolData?.assetsChainB}
                 </span>
               </div>
             </div>
@@ -170,7 +168,7 @@ const ModalRemoveLiquidity = () => {
                 <p className="flex flex-grow text-lg font-poppins_semi_bold">
                   {poolData?.assetsChainA || "VET"}
                 </p>
-                <p className="flex flex-grow justify-end text-xl">5,000</p>
+                <p className="flex flex-grow justify-end text-xl">{poolData?.amountTokenA}</p>
               </div>
               <div className="full-row-between-center gap-4">
                 <img src={poolData?.iconAssets} alt="" className="w-8 h-8" />
@@ -191,7 +189,7 @@ const ModalRemoveLiquidity = () => {
                   1 {poolData?.assetsChainA || "VET"} =
                 </p>
                 <p className="text-xl">
-                  {firstPerSecondTokenPrice} {poolData?.assetsChainB|| "VEUSD"}
+                  {firstPerSecondTokenPrice} {poolData?.assetsChainB || "VEUSD"}
                 </p>
               </div>
               <div className="full-row-between-center">
@@ -239,7 +237,8 @@ const ModalRemoveLiquidity = () => {
           <div className="flex flex-col space-y-4">
             <p className="text-4xl text-center">Waiting For Confirmation</p>
             <p className="text-lg text-center">
-              Removing 5,000 {poolData?.assetsChainA} and 9,000 {poolData?.assetsChainB}
+              Removing 5,000 {poolData?.assetsChainA} and 9,000{" "}
+              {poolData?.assetsChainB}
             </p>
             <p className="text-lg text-center text-[#678BCA] cursor-pointer">
               Confirm this transaction in your wallet
