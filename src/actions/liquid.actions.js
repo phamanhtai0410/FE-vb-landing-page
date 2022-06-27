@@ -219,6 +219,9 @@ export const addLiquidity = createAsyncThunk(
     const amountAMin = checkAddressPool === false? amountA: "0"; // chua có người add pool
     const amountBMin = checkAddressPool === false? amountB: "0"; // chua có người add pool
 
+    // const amountAMin = amountA // chua có người add pool
+    // const amountBMin = amountB; // chua có người add pool
+
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
 
     console.table([
@@ -246,18 +249,20 @@ export const addLiquidity = createAsyncThunk(
           address: secondToken,
           amountTokenDesired: amountB,
           amountTokenMin:amountBMin,
-          amountETHMin: amountAMin
+          amountETHMin: amountA
         }
       }else {
         tokenDesired = {
           address: firstToken,
           amountTokenDesired: amountA,
           amountTokenMin:amountAMin,
-          amountETHMin: amountBMin
+          amountETHMin: amountB
         }
       }
 
     console.log("tokenDesired",tokenDesired);
+
+    methodAddLiquidityETH.value(tokenDesired.amountETHMin);
 
     transaction = await methodAddLiquidityETH.transact(
       tokenDesired.address,

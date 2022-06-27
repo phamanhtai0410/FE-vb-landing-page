@@ -9,7 +9,7 @@ const HeaderAccount = () => {
 
     return (
 
-        <div className="hidden lg:flex flex-wrap items-center justify-between ">
+        <div className="hidden md:flex flex-wrap items-center justify-between ">
             <div className="flex flex-row justify-center items-center my-auto space-x-2">
 
                 <button

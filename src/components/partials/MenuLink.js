@@ -44,7 +44,7 @@ const MenuLink = ({ menuToggleHandler }) => {
 
   return (
     <ul
-      className="box-menus flex flex-col lg:flex-row items-center justify-center lg:my-auto lg:space-x-4 font-semibold"
+      className="box-menus flex flex-col md:flex-row items-center justify-center md:my-auto md:space-x-2 lg:space-x-4 font-semibold"
       style={{ marginTop: "0px", marginBottom: "0px", height: "100%" }}
     >
       {/* // <ul className="flex flex-col items-center justify-between "> */}
@@ -52,7 +52,7 @@ const MenuLink = ({ menuToggleHandler }) => {
       {MENU_LINKS.map((item, index) => (
         <li
           key={index}
-          className="flex items-center h-full p-4 lg:p-0 relative"
+          className="flex items-center h-full p-4 md:p-0 relative"
           onMouseOver={item.name === "Trade" ? onMouseOver : undefined}
           onMouseLeave={item.name === "Trade" ? onMouseOut : undefined}
         >
@@ -67,7 +67,7 @@ const MenuLink = ({ menuToggleHandler }) => {
           {item.name === "Trade" && isMenuHover && (
             <div
               className={
-                "col justify-center items-start top-[100%] absolute bg-[#00051e] lg:w-[160px] p-4 lg:p-0 rounded-b-lg"
+                "col justify-center items-start top-[100%] absolute bg-[#00051e] md:w-[160px] p-4 md:p-0 rounded-b-lg"
               }
             >
               <NavLink
