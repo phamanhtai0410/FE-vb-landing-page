@@ -14,6 +14,7 @@ import {
   selectSecondToken,
 } from "../../../reducers/liquid.reducer";
 import { nFormatter } from "../../../utils/lib";
+import { selectBalanceById } from "../../../reducers/accountBalance.reducer";
 
 const useAddLiquidFacade = () => {
   const dispatch = useDispatch();
@@ -35,6 +36,12 @@ const useAddLiquidFacade = () => {
   );
   const secondTokenInfo = useSelector((state) =>
     selectAssetByAddress(state, secondToken)
+  );
+  const firstTokenBalance = useSelector((state) =>
+    selectBalanceById(state, firstToken)
+  );
+  const secondTokenBalance = useSelector((state) =>
+    selectBalanceById(state, secondToken)
   );
   const firstTokenPrice = useSelector((state) =>
     selectPriceByTokenAddress(state, firstToken)
@@ -71,17 +78,27 @@ const useAddLiquidFacade = () => {
     [dispatch]
   );
 
-  const onChangeFirstTokenAmount = useCallback((value) => {
-    // if (value <= accountBalance) {
-    setFirstTokenVolume(value);
-    // }
-  }, []);
+  const onChangeFirstTokenAmount = useCallback(
+    (value) => {
+      const secondTokenAmount = value * firstPerSecondTokenPrice;
+      if (value <= firstTokenBalance && secondTokenAmount <= secondTokenBalance) {
+        setFirstTokenVolume(value);
+        setSecondTokenVolume(secondTokenAmount);
+      }
+    },
+    [firstPerSecondTokenPrice, firstTokenBalance, secondTokenBalance]
+  );
 
-  const onChangeSecondTokenAmount = useCallback((value) => {
-    // if (value <= accountBalance) {
-    setSecondTokenVolume(value);
-    // }
-  }, []);
+  const onChangeSecondTokenAmount = useCallback(
+    (value) => {
+      const firstTokenAmount = value * secondPerFirstTokenPrice;
+      if (value <= secondTokenBalance && firstTokenAmount <= firstTokenBalance) {
+        setSecondTokenVolume(value);
+        setFirstTokenVolume(value * secondPerFirstTokenPrice);
+      }
+    },
+    [secondPerFirstTokenPrice, firstTokenBalance, secondTokenBalance]
+  );
 
   const closeModal = () => {
     navigate(-1);
@@ -182,7 +199,6 @@ const useAddLiquidFacade = () => {
 
   useEffect(() => {
     if (dispatch && poolInfo) {
-      console.log('🐶🐶  ~ useEffect ~ poolInfo', poolInfo)
       dispatch(actions.setFirstToken(poolInfo?.addressTokenA));
       dispatch(actions.setSecondToken(poolInfo?.addressTokenB));
     }

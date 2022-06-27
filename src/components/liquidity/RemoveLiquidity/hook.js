@@ -2,9 +2,14 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import * as actions from "../../../actions";
+import { selectAssetByAddress } from "../../../reducers/assetsMarket.reducer";
 import { selectPoolInfoByAddress } from "../../../reducers/assetsPool.reducer";
 import { selectPriceByTokenAddress } from "../../../reducers/assetsPrice.reducer";
 import {
+  selectAddressTokenA,
+  selectAddressTokenB,
+  selectAmountTokenA,
+  selectAmountTokenB,
   selectApprovingState,
   selectPoolApproval,
   selectRemovingFinishState,
@@ -19,19 +24,26 @@ const useRemoveLiquidFacade = () => {
   const navigation = useNavigate();
 
   const web3 = useSelector(selectWeb3);
-  const poolData = useSelector((state) =>
-    selectPoolInfoByAddress(state, poolAddress)
-  );
-  const firstTokenPrice = useSelector((state) =>
-    selectPriceByTokenAddress(state, poolData?.addressTokenA)
-  );
-  const secondTokenPrice = useSelector((state) =>
-    selectPriceByTokenAddress(state, poolData?.addressTokenB)
-  );
   const isApproving = useSelector(selectApprovingState);
   const approvePoolState = useSelector(selectPoolApproval);
   const isRemoving = useSelector(selectRemovingState);
   const removePoolSuccessState = useSelector(selectRemovingFinishState);
+  const firstTokenAddress = useSelector(selectAddressTokenA);
+  const firstTokenInfo = useSelector((state) =>
+    selectAssetByAddress(state, firstTokenAddress)
+  );
+  const firstTokenAmount = useSelector(selectAmountTokenA);
+  const firstTokenPrice = useSelector((state) =>
+    selectPriceByTokenAddress(state, firstTokenAddress)
+  );
+  const secondTokenAddress = useSelector(selectAddressTokenB);
+  const secondTokenInfo = useSelector((state) =>
+    selectAssetByAddress(state, secondTokenAddress)
+  );
+  const secondTokenAmount = useSelector(selectAmountTokenB);
+  const secondTokenPrice = useSelector((state) =>
+    selectPriceByTokenAddress(state, secondTokenAddress)
+  );
 
   const firstPerSecondTokenPrice = useMemo(
     () => nFormatter(firstTokenPrice / secondTokenPrice, 5),
@@ -50,12 +62,12 @@ const useRemoveLiquidFacade = () => {
     useState("Enter an amount");
 
   const amountTokenA = useMemo(() => {
-    return poolData?.amountTokenA * (amountPercentage / 100.0) || 0;
-  }, [poolData?.amountTokenA, amountPercentage]);
+    return firstTokenAmount * (amountPercentage / 100.0) || 0;
+  }, [firstTokenAmount, amountPercentage]);
 
   const amountTokenB = useMemo(() => {
-    return poolData?.amountTokenB * (amountPercentage / 100.0) || 0;
-  }, [poolData?.amountTokenB, amountPercentage]);
+    return secondTokenAmount * (amountPercentage / 100.0) || 0;
+  }, [secondTokenAmount, amountPercentage]);
 
   const isEnableBtnEnabled = useMemo(() => {
     return amountPercentage !== 0 && !isApproving && approvePoolState === 0;
@@ -95,10 +107,6 @@ const useRemoveLiquidFacade = () => {
     if (step === 2) {
       setStep(3);
       removeLiquidity();
-      // setTimeout(() => {
-      //   setStep(4);
-      //   setPrimaryButtonLabel("Close");
-      // }, 2000);
     }
   };
 
@@ -109,6 +117,8 @@ const useRemoveLiquidFacade = () => {
         poolAddress,
         amountTokenA,
         amountTokenB,
+        tokenAInfo: firstTokenInfo,
+        tokenBInfo: secondTokenInfo,
       })
     );
   };
@@ -120,20 +130,6 @@ const useRemoveLiquidFacade = () => {
   const onEnableClicked = async () => {
     await dispatch(actions.approvePoolLiquidity(poolAddress));
   };
-
-  const loadPoolApproval = async () => {
-    dispatch(actions.loadDetailRemoveLiquidity(poolAddress));
-  };
-
-  useEffect(() => {
-    if (web3) {
-      fetchMarketAssets();
-    }
-  }, [web3]);
-
-  async function fetchMarketAssets() {
-    await dispatch(actions.getPoolAssets());
-  }
 
   useEffect(() => {
     if (amountPercentage !== 0) {
@@ -157,10 +153,11 @@ const useRemoveLiquidFacade = () => {
   }, [isApproving, approvePoolState]);
 
   useEffect(() => {
-    if (poolAddress) {
-      loadPoolApproval();
+    if (poolAddress && web3) {
+      dispatch(actions.loadDetailRemoveLiquidity(poolAddress));
     }
-  }, [poolAddress]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [poolAddress, web3]);
 
   useEffect(() => {
     if (step === 3 && !isRemoving) {
@@ -174,17 +171,10 @@ const useRemoveLiquidFacade = () => {
     }
   }, [isRemoving, removePoolSuccessState, step]);
 
-  // useEffect(
-  //   () => () => {
-  //     // On unmount
-  //     closeModalAndDashboard();
-  //   },
-  //   []
-  // );
-
   return {
     step,
-    poolData,
+    firstTokenInfo,
+    secondTokenInfo,
     amountTokenA,
     amountTokenB,
     enableBtnLabel,

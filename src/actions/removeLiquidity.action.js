@@ -2,13 +2,12 @@ import { ethers } from "ethers";
 
 import { poolConstants } from "../constants";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
 import ERC20ABI_VB from "../_contracts/VB.json";
 import ERC20ABI_ROUTER from "../_contracts/router.json";
 import { selectPoolInfoByAddress } from "../reducers/assetsPool.reducer";
-import { selectUserLiquidityPoolByPoolAddress } from "../reducers/userAssetPools.reducer";
 import { getDecimalForAssetPair, isContainVET } from "../utils/lib";
 import ERC20ABI_PAIR from "../_contracts/pair.json";
+import { selectLiquidityPool } from "../reducers/removeLiquidity.reducer";
 
 const ADDRESS_ROUTER = process.env.REACT_APP_ADDRESS_ROUTER;
 
@@ -23,6 +22,9 @@ export const loadDetailRemoveLiquidity = createAsyncThunk(
     let amountTokenA = 0;
     let amountTokenB = 0;
 
+    let addressTokenA = "";
+    let addressTokenB = "";
+
     if (poolAddress && account) {
       const contractRemoveLiquidity = new web3.eth.Contract(
         ERC20ABI_VB,
@@ -36,8 +38,8 @@ export const loadDetailRemoveLiquidity = createAsyncThunk(
       // );
 
       const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
-      const addressTokenA = await contractPair.methods.token0().call();
-      const addressTokenB = await contractPair.methods.token1().call();
+      addressTokenA = await contractPair.methods.token0().call();
+      addressTokenB = await contractPair.methods.token1().call();
       const balanceBigN = await contractPair.methods.balanceOf(account).call();
       balanceAccount = ethers.utils.formatUnits(
         balanceBigN,
@@ -86,6 +88,9 @@ export const loadDetailRemoveLiquidity = createAsyncThunk(
       approvePool = Number(approvePool);
     }
     return {
+      addressTokenA,
+      addressTokenB,
+
       approvePool,
       amountTokenA,
       amountTokenB,
@@ -149,20 +154,19 @@ export const approvePoolLiquidity = createAsyncThunk(
 
 export const removeLiquidity = createAsyncThunk(
   poolConstants.REMOVE_LIQUIDITY,
-  async ({ amount, poolAddress, amountTokenA, amountTokenB}, { getState }) => {
-    console.log('🐶🐶  ~ amountTokenB', amountTokenB)
-    console.log('🐶🐶  ~ amountTokenA', amountTokenA)
+  async (
+    { amount, amountTokenA, amountTokenB, tokenAInfo, tokenBInfo },
+    { getState }
+  ) => {
     const currentState = getState();
 
     const { connex, account, web3 } = currentState.web3;
 
-    const { addressTokenA, addressTokenB, assetsPoolName, assetsDecimals } =
-      selectPoolInfoByAddress(currentState, poolAddress);
+    const assetsPoolName = `${tokenAInfo?.assetsChain} - ${tokenBInfo?.assetsChain}`;
 
-    const liquidityPool = selectUserLiquidityPoolByPoolAddress(
-      currentState,
-      poolAddress
-    );
+    const addressTokenA = tokenAInfo?.assetsAddress || "";
+    const addressTokenB = tokenBInfo?.assetsAddress || "";
+    const liquidityPool = selectLiquidityPool(currentState);
 
     const isPairContainVET = isContainVET(addressTokenA, addressTokenB);
     const functionName = isPairContainVET
@@ -187,8 +191,14 @@ export const removeLiquidity = createAsyncThunk(
     // )"
 
     const min = 1_000_000_000;
-    const amountAMin = amountTokenA;
-    const amountBMin = amountTokenB;
+    const amountAMin = web3.utils.toWei(
+      amountTokenA.toString(),
+      getDecimalForAssetPair(addressTokenA) === 12 ? "micro" : "ether"
+    );
+    const amountBMin = web3.utils.toWei(
+      amountTokenB.toString(),
+      getDecimalForAssetPair(addressTokenB) === 12 ? "micro" : "ether"
+    );
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
     const removeAmount = web3.utils.toWei(
       ((liquidityPool * amount) / 100).toString(),

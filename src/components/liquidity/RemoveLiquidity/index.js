@@ -38,7 +38,8 @@ const customStyles = {
 const ModalRemoveLiquidity = () => {
   const {
     step,
-    poolData,
+    firstTokenInfo,
+    secondTokenInfo,
     amountTokenA,
     amountTokenB,
     removeAvailable,
@@ -54,13 +55,6 @@ const ModalRemoveLiquidity = () => {
     handlerStepToStep,
   } = useRemoveLiquidFacade();
 
-  // useEffect(() => {
-  //   const firstTokenVolumeValue = firstTokenVolume?.current?.value ?? 0;
-  //   const secondTokenVolumeValue = secondTokenVolume?.current?.value ?? 0;
-  //   if (firstTokenVolumeValue > 0 && secondTokenVolumeValue > 0) {
-
-  //   }
-  // }, [firstTokenVolume?.current?.value, secondTokenVolume?.current?.value])
   const showMileStone = useCallback(() => {
     const milestones = [];
     for (let i = 25; i <= 100; i += 25) {
@@ -111,7 +105,7 @@ const ModalRemoveLiquidity = () => {
             )}
             <div className="flex flex-col space-y-4">
               <span className="text-white text-2xl font-poppins_medium">
-                Remove {poolData?.assetsChainA}-{poolData?.assetsChainB}{" "}
+                Remove {firstTokenInfo?.assetsChain}-{secondTokenInfo?.assetsChain}{" "}
                 liquidity
               </span>
               <div className="flex flex-row items-center space-x-1">
@@ -123,8 +117,8 @@ const ModalRemoveLiquidity = () => {
                   />
                 )}
                 <span className="text-grey-1 text-base font-poppins_light">
-                  To receive {poolData?.assetsChainA} and{" "}
-                  {poolData?.assetsChainB}
+                  To receive {firstTokenInfo?.assetsChain} and{" "}
+                  {secondTokenInfo?.assetsChain}
                 </span>
               </div>
             </div>
@@ -166,16 +160,16 @@ const ModalRemoveLiquidity = () => {
             </p>
             <div className="mt-4 col p-4 gap-4.5 border rounded-lg border-[#4F92A7]">
               <div className="full-row-between-center gap-4">
-                <img src={poolData?.iconOrigin} alt="" className="w-8 h-8" />
+                <img src={firstTokenInfo?.icon} alt="" className="w-8 h-8" />
                 <p className="flex flex-grow text-lg font-poppins_semi_bold">
-                  {poolData?.assetsChainA || "VET"}
+                  {firstTokenInfo?.assetsChain || ""}
                 </p>
                 <p className="flex flex-grow justify-end text-xl">{amountTokenA}</p>
               </div>
               <div className="full-row-between-center gap-4">
-                <img src={poolData?.iconAssets} alt="" className="w-8 h-8" />
+                <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
                 <p className="flex flex-grow text-lg font-poppins_semi_bold">
-                  {poolData?.assetsChainB || "VEUSD"}
+                  {secondTokenInfo?.assetsChain || ""}
                 </p>
                 <p className="flex flex-grow justify-end text-xl">{amountTokenB}</p>
               </div>
@@ -188,18 +182,18 @@ const ModalRemoveLiquidity = () => {
             <div className="mt-4 col p-4 gap-4.5 border rounded-lg border-[#4F92A7]">
               <div className="full-row-between-center">
                 <p className="text-xl font-poppins_semi_bold">
-                  1 {poolData?.assetsChainA || "VET"} =
+                  1 {firstTokenInfo?.assetsChain || "VET"} =
                 </p>
                 <p className="text-xl">
-                  {firstPerSecondTokenPrice} {poolData?.assetsChainB || "VEUSD"}
+                  {firstPerSecondTokenPrice} {secondTokenInfo?.assetsChain || "VEUSD"}
                 </p>
               </div>
               <div className="full-row-between-center">
                 <p className="text-xl font-poppins_semi_bold">
-                  1 {poolData?.assetsChainB || "VEUSD"} =
+                  1 {secondTokenInfo?.assetsChain || "VEUSD"} =
                 </p>
                 <p className="text-xl">
-                  {secondPerFirstTokenPrice} {poolData?.assetsChainA || "VET"}
+                  {secondPerFirstTokenPrice} {firstTokenInfo?.assetsChain || "VET"}
                 </p>
               </div>
             </div>
@@ -210,17 +204,17 @@ const ModalRemoveLiquidity = () => {
         <div className={`${step === 2 ? "" : "hidden"} flex flex-col gap-4`}>
           <div className="full-row-center gap-4">
             <p className="flex flex-grow text-2xl">{amountTokenA}</p>
-            <img src={poolData?.iconOrigin} alt="" className="w-8 h-8" />
+            <img src={firstTokenInfo?.icon} alt="" className="w-8 h-8" />
             <p className="text-2xl font-poppins_semi_bold">
-              {poolData?.assetsChainA || "VET"}
+              {firstTokenInfo?.assetsChain || "VET"}
             </p>
           </div>
           <p className="text-2xl">+</p>
           <div className="full-row-center gap-4 mb-4">
             <p className="flex flex-grow text-2xl">{amountTokenB}</p>
-            <img src={poolData?.iconAssets} alt="" className="w-8 h-8" />
+            <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
             <p className="text-2xl font-poppins_semi_bold">
-              {poolData?.assetsChainB || "VEUSD"}
+              {secondTokenInfo?.assetsChain || "VEUSD"}
             </p>
           </div>
         </div>
@@ -239,8 +233,8 @@ const ModalRemoveLiquidity = () => {
           <div className="flex flex-col space-y-4">
             <p className="text-4xl text-center">Waiting For Confirmation</p>
             <p className="text-lg text-center">
-              Removing {amountTokenA} {poolData?.assetsChainA} and {amountTokenB}{" "}
-              {poolData?.assetsChainB}
+              Removing {amountTokenA} {firstTokenInfo?.assetsChain} and {amountTokenB}{" "}
+              {secondTokenInfo?.assetsChain}
             </p>
             <p className="text-lg text-center text-[#678BCA] cursor-pointer">
               Confirm this transaction in your wallet
