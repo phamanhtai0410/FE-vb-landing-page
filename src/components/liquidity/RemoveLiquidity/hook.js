@@ -15,9 +15,7 @@ import { nFormatter } from "../../../utils/lib";
 
 const useRemoveLiquidFacade = () => {
   const dispatch = useDispatch();
-  const { addressPool: poolAddress, addressTokenA, addressTokenB } = useParams();
-  console.log('🐶🐶  ~ useRemoveLiquidFacade ~ addressTokenB', addressTokenB)
-  console.log('🐶🐶  ~ useRemoveLiquidFacade ~ addressTokenA', addressTokenA)
+  const { addressPool: poolAddress } = useParams();
   const navigation = useNavigate();
 
   const web3 = useSelector(selectWeb3);

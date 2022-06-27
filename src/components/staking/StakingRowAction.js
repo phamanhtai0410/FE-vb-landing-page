@@ -15,7 +15,7 @@ const StakingRowAction = ({openRowAssets, item}) => {
 
     return (
 
-        <div className='bg-[#182844] mt-2 fade-in-box flex flex-col lg:flex-row'>
+        <div className='bg-[#182844] mt-2 fade-in-box flex flex-col lg:flex-row rounded-lg'>
             <div className="w-full lg:w-1/2 p-4 pr-2">
                 <div className='bg-[#26355A] p-4 rounded flex justify-between rounded space-x-4'>
                     <div>

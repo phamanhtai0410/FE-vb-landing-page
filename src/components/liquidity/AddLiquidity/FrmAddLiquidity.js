@@ -1,10 +1,8 @@
 import React, { useCallback } from "react";
-import Modal from "react-modal";
 import "./styles.scss";
 
-import { nFormatter, numberWithCommas } from "../../../utils/lib";
+import { numberWithCommas } from "../../../utils/lib";
 import IcCloseWhite from "../../../assets/images/buttons/ic_close.svg";
-import IcWarningCircle from "../../../assets/images/ic-warning-circle.svg";
 import IcBackWhite from "../../../assets/images/buttons/ic_back_white.svg";
 import IcSettingWhite from "../../../assets/images/buttons/ic_setting_white.svg";
 import IcHistoryWhite from "../../../assets/images/buttons/ic_history_white.svg";
@@ -19,17 +17,9 @@ import LiquidPairIcon from "../../partials/LiquidPairIcon";
 import SecondaryButton from "../../partials/SecondaryButton";
 import GradientStrokeWrapper from "../../partials/GradientStrokeWrapper";
 import { PartialConstants } from "../../../constants/partial.constants";
-import { useSelector } from "react-redux";
-import { selectAssetByAddress } from "../../../reducers/assetsMarket.reducer";
-import {
-  selectApproveFirstToken,
-  selectApproveSecondToken,
-} from "../../../reducers/liquid.reducer";
 
 import BtnLiquidityApproveA from "./BtnLiquidityApproveA";
 import BtnLiquidityApproveB from "./BtnLiquidityApproveB";
-import { selectPriceByTokenAddress } from "../../../reducers/assetsPrice.reducer";
-import { useMemo } from "react";
 
 const FrmAddLiquidity = () => {
   const {
