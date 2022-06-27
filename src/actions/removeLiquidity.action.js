@@ -38,47 +38,47 @@ export const loadDetailRemoveLiquidity = createAsyncThunk(
       const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
       const addressTokenA = await contractPair.methods.token0().call();
       const addressTokenB = await contractPair.methods.token1().call();
-      console.log('🐶🐶  ~ addressTokenB', addressTokenB)
-      console.log("🐶🐶  ~ loadRemoveDetail/addressTokenA", addressTokenA);
       const balanceBigN = await contractPair.methods.balanceOf(account).call();
       balanceAccount = ethers.utils.formatUnits(
         balanceBigN,
         getDecimalForAssetPair()
       );
-      console.log('🐶🐶  ~ balanceAccount', balanceAccount)
       // balanceAccount = ethers.utils.formatUnits(balanceAccount,assetsDecimals);
 
       //Lấy tokenA nắm giữ của account
-      try {amountTokenA = await contractPair.methods
-        .providerAssets(account, addressTokenA)
-        .call();} catch (e) {
-          console.log(e)
+      try {
+        amountTokenA = await contractPair.methods
+          .providerAssets(account, addressTokenA)
+          .call();
+        if (amountTokenA) {
+          amountTokenA = ethers.utils.formatUnits(
+            amountTokenA,
+            process.env.REACT_APP_TOKEN_VEUSD === addressTokenA ? 6 : 18
+          );
         }
-      console.log('🐶🐶  ~ amountTokenA', amountTokenA)
-      if (amountTokenA) {
-        amountTokenA = ethers.utils.formatUnits(
-          amountTokenA,
-          process.env.REACT_APP_TOKEN_VEUSD === addressTokenA ? 6 : 18
-        );
+      } catch (e) {
+        console.error(e);
       }
 
       //Lấy tokenB nắm giữ của account
-      amountTokenB = await contractPair.methods
+      try {
+        amountTokenB = await contractPair.methods
         .providerAssets(account, addressTokenB)
         .call();
-      console.log('🐶🐶  ~ amountTokenB', amountTokenB)
       if (amountTokenB) {
         amountTokenB = ethers.utils.formatUnits(
           amountTokenB,
           process.env.REACT_APP_TOKEN_VEUSD === addressTokenB ? 6 : 18
         );
       }
+      } catch (e) {
+        console.error(e);
+      }
 
       approvePool = await contractRemoveLiquidity.methods
         .allowance(account, ADDRESS_ROUTER)
         .call();
       const poolInfo = selectPoolInfoByAddress(currentState, poolAddress);
-      console.log('🐶🐶  ~ poolInfo', poolInfo)
       approvePool = ethers.utils.formatUnits(
         approvePool,
         poolInfo?.assetsDecimals

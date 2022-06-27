@@ -54,10 +54,10 @@ const AssetsStaking = () => {
           timeout={500}
           classNames="item_asset"
         >
-          <div className="border-0 relative rounded-lg">
+          <div className="border-0 relative rounded-lg" onClick={(e) => onClickShowRowAssets(item.assetsPoolAddress)}>
             <GradientStrokeWrapper className="-z-0" />
             <div
-              className="full-row-between-center p-6 bg-[#182844] justify-items-center content-around font-poppins cursor-pointer rounded-lg z-2"
+              className="full-row-between-center p-6 bg-[#182844] justify-items-center content-around font-poppins cursor-pointer rounded-lg z-50"
               onClick={(e) => onClickShowRowAssets(item.assetsPoolAddress)}
             >
               <div className="row-center space-x-4 text-right cursor-pointer">
@@ -146,7 +146,7 @@ const AssetsStaking = () => {
   }, [web3]);
 
   return (
-    <div className="w-full lg:w-[1420px] min-h-max rounded bg-[#171C29] mt-10 p-10 fade-in-box z-100">
+    <div className="w-full min-h-max rounded bg-[#171C29] mt-10 p-10 fade-in-box z-100">
       <h4 className="text-xl leading-9 text-[#3FDCA5]">
         Staking
       </h4>
