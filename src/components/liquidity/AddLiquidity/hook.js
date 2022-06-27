@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import * as actions from "../../../actions";
 import { selectAssetByAddress } from "../../../reducers/assetsMarket.reducer";
 import { selectPriceByTokenAddress } from "../../../reducers/assetsPrice.reducer";
+import { selectPoolInfoByAddress } from "../../../reducers/assetsPool.reducer";
 import {
   selectAddingLiquidityFinishState,
   selectAddingLiquidityState,
@@ -18,6 +19,11 @@ const useAddLiquidFacade = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { addressPool: poolAddress } = useParams();
+
+  const poolInfo = useSelector((state) =>
+    selectPoolInfoByAddress(state, poolAddress)
+  );
   const firstToken = useSelector(selectFirstToken, shallowEqual);
   const secondToken = useSelector(selectSecondToken, shallowEqual);
   const isAddingLiquidity = useSelector(selectAddingLiquidityState);
@@ -173,6 +179,14 @@ const useAddLiquidFacade = () => {
       }
     }
   }, [isAddingLiquidity, addLiquidityState, step]);
+
+  useEffect(() => {
+    if (dispatch && poolInfo) {
+      console.log('🐶🐶  ~ useEffect ~ poolInfo', poolInfo)
+      dispatch(actions.setFirstToken(poolInfo?.addressTokenA));
+      dispatch(actions.setSecondToken(poolInfo?.addressTokenB));
+    }
+  }, [dispatch, poolInfo]);
 
   return {
     step,

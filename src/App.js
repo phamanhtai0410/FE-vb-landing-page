@@ -45,11 +45,11 @@ function App() {
 
           <Route path="/launchpad" element={<LaunchPadPage />} />
 
-          <Route path="/liquidity" element={<LiquidityPage />} />
-
-          <Route path="/liquidity/add" element={<AddLiquidityPage />} />
-
-          <Route path="/liquidity/remove/:addressPool" element={<RemoveLiquidityPage />} />
+          <Route path="/liquidity" >
+            <Route path="add/:addressPool" element={<AddLiquidityPage  />} />
+            <Route path="remove/:addressPool" element={<RemoveLiquidityPage  />} />
+            <Route path="*" index element={<LiquidityPage  />} />
+          </Route>
 
           <Route path="*" element={<Navigate to="/" />} />
 

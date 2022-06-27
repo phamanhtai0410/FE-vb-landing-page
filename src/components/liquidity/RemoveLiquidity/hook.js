@@ -49,6 +49,14 @@ const useRemoveLiquidFacade = () => {
   const [primaryButtonLabel, setPrimaryButtonLabel] =
     useState("Enter an amount");
 
+  const amountTokenA = useMemo(() => {
+    return poolData?.amountTokenA * (amountPercentage / 100.0) || 0;
+  }, [poolData?.amountTokenA, amountPercentage]);
+
+  const amountTokenB = useMemo(() => {
+    return poolData?.amountTokenB * (amountPercentage / 100.0) || 0;
+  }, [poolData?.amountTokenB, amountPercentage]);
+
   const isEnableBtnEnabled = useMemo(() => {
     return amountPercentage !== 0 && !isApproving && approvePoolState === 0;
   }, [amountPercentage, isApproving, approvePoolState]);
@@ -58,7 +66,7 @@ const useRemoveLiquidFacade = () => {
   }, [amountPercentage, approvePoolState]);
 
   const closeModal = () => {
-    navigation(-1)
+    navigation(-1);
   };
 
   const resetFrm = () => {
@@ -96,7 +104,12 @@ const useRemoveLiquidFacade = () => {
 
   const removeLiquidity = () => {
     dispatch(
-      actions.removeLiquidity({ amount: amountPercentage, poolAddress })
+      actions.removeLiquidity({
+        amount: amountPercentage,
+        poolAddress,
+        amountTokenA,
+        amountTokenB,
+      })
     );
   };
 
@@ -161,17 +174,19 @@ const useRemoveLiquidFacade = () => {
     }
   }, [isRemoving, removePoolSuccessState, step]);
 
-  useEffect(
-    () => () => {
-      // On unmount
-      closeModalAndDashboard();
-    },
-    []
-  );
+  // useEffect(
+  //   () => () => {
+  //     // On unmount
+  //     closeModalAndDashboard();
+  //   },
+  //   []
+  // );
 
   return {
     step,
     poolData,
+    amountTokenA,
+    amountTokenB,
     enableBtnLabel,
     firstPerSecondTokenPrice,
     secondPerFirstTokenPrice,

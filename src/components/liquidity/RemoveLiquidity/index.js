@@ -39,6 +39,8 @@ const ModalRemoveLiquidity = () => {
   const {
     step,
     poolData,
+    amountTokenA,
+    amountTokenB,
     removeAvailable,
     enableBtnLabel,
     firstPerSecondTokenPrice,
@@ -168,14 +170,14 @@ const ModalRemoveLiquidity = () => {
                 <p className="flex flex-grow text-lg font-poppins_semi_bold">
                   {poolData?.assetsChainA || "VET"}
                 </p>
-                <p className="flex flex-grow justify-end text-xl">{poolData?.amountTokenA}</p>
+                <p className="flex flex-grow justify-end text-xl">{amountTokenA}</p>
               </div>
               <div className="full-row-between-center gap-4">
                 <img src={poolData?.iconAssets} alt="" className="w-8 h-8" />
                 <p className="flex flex-grow text-lg font-poppins_semi_bold">
                   {poolData?.assetsChainB || "VEUSD"}
                 </p>
-                <p className="flex flex-grow justify-end text-xl">5,000</p>
+                <p className="flex flex-grow justify-end text-xl">{amountTokenB}</p>
               </div>
             </div>
           </div>
@@ -207,7 +209,7 @@ const ModalRemoveLiquidity = () => {
         {/* STEP 2 */}
         <div className={`${step === 2 ? "" : "hidden"} flex flex-col gap-4`}>
           <div className="full-row-center gap-4">
-            <p className="flex flex-grow text-2xl">5,000</p>
+            <p className="flex flex-grow text-2xl">{amountTokenA}</p>
             <img src={poolData?.iconOrigin} alt="" className="w-8 h-8" />
             <p className="text-2xl font-poppins_semi_bold">
               {poolData?.assetsChainA || "VET"}
@@ -215,7 +217,7 @@ const ModalRemoveLiquidity = () => {
           </div>
           <p className="text-2xl">+</p>
           <div className="full-row-center gap-4 mb-4">
-            <p className="flex flex-grow text-2xl">5,000</p>
+            <p className="flex flex-grow text-2xl">{amountTokenB}</p>
             <img src={poolData?.iconAssets} alt="" className="w-8 h-8" />
             <p className="text-2xl font-poppins_semi_bold">
               {poolData?.assetsChainB || "VEUSD"}
@@ -237,7 +239,7 @@ const ModalRemoveLiquidity = () => {
           <div className="flex flex-col space-y-4">
             <p className="text-4xl text-center">Waiting For Confirmation</p>
             <p className="text-lg text-center">
-              Removing 5,000 {poolData?.assetsChainA} and 9,000{" "}
+              Removing {amountTokenA} {poolData?.assetsChainA} and {amountTokenB}{" "}
               {poolData?.assetsChainB}
             </p>
             <p className="text-lg text-center text-[#678BCA] cursor-pointer">

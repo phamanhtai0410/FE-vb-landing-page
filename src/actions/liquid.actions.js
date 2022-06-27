@@ -22,6 +22,20 @@ export const loadSelectToken = (dataToken) => async (dispatch, getState) => {
   });
 };
 
+export const setFirstToken = (firstToken) => {
+  return {
+    type: poolConstants.SELECT_FIRST_TOKEN,
+    payload: firstToken,
+  };
+};
+
+export const setSecondToken = (secondToken) => {
+  return {
+    type: poolConstants.SELECT_SECOND_TOKEN,
+    payload: secondToken,
+  };
+};
+
 export const selectFirstToken = () => {
   return {
     type: poolConstants.MODAL_OPEN_SELECT_FIRST_TOKEN,

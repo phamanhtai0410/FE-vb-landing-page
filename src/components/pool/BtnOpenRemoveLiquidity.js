@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { Beforeunload } from "react-beforeunload";
 import ImgRemove from "../../assets/images/buttons/img_remove_btn.svg";
@@ -8,6 +8,7 @@ import * as actions from "../../actions";
 import { marketplaceConstants } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { initialRemoveLiquidityPage } from "../../reducers/removeLiquidity.reducer";
+import { selectUserLiquidityPoolByPoolAddress } from "../../reducers/userAssetPools.reducer";
 
 const BtnOpenRemoveLiquidity = ({ item }) => {
   const btnLabel = "Add Liquidity";
@@ -15,7 +16,11 @@ const BtnOpenRemoveLiquidity = ({ item }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [disabledRule, setDisabledRule] = useState(false);
+  // const [disabledRule, setDisabledRule] = useState(false);
+  const liquidityPool = useSelector(state => selectUserLiquidityPoolByPoolAddress(state, item?.assetsPoolAddress));
+  const disabledRule = useMemo(() => {
+    return liquidityPool == 0
+  }, [liquidityPool]);
 
   // const { data, accountSupplyBalance } = useSelector(state => state.accountAssetsReducer, shallowEqual);
 

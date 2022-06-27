@@ -104,6 +104,20 @@ export function liquidReducer(state = initialState, action) {
         ...action,
       };
 
+    case poolConstants.SELECT_FIRST_TOKEN: {
+      return {
+        ...state,
+        firstToken: action.payload,
+      };
+    }
+
+    case poolConstants.SELECT_SECOND_TOKEN: {
+      return {
+        ...state,
+        secondToken: action.payload,
+      };
+    }
+
     case poolConstants.MODAL_SELECT_TOKEN: {
       const newState = {
         ...state,
@@ -275,7 +289,6 @@ export function liquidReducer(state = initialState, action) {
         isAddingLiquiditySuccess: false,
       }
     }
-
 
     default:
       return state;

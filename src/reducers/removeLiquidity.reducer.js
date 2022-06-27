@@ -18,11 +18,11 @@ const removeLiquiditySlice = createSlice({
   initialState,
   reducers: {
     initialRemoveLiquidityPage: (state, action) => {
-    console.log('🐶🐶  ~ action', action)
-    const {poolAddress, addressTokenA, addressTokenB} = action.payload;
-      state.poolAddress = poolAddress;
-      state.addressTokenA = addressTokenA;
-      state.addressTokenB = addressTokenB;
+    //   const { poolAddress, addressTokenA, addressTokenB } = action.payload;
+    //   state.poolAddress = poolAddress;
+    //   state.addressTokenA = addressTokenA;
+    //   state.addressTokenB = addressTokenB;
+    state = {...state, ...action.payload}
     },
   },
   extraReducers: (builder) => {
