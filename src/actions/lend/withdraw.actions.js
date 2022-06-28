@@ -1,31 +1,19 @@
 
-import queryString from 'query-string';
 import { ethers } from 'ethers';
+import { marketplaceConstants } from '../../constants';
 
-import { alertActions } from './alert.actions';
-import { web3Constants, marketplaceConstants } from '../constants';
-
-import * as actions from '.';
-
-import ERC20ABI_VB from '../_contracts/VB.json';
-import ERC20ABI_VEUSD from '../_contracts/VEUSD.json';
-import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
-import ERC20ABI_WETH_GETAWAY from '../_contracts/WETHGateway.json';
-import ERC20ABI_POOL from '../_contracts/Pool.json';
-import ABI_ATOKEN from '../_contracts/AToken.json';
-
-
+import ERC20ABI_AAVE from '../../_contracts/lend/AaveProtocolDataProvider.json';
+import ERC20ABI_WETH_GETAWAY from '../../_contracts/lend/WETHGateway.json';
+import ERC20ABI_POOL from '../../_contracts/lend/Pool.json';
+import ABI_ATOKEN from '../../_contracts/lend/AToken.json';
 
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 
-
 const amountMaxApprove = 9999999999;
 
-
 // ------------------------ WITHDRAW ------------------------ //
-
 /**
  * 
  * @param {*} dataToken 
@@ -143,7 +131,7 @@ export const withdrawMarket = (dataToken, amount) => async (dispatch, getState) 
 
     const state = getState();
 
-    const { web3, account, connex } = state.web3;
+    const { account, connex } = state.web3;
 
     if (connex && account && dataToken.assetsAddress) {
 

@@ -5,6 +5,14 @@ import IcVeChain from "../assets/images/ic_vechain.svg";
 import IcVeBank from "../assets/images/ic_vebank.svg";
 import IcVtho from "../assets/images/ic_vtho.svg";
 
+function getListKeyAssets(dataList){
+  let keys = [];
+  for (const i of dataList) {
+    keys[i.assetsAddress] = i;
+  }
+  return keys;
+}
+
 const listAsset = [
   {
     icon: IcVeChain,
@@ -74,12 +82,7 @@ const initialState = {
     process.env.REACT_APP_TOKEN_VTHO,
     process.env.REACT_APP_TOKEN_VEBANK,
   ],
-  assetEntities: {
-    [process.env.REACT_APP_TOKEN_WVET]: listAsset[0],
-    [process.env.REACT_APP_TOKEN_VEUSD]: listAsset[1],
-    [process.env.REACT_APP_TOKEN_VTHO]: listAsset[2],
-    [process.env.REACT_APP_TOKEN_VEBANK]: listAsset[3],
-  },
+  assetEntities: getListKeyAssets(listAsset),
   data: listAsset || [],
 };
 

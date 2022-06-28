@@ -1,24 +1,21 @@
-
-import queryString from 'query-string';
 import { ethers } from 'ethers';
 
-import { alertActions } from './alert.actions';
-import { web3Constants, marketplaceConstants } from '../constants';
+import { marketplaceConstants } from '../constants';
 
 import * as actions from './';
 
-
-import ERC20ABI_VB from '../_contracts/VB.json';
-import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
+import ERC20ABI_AAVE from '../_contracts/lend/AaveProtocolDataProvider.json';
+import ERC20ABI_POOL from '../_contracts/lend/Pool.json';
 import ERC20ABI_ISEER_ORACLE from '../_contracts/SeerOracle.json';
-import ERC20ABI_POOL from '../_contracts/Pool.json';
+
+
+
 
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
 
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
-const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
-const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL; // AaveProtoco
+const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 
 const ListKeyISeerOracle = {
     "VET": process.env.REACT_APP_ISO_VET,
@@ -45,9 +42,41 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
 
+
+        const RAY = 10**27 // 10 to the power 27
+        const SECONDS_PER_YEAR = 31536000
+
+
         for await (const item of data) {
 
             const getReserveData = await contractAAVE.methods.getReserveData(item.assetsAddress).call();
+            console.log("getReserveData",getReserveData);
+
+            const {
+                variableBorrowRate,
+                stableBorrowRate,
+                liquidityRate
+            } = getReserveData
+
+            // Deposit and Borrow calculations
+            // APY and APR are returned here as decimals, multiply by 100 to get the percents
+            const depositAPR = liquidityRate.toString() / RAY;
+            const variableBorrowAPR = variableBorrowRate.toString() / RAY;
+            const stableBorrowAPR = stableBorrowRate.toString() / RAY;
+
+            var depositAPY = ((1 + (depositAPR / SECONDS_PER_YEAR)) ** SECONDS_PER_YEAR) - 1;
+            var variableBorrowAPY = ((1 + (variableBorrowAPR / SECONDS_PER_YEAR)) ** SECONDS_PER_YEAR) - 1;
+            var stableBorrowAPY = ((1 + (stableBorrowAPR / SECONDS_PER_YEAR)) ** SECONDS_PER_YEAR) - 1;
+
+            console.table([
+                ["assetsAddress",item.assetsAddress],
+                ["depositAPR",depositAPR],
+                ["variableBorrowAPR",variableBorrowAPR],
+                ["stableBorrowAPR",stableBorrowAPR],
+                ["depositAPY",depositAPY],
+                ["variableBorrowAPY",variableBorrowAPY],
+                ["stableBorrowAPY",stableBorrowAPY]
+            ]);
 
             // if (isCurrentUSD && ListKeyISeerOracle[item.assetsChain]) {
             //     let contractISeerOracle = new web3.eth.Contract(ERC20ABI_ISEER_ORACLE, ListKeyISeerOracle[item.assetsChain]);
@@ -60,7 +89,6 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
             let balanceSupply = 0;
             if (getReserveData.totalAToken) {
                 balanceSupply = ethers.utils.formatUnits(getReserveData.totalAToken, item.assetsDecimals);
-                //balanceSupply = Math.round(balanceSupply * 100) / 100;
                 dataTotal.totalSupply = dataTotal.totalSupply + Number(balanceSupply);
             }
 
@@ -82,6 +110,9 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
                 ...item,
                 totalSupplied: balanceSupply,
                 totalBorrowed: balanceBorrow,
+                supplyAPY:depositAPY,
+                borrowAPY:variableBorrowAPY,
+                stableBorrowAPY
             })
 
         }
@@ -169,13 +200,14 @@ export const getAccountOverview = () => async (dispatch, getState) => {
 
     if (web3 && account && dataPrice) {
 
-        const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, "0x4a96d989CB4726B89F3B3C83d5961545e792ddE7");
+        const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
 
         if (contractPOOL && account) {
 
             try {
+
                 const accountPool = await contractPOOL.methods.getUserAccountData(account).call();
-                // console.log("getUserAccountData", accountPool)
+                console.log("getUserAccountData", accountPool)
 
             } catch (error) {
                 console.log("getUserAccountData", error)

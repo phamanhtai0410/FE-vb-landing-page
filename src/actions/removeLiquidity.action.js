@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 
 import { poolConstants } from "../constants";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import ERC20ABI_VB from "../_contracts/VB.json";
+import ERC20ABI_VB from "../_contracts/assets/VB.json";
 import ERC20ABI_ROUTER from "../_contracts/router.json";
 import { selectPoolInfoByAddress } from "../reducers/assetsPool.reducer";
 import { getDecimalForAsset, getDecimalForAssetPair, isContainVET } from "../utils/lib";
