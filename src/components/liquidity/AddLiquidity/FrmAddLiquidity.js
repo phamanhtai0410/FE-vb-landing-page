@@ -267,7 +267,7 @@ const FrmAddLiquidity = () => {
           <div className="flex flex-col space-y-4">
             <p className="text-4xl text-center">Waiting For Confirmation</p>
             <p className="text-lg text-center">
-              Supplying 5,000 VET and 9,000 VEUSD
+              Supplying {firstTokenVolume} VET and {secondTokenVolume} VEUSD
             </p>
             <p className="text-lg text-center text-[#678BCA] cursor-pointer">
               Confirm this transaction in your wallet

@@ -57,6 +57,8 @@ export const isContainVET = (...agrs) => {
   return [...agrs].includes(process.env.REACT_APP_TOKEN_WVET);
 };
 
+export const getDecimalForAsset = (assetsAddress) => assetsAddress === process.env.REACT_APP_TOKEN_VEUSD ? 6 : 18
+
 export const getDecimalForAssetPair = (firstAssetAddress, secondAssetAddress) =>
   [firstAssetAddress, secondAssetAddress].includes(
     process.env.REACT_APP_TOKEN_VEUSD

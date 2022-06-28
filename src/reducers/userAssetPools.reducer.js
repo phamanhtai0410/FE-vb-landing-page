@@ -33,6 +33,10 @@ const userAssetPools = createSlice({
 
 export default userAssetPools.reducer;
 
+export const selectUsersAddedPoolAddresses = state => {
+  const entities = state.userAssetPools.data;
+  return state.userAssetPools.addresses.filter(address => entities[address].liquidityPool != 0 );
+};
 export const selectUserPoolAssetByPoolAddress = (state, poolAddress) => state.userAssetPools.data[poolAddress];
 export const selectUserLiquidityPoolByPoolAddress = (state, poolAddress) =>
   state.userAssetPools.data[poolAddress].liquidityPool;

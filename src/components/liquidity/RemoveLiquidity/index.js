@@ -1,8 +1,6 @@
 import React, { useCallback, useMemo } from "react";
-import Modal from "react-modal";
 import "./styles.scss";
 
-import { numberWithCommas } from "../../../utils/lib";
 import ImgSubmitted from "../../../assets/images/img_up_arrow.svg";
 import IcSandClock from "../../../assets/images/img_sand_clock.svg";
 import IcCloseWhite from "../../../assets/images/buttons/ic_close.svg";
@@ -10,30 +8,9 @@ import IcBackWhite from "../../../assets/images/buttons/ic_back_white.svg";
 import IcQuestionCircle from "../../../assets/images/buttons/ic_question_outline.svg";
 
 import useRemoveLiquidFacade from "./hook";
-import LiquidPairIcon from "../../partials/LiquidPairIcon";
-import SecondaryButton from "../../partials/SecondaryButton";
 import GradientStrokeWrapper from "../../partials/GradientStrokeWrapper";
 import { PartialConstants } from "../../../constants/partial.constants";
 import ProgressBar from "../../partials/ProgressBar";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
-
-const customStyles = {
-  content: {
-    top: "31%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    transform: "translate(-50%, -30%)",
-    background: "#182233",
-    borderRadius: "1rem",
-    borderWidth: "0px",
-    // borderColor: "#3EE8FF",
-    padding: "2.5rem",
-    position: "relative",
-    width: "32%",
-    // width: "460px",
-  },
-};
 
 const ModalRemoveLiquidity = () => {
   const {
@@ -105,8 +82,8 @@ const ModalRemoveLiquidity = () => {
             )}
             <div className="flex flex-col space-y-4">
               <span className="text-white text-2xl font-poppins_medium">
-                Remove {firstTokenInfo?.assetsChain}-{secondTokenInfo?.assetsChain}{" "}
-                liquidity
+                Remove {firstTokenInfo?.assetsChain}-
+                {secondTokenInfo?.assetsChain} liquidity
               </span>
               <div className="flex flex-row items-center space-x-1">
                 {step !== 4 && (
@@ -164,14 +141,18 @@ const ModalRemoveLiquidity = () => {
                 <p className="flex flex-grow text-lg font-poppins_semi_bold">
                   {firstTokenInfo?.assetsChain || ""}
                 </p>
-                <p className="flex flex-grow justify-end text-xl">{amountTokenA}</p>
+                <p className="flex flex-grow justify-end text-xl">
+                  {amountTokenA}
+                </p>
               </div>
               <div className="full-row-between-center gap-4">
                 <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
                 <p className="flex flex-grow text-lg font-poppins_semi_bold">
                   {secondTokenInfo?.assetsChain || ""}
                 </p>
-                <p className="flex flex-grow justify-end text-xl">{amountTokenB}</p>
+                <p className="flex flex-grow justify-end text-xl">
+                  {amountTokenB}
+                </p>
               </div>
             </div>
           </div>
@@ -182,18 +163,19 @@ const ModalRemoveLiquidity = () => {
             <div className="mt-4 col p-4 gap-4.5 border rounded-lg border-[#4F92A7]">
               <div className="full-row-between-center">
                 <p className="text-xl font-poppins_semi_bold">
-                  1 {firstTokenInfo?.assetsChain || "VET"} =
+                  1 {firstTokenInfo?.assetsChain || ""} =
                 </p>
                 <p className="text-xl">
-                  {firstPerSecondTokenPrice} {secondTokenInfo?.assetsChain || "VEUSD"}
+                  {firstPerSecondTokenPrice}{" "}
+                  {secondTokenInfo?.assetsChain || ""}
                 </p>
               </div>
               <div className="full-row-between-center">
                 <p className="text-xl font-poppins_semi_bold">
-                  1 {secondTokenInfo?.assetsChain || "VEUSD"} =
+                  1 {secondTokenInfo?.assetsChain || ""} =
                 </p>
                 <p className="text-xl">
-                  {secondPerFirstTokenPrice} {firstTokenInfo?.assetsChain || "VET"}
+                  {secondPerFirstTokenPrice} {firstTokenInfo?.assetsChain || ""}
                 </p>
               </div>
             </div>
@@ -206,7 +188,7 @@ const ModalRemoveLiquidity = () => {
             <p className="flex flex-grow text-2xl">{amountTokenA}</p>
             <img src={firstTokenInfo?.icon} alt="" className="w-8 h-8" />
             <p className="text-2xl font-poppins_semi_bold">
-              {firstTokenInfo?.assetsChain || "VET"}
+              {firstTokenInfo?.assetsChain || ""}
             </p>
           </div>
           <p className="text-2xl">+</p>
@@ -214,7 +196,7 @@ const ModalRemoveLiquidity = () => {
             <p className="flex flex-grow text-2xl">{amountTokenB}</p>
             <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
             <p className="text-2xl font-poppins_semi_bold">
-              {secondTokenInfo?.assetsChain || "VEUSD"}
+              {secondTokenInfo?.assetsChain || ""}
             </p>
           </div>
         </div>
@@ -233,8 +215,8 @@ const ModalRemoveLiquidity = () => {
           <div className="flex flex-col space-y-4">
             <p className="text-4xl text-center">Waiting For Confirmation</p>
             <p className="text-lg text-center">
-              Removing {amountTokenA} {firstTokenInfo?.assetsChain} and {amountTokenB}{" "}
-              {secondTokenInfo?.assetsChain}
+              Removing {amountTokenA} {firstTokenInfo?.assetsChain} and{" "}
+              {amountTokenB} {secondTokenInfo?.assetsChain}
             </p>
             <p className="text-lg text-center text-[#678BCA] cursor-pointer">
               Confirm this transaction in your wallet

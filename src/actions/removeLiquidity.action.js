@@ -5,7 +5,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import ERC20ABI_VB from "../_contracts/VB.json";
 import ERC20ABI_ROUTER from "../_contracts/router.json";
 import { selectPoolInfoByAddress } from "../reducers/assetsPool.reducer";
-import { getDecimalForAssetPair, isContainVET } from "../utils/lib";
+import { getDecimalForAsset, getDecimalForAssetPair, isContainVET } from "../utils/lib";
 import ERC20ABI_PAIR from "../_contracts/pair.json";
 import { selectLiquidityPool } from "../reducers/removeLiquidity.reducer";
 
@@ -193,11 +193,11 @@ export const removeLiquidity = createAsyncThunk(
     const min = 1_000_000_000;
     const amountAMin = web3.utils.toWei(
       amountTokenA.toString(),
-      getDecimalForAssetPair(addressTokenA) === 12 ? "micro" : "ether"
+      getDecimalForAsset(addressTokenA) === 6 ? "mwei" : "ether"
     );
     const amountBMin = web3.utils.toWei(
       amountTokenB.toString(),
-      getDecimalForAssetPair(addressTokenB) === 12 ? "micro" : "ether"
+      getDecimalForAsset(addressTokenB) === 6 ? "mwei" : "ether"
     );
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
     const removeAmount = web3.utils.toWei(
