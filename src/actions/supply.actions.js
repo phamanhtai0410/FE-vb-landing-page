@@ -1,16 +1,13 @@
-
-import queryString from 'query-string';
 import { ethers } from 'ethers';
 
-import { alertActions } from './alert.actions';
-import { web3Constants, marketplaceConstants } from '../constants';
+import {  marketplaceConstants } from '../constants';
 
 import * as actions from '.';
 
-import ERC20ABI_VB from '../_contracts/VB.json';
-import ERC20ABI_WETH_GETAWAY from '../_contracts/WETHGateway.json';
-import ERC20ABI_POOL from '../_contracts/Pool.json';
-import ABI_ATOKEN from '../_contracts/AToken.json';
+import ERC20ABI_VB from '../_contracts/assets/VB.json';
+
+import ERC20ABI_WETH_GETAWAY from '../_contracts/lend/WETHGateway.json';
+import ERC20ABI_POOL from '../_contracts/lend/Pool.json';
 
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;

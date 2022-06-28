@@ -1,25 +1,18 @@
 
-import queryString from 'query-string';
 import { ethers } from 'ethers';
 
-import { alertActions } from './alert.actions';
-import { web3Constants, marketplaceConstants } from '../constants';
+import { marketplaceConstants } from '../constants';
 
-import * as actions from '.';
+import ERC20ABI_VB from '../_contracts/assets/VB.json';
 
-import ERC20ABI_VB from '../_contracts/VB.json';
+import ERC20ABI_WETH_GETAWAY from '../_contracts/lend/WETHGateway.json';
+import ERC20ABI_POOL from '../_contracts/lend/Pool.json';
 
-
-import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
-import ERC20ABI_WETH_GETAWAY from '../_contracts/WETHGateway.json';
-import ERC20ABI_POOL from '../_contracts/Pool.json';
-import ERC20ABI_STABLE_DEBT_TOKEN from '../_contracts/StableDebtToken.json';
-import ERC20ABI_VARIBLE_DEBT_TOKEN from '../_contracts/VariableDebtToken.json';
+import ERC20ABI_STABLE_DEBT_TOKEN from '../_contracts/lend/StableDebtToken.json';
+import ERC20ABI_VARIBLE_DEBT_TOKEN from '../_contracts/lend/VariableDebtToken.json';
 
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
-const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
-
 
 // ------------------------ BORROW ------------------------ //
 
@@ -35,7 +28,6 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
     const { web3, account } = state.web3;
 
     const dataPrice = state.assetsPriceReducer.data;
-    const { accountSupplyBalance } = state.accountAssetsReducer;
 
     let accountBalance = 0;
     let accountApprove = 0;

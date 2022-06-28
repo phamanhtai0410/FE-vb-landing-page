@@ -1,20 +1,14 @@
 import { ethers } from "@vechain/ethers";
 import Connex from "@vechain/connex";
 
-import { Certificate, blake2b256, secp256k1 } from "thor-devkit";
+// import { Certificate, blake2b256, secp256k1 } from "thor-devkit";
 
-import { alertActions } from "./alert.actions";
 import {
   web3Constants,
-  destroyConstants,
-  marketplaceConstants,
 } from "../constants";
 import getWeb3 from "../utils/getWeb3";
 
-import ERC20ABI_VB from "../_contracts/VB.json";
-import ERC20ABI_AAVE from "../_contracts/AaveProtocolDataProvider.json";
-import ERC20ABI_ISEER_ORACLE from "../_contracts/SeerOracle.json";
-import ERC20ABI_POOL from "../_contracts/Pool.json";
+import ERC20ABI_VB from "../_contracts/assets/VB.json";
 
 import * as actions from "./";
 import { createAsyncThunk } from "@reduxjs/toolkit";
@@ -23,17 +17,8 @@ import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
 
-const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
 const TOKEN_VEUSD = process.env.REACT_APP_TOKEN_VEUSD;
-const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL; // AaveProtoco
-
-const ListKeyISeerOracle = {
-  VET: process.env.REACT_APP_ISO_VET,
-  VTHO: process.env.REACT_APP_ISO_VETHO,
-  VB: process.env.REACT_APP_ISO_VB,
-  VEUSD: process.env.REACT_APP_ISO_VEUSD,
-};
 
 export const web3Connect = (isLogin) => async (dispatch) => {
   const web3 = await getWeb3();
@@ -91,9 +76,9 @@ export const web3Connect = (isLogin) => async (dispatch) => {
 };
 
 export const web3Disconnect = () => async (dispatch, getState) => {
-  const state = getState();
-
-  const { web3 } = state.web3;
+  
+  // const state = getState();
+  // const { web3 } = state.web3;
 
   localStorage.removeItem("_acc");
   localStorage.removeItem("_sign");
@@ -203,48 +188,3 @@ export const instantiateVEUSDContracts = createAsyncThunk(
   }
 );
 
-export const fetchCurrentMSP = () => async (dispatch) => {
-  try {
-    // dispatch({ type: web3Constants.FETCH_CURRENT_MSP_REQUEST });
-
-    //const url = "https://api.coingecko.com/api/v3/coins/binance-usd";
-    const url = "https://api.coingecko.com/api/v3/coins/luna-rush";
-
-    const response = await fetch(url);
-
-    const json = await response.json();
-
-    const { current_price } = json.market_data;
-
-    let price = 0;
-    let priceUSD = 0;
-
-    // 1 MSP = ? USD
-    // 22.222 MSP =>  1 USD
-
-    if (current_price) {
-      //priceUSD = formatCur(current_price["usd"]);
-      priceUSD = 0.045;
-      // price = 1 / priceUSD;
-
-      price = 22.222; // 1 USD = 22.222 MSP
-    }
-
-    dispatch({
-      type: web3Constants.FETCH_CURRENT_MSP_SUCCESS,
-      priceUSD,
-      price,
-    });
-
-    return price;
-  } catch (error) {
-    dispatch({
-      type: web3Constants.FETCH_CURRENT_MSP_ERROR,
-      message: error,
-    });
-  }
-};
-
-const formatCur = (value) => {
-  return Math.round(value * 100) / 100;
-};

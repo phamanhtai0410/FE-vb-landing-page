@@ -1,24 +1,18 @@
-
-import queryString from 'query-string';
 import { ethers } from 'ethers';
 
-import { alertActions } from './alert.actions';
-import { web3Constants, marketplaceConstants } from '../constants';
+import { marketplaceConstants } from '../constants';
 
 import * as actions from './';
 
+import ERC20ABI_AAVE from '../_contracts/lend/AaveProtocolDataProvider.json';
+import ERC20ABI_POOL from '../_contracts/lend/Pool.json';
 
-import ERC20ABI_VB from '../_contracts/VB.json';
-import ERC20ABI_AAVE from '../_contracts/AaveProtocolDataProvider.json';
 import ERC20ABI_ISEER_ORACLE from '../_contracts/SeerOracle.json';
-import ERC20ABI_POOL from '../_contracts/Pool.json';
 
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
 
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
-const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
-const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL; // AaveProtoco
 
 const ListKeyISeerOracle = {
     "VET": process.env.REACT_APP_ISO_VET,
