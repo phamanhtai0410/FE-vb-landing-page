@@ -6,6 +6,8 @@ import ERC20ABI_VB from "../_contracts/VB.json";
 
 import ERC20ABI_ROUTER from "../_contracts/router.json";
 import ERC20ABI_FACTORY from "../_contracts/factory.json";
+import ERC20ABI_PAIR from "../_contracts/pair.json";
+
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
 
@@ -167,11 +169,14 @@ export const approveSecondTokenAddLiquidity = createAsyncThunk(
 export const loadDetailAddLiquidity = createAsyncThunk(
   poolConstants.LOAD_DETAIL_ADD_LIQUIDITY,
   async (_, { getState }) => {
+
     const currentState = getState();
     const { web3, account } = currentState.web3;
     const { firstToken, secondToken } = currentState.liquidReducer;
+
     let approveTokenA = 0;
     let approveTokenB = 0;
+
     if (firstToken) {
       const contractAddLiquidityA = new web3.eth.Contract(
         ERC20ABI_VB,
@@ -188,6 +193,7 @@ export const loadDetailAddLiquidity = createAsyncThunk(
       );
       approveTokenA = Number(approveTokenA);
     }
+
     if (secondToken) {
       const contractAddLiquidityB = new web3.eth.Contract(
         ERC20ABI_VB,
@@ -204,6 +210,23 @@ export const loadDetailAddLiquidity = createAsyncThunk(
       );
       approveTokenB = Number(approveTokenB);
     }
+
+    if(firstToken && secondToken){
+
+      let contractFactory = new web3.eth.Contract(ERC20ABI_FACTORY, ADDRESS_FACTORY);
+
+      const assetsPoolAddress = await contractFactory.methods.getPair(firstToken, secondToken).call();
+      const emptyAddress = /^0x0+$/.test(assetsPoolAddress); // true chưa có
+
+      if(emptyAddress ===false){
+        const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, assetsPoolAddress);
+        const getReserves = await contractPair.methods.getReserves().call();
+        console.log("getReserves",getReserves);
+      }
+
+    }
+   
+
     return { approveTokenA, approveTokenB };
   }
 );
