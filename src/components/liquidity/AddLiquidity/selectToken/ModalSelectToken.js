@@ -44,7 +44,7 @@ const ModalSelectToken = () => {
   useEffect(() => fetchUserAssets(), []);
 
   const fetchUserAssets = async () => {
-    await dispatch(actions.getCurrentAssets());
+    // await dispatch(actions.getCurrentAssets());
     // await dispatch(actions.fetchAccountInit());
   };
 
