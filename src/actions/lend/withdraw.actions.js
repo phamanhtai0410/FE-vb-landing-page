@@ -1,11 +1,11 @@
 
 import { ethers } from 'ethers';
-import { marketplaceConstants } from '../constants';
+import { marketplaceConstants } from '../../constants';
 
-import ERC20ABI_AAVE from '../_contracts/lend/AaveProtocolDataProvider.json';
-import ERC20ABI_WETH_GETAWAY from '../_contracts/lend/WETHGateway.json';
-import ERC20ABI_POOL from '../_contracts/lend/Pool.json';
-import ABI_ATOKEN from '../_contracts/lend/AToken.json';
+import ERC20ABI_AAVE from '../../_contracts/lend/AaveProtocolDataProvider.json';
+import ERC20ABI_WETH_GETAWAY from '../../_contracts/lend/WETHGateway.json';
+import ERC20ABI_POOL from '../../_contracts/lend/Pool.json';
+import ABI_ATOKEN from '../../_contracts/lend/AToken.json';
 
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
