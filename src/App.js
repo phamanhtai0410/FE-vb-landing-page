@@ -47,6 +47,7 @@ function App() {
 
           <Route path="/liquidity" >
             <Route path="add/:addressPool" element={<AddLiquidityPage  />} />
+            <Route path="add" element={<AddLiquidityPage  />} />
             <Route path="remove/:addressPool" element={<RemoveLiquidityPage  />} />
             <Route path="*" index element={<LiquidityPage  />} />
           </Route>
