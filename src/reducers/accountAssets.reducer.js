@@ -11,8 +11,8 @@ const initialState = {
   totalSupplied: null,
   totalBorrowed: null,
 
-  totalSuppliedUSD: null,
-  totalBorrowedUSD: null,
+  accountTotalSupplied: 0,
+  accountTotalBorrowed: 0,
 
   query: {},
   total: 0,

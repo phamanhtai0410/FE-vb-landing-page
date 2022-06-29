@@ -32,6 +32,7 @@ const AssetsMarket = () => {
         }
     }, [web3]);
 
+    
     async function fetchMarketAssets() {
         await dispatch(actions.getMarketAssets());
     }
@@ -133,23 +134,23 @@ const AssetsMarket = () => {
                 <div className="grid grid-cols-6 gap-6 justify-items-center content-around">
                     <div className="px-2 py-2 flex">
                         <span>Assets</span>
-                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                        <img className='ml-1 w-4' src={IcCaretDown} alt={IcCaretDown} />
                     </div>
                     <div className="px-2 py-2 flex">
                         <span>Total supplied</span>
-                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                        <img className='ml-1 w-4' src={IcCaretDown} alt={IcCaretDown} />
                     </div>
                     <div className="px-2 py-2 flex">
                         <span>Supply APY</span>
-                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                        <img className='ml-1 w-4' src={IcCaretDown} alt={IcCaretDown} />
                     </div>
                     <div className="px-2 py-2 flex">
                         <span>Total borrowed</span>
-                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                        <img className='ml-1 w-4' src={IcCaretDown} alt={IcCaretDown} />
                     </div>
                     <div className="px-2 py-2 flex">
                         <span>Borrow APY</span>
-                        <img className='ml-1' src={IcCaretDown} alt={IcCaretDown} />
+                        <img className='ml-1 w-4' src={IcCaretDown} alt={IcCaretDown} />
                     </div>
                     <div className='col-end-auto'></div>
                 </div>
