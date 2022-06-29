@@ -1,28 +1,30 @@
+import { useEffect, useState } from "react";
 
-import { useEffect, useState } from 'react';
+import { useSelector, shallowEqual } from "react-redux";
 
-import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import IcVB from "../../assets/images/ic_vebank.svg";
 
-import IcVB from '../../assets/images/ic_vebank.svg';
-
-import { numberWithCommas } from '../../utils/lib';
+// import { numberWithCommas } from "../../utils/lib";
 
 const BalanceVB = () => {
+  const [balanceAccount, setBalanceAccount] = useState(null);
+  const balance = useSelector(
+    (state) => state.contractVB.balance,
+    shallowEqual
+  );
 
-    const [balanceAccount, setBalanceAccount] = useState(null);
-    const balance = useSelector(state => state.contractVB.balance, shallowEqual);
+  useEffect(() => {
+    setBalanceAccount(balance);
+  }, [balance]);
 
-    useEffect(() => {
-        setBalanceAccount(balance);
-    }, [balance]);
-
-    return (
-
-        <div className="flex flex-row justify-start items-center space-x-2">
-            {/* <img className="w-6 h-6" src={IcVB} alt="Coin VeBank" /> */}
-            <span className="font-poppins font-medium text-slate-50 text-base">VB {balanceAccount ? balanceAccount : 0}</span>
-        </div>
-    )
-}
+  return (
+    <div className="flex flex-row justify-start items-center space-x-2">
+      <img className="w-6 h-6" src={IcVB} alt="Coin VeBank" />
+      <span className="font-poppins font-medium text-slate-50 text-base">
+        {balanceAccount ? balanceAccount : `$${0}`}
+      </span>
+    </div>
+  );
+};
 
 export default BalanceVB;
