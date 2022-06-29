@@ -73,6 +73,15 @@ export const web3Connect = (isLogin) => async (dispatch) => {
         return _acc;
       });
   }
+
+  dispatch({
+    type: web3Constants.WEB3_CONNECT, 
+    web3,
+    connex
+  });
+
+  return _acc;
+
 };
 
 export const web3Disconnect = () => async (dispatch, getState) => {
