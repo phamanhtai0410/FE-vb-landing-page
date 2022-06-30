@@ -6,8 +6,9 @@ const initialState = {
   success: false,
   message: null,
 
-  totalSupplied: null,
-  totalBorrowed: null,
+  accountTotalSupplied: null,
+  accountTotalBorrowed: null,
+  
   healthFactor: null,
 
   query: {},

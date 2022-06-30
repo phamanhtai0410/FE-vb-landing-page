@@ -7,7 +7,6 @@ import Web3 from 'web3';
 const getWeb3 = async () => {
 
     let web3 = thorify(new Web3(), process.env.REACT_APP_CHAIN_NETWORK);
-
     return web3;
 };
 

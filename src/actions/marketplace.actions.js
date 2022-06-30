@@ -9,8 +9,6 @@ import ERC20ABI_POOL from '../_contracts/lend/Pool.json';
 import ERC20ABI_ISEER_ORACLE from '../_contracts/SeerOracle.json';
 
 
-
-
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
 
@@ -42,15 +40,12 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
 
-
-        const RAY = 10**27 // 10 to the power 27
-        const SECONDS_PER_YEAR = 31536000
-
+        const RAY = 10**27; // 10 to the power 27
+        const SECONDS_PER_YEAR = 31536000;
 
         for await (const item of data) {
 
             const getReserveData = await contractAAVE.methods.getReserveData(item.assetsAddress).call();
-            console.log("getReserveData",getReserveData);
 
             const {
                 variableBorrowRate,
@@ -68,15 +63,15 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
             var variableBorrowAPY = ((1 + (variableBorrowAPR / SECONDS_PER_YEAR)) ** SECONDS_PER_YEAR) - 1;
             var stableBorrowAPY = ((1 + (stableBorrowAPR / SECONDS_PER_YEAR)) ** SECONDS_PER_YEAR) - 1;
 
-            console.table([
-                ["assetsAddress",item.assetsAddress],
-                ["depositAPR",depositAPR],
-                ["variableBorrowAPR",variableBorrowAPR],
-                ["stableBorrowAPR",stableBorrowAPR],
-                ["depositAPY",depositAPY],
-                ["variableBorrowAPY",variableBorrowAPY],
-                ["stableBorrowAPY",stableBorrowAPY]
-            ]);
+            // console.table([
+            //     ["assetsAddress",item.assetsAddress],
+            //     ["depositAPR",depositAPR],
+            //     ["variableBorrowAPR",variableBorrowAPR],
+            //     ["stableBorrowAPR",stableBorrowAPR],
+            //     ["depositAPY",depositAPY],
+            //     ["variableBorrowAPY",variableBorrowAPY],
+            //     ["stableBorrowAPY",stableBorrowAPY]
+            // ]);
 
             // if (isCurrentUSD && ListKeyISeerOracle[item.assetsChain]) {
             //     let contractISeerOracle = new web3.eth.Contract(ERC20ABI_ISEER_ORACLE, ListKeyISeerOracle[item.assetsChain]);
@@ -99,7 +94,7 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
                 const totalVariableDebt = ethers.utils.formatUnits(getReserveData.totalVariableDebt || '0', item.assetsDecimals);
 
                 // balanceBorrow = Number(totalStableDebt) + Number(totalVariableDebt);
-                balanceBorrow = Number(totalVariableDebt);
+                balanceBorrow = totalVariableDebt;
                 //balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
 
                 dataTotal.totalBorrow = dataTotal.totalBorrow + Number(balanceBorrow);
@@ -110,9 +105,8 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
                 ...item,
                 totalSupplied: balanceSupply,
                 totalBorrowed: balanceBorrow,
-                supplyAPY:depositAPY,
-                borrowAPY:variableBorrowAPY,
-                stableBorrowAPY
+                supplyAPY: parseFloat((depositAPY * 100).toFixed(5)),
+                borrowAPY: parseFloat((variableBorrowAPY * 100).toFixed(5))
             })
 
         }
@@ -126,8 +120,6 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
             contractAAVE,
             data: dataList
         });
-
-
 
     } else {
         dispatch({
@@ -160,18 +152,11 @@ export const getCurrentAssets = () => async (dispatch, getState) => {
 
                 let currentPriceUSD = await contractISeerOracle.methods.latestAnswer().call();
 
-                // if (item.assetsChain === "VEUSD") {
-                //     currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 6);;
-                // } else {
-                //     currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 12);;
-                // }
-
                 currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 18);;
 
                 dataList[item.assetsAddress] = Number(currentPriceUSD);
 
             }
-
 
         }
 
@@ -193,36 +178,52 @@ export const getAccountOverview = () => async (dispatch, getState) => {
     const { web3, account } = state.web3;
 
     const dataPrice = state.assetsPriceReducer.data;
+    const dataAccountAssets = state.accountAssetsReducer.data;
 
     let healthFactor = 0;
-
     let dataList = [];
 
-    if (web3 && account && dataPrice) {
+    if (web3 && account && dataPrice && dataAccountAssets) {
 
         const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
+
+        let accountTotalSupplied= 0;
+        let accountTotalBorrowed= 0;
 
         if (contractPOOL && account) {
 
             try {
 
                 const accountPool = await contractPOOL.methods.getUserAccountData(account).call();
-                console.log("getUserAccountData", accountPool)
+
+                if (accountPool && accountPool.healthFactor) {
+                    healthFactor = ethers.utils.formatUnits(accountPool.healthFactor || '0', 18);
+                }
 
             } catch (error) {
-                console.log("getUserAccountData", error)
+                console.log("getUserAccountData", error);
             }
 
-            // if (accountPool && accountPool.healthFactor) {
-            //     healthFactor = ethers.utils.formatUnits(accountPool.healthFactor || '0', 18);
-            // }
+            for await (const item of dataAccountAssets) {
+
+                if(item.totalSupplied){
+                    accountTotalSupplied = (dataPrice[item.assetsAddress] * item.totalSupplied) + accountTotalSupplied;
+                }
+
+                if(item.totalBorrowed){
+                    accountTotalBorrowed = (dataPrice[item.assetsAddress] * item.totalBorrowed) + accountTotalBorrowed;
+                }
+                
+            }
 
         }
 
         dispatch({
             type: marketplaceConstants.FETCH_ACCOUNT_OVERVIEW_SUCCESS,
             data: {
-                healthFactor: 1.8
+                accountTotalSupplied,
+                accountTotalBorrowed,
+                healthFactor
             }
         });
 
@@ -245,20 +246,9 @@ export const getAccountAssets = () => async (dispatch, getState) => {
     const { web3, account } = state.web3;
     const { data } = state.assetsMarketReducer;
 
-    const dataPrice = state.assetsPriceReducer.data;
-
-    let dataUser = {
-        accountSupplyBalance: 0,
-        accountBorrowBalance: 0,
-    }
     let dataList = [];
 
-    if (web3 && account && dataPrice) {
-
-        // dispatch({
-        //     type: marketplaceConstants.FETCH_ACCOUNT_ASSETS_REQUEST,
-        //     query: {}
-        // });
+    if (web3 && account) {
 
         const contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
 
@@ -267,19 +257,21 @@ export const getAccountAssets = () => async (dispatch, getState) => {
             for await (const item of data) {
 
                 const accountReserve = await contractAAVE.methods.getUserReserveData(item.assetsAddress, account).call();
-
+                
                 let balanceSupply = 0;
-                let balanceSupplyUSD = 0;
                 if (accountReserve.currentATokenBalance !== "0") {
+
                     balanceSupply = ethers.utils.formatUnits(accountReserve.currentATokenBalance, item.assetsDecimals);
                     balanceSupply = Number(balanceSupply);
-                    balanceSupplyUSD = dataPrice[item.assetsAddress] * Number(balanceSupply);
-                    dataUser.accountSupplyBalance = dataUser.accountSupplyBalance + balanceSupplyUSD;
+
+                    // console.log("balanceSupply",balanceSupply);
+                    // balanceSupplyUSD = dataPrice[item.assetsAddress] * balanceSupply;
+                    // console.log("balanceSupplyUSD",balanceSupplyUSD);
+                    // dataUser.accountSupplyBalance = dataUser.accountSupplyBalance + balanceSupplyUSD;
 
                 }
 
                 let balanceBorrow = 0;
-                let balanceBorrowUSD = 0;
                 let accountVariableDebt = 0;
                 let accountStableDebt = 0;
 
@@ -295,9 +287,6 @@ export const getAccountAssets = () => async (dispatch, getState) => {
                     balanceBorrow = accountVariableDebt;
                     // balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
 
-                    balanceBorrowUSD = dataPrice[item.assetsAddress] * balanceBorrow;
-                    dataUser.accountBorrowBalance = dataUser.accountBorrowBalance + Number(balanceBorrowUSD);
-
                 }
 
                 if (balanceSupply || balanceBorrow) {
@@ -305,10 +294,6 @@ export const getAccountAssets = () => async (dispatch, getState) => {
                         ...item,
                         totalSupplied: balanceSupply,
                         totalBorrowed: balanceBorrow,
-
-                        totalSuppliedUSD: balanceSupplyUSD,
-                        totalBorrowedUSD: balanceBorrowUSD,
-
                         accountStableDebt: accountStableDebt,
                         accountVariableDebt: accountVariableDebt,
                     })
@@ -316,15 +301,14 @@ export const getAccountAssets = () => async (dispatch, getState) => {
 
             }
 
-            dataUser.accountSupplyBalance = Number(dataUser.accountSupplyBalance.toFixed(2));
-            dataUser.accountBorrowBalance = Number(dataUser.accountBorrowBalance.toFixed(2));
+            // dataUser.accountSupplyBalance = Number(dataUser.accountSupplyBalance.toFixed(2));
+            // dataUser.accountBorrowBalance = Number(dataUser.accountBorrowBalance.toFixed(2));
 
         }
 
         dispatch({
             type: marketplaceConstants.FETCH_ACCOUNT_ASSETS_SUCCESS,
             contractAAVE,
-            ...dataUser,
             data: dataList
         });
 
@@ -332,9 +316,6 @@ export const getAccountAssets = () => async (dispatch, getState) => {
 
         dispatch({
             type: marketplaceConstants.FETCH_ACCOUNT_ASSETS_SUCCESS,
-            accountSupplyBalance: 0,
-            accountBorrowBalance: 0,
-            ...dataUser,
             data: dataList
         });
     }

@@ -1,29 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
-import store from './_helpers/store';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import store from "./_helpers/store";
 
-import './assets/styles/index.scss';
+import "./assets/styles/index.scss";
 
-import App from './App';
-import Wallet from './Wallet';
+import App from "./App";
+import Wallet from "./Wallet";
+import AlertMessages from "./components/partials/AlertMessages";
 
 //import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-
-  <Provider store={store} >
+  <Provider store={store}>
     <BrowserRouter>
       {/* <AlertComingSoon />
-        <AlertMessages />
         <FireflyContainer /> */}
       <Wallet />
       <App />
+      <AlertMessages />
     </BrowserRouter>
-  </Provider>
-  ,
-  document.getElementById('root')
+  </Provider>,
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function

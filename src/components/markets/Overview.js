@@ -8,10 +8,31 @@ import IcDropdown from '../../assets/images/ic_dropdown.svg';
 
 import { nFormatter } from '../../utils/lib';
 
+import * as actions from '../../actions';
+
+
 const Overview = () => {
 
-    const { healthFactor } = useSelector(state => state.accountOverviewReducer, shallowEqual);
-    const { accountSupplyBalance, accountBorrowBalance } = useSelector(state => state.accountAssetsReducer, shallowEqual);
+    const dispatch = useDispatch();
+
+    const { accountTotalSupplied, accountTotalBorrowed , healthFactor } = useSelector(state => state.accountOverviewReducer, shallowEqual);
+    const dataPrice = useSelector(state => state.assetsPriceReducer.data, shallowEqual);
+    const dataAssets = useSelector(state => state.accountAssetsReducer.data, shallowEqual);
+
+    useEffect(() => {
+
+        // console.log("fetchAccountOverview dataAssets",dataAssets);
+        // console.log("fetchAccountOverview dataPrice",dataPrice);
+
+        if ((dataAssets && dataAssets.length > 0) && dataPrice) {
+            fetchAccountOverview();
+        }
+
+    }, [dataAssets, dataPrice]);
+
+    async function fetchAccountOverview() {
+        await dispatch(actions.getAccountOverview());
+    }
 
     return (
 
@@ -19,7 +40,7 @@ const Overview = () => {
             <h2 className='text-lg'>Overview</h2>
             <div className='bg-overview flex justify-center justify-items-center items-center text-center rounded mt-3 p-4'>
 
-                {accountSupplyBalance || accountBorrowBalance ? <>
+                {accountTotalSupplied || accountTotalBorrowed ? <>
                     <div className='flex-1'>
                         <p className='text-xs font-normal text-slate-50'>Net APY</p>
                         <span className='text-xl font-bold'>4.57K %</span>
@@ -28,22 +49,22 @@ const Overview = () => {
 
                 <div className='flex-1'>
                     <p className='text-xs font-normal text-slate-50'>Supply balance</p>
-                    <span className='text-xl font-bold'>$ {accountSupplyBalance ? nFormatter(accountSupplyBalance, 2) : 0}</span>
+                    <span className='text-xl font-bold'>$ {accountTotalSupplied ? nFormatter(accountTotalSupplied, 2) : 0}</span>
                 </div>
                 |
                 <div className='flex-1'>
                     <p className='text-xs font-normal text-slate-50'>Borrow balance</p>
-                    <span className='text-xl font-bold'>$ {accountBorrowBalance ? nFormatter(accountBorrowBalance, 2) : 0}</span>
+                    <span className='text-xl font-bold'>$ {accountTotalBorrowed ? nFormatter(accountTotalBorrowed, 2) : 0}</span>
                 </div>
 
-                {accountSupplyBalance || accountBorrowBalance ? <>|<div className='flex-1'>
+                {accountTotalSupplied || accountTotalBorrowed ? <>|<div className='flex-1'>
                     <p className='text-xs font-normal text-slate-50'>Health factor</p>
                     <span className='text-xl font-bold'>
-                        {healthFactor ? nFormatter(healthFactor, 2) : 0}
+                        {healthFactor ? parseInt(healthFactor) : 0}
                     </span>
                 </div> </> : ""}
 
-                {accountSupplyBalance || accountBorrowBalance ? <>|<div className='flex-1'>
+                {accountTotalSupplied || accountTotalBorrowed ? <>|<div className='flex-1'>
                     <p className='text-xs font-normal text-slate-50'>Available rewards</p>
                     <span className='text-xl font-bold'>0 %</span>
                 </div></> : ""}
