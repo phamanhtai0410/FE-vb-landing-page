@@ -211,7 +211,7 @@ const AssetsFarm = () => {
           <h4 className="font-montserrat text-xl font-[600] text-[#3EE8FF]">
             All Farms
           </h4>
-          <span className="font-poppins text-base text-[#E8E8E8]">
+          <span className="font-poppins text-base text-[#E8E8E8] pt-1">
             Stake your LP tokens and earn token rewwards
           </span>
         </div>
