@@ -17,6 +17,7 @@ const TradePage = React.lazy(() => import('./pages/TradePage'));
 const StakingPage = React.lazy(() => import('./pages/StakingPage'));
 const LaunchPadPage = React.lazy(() => import('./pages/LaunchPadPage'));
 const ComingSoon = React.lazy(() => import('./components/partials/ComingSoon'));
+const SwapPage = React.lazy(() => import('./pages/SwapPage'));
 const LiquidityPage = React.lazy(() => import('./pages/LiquidityPage'));
 const AddLiquidityPage = React.lazy(() => import('./pages/AddLiquidityPage'));
 const RemoveLiquidityPage = React.lazy(() => import('./pages/RemoveLiquidityPage'));
@@ -44,6 +45,8 @@ function App() {
           <Route path="/stake" element={<StakingPage />} />
 
           <Route path="/launchpad" element={<LaunchPadPage />} />
+
+          <Route path="/swap" element={<SwapPage />} />
 
           <Route path="/liquidity" >
             <Route path="add/:addressPool" element={<AddLiquidityPage  />} />

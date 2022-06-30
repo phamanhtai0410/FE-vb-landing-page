@@ -28,6 +28,7 @@ import { unFarmReducer } from "./unfarm.reducer";
 import accountBalances from "./accountBalance.reducer";
 import userAssetPools from "./userAssetPools.reducer"
 import removeLiquidity from "./removeLiquidity.reducer"
+import swapAsset from "./swap.reducer"
 
 const appReducer = combineReducers({
   alert,
@@ -58,6 +59,7 @@ const appReducer = combineReducers({
   accountBalances,
   userAssetPools,
   removeLiquidity,
+  swapAsset,
 });
 
 const rootReducer = (state, action) => {

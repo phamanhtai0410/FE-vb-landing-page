@@ -9,6 +9,7 @@ const GradientStrokeWrapper = ({
   y2 = "0.5",
   angle = 0,
   colors = PartialConstants.PRIMARY_GRADIENT_COLOR_LIST,
+  locations = [],
   borderRadius = "0.5rem", // 8px
   strokeWidth = "0.1rem",
   style,
@@ -16,6 +17,10 @@ const GradientStrokeWrapper = ({
 }) => {
   // This will ensure the borderId for every entity is unique
   const _borderId = getTimeStamp();
+  if (colors.length !== 0 && locations.length === 0) {
+    const partial = 1 / colors.length;
+    for (let i = 1; i <= colors.length; ++i) locations.push(partial * i);
+  }
   return (
     <svg width="0" height="0" style={style} className={`svg-bg ${className}`}>
       <defs>
@@ -27,11 +32,11 @@ const GradientStrokeWrapper = ({
           y2={y2}
           gradientTransform={`rotate(${angle})`}
         >
-          {colors?.map((item, index) => (
+          {colors?.map((color, index) => (
             <stop
               key={index}
-              offset={item?.offset ? item?.offset : null}
-              stopColor={item.stopColor}
+              offset={locations[index]}
+              stopColor={color}
             />
           ))}
         </linearGradient>

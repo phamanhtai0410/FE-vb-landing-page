@@ -55,6 +55,9 @@ module.exports = {
       vbDisableText: "#4B5C86",
       vbDisabled: "#232E49",
       vbLine: "#3EE8FF",
+      hint: "#7694DE",
+      item: "#182844",
+      popupVb: "#182233",
       grey: {
         1: "#ffffff",
         2: "#FAFAFA",

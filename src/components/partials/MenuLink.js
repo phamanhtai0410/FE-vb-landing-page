@@ -71,7 +71,7 @@ const MenuLink = ({ menuToggleHandler }) => {
               }
             >
               <NavLink
-                to="/trade"
+                to="/swap"
                 className={`block px-6 py-2 font-bold text-gray-300 hover:brightness-150 ${
                   isMenuHover ? "text-linear" : ""
                 }`}

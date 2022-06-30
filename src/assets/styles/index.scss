@@ -123,11 +123,11 @@ input[type=number] {
 }
 
 .col-center {
-  @apply col justify-center
+  @apply col items-center
 }
 
 .full-col-center {
-  @apply full-col justify-center
+  @apply full-col items-center
 }
 
 .full-row-center {

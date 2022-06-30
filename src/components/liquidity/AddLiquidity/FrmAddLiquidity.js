@@ -215,8 +215,8 @@ const FrmAddLiquidity = () => {
             </div>
             <p className="text-xl">{`${firstTokenInfo?.assetsChain}/${secondTokenInfo?.assetsChain} Pool Tokens`}</p>
             <p className="text-base text-justify font-poppins_light">
-              Output is estimated. If the price changes by more than 0.5% your
-              transaction will revert.
+              Output is estimated. If the price changes by more than 0.5%, your
+              transaction will be reverted.
             </p>
           </div>
           <p className="mt-8 font-poppins text-xl">Price and pool share</p>

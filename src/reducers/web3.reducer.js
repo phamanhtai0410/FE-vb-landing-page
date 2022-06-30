@@ -28,4 +28,5 @@ export function web3(state = initialState, action) {
   }
 }
 
-export const selectWeb3 = state => state.web3
+export const selectWeb3 = state => state.web3;
+export const selectAccount = state => state.web3.account;
