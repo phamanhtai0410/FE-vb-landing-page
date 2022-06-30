@@ -6,9 +6,13 @@ import IcLogout from "../../assets/images/ic_logout.svg";
 import IcExplorer from "../../assets/images/view_explore.svg";
 import IcCopy from "../../assets/images/copy.svg";
 
-const ModalWallet = ({ isOpen, onCopy, disConnectWallet, onClose }) => {
+const ModalWallet = ({ isOpen, onCopy, disConnectWallet }) => {
   return (
-    <div className={`${isOpen ? "flex" : "hidden"} absolute right-0 top-16 fade-in-right`}>
+    <div
+      className={`${
+        isOpen ? "flex" : "hidden"
+      } absolute right-0 top-16 fade-in-box`}
+    >
       <div className="relative">
         <GradientStrokeWrapper
           colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
@@ -51,10 +55,6 @@ const ModalWallet = ({ isOpen, onCopy, disConnectWallet, onClose }) => {
           </button>
         </div>
       </div>
-      <div
-        className="fixed top-0 left-0 w-screen h-screen bg-transparent z-[1]"
-        onClick={onClose}
-      />
     </div>
   );
 };
