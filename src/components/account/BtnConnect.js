@@ -77,6 +77,7 @@ const BtnConnect = () => {
             />
             <ModalWallet
               onCopy={onCopy}
+              account={account}
               isOpen={showModalWallet}
               disConnectWallet={disConnectWallet}
             />
