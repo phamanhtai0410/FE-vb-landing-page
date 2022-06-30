@@ -1,27 +1,34 @@
 import React from "react";
-import FormSearchFarm from "../components/farm/FormSearchFarm";
 import AssetsFarm from "../components/farm/AssetsFarm";
 import ModalFarming from "../components/farm/ModalFarming";
 import ModalUnFarm from "../components/farm/ModalUnFarm";
 import ModalAddLiquidity from "../components/pool/AddLiquidity/ModalAddLiquidity";
 import ModalSelectToken from "../components/pool/AddLiquidity/selectToken/ModalSelectToken";
+import FarmTab from "../components/farm/FarmTab";
 
 const FarmPage = () => {
   return (
-    <section className="box-borrows mx-auto bg-cover bg-center">
+    <section className="farm box-borrows mx-auto bg-cover bg-center">
       <div className="lg:px-4 lg:container xl:px-12 mx-auto px-4 min-h-screen pt-16 pb-24">
         <div className="flex flex-row mt-4">
-          {/* <div className='flex-none'>
-                    </div> */}
-
-          <div className="flex  flex-row justify-start items-center space-x-4 w-full text-right cursor-pointer">
-            <span className="font-poppins text-base font-montserrat">
-              Stake only
-            </span>
+          <div className="flex  flex-row justify-between items-center w-full cursor-pointer">
+            <div className="flex flex-row items-end">
+              <span className="font-poppins_medium font-[700] text-2xl text-[#3EE8FF]">
+                Farm
+              </span>
+              <span className="font-poppins text-base text-[#678BCA] ml-12">
+                TVL:&nbsp;
+              </span>
+              <span className="font-poppins text-base text-[#7694DE]">
+                $200,333,444.55
+              </span>
+            </div>
+            <FarmTab />
             <div className="flex items-center justify-center">
+              <span className="font-poppins text-base">Show staked</span>
               <label
                 htmlFor="toggleB"
-                className="flex items-center cursor-pointer"
+                className="flex items-center cursor-pointer pl-6"
               >
                 <div className="relative">
                   <input type="checkbox" id="toggleB" className="sr-only" />
@@ -31,8 +38,6 @@ const FarmPage = () => {
               </label>
             </div>
           </div>
-
-          <FormSearchFarm />
         </div>
 
         <AssetsFarm />

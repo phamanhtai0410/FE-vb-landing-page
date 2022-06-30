@@ -408,3 +408,15 @@ input:checked ~ .dot {
 .text-linear {
   @apply text-transparent bg-gradient-to-r from-secondary to-primary bg-clip-text;
 }
+
+.farm {
+  &__tab {
+    border: 1px solid #d2c0f14d;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    .active {
+      background: linear-gradient(91.96deg, #0FE3E3 0%, #02A4FF 100%);
+      border-radius: 32px;
+    }
+  }
+}

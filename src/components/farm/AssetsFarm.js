@@ -10,6 +10,7 @@ import IcVeUSD from "../../assets/images/ic_veusd.svg";
 import IcVtho from "../../assets/images/ic_vtho.svg";
 import IcVeBank from "../../assets/images/ic_vebank.svg";
 import LiquidPairIcon from "../partials/LiquidPairIcon";
+import FormSearchFarm from "./FormSearchFarm";
 
 const ASSETS_FARM_HEADER = [
   {
@@ -205,9 +206,17 @@ const AssetsFarm = () => {
 
   return (
     <div className="w-full min-h-max rounded-lg bg-[#0b1329] mt-10 p-10 fade-in-box">
-      <h4 className="font-montserrat text-[20px] leading-9 text-[#3FDCA5]">
-        Farms
-      </h4>
+      <div className="flex flex-row justify-between items-center">
+        <div className="flex flex-col w-1/2">
+          <h4 className="font-montserrat text-xl font-[600] text-[#3EE8FF]">
+            All Farms
+          </h4>
+          <span className="font-poppins text-base text-[#E8E8E8]">
+            Stake your LP tokens and earn token rewwards
+          </span>
+        </div>
+        <FormSearchFarm />
+      </div>
 
       <div className="tbl-veb mt-8">
         <div className="grid grid-cols-12 justify-items-center content-around font-poppins text-[14px]">
