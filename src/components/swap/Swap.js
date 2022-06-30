@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-
-// import "../../assets/styles/index.scss";
+import React from "react";
 
 import IcSwap from "../../assets/images/ic_swap.svg";
 import IcDropDown from "../../assets/images/ic_dropdown.svg";
@@ -9,75 +7,28 @@ import IcSetting from "../../assets/images/buttons/ic_setting_outline.svg";
 import IcQuestionCircle from "../../assets/images/ic_question_circle.svg";
 import IcSwapWhiteNoBackground from "../../assets/images/ic_swap_white_no_background.svg";
 
-import { shallowEqual, useSelector } from "react-redux";
 import BtnConnectInPage from "../account/BtnConnectInPage";
 import BtnOpenSwap from "./BtnOpenSwap";
-import {
-  selectDesireToken,
-  selectSourceToken,
-} from "../../reducers/swap.reducer";
-import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
-import { selectPriceByTokenAddress } from "../../reducers/assetsPrice.reducer";
 import GradientStrokeWrapper from "../partials/GradientStrokeWrapper";
-import { useMemo } from "react";
-import { selectBalanceById } from "../../reducers/accountBalance.reducer";
-import { selectAccount } from "../../reducers/web3.reducer";
+
+import useSwapFacade from "./hooks";
+import HighlightedAssetIcon from "./HighlightedAssetIcon";
 
 const Swap = () => {
-  const account = useSelector(selectAccount);
-  const [inputAmount, setInputAmount] = useState("0.0");
-
-  const sourceTokenAddress = useSelector(selectSourceToken);
-  const desireTokenAddress = useSelector(selectDesireToken);
-  const sourceTokenInfo = useSelector((state) =>
-    selectAssetByAddress(state, sourceTokenAddress)
-  );
-  const desireTokenInfo = useSelector((state) =>
-    selectAssetByAddress(state, desireTokenAddress)
-  );
-  const sourceTokenPrice = useSelector((state) =>
-    selectPriceByTokenAddress(state, sourceTokenAddress)
-  );
-  const desireTokenPrice = useSelector((state) =>
-    selectPriceByTokenAddress(state, desireTokenAddress)
-  );
-  const sourceTokenBalance = useSelector((state) =>
-    selectBalanceById(state, sourceTokenAddress)
-  );
-  const desireTokenBalance = useSelector((state) =>
-    selectBalanceById(state, desireTokenAddress)
-  );
-  const vthoBalance = useSelector((state) =>
-    selectBalanceById(state, process.env.REACT_APP_TOKEN_VTHO)
-  );
-
-  const sourcePerDesireTokenPrice = useMemo(
-    () => sourceTokenPrice / desireTokenPrice,
-    [sourceTokenPrice, desireTokenPrice]
-  );
-  const desireTokenAmount = useMemo(
-    () => inputAmount * sourcePerDesireTokenPrice,
-    [inputAmount, sourcePerDesireTokenPrice]
-  );
-
-  const handleChangeTokenSwap = () => {
-    // setSwapToken({
-    //   from: {
-    //     symbol: swapToken.to.symbol,
-    //     icon: swapToken.to.icon,
-    //     price: swapToken.to.price,
-    //   },
-    //   to: {
-    //     symbol: swapToken.from.symbol,
-    //     icon: swapToken.from.icon,
-    //     price: swapToken.from.price,
-    //   },
-    // });
-  };
-
-  //   useEffect(() => {
-  //     getSwapToken(swapToken);
-  //   }, [swapToken]);
+  const {
+    account,
+    inputAmount,
+    sourceTokenInfo,
+    desireTokenInfo,
+    sourceTokenPrice,
+    desireTokenPrice,
+    sourceTokenBalance,
+    desireTokenBalance,
+    vthoBalance,
+    sourcePerDesireTokenPrice,
+    desireTokenAmount,
+    setInputAmount,
+  } = useSwapFacade();
 
   return (
     <div className="flex flex-col p-2 space-y-4">
@@ -99,19 +50,7 @@ const Swap = () => {
           <div className="full-row-between-center justify-between">
             <div className="full-row-between-center flex-1 gap-4 divide-x divide-hint">
               <div className="flex flex-1 space-x-3">
-                <div className="relative flex flex-shrink w-6 h-6 p-0 rounded-full">
-                  <img
-                    className="w-6 h-6 m-0"
-                    src={sourceTokenInfo?.icon}
-                    alt=""
-                  />
-                  <GradientStrokeWrapper
-                    strokeWidth="0.5rem"
-                    colors={["#B9DDFF4D", "#12C9C917"]}
-                    className=""
-                    borderRadius="5rem"
-                  />
-                </div>
+                <HighlightedAssetIcon icon={sourceTokenInfo?.icon} />
                 <h1 className="font-bold text-grey-1">
                   {sourceTokenInfo?.assetsChain}
                 </h1>
@@ -157,7 +96,7 @@ const Swap = () => {
             <div className="row-center space-x-4">
               <p>
                 1 {sourceTokenInfo?.assetsChain} ={" "}
-                {(sourceTokenPrice / desireTokenPrice).toFixed(3)}{" "}
+                {sourcePerDesireTokenPrice.toFixed(5)}{" "}
                 {desireTokenInfo?.assetsChain}
               </p>
               <img src={IcSwapWhiteNoBackground} alt="Swap" />
@@ -177,19 +116,7 @@ const Swap = () => {
         <div>
           <div className="full-row-between-center">
             <div className="flex flex-1 space-x-3">
-              <div className="relative flex flex-shrink w-6 h-6 p-0 rounded-full">
-                <img
-                  className="w-6 h-6 m-0"
-                  src={desireTokenInfo?.icon}
-                  alt=""
-                />
-                <GradientStrokeWrapper
-                  strokeWidth="0.5rem"
-                  colors={["#B9DDFF4D", "#12C9C917"]}
-                  className=""
-                  borderRadius="5rem"
-                />
-              </div>
+              <HighlightedAssetIcon icon={desireTokenInfo?.icon} />
               <h1 className="font-bold text-grey-1">
                 {desireTokenInfo?.assetsChain}
               </h1>
