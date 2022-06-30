@@ -18,12 +18,11 @@ const AccountAssets = () => {
     const [showAssets, setShowAssets] = useState(false);
 
     const { data } = useSelector(state => state.accountAssetsReducer, shallowEqual);
-
     const dataAssets = useSelector(state => state.assetsMarketReducer.data, shallowEqual);
     const dataPrice = useSelector(state => state.assetsPriceReducer.data, shallowEqual);
 
     useEffect(() => {
-        if (dataAssets && dataAssets.length > 0) {
+        if (dataAssets && dataAssets.length > 0 && data.length  === 0) {
             fetchAccountAssets();
         }
     }, [dataAssets]);
