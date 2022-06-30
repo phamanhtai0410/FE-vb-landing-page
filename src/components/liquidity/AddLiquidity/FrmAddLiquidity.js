@@ -281,7 +281,7 @@ const FrmAddLiquidity = () => {
             step === 4 ? "" : "hidden"
           } flex flex-col justify-center`}
         >
-          <div className="liquid-wrapper px-4 py-6 col-center">
+          <div className="liquid-wrapper px-4 py-6 col-y-center">
             <div className="flex flex-row justify-between items-start">
               <div className="flex flex-col space-y-2">
                 <div className="flex flex-row items-center space-x-4">

@@ -110,14 +110,14 @@ const ModalRemoveLiquidity = () => {
             step === 1 ? "" : "hidden"
           } flex flex-1 flex-col justify-center`}
         >
-          <div className="col-center bg-[#182844] px-4 py-6 rounded-lg gap-4">
+          <div className="col-y-center bg-[#182844] px-4 py-6 rounded-lg gap-4">
             <div className="full-row-between-center">
               <p className="text-xl text-grey-1 font-poppins_semi_bold">
                 Amount
               </p>
               <p className="text-xl text-vbLine font-poppins">Detailed</p>
             </div>
-            <div className="col-center gap-6">
+            <div className="col-y-center gap-6">
               <p className="text-4xl text-[#2AF4FF] font-poppins_semi_bold">
                 {amountPercentage}%
               </p>

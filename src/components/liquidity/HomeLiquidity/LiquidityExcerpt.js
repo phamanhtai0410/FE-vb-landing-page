@@ -28,7 +28,7 @@ const LiquidityExcerpt = ({ poolAddress }) => {
   };
 
   return (
-    <div className="col-center">
+    <div className="col-y-center">
       <div className="flex flex-row justify-between items-start cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
         <div className="flex flex-col space-y-2">
           <div className="flex flex-row items-center space-x-4">

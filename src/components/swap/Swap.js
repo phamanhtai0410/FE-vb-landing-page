@@ -9,7 +9,6 @@ import IcSwapWhiteNoBackground from "../../assets/images/ic_swap_white_no_backgr
 
 import BtnConnectInPage from "../account/BtnConnectInPage";
 import BtnOpenSwap from "./BtnOpenSwap";
-import GradientStrokeWrapper from "../partials/GradientStrokeWrapper";
 
 import useSwapFacade from "./hooks";
 import HighlightedAssetIcon from "./HighlightedAssetIcon";
@@ -28,6 +27,8 @@ const Swap = () => {
     sourcePerDesireTokenPrice,
     desireTokenAmount,
     setInputAmount,
+    onSwapAssetToken,
+    onSwapDesireToken,
   } = useSwapFacade();
 
   return (
@@ -87,16 +88,15 @@ const Swap = () => {
       <div className="full-row-between-center px-7">
         <div className="row-center space-x-4">
           <img
+            onClick={onSwapDesireToken}
             className="cursor-pointer"
             src={IcSwap}
             alt="Swap"
-            // onClick={handleChangeTokenSwap}
           />
           <div>
             <div className="row-center space-x-4">
               <p>
-                1 {sourceTokenInfo?.assetsChain} ={" "}
-                {sourcePerDesireTokenPrice.toFixed(5)}{" "}
+                1 {sourceTokenInfo?.assetsChain} = {sourcePerDesireTokenPrice}{" "}
                 {desireTokenInfo?.assetsChain}
               </p>
               <img src={IcSwapWhiteNoBackground} alt="Swap" />
@@ -134,7 +134,7 @@ const Swap = () => {
         </div>
       </div>
 
-      <div className="col-center justify-center space-y-4">
+      <div className="col-x-center justify-center space-y-4">
         {!account ? (
           <BtnConnectInPage className="w-full btn-veb h-12" />
         ) : parseFloat(inputAmount) !== 0 ? (
@@ -174,7 +174,7 @@ const Swap = () => {
                 <p>0.0025 {sourceTokenInfo?.assetsChain}</p>
               </div>
             </div>
-            <BtnOpenSwap className="w-full btn-veb h-12" />
+            <button onClick={onSwapAssetToken} className="w-full btn-veb h-12">Swap</button>
           </div>
         ) : (
           <button
