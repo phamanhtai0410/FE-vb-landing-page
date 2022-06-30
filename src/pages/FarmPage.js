@@ -11,8 +11,8 @@ const FarmPage = () => {
     <section className="farm box-borrows mx-auto bg-cover bg-center">
       <div className="lg:px-4 lg:container xl:px-12 mx-auto px-4 min-h-screen pt-16 pb-24">
         <div className="flex flex-row mt-4">
-          <div className="flex  flex-row justify-between items-center w-full cursor-pointer">
-            <div className="flex flex-row items-end">
+          <div className="flex flex-row justify-between items-center w-full cursor-pointer">
+            <div className="flex flex-row items-end w-1/5">
               <span className="font-poppins_medium font-[700] text-2xl text-[#3EE8FF]">
                 Farm
               </span>
@@ -24,7 +24,7 @@ const FarmPage = () => {
               </span>
             </div>
             <FarmTab />
-            <div className="flex items-center justify-center">
+            <div className="flex items-center justify-end w-1/5">
               <span className="font-poppins text-base">Show staked</span>
               <label
                 htmlFor="toggleB"
