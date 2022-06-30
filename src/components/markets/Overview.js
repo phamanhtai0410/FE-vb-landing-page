@@ -17,19 +17,18 @@ const Overview = () => {
 
     const { accountTotalSupplied, accountTotalBorrowed , healthFactor } = useSelector(state => state.accountOverviewReducer, shallowEqual);
     const dataPrice = useSelector(state => state.assetsPriceReducer.data, shallowEqual);
-    
     const dataAssets = useSelector(state => state.accountAssetsReducer.data, shallowEqual);
 
     useEffect(() => {
 
-        console.log("dataAssets",dataAssets);
-        console.log("dataPrice",dataPrice);
+        // console.log("fetchAccountOverview dataAssets",dataAssets);
+        // console.log("fetchAccountOverview dataPrice",dataPrice);
 
         if ((dataAssets && dataAssets.length > 0) && dataPrice) {
             fetchAccountOverview();
         }
 
-    }, [dataAssets,dataPrice]);
+    }, [dataAssets, dataPrice]);
 
     async function fetchAccountOverview() {
         await dispatch(actions.getAccountOverview());

@@ -97,8 +97,6 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
                 balanceBorrow = totalVariableDebt;
                 //balanceBorrow = Math.round((balanceBorrow) * 100) / 100;
 
-                console.log("balanceBorrow",balanceBorrow);
-
                 dataTotal.totalBorrow = dataTotal.totalBorrow + Number(balanceBorrow);
 
             }
@@ -154,18 +152,11 @@ export const getCurrentAssets = () => async (dispatch, getState) => {
 
                 let currentPriceUSD = await contractISeerOracle.methods.latestAnswer().call();
 
-                // if (item.assetsChain === "VEUSD") {
-                //     currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 6);;
-                // } else {
-                //     currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 12);;
-                // }
-
                 currentPriceUSD = ethers.utils.formatUnits(currentPriceUSD || '0', 18);;
 
                 dataList[item.assetsAddress] = Number(currentPriceUSD);
 
             }
-
 
         }
 
@@ -204,7 +195,6 @@ export const getAccountOverview = () => async (dispatch, getState) => {
             try {
 
                 const accountPool = await contractPOOL.methods.getUserAccountData(account).call();
-                console.log("getUserAccountData", accountPool);
 
                 if (accountPool && accountPool.healthFactor) {
                     healthFactor = ethers.utils.formatUnits(accountPool.healthFactor || '0', 18);
