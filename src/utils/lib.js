@@ -5,6 +5,8 @@ export function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+export const getDeadline = () => Math.round(new Date().getTime() / 1000) + 3600;
+
 export const getTimeStamp = () => new Date().getTime().toString();
 
 export function formatNumberEther(amount) {

@@ -30,5 +30,7 @@ const swapAssetSlice = createSlice({
 
 export default swapAssetSlice.reducer;
 
+export const {swapTokenDesire} = swapAssetSlice.actions;
+
 export const selectSourceToken = state => state.swapAsset.sourceTokenAddress;
 export const selectDesireToken = state => state.swapAsset.desireTokenAddress;

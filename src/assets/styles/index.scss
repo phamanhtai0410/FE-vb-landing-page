@@ -122,12 +122,20 @@ input[type=number] {
   @apply row items-center
 }
 
-.col-center {
+.col-y-center {
+  @apply col justify-center
+}
+
+.col-x-center {
   @apply col items-center
 }
 
-.full-col-center {
-  @apply full-col items-center
+.col-center {
+  @apply col justify-center items-center
+}
+
+.full-col-y-center {
+  @apply full-col justify-center
 }
 
 .full-row-center {

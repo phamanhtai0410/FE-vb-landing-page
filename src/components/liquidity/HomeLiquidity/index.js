@@ -3,7 +3,6 @@ import "../styles.scss";
 
 import IcSettingWhite from "../../../assets/images/buttons/ic_setting_white.svg";
 import IcHistoryWhite from "../../../assets/images/buttons/ic_history_white.svg";
-import IcQuestionCircle from "../../../assets/images/buttons/ic_question_outline.svg";
 
 import useLiquidityFacade from "./hook";
 import SecondaryButton from "../../partials/SecondaryButton";
@@ -13,7 +12,7 @@ import LiquidityExcerpt from "./LiquidityExcerpt";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const Liquidity = () => {
-  const { userPoolAddresses, addLiquidity, handlerStepToStep } =
+  const { userPoolAddresses, addLiquidity } =
     useLiquidityFacade();
 
   return (
@@ -55,7 +54,7 @@ const Liquidity = () => {
 
       <div className="content-modal mt-8">
         <div className={`flex flex-col justify-center`}>
-          <div className="liquid-wrapper px-4 py-6 col-center gap-4">
+          <div className="liquid-wrapper px-4 py-6 col-y-center gap-4">
             {/* <TransitionGroup className="gap-4"> */}
               {userPoolAddresses.map((address) => (
                 <CSSTransition

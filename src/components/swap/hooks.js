@@ -3,14 +3,17 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   selectDesireToken,
   selectSourceToken,
+  swapTokenDesire,
 } from "../../reducers/swap.reducer";
 import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
 import { selectPriceByTokenAddress } from "../../reducers/assetsPrice.reducer";
 import { useMemo } from "react";
 import { selectBalanceById } from "../../reducers/accountBalance.reducer";
 import { selectAccount } from "../../reducers/web3.reducer";
+import * as actions from "../../actions";
 
 const useSwapFacade = () => {
+  const dispatch = useDispatch();
   const account = useSelector(selectAccount);
   const [inputAmount, setInputAmount] = useState("0.0");
 
@@ -47,6 +50,20 @@ const useSwapFacade = () => {
     [inputAmount, sourcePerDesireTokenPrice]
   );
 
+  const onSwapDesireToken = () => {
+    dispatch(actions.swapTokenDesire());
+  };
+
+  const onSwapAssetToken = () => {
+    dispatch(
+      actions.swapAsset({
+        amountToSwap: inputAmount,
+        tokenAInfo: sourceTokenInfo,
+        tokenBInfo: desireTokenInfo,
+      })
+    );
+  };
+
   return {
     account,
     inputAmount,
@@ -61,7 +78,9 @@ const useSwapFacade = () => {
     vthoBalance,
     sourcePerDesireTokenPrice,
     desireTokenAmount,
-    setInputAmount
+    setInputAmount,
+    onSwapAssetToken,
+    onSwapDesireToken,
   };
 };
 

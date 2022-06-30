@@ -225,7 +225,7 @@ export const loadDetailAddLiquidity = createAsyncThunk(
       }
 
     }
-   
+
 
     return { approveTokenA, approveTokenB };
   }
