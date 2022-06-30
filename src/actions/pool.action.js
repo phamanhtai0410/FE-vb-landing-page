@@ -88,7 +88,7 @@ export const getPoolAssetsByAccount = (dataAssetPool) => async (dispatch, getSta
 
   let dataList = [];
 
-  if (web3 && ADDRESS_FACTORY && dataAssetPool.length > 0) {
+  if (account && ADDRESS_FACTORY && dataAssetPool.length > 0) {
 
       for await (const item of dataAssetPool) {
 
