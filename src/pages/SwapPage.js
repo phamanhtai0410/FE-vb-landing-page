@@ -5,6 +5,8 @@ import IcVeBank from "../assets/images/ic_vebank.svg";
 import IcVThor from "../assets/images/ic_vtho.svg";
 import IcVeUSD from "../assets/images/ic_veusd.svg";
 import IcVeChain from "../assets/images/ic_vechain.svg";
+import Wallet from "../components/swap/Wallet";
+import TrendingPairs from "../components/swap/TrendingPairs";
 
 const COIN_TYPES = [
   {
@@ -46,8 +48,17 @@ const SwapPage = () => {
   return (
     <section className="box-borrows mx-auto bg-cover bg-center">
       <div className="w-full h-full pb-9 min-h-screen flex items-center justify-center bg-content -z-50">
-        <div className="w-full md:w-[568px] p-2">
-          <div className="rounded-md border border-vbLine bg-popupVb h-full p-8">
+        <div className="flex flex-row p-2 space-x-6">
+          <div className="flex flex-col">
+            <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-[172px]">
+              <Wallet />
+            </div>
+            <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-[284px] mt-6">
+              <TrendingPairs />
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-vbLine bg-popupVb h-full p-8 w-full md:w-[568px]">
             <Swap
               coinType={COIN_TYPES}
               getSwapToken={(data) => setSwapToken(data)}
