@@ -77,11 +77,17 @@ const BtnConnect = () => {
             />
             <ModalWallet
               onCopy={onCopy}
+              account={account}
               isOpen={showModalWallet}
               disConnectWallet={disConnectWallet}
-              onClose={() => setShowModalWallet(false)}
             />
           </button>
+          {showModalWallet && (
+            <div
+              className="fixed top-0 left-0 w-screen h-screen bg-transparent z-[1]"
+              onClick={() => setShowModalWallet(false)}
+            />
+          )}
 
           {/* <button
             onClick={disConnectWallet}

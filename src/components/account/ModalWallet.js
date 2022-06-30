@@ -6,9 +6,13 @@ import IcLogout from "../../assets/images/ic_logout.svg";
 import IcExplorer from "../../assets/images/view_explore.svg";
 import IcCopy from "../../assets/images/copy.svg";
 
-const ModalWallet = ({ isOpen, onCopy, disConnectWallet, onClose }) => {
+const ModalWallet = ({ isOpen, onCopy, disConnectWallet, account }) => {
   return (
-    <div className={`${isOpen ? "flex" : "hidden"} absolute right-0 top-16 fade-in-right`}>
+    <div
+      className={`${
+        isOpen ? "flex" : "hidden"
+      } absolute right-0 top-16 fade-in-box`}
+    >
       <div className="relative">
         <GradientStrokeWrapper
           colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
@@ -27,9 +31,11 @@ const ModalWallet = ({ isOpen, onCopy, disConnectWallet, onClose }) => {
             />
             <p>Copy address</p>
           </button>
-          <button
+          <a
+            href={`${process.env.REACT_APP_EXPLORE_URL}${
+              account ? account : ""
+            }/transfer`}
             className="bg-color-item-modal-wallet py-2 px-4 rounded-lg w-72 my-4 flex flex-row items-center z-[2] hover:bg-color-item-hover-modal-wallet"
-            onClick={() => {}}
           >
             <img
               className="p-[10px] w-10 h-10"
@@ -37,7 +43,7 @@ const ModalWallet = ({ isOpen, onCopy, disConnectWallet, onClose }) => {
               alt="icon logout"
             />
             <p>View on Explorer</p>
-          </button>
+          </a>
           <button
             className="bg-color-item-modal-wallet py-2 px-4 rounded-lg w-72 flex flex-row items-center z-[2] hover:bg-color-item-hover-modal-wallet"
             onClick={disConnectWallet}
@@ -51,10 +57,6 @@ const ModalWallet = ({ isOpen, onCopy, disConnectWallet, onClose }) => {
           </button>
         </div>
       </div>
-      <div
-        className="fixed top-0 left-0 w-screen h-screen bg-transparent z-[1]"
-        onClick={onClose}
-      />
     </div>
   );
 };
