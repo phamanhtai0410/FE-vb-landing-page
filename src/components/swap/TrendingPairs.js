@@ -26,7 +26,7 @@ const TrendingPairs = () => {
               <span className="font-poppins font-[600] text-sm text-white">
                 {item.from}
               </span>
-              <img className="cursor-pointer" src={IcArrow} alt="Refresh" />
+              <img className="cursor-pointer" src={IcArrow} alt="Transfer" />
               <span className="font-poppins font-[600] text-sm text-white">
                 {item.to}
               </span>

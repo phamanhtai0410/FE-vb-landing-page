@@ -7,6 +7,7 @@ import IcVeUSD from "../assets/images/ic_veusd.svg";
 import IcVeChain from "../assets/images/ic_vechain.svg";
 import Wallet from "../components/swap/Wallet";
 import TrendingPairs from "../components/swap/TrendingPairs";
+import PoolChart from "../components/swap/PoolChart";
 
 const COIN_TYPES = [
   {
@@ -63,6 +64,9 @@ const SwapPage = () => {
               coinType={COIN_TYPES}
               getSwapToken={(data) => setSwapToken(data)}
             />
+          </div>
+          <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[370px] h-[266px]">
+            <PoolChart />
           </div>
         </div>
       </div>
