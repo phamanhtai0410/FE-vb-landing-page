@@ -12,6 +12,7 @@ import BtnOpenSwap from "./BtnOpenSwap";
 
 import useSwapFacade from "./hooks";
 import HighlightedAssetIcon from "./HighlightedAssetIcon";
+import { svgSymbolConfig } from "../../_helpers/param";
 
 const Swap = () => {
   const {
@@ -47,15 +48,15 @@ const Swap = () => {
           <p className="text-sm">From</p>
           <p className="text-sm">Balance: {sourceTokenBalance}</p>
         </div>
-        <div className="col">
-          <div className="full-row-between-center justify-between">
-            <div className="full-row-between-center flex-1 gap-4 divide-x divide-hint">
-              <div className="flex flex-1 space-x-3">
-                <HighlightedAssetIcon icon={sourceTokenInfo?.icon} />
-                <h1 className="font-bold text-grey-1">
+        <div className="flex flex-col">
+          <div className="flex flex-row w-full justify-between">
+            <div className="flex flex-row w-full gap-4 divide-x divide-hint">
+              <div className="flex flex-row w-full">
+                <HighlightedAssetIcon icon={sourceTokenInfo?.icon} svgConfig={svgSymbolConfig} />
+                <h1 className="font-bold text-grey-1 pl-[10px]">
                   {sourceTokenInfo?.assetsChain}
                 </h1>
-                <img className="w-4" src={IcDropDown} alt="" />
+                <img className="w-4 ml-3" src={IcDropDown} alt="" />
               </div>
               <div className="full-row-center pl-4 text-[#647BB4] space-x-1">
                 <button
@@ -73,7 +74,7 @@ const Swap = () => {
               </div>
             </div>
             <input
-              className="flex flex-1 h-50 bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+              className="flex h-50 bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
               type="text"
               value={inputAmount}
               onChange={(event) => setInputAmount(event.target.value)}
@@ -115,8 +116,8 @@ const Swap = () => {
         </div>
         <div>
           <div className="full-row-between-center">
-            <div className="flex flex-1 space-x-3">
-              <HighlightedAssetIcon icon={desireTokenInfo?.icon} />
+            <div className="flex space-x-3 w-1/2">
+              <HighlightedAssetIcon icon={desireTokenInfo?.icon} svgConfig={svgSymbolConfig} />
               <h1 className="font-bold text-grey-1">
                 {desireTokenInfo?.assetsChain}
               </h1>
