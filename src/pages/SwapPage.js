@@ -8,6 +8,9 @@ import IcVeChain from "../assets/images/ic_vechain.svg";
 import Wallet from "../components/swap/Wallet";
 import TrendingPairs from "../components/swap/TrendingPairs";
 import PoolChart from "../components/swap/PoolChart";
+import ModalSelectToken from "../components/swap/ModalSelectToken";
+import { useSelector } from "react-redux";
+import { selectOpenChooseTokenState } from "../reducers/swap.reducer";
 
 const COIN_TYPES = [
   {
@@ -33,6 +36,7 @@ const COIN_TYPES = [
 ];
 
 const SwapPage = () => {
+  const isSelectTokenModalOpen = useSelector(selectOpenChooseTokenState);
   const [swapToken, setSwapToken] = useState({
     from: {
       symbol: COIN_TYPES[0].symbol,
@@ -49,7 +53,11 @@ const SwapPage = () => {
   return (
     <section className="box-borrows mx-auto bg-cover bg-center">
       <div className="w-full h-full pb-9 min-h-screen flex items-center justify-center bg-content -z-50">
-        <div className="flex flex-row p-2 space-x-6">
+        <div
+          className={`${
+            isSelectTokenModalOpen ? "hidden" : "flex"
+          } flex flex-row p-2 space-x-6`}
+        >
           <div className="flex flex-col">
             <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-[172px]">
               <Wallet />
@@ -69,6 +77,7 @@ const SwapPage = () => {
             <PoolChart />
           </div>
         </div>
+        <ModalSelectToken />
       </div>
     </section>
   );

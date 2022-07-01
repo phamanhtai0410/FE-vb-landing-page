@@ -12,6 +12,7 @@ import BtnOpenSwap from "./BtnOpenSwap";
 
 import useSwapFacade from "./hooks";
 import HighlightedAssetIcon from "./HighlightedAssetIcon";
+import { swapConstants } from "../../constants";
 
 const Swap = () => {
   const {
@@ -29,6 +30,7 @@ const Swap = () => {
     setInputAmount,
     onSwapAssetToken,
     onSwapDesireToken,
+    onShowModalSelectToken,
   } = useSwapFacade();
 
   return (
@@ -50,13 +52,19 @@ const Swap = () => {
         <div className="col">
           <div className="full-row-between-center justify-between">
             <div className="full-row-between-center flex-1 gap-4 divide-x divide-hint">
-              <div className="flex flex-1 space-x-3">
+              <button
+                type="button"
+                className="flex flex-1 space-x-3 full-row-between-center"
+                onClick={() =>
+                  onShowModalSelectToken(swapConstants.FIRST_TOKEN)
+                }
+              >
                 <HighlightedAssetIcon icon={sourceTokenInfo?.icon} />
                 <h1 className="font-bold text-grey-1">
                   {sourceTokenInfo?.assetsChain}
                 </h1>
                 <img className="w-4" src={IcDropDown} alt="" />
-              </div>
+              </button>
               <div className="full-row-center pl-4 text-[#647BB4] space-x-1">
                 <button
                   onClick={() => setInputAmount(sourceTokenBalance)}
@@ -115,13 +123,16 @@ const Swap = () => {
         </div>
         <div>
           <div className="full-row-between-center">
-            <div className="flex flex-1 space-x-3">
+            <button
+              className="flex flex-1 space-x-4 items-center"
+              onClick={() => onShowModalSelectToken(swapConstants.SECOND_TOKEN)}
+            >
               <HighlightedAssetIcon icon={desireTokenInfo?.icon} />
               <h1 className="font-bold text-grey-1">
                 {desireTokenInfo?.assetsChain}
               </h1>
               <img className="w-4" src={IcDropDown} alt="" />
-            </div>
+            </button>
             <p
               className={`flex bg-transparent focus:outline-none ${
                 desireTokenAmount ? "text-grey-1" : "text-vbDisableText"
@@ -174,7 +185,9 @@ const Swap = () => {
                 <p>0.0025 {sourceTokenInfo?.assetsChain}</p>
               </div>
             </div>
-            <button onClick={onSwapAssetToken} className="w-full btn-veb h-12">Swap</button>
+            <button onClick={onSwapAssetToken} className="w-full btn-veb h-12">
+              Swap
+            </button>
           </div>
         ) : (
           <button

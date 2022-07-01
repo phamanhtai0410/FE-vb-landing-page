@@ -21,7 +21,7 @@ const Asset = ({
   const assetInfo = useSelector(state => selectAssetByAddress(state, assetAddress));
 
   const isBalanceAvailable = useMemo(
-    () => assetBalance || assetBalance == 0,
+    () => assetBalance || assetBalance === 0,
     [assetBalance]
   );
   return (

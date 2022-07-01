@@ -4,6 +4,7 @@ import {
   selectDesireToken,
   selectSourceToken,
   swapTokenDesire,
+  openModalSelectToken,
 } from "../../reducers/swap.reducer";
 import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
 import { selectPriceByTokenAddress } from "../../reducers/assetsPrice.reducer";
@@ -64,6 +65,10 @@ const useSwapFacade = () => {
     );
   };
 
+  const onShowModalSelectToken = (nameToken) => {
+    dispatch(openModalSelectToken(nameToken));
+  };
+
   return {
     account,
     inputAmount,
@@ -81,6 +86,7 @@ const useSwapFacade = () => {
     setInputAmount,
     onSwapAssetToken,
     onSwapDesireToken,
+    onShowModalSelectToken,
   };
 };
 

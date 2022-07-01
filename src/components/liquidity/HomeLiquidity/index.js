@@ -32,7 +32,7 @@ const Liquidity = () => {
               My Liquidity
             </span>
             <span className="text-grey-1 text-base font-poppins_light">
-              Remove liquidity to recieve tokens back
+              Remove liquidity to receive tokens back
             </span>
           </div>
         </div>
