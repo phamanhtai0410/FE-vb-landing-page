@@ -55,7 +55,7 @@ const Swap = () => {
             <div className="flex flex-row w-full gap-4 divide-x divide-hint">
               <button
                 type="button"
-                className="flex flex-1 space-x-3 full-row-between-center"
+                className="flex flex-1 space-x-3 items-center"
                 onClick={() =>
                   onShowModalSelectToken(swapConstants.FIRST_TOKEN)
                 }
