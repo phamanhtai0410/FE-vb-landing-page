@@ -27,7 +27,7 @@ export const loadDetailRemoveLiquidity = createAsyncThunk(
 
     if (poolAddress && account) {
       const contractRemoveLiquidity = new web3.eth.Contract(
-        ERC20ABI_VB,
+        ERC20ABI_PAIR,
         poolAddress
       );
 
@@ -77,15 +77,20 @@ export const loadDetailRemoveLiquidity = createAsyncThunk(
         console.error(e);
       }
 
-      approvePool = await contractRemoveLiquidity.methods
-        .allowance(account, ADDRESS_ROUTER)
-        .call();
-      const poolInfo = selectPoolInfoByAddress(currentState, poolAddress);
-      approvePool = ethers.utils.formatUnits(
-        approvePool,
-        poolInfo?.assetsDecimals
-      );
-      approvePool = Number(approvePool);
+      // if(ADDRESS_ROUTER){
+      //   approvePool = await contractPair.methods
+      //   .allowance(account, ADDRESS_ROUTER)
+      //   .call();
+      //   console.log("approvePool",approvePool);
+      //   const poolInfo = selectPoolInfoByAddress(currentState, poolAddress);
+      //   approvePool = ethers.utils.formatUnits(
+      //     approvePool,
+      //     poolInfo?.assetsDecimals
+      //   );
+      //   approvePool = Number(approvePool);
+      // }
+
+
     }
     return {
       addressTokenA,
@@ -108,16 +113,12 @@ export const approvePoolLiquidity = createAsyncThunk(
 
     const { web3, account, connex } = state.web3;
 
-    const contractAddLiquidity = new web3.eth.Contract(
-      ERC20ABI_VB,
-      poolAddress
-    );
 
     const poolInfo = selectPoolInfoByAddress(state, poolAddress);
 
     const amountMax = 1_000_000_000;
 
-    if (account && contractAddLiquidity && poolAddress) {
+    if (account && poolAddress) {
       const approveABI = {
         constant: false,
         inputs: [
@@ -176,6 +177,8 @@ export const removeLiquidity = createAsyncThunk(
     const removeLiquidityABI = ERC20ABI_ROUTER.find(
       ({ name, type }) => name === functionName && type === "function"
     );
+
+    console.log("removeLiquidityABI",removeLiquidityABI);
     const methodRemoveLiquidity = connex.thor
       .account(ADDRESS_ROUTER)
       .method(removeLiquidityABI);
