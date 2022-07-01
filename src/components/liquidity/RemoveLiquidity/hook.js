@@ -128,7 +128,15 @@ const useRemoveLiquidFacade = () => {
   };
 
   const onEnableClicked = async () => {
-    await dispatch(actions.approvePoolLiquidity(poolAddress));
+    await dispatch(
+      actions.approvePoolLiquidity({
+        poolAddress,
+        addressTokenA: firstTokenAddress,
+        addressTokenB: secondTokenAddress,
+        tokenAInfo: firstTokenInfo,
+        tokenBInfo: secondTokenInfo,
+      })
+    );
   };
 
   useEffect(() => {

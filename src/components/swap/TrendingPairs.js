@@ -21,7 +21,7 @@ const TrendingPairs = () => {
           {data.map((item, index) => (
             <div
               key={index}
-              className="flex flex-row bg-[#182844] py-[6px] px-[8px] rounded space-x-[10px] mr-[6px] flex-1 mb-6"
+              className="flex flex-row w-full justify-center bg-[#182844] py-[6px] px-[8px] rounded space-x-[10px] mr-[6px] flex-1 mb-6"
             >
               <span className="font-poppins font-[600] text-sm text-white">
                 {item.from}
@@ -32,42 +32,6 @@ const TrendingPairs = () => {
               </span>
             </div>
           ))}
-          {/* <div className="flex flex-row bg-[#182844] py-[6px] px-[8px] rounded space-x-[10px]">
-            <span className="font-poppins font-[600] text-sm text-white">
-              USDC
-            </span>
-            <img className="cursor-pointer" src={IcArrow} alt="Refresh" />
-            <span className="font-poppins font-[600] text-sm text-white">
-              USDT
-            </span>
-          </div>
-          <div className="flex flex-row bg-[#182844] py-[6px] px-[8px] rounded space-x-[10px] ml-[0px]">
-            <span className="font-poppins font-[600] text-sm text-white">
-              USDC
-            </span>
-            <img className="cursor-pointer" src={IcArrow} alt="Refresh" />
-            <span className="font-poppins font-[600] text-sm text-white">
-              USDT
-            </span>
-          </div>
-          <div className="flex flex-row bg-[#182844] py-[6px] px-[8px] rounded space-x-[10px]">
-            <span className="font-poppins font-[600] text-sm text-white">
-              USDC
-            </span>
-            <img className="cursor-pointer" src={IcArrow} alt="Refresh" />
-            <span className="font-poppins font-[600] text-sm text-white">
-              USDT
-            </span>
-          </div>
-          <div className="flex flex-row bg-[#182844] py-[6px] px-[8px] rounded space-x-[10px] ml-[6px]">
-            <span className="font-poppins font-[600] text-sm text-white">
-              USDC
-            </span>
-            <img className="cursor-pointer" src={IcArrow} alt="Refresh" />
-            <span className="font-poppins font-[600] text-sm text-white">
-              USDT
-            </span>
-          </div> */}
         </div>
       </div>
     </div>

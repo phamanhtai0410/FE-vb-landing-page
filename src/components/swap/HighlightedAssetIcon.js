@@ -1,19 +1,13 @@
 import React from "react";
-import GradientStrokeWrapper from "../partials/GradientStrokeWrapper";
+import GradientStrokeSymbol from "../partials/GradientStrokeSymbol";
 
-const HighlightedAssetIcon = ({
-  icon,
-  colors = ["#B9DDFF", "#12C9C9"],
-}) => {
+const HighlightedAssetIcon = ({ icon, svgConfig }) => {
   return (
-    <div className="relative flex w-6 h-6 p-[2px] justify-center items-center rounded-full">
-      <img src={icon} alt="" />
-      <GradientStrokeWrapper
-        strokeWidth="0.25rem"
-        colors={colors}
-        opacities={[0.3, 0.09]}
-        borderRadius="1rem"
-      />
+    <div className="relative flex items-center justify-center w-[32px] h-[32px]">
+      <GradientStrokeSymbol config={svgConfig} />
+      <div className="absolute w-[24px] h-[24px]">
+        <img src={icon} alt="" />
+      </div>
     </div>
   );
 };

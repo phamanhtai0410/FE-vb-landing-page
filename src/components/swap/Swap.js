@@ -13,6 +13,7 @@ import BtnOpenSwap from "./BtnOpenSwap";
 import useSwapFacade from "./hooks";
 import HighlightedAssetIcon from "./HighlightedAssetIcon";
 import { swapConstants } from "../../constants";
+import { svgSymbolConfig } from "../../_helpers/param";
 
 const Swap = () => {
   const {
@@ -49,9 +50,9 @@ const Swap = () => {
           <p className="text-sm">From</p>
           <p className="text-sm">Balance: {sourceTokenBalance}</p>
         </div>
-        <div className="col">
-          <div className="full-row-between-center justify-between">
-            <div className="full-row-between-center flex-1 gap-4 divide-x divide-hint">
+        <div className="flex flex-col">
+          <div className="flex flex-row w-full justify-between">
+            <div className="flex flex-row w-full gap-4 divide-x divide-hint">
               <button
                 type="button"
                 className="flex flex-1 space-x-3 full-row-between-center"
@@ -59,7 +60,7 @@ const Swap = () => {
                   onShowModalSelectToken(swapConstants.FIRST_TOKEN)
                 }
               >
-                <HighlightedAssetIcon icon={sourceTokenInfo?.icon} />
+                <HighlightedAssetIcon icon={sourceTokenInfo?.icon} svgConfig={svgSymbolConfig} />
                 <h1 className="font-bold text-grey-1">
                   {sourceTokenInfo?.assetsChain}
                 </h1>
@@ -81,7 +82,7 @@ const Swap = () => {
               </div>
             </div>
             <input
-              className="flex flex-1 h-50 bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+              className="flex h-50 bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
               type="text"
               value={inputAmount}
               onChange={(event) => setInputAmount(event.target.value)}
@@ -124,10 +125,10 @@ const Swap = () => {
         <div>
           <div className="full-row-between-center">
             <button
-              className="flex flex-1 space-x-4 items-center"
+              className="flex space-x-3 w-1/2 items-center"
               onClick={() => onShowModalSelectToken(swapConstants.SECOND_TOKEN)}
             >
-              <HighlightedAssetIcon icon={desireTokenInfo?.icon} />
+              <HighlightedAssetIcon icon={desireTokenInfo?.icon} svgConfig={svgSymbolConfig}/>
               <h1 className="font-bold text-grey-1">
                 {desireTokenInfo?.assetsChain}
               </h1>
