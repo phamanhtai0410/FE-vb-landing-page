@@ -3,7 +3,7 @@ import GradientStrokeWrapper from "../partials/GradientStrokeWrapper";
 
 const HighlightedAssetIcon = ({
   icon,
-  colors = ["#B9DDFF4D", "#12C9C917"],
+  colors = ["#B9DDFF", "#12C9C9"],
 }) => {
   return (
     <div className="relative flex w-6 h-6 p-[2px] justify-center items-center rounded-full">
@@ -11,11 +11,11 @@ const HighlightedAssetIcon = ({
       <GradientStrokeWrapper
         strokeWidth="0.25rem"
         colors={colors}
-        className="opacity-20"
+        opacities={[0.3, 0.09]}
         borderRadius="1rem"
       />
     </div>
   );
 };
 
-export default React.memo(HighlightedAssetIcon);
+export default HighlightedAssetIcon;

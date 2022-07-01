@@ -10,17 +10,30 @@ const GradientStrokeWrapper = ({
   angle = 0,
   colors = PartialConstants.PRIMARY_GRADIENT_COLOR_LIST,
   locations = [],
+  opacities = [],
   borderRadius = "0.5rem", // 8px
   strokeWidth = "0.1rem",
   style,
   className = "",
 }) => {
   // This will ensure the borderId for every entity is unique
-  const _borderId = getTimeStamp();
+  let _borderId = getTimeStamp();
   if (colors.length !== 0 && locations.length === 0) {
     const partial = 1 / colors.length;
     for (let i = 1; i <= colors.length; ++i) locations.push(partial * i);
+  } else if (locations.length < colors.length) {
+    const partial = 1 / colors.length;
+    for (let i = locations.length + 1; i <= colors.length; ++i) locations.push(partial*i)
   }
+
+  if (colors.length !== 0 && opacities.length === 0) {
+    console.log("No opacities")
+    for (let i = 1; i <= colors.length; ++i) opacities.push(1);
+  } else if (opacities.length < colors.length) {
+    console.log("Lack of opacities");
+    for (let i = opacities.length + 1; i <= colors.length; ++i) opacities.push(1)
+  }
+
   return (
     <svg width="0" height="0" style={style} className={`svg-bg ${className}`}>
       <defs>
@@ -37,6 +50,7 @@ const GradientStrokeWrapper = ({
               key={index}
               offset={locations[index]}
               stopColor={color}
+              stopOpacity={opacities[index]}
             />
           ))}
         </linearGradient>
@@ -57,4 +71,4 @@ const GradientStrokeWrapper = ({
   );
 };
 
-export default React.memo(GradientStrokeWrapper);
+export default GradientStrokeWrapper;
