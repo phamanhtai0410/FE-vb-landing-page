@@ -52,21 +52,25 @@ const Swap = () => {
         </div>
         <div className="flex flex-col">
           <div className="flex flex-row w-full justify-between">
-            <div className="flex flex-row w-full gap-4 divide-x divide-hint">
-              <button
-                type="button"
-                className="flex flex-1 space-x-3 items-center"
+            <div className="flex flex-row w-full">
+              <div
+                // type="button"
+                className="flex flex-row items-center space-x-[10px] cursor-pointer"
                 onClick={() =>
                   onShowModalSelectToken(swapConstants.FIRST_TOKEN)
                 }
               >
-                <HighlightedAssetIcon icon={sourceTokenInfo?.icon} svgConfig={svgSymbolConfig} />
+                <HighlightedAssetIcon
+                  icon={sourceTokenInfo?.icon}
+                  svgConfig={svgSymbolConfig}
+                />
                 <h1 className="font-bold text-grey-1">
                   {sourceTokenInfo?.assetsChain}
                 </h1>
-                <img className="w-4" src={IcDropDown} alt="" />
-              </button>
-              <div className="full-row-center pl-4 text-[#647BB4] space-x-1">
+                <img className="w-[16px]" src={IcDropDown} alt="" />
+              </div>
+              <div className="w-[1px] bg-[#7694DE] ml-4"></div>
+              <div className="flex flex-row text-[#647BB4] space-x-1 ml-4">
                 <button
                   onClick={() => setInputAmount(sourceTokenBalance)}
                   className="w-[57px] h-[28px] bg-[#203557] rounded"
@@ -81,13 +85,15 @@ const Swap = () => {
                 </button>
               </div>
             </div>
-            <input
-              className="flex h-50 bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
-              type="text"
-              value={inputAmount}
-              onChange={(event) => setInputAmount(event.target.value)}
-              placeholder="0.0"
-            />
+            <div className="relative flex flex-col w-[30%]">
+              <input
+                className="h-50 bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+                type="text"
+                value={inputAmount}
+                onChange={(event) => setInputAmount(event.target.value)}
+                placeholder="0.0"
+              />
+            </div>
           </div>
           <p className="self-end">${inputAmount * sourceTokenPrice}</p>
         </div>
@@ -128,7 +134,10 @@ const Swap = () => {
               className="flex space-x-3 w-1/2 items-center"
               onClick={() => onShowModalSelectToken(swapConstants.SECOND_TOKEN)}
             >
-              <HighlightedAssetIcon icon={desireTokenInfo?.icon} svgConfig={svgSymbolConfig}/>
+              <HighlightedAssetIcon
+                icon={desireTokenInfo?.icon}
+                svgConfig={svgSymbolConfig}
+              />
               <h1 className="font-bold text-grey-1">
                 {desireTokenInfo?.assetsChain}
               </h1>
