@@ -81,7 +81,8 @@ const useAddLiquidFacade = () => {
   const onChangeFirstTokenAmount = useCallback(
     (value) => {
       const secondTokenAmount = value * firstPerSecondTokenPrice;
-      if (value <= firstTokenBalance && secondTokenAmount <= secondTokenBalance) {
+      // if (value <= firstTokenBalance && secondTokenAmount <= secondTokenBalance) {
+      if (value <= firstTokenBalance) {
         setFirstTokenVolume(value);
         // setSecondTokenVolume(secondTokenAmount);
       }
@@ -92,7 +93,8 @@ const useAddLiquidFacade = () => {
   const onChangeSecondTokenAmount = useCallback(
     (value) => {
       const firstTokenAmount = value * secondPerFirstTokenPrice;
-      if (value <= secondTokenBalance && firstTokenAmount <= firstTokenBalance) {
+      // if (value <= secondTokenBalance && firstTokenAmount <= firstTokenBalance) {
+      if (value <= secondTokenBalance) {
         setSecondTokenVolume(value);
         // setFirstTokenVolume(value * secondPerFirstTokenPrice);
       }

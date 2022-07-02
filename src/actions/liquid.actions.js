@@ -197,6 +197,7 @@ export const loadDetailAddLiquidity = createAsyncThunk(
     }
 
     if (firstToken && secondToken) {
+
       let contractFactory = new web3.eth.Contract(
         ERC20ABI_FACTORY,
         ADDRESS_FACTORY
@@ -207,7 +208,9 @@ export const loadDetailAddLiquidity = createAsyncThunk(
         .call();
       const emptyAddress = /^0x0+$/.test(assetsPoolAddress); // true chưa có
 
+      console.log("emptyAddress",emptyAddress);
       if (emptyAddress === false) {
+
         const contractPair = new web3.eth.Contract(
           ERC20ABI_PAIR,
           assetsPoolAddress
@@ -279,9 +282,11 @@ export const addLiquidity = createAsyncThunk(
       firstToken === process.env.REACT_APP_TOKEN_WVET ||
       secondToken === process.env.REACT_APP_TOKEN_WVET
     ) {
+
       const addLiquidityETHABI = ERC20ABI_ROUTER.find(
         ({ name, type }) => name === "addLiquidityETH" && type === "function"
       );
+      
       const methodAddLiquidityETH = connex.thor
         .account(ADDRESS_ROUTER)
         .method(addLiquidityETHABI);

@@ -51,6 +51,9 @@ export const getPoolAssets = () => async (dispatch, getState) => {
             totalSupply = ethers.utils.formatUnits(totalSupply,assetsDecimals);
           }
 
+          const getReserves = await contractPair.methods.getReserves().call();
+          console.log("getReserves", getReserves);
+
           dataList.push({
             ...item,
             liquidity:totalSupply,
