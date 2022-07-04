@@ -17,11 +17,11 @@ const TrendingPairs = () => {
       </span>
       <div className="h-[1px] bg-[#4B5C86]"></div>
       <div className="flex flex-col space-y-6">
-        <div className="flex flex-wrap">
+        <div className="grid grid-cols-2 gap-x-[6px] gap-y-6">
           {data.map((item, index) => (
             <div
               key={index}
-              className="flex flex-row w-full justify-center bg-[#182844] py-[6px] px-[8px] rounded space-x-[10px] mr-[6px] flex-1 mb-6"
+              className="flex flex-row w-full justify-center bg-[#182844] py-[6px] px-[8px] rounded space-x-[10px] mr-[6px]"
             >
               <span className="font-poppins font-[600] text-sm text-white">
                 {item.from}

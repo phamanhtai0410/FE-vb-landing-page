@@ -1,7 +1,11 @@
 import React from "react";
+import useSwapFacade from "./hooks";
 
 
 const Wallet = () => {
+  const {
+    sourceTokenInfo,
+  } = useSwapFacade();
   return (
     <div className="flex flex-col w-full space-y-6">
       <div className="flex flex-row justify-between w-full">
@@ -9,7 +13,7 @@ const Wallet = () => {
           My Wallet
         </span>
         <span className="font-poppins font-[600] text-base text-white">
-          0.009 VET
+          0.009  {sourceTokenInfo?.assetsChain}
         </span>
       </div>
       <div className="h-[1px] bg-[#4B5C86]"></div>
