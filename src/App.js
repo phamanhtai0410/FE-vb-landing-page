@@ -29,8 +29,12 @@ function App() {
     <Suspense fallback={<div className="bg-[#0b1329] min-h-screen min-w-full"/>}>
       <HelmetProvider>
       <Helmet>
+        <meta property="og:title" content="VeChain - Multi-purpose DeFi platform"></meta>
+        <meta property="og:description" content="VeBank Protocol One-stop DeFi Platform on vechain" />
+        <meta property="og:image" content="https://beta.vebank.io/image_vebank.jpg"></meta>
         <link rel="canonical" href="https://www.vebank.io/" />
-      </Helmet>
+        </Helmet>
+      </HelmetProvider>
       <Routes history={history} >
 
         <Route path="/" element={<MainLayout />} >
@@ -67,7 +71,7 @@ function App() {
         <Route path="*" element={<Page404 />} />
 
       </Routes>
-      </HelmetProvider>
+
     </Suspense>
 
 
