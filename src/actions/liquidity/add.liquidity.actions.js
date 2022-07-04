@@ -17,51 +17,41 @@ const ADDRESS_FACTORY = process.env.REACT_APP_ADDRESS_FACTORY;
 
 // ------------------------ ADD LIQUIDITY ------------------------ //
 
-export const loadSelectToken = (dataToken) => async (dispatch, getState) => {
-  dispatch({
-    type: poolConstants.MODAL_OPEN_SELECT_TOKEN,
-    dataToken,
-  });
-};
+export const loadSelectToken = (dataToken) => ({
+  type: poolConstants.MODAL_OPEN_SELECT_TOKEN,
+  dataToken,
+});
 
-export const setFirstToken = (firstToken) => {
-  return {
-    type: poolConstants.SELECT_FIRST_TOKEN,
-    payload: firstToken,
-  };
-};
+export const setFirstToken = (firstToken) => ({
+  type: poolConstants.SELECT_FIRST_TOKEN,
+  payload: firstToken,
+});
 
-export const setSecondToken = (secondToken) => {
-  return {
-    type: poolConstants.SELECT_SECOND_TOKEN,
-    payload: secondToken,
-  };
-};
+export const setSecondToken = (secondToken) => ({
+  type: poolConstants.SELECT_SECOND_TOKEN,
+  payload: secondToken,
+});
 
-export const selectFirstToken = () => {
-  return {
-    type: poolConstants.MODAL_OPEN_SELECT_FIRST_TOKEN,
-  };
-};
+export const selectFirstToken = () => ({
+  type: poolConstants.MODAL_OPEN_SELECT_FIRST_TOKEN,
+});
 
-export const selectSecondToken = () => {
-  return {
-    type: poolConstants.MODAL_OPEN_SELECT_SECOND_TOKEN,
-  };
-};
+export const selectSecondToken = () => ({
+  type: poolConstants.MODAL_OPEN_SELECT_SECOND_TOKEN,
+});
 
-export const selectToken = (dataToken) => {
-  return {
-    type: poolConstants.MODAL_SELECT_TOKEN,
-    payload: dataToken,
-  };
-};
+export const selectToken = (dataToken) => ({
+  type: poolConstants.MODAL_SELECT_TOKEN,
+  payload: dataToken,
+});
 
-export const closeSelectToken = () => {
-  return {
-    type: poolConstants.MODAL_CLOSE_SELECT_TOKEN,
-  };
-};
+export const closeSelectToken = () => ({
+  type: poolConstants.MODAL_CLOSE_SELECT_TOKEN,
+});
+
+export const clearSelectedTokens = () => ({
+  type: poolConstants.LIQUIDITY_CLEAR_SELECTED_TOKENS,
+});
 
 export const approveFirstTokenAddLiquidity = createAsyncThunk(
   poolConstants.APPROVE_FIRST_TOKEN,
@@ -196,7 +186,6 @@ export const loadDetailAddLiquidity = createAsyncThunk(
     }
 
     if (firstToken && secondToken) {
-
       let contractFactory = new web3.eth.Contract(
         ERC20ABI_FACTORY,
         ADDRESS_FACTORY
@@ -207,9 +196,8 @@ export const loadDetailAddLiquidity = createAsyncThunk(
         .call();
       const emptyAddress = /^0x0+$/.test(assetsPoolAddress); // true chưa có
 
-      console.log("emptyAddress",emptyAddress);
+      console.log("emptyAddress", emptyAddress);
       if (emptyAddress === false) {
-
         const contractPair = new web3.eth.Contract(
           ERC20ABI_PAIR,
           assetsPoolAddress
@@ -281,11 +269,10 @@ export const addLiquidity = createAsyncThunk(
       firstToken === process.env.REACT_APP_TOKEN_WVET ||
       secondToken === process.env.REACT_APP_TOKEN_WVET
     ) {
-
       const addLiquidityETHABI = ERC20ABI_ROUTER.find(
         ({ name, type }) => name === "addLiquidityETH" && type === "function"
       );
-      
+
       const methodAddLiquidityETH = connex.thor
         .account(ADDRESS_ROUTER)
         .method(addLiquidityETHABI);

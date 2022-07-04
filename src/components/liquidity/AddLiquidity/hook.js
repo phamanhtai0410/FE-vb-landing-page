@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as actions from "../../../actions";
 import { selectAssetByAddress } from "../../../reducers/assetsMarket.reducer";
 import { selectPriceByTokenAddress } from "../../../reducers/assetsPrice.reducer";
@@ -15,6 +15,7 @@ import {
 } from "../../../reducers/liquid.reducer";
 import { nFormatter } from "../../../utils/lib";
 import { selectBalanceById } from "../../../reducers/accountBalance.reducer";
+import RouteName from "../../../constants/routeName.constants";
 
 const useAddLiquidFacade = () => {
   const dispatch = useDispatch();
@@ -144,8 +145,6 @@ const useAddLiquidFacade = () => {
     }
   };
 
-  const removeLiquidity = () => {};
-
   const handleAddLiquidity = () => {
     dispatch(
       actions.addLiquidity({
@@ -194,7 +193,7 @@ const useAddLiquidFacade = () => {
         setStep(2);
       } else if (addLiquidityState === true) {
         setPrimaryButtonLabel("+ Add Liquidity");
-        setStep(4);
+        navigate(RouteName.LIQUIDITY);
       }
     }
   }, [isAddingLiquidity, addLiquidityState, step]);
@@ -204,6 +203,10 @@ const useAddLiquidFacade = () => {
       dispatch(actions.setFirstToken(poolInfo?.addressTokenA));
       dispatch(actions.setSecondToken(poolInfo?.addressTokenB));
     }
+    return () => {
+      dispatch(actions.clearSelectedTokens());
+    }
+
   }, [dispatch, poolInfo]);
 
   return {
@@ -221,8 +224,6 @@ const useAddLiquidFacade = () => {
     firstPerSecondTokenPrice,
     secondPerFirstTokenPrice,
     closeModal,
-    removeLiquidity,
-    handleAddLiquidity,
     handlerStepToStep,
     closeModalAndDashboard,
     onSelectFirstCurrency,

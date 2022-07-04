@@ -111,7 +111,6 @@ export const getPoolAssetsByAccount = (dataAssetPool) => async (dispatch, getSta
 
             //Lấy tokenA nắm giữ của account
             amountTokenA = await contractPair.methods.providerAssets(account,item.addressTokenA).call();
-            console.log('🐶🐶  ~ forawait ~ amountTokenA', amountTokenA)
             if(amountTokenA){
               amountTokenA = ethers.utils.formatUnits(amountTokenA, process.env.REACT_APP_TOKEN_VEUSD === item.addressTokenA ? 6: 18);
             }

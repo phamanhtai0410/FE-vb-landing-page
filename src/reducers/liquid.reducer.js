@@ -290,6 +290,14 @@ export function liquidReducer(state = initialState, action) {
       }
     }
 
+    case poolConstants.LIQUIDITY_CLEAR_SELECTED_TOKENS: {
+      return {
+        ...state,
+        firstToken: null,
+        secondToken: null,
+      };
+    }
+
     default:
       return state;
   }

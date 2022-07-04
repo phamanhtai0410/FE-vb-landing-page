@@ -12,8 +12,7 @@ import LiquidityExcerpt from "./LiquidityExcerpt";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const Liquidity = () => {
-  const { userPoolAddresses, addLiquidity } =
-    useLiquidityFacade();
+  const { userPoolAddresses, addLiquidity, onFindOtherLPClicked } = useLiquidityFacade();
 
   return (
     <div className="w-full lg:w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative z-50">
@@ -29,7 +28,7 @@ const Liquidity = () => {
         <div className="flex flex-row items-center space-x-6">
           <div className="flex flex-col space-y-4">
             <span className="text-white text-2xl font-poppins_medium">
-              My Liquidity
+              Your Liquidity
             </span>
             <span className="text-grey-1 text-base font-poppins_light">
               Remove liquidity to receive tokens back
@@ -54,29 +53,25 @@ const Liquidity = () => {
 
       <div className="content-modal mt-8">
         <div className={`flex flex-col justify-center`}>
-          <div className="liquid-wrapper px-4 py-6 col-y-center gap-4">
+          <div className="py-6 col-y-center gap-4">
             {/* <TransitionGroup className="gap-4"> */}
-              {userPoolAddresses.map((address) => (
-                <CSSTransition
-                  key={address}
-                  timeout={500}
-                  classNames="item"
-                >
-                  <LiquidityExcerpt poolAddress={address} />
-                </CSSTransition>
-              ))}
+            {userPoolAddresses.map((address) => (
+              <CSSTransition key={address} timeout={500} classNames="item">
+                <LiquidityExcerpt poolAddress={address} />
+              </CSSTransition>
+            ))}
             {/* </TransitionGroup> */}
           </div>
           <p className="mt-8 self-center text-xl font-poppins_light text-[#678BCA]">
             Don’t see a pool you joined?
           </p>
-          {/* <button className="text-base text-[#0CD2EC] bor"></button> */}
           <SecondaryButton
             label="Find other LP tokens"
             labelColor="#0CD2EC"
             className="mt-4 w-48 h-11 rounded-lg btn-modal-secondary self-center"
             labelClassName="text-base"
             borderRadius="0.5rem"
+            onClick={onFindOtherLPClicked}
           />
         </div>
       </div>
