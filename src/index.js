@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+
 import store from "./_helpers/store";
 
 import "./assets/styles/index.scss";
@@ -18,6 +20,7 @@ ReactDOM.render(
       {/* <AlertComingSoon />
         <FireflyContainer /> */}
       <Wallet />
+      
       <App />
       <AlertMessages />
     </BrowserRouter>

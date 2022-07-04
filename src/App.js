@@ -2,6 +2,7 @@
 import React, { Suspense } from 'react';
 
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 import { history } from './_helpers';
 
@@ -26,6 +27,16 @@ function App() {
 
   return (
     <Suspense fallback={<div className="bg-[#0b1329] min-h-screen min-w-full"/>}>
+      <HelmetProvider>
+      <Helmet>
+        <title>VeChain - Multi-purpose DeFi platform</title>
+        <meta
+        name="description"
+        content="VeBank Protocol One-stop DeFi Platform on vechain"  />
+        <meta property="og:image" content="/img/image_vebank.jpg"></meta>
+        <link rel="canonical" href="https://www.vebank.io/" />
+        </Helmet>
+      </HelmetProvider>
       <Routes history={history} >
 
         <Route path="/" element={<MainLayout />} >
