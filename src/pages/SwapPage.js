@@ -62,7 +62,7 @@ const SwapPage = () => {
             <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-[172px]">
               <Wallet />
             </div>
-            <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-[284px] mt-6">
+            <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-auto mt-6">
               <TrendingPairs />
             </div>
           </div>

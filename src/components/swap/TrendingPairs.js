@@ -1,15 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import IcArrow from "../../assets/images/ic_arrow_right.svg";
+import * as actions from "../../actions";
+import { selectSymbolPairs } from "../../reducers/swap.reducer";
 
 const TrendingPairs = () => {
-  const data = [
-    { from: "USDC", to: "USDT" },
-    { from: "DAI", to: "ETH" },
-    { from: "DAI", to: "USDT" },
-    { from: "WBTC", to: "ETH" },
-    { from: "DAI", to: "USDC" },
-    { from: "USDC", to: "ETH" },
-  ];
+ 
+  const dispatch = useDispatch();
+
+  const { web3 } = useSelector((state) => state.web3, shallowEqual);
+
+  useEffect(() => {
+    if (web3) {
+      getSymbolPairs();
+    }
+  }, [web3]);
+
+  async function getSymbolPairs() {
+    await dispatch(actions.getAllPairs());
+  }
+  const data = useSelector(selectSymbolPairs);
+
   return (
     <div className="flex flex-col w-full space-y-6">
       <span className="font-poppins font-[700] text-xl text-white">
@@ -17,18 +28,18 @@ const TrendingPairs = () => {
       </span>
       <div className="h-[1px] bg-[#4B5C86]"></div>
       <div className="flex flex-col space-y-6">
-        <div className="flex flex-wrap">
+        <div className="grid grid-cols-2 gap-x-[6px] gap-y-6">
           {data.map((item, index) => (
             <div
               key={index}
-              className="flex flex-row w-full justify-center bg-[#182844] py-[6px] px-[8px] rounded space-x-[10px] mr-[6px] flex-1 mb-6"
+              className="flex flex-row w-full justify-center bg-[#182844] py-[6px] px-[8px] rounded space-x-[10px] mr-[6px]"
             >
               <span className="font-poppins font-[600] text-sm text-white">
-                {item.from}
+                {item.symbolTokenA}
               </span>
               <img className="cursor-pointer" src={IcArrow} alt="Transfer" />
               <span className="font-poppins font-[600] text-sm text-white">
-                {item.to}
+                {item.symbolTokenB}
               </span>
             </div>
           ))}
