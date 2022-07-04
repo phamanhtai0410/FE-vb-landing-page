@@ -33,7 +33,7 @@ function App() {
         <meta
         name="description"
         content="VeBank Protocol One-stop DeFi Platform on vechain"  />
-        <meta property="og:image" content="/img/image_vebank.jpg"></meta>
+        <meta property="og:image" content="https://beta.vebank.io/image_vebank.jpg"></meta>
         <link rel="canonical" href="https://www.vebank.io/" />
         </Helmet>
       </HelmetProvider>
