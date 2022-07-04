@@ -6,12 +6,19 @@ import ERC20ABI_VB from "../_contracts/assets/VB.json";
 
 import ERC20ABI_ROUTER from "../_contracts/router.json";
 
+import ERC20ABI_FACTORY from "../_contracts/factory.json";
+
+import ERC20ABI_PAIR from "../_contracts/pair.json";
+
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   getDeadline,
   getDecimalForAsset,
   isContainVET,
 } from "../utils/lib";
+
+import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
+import { getSymbolPairs } from "../reducers/swap.reducer";
 
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_ROUTER = process.env.REACT_APP_ADDRESS_ROUTER;
@@ -106,3 +113,31 @@ export const swapAsset = createAsyncThunk(
     return transaction;
   }
 );
+
+export const getAllPairs = () => async (dispatch, getState) => {
+
+  const state = getState();
+
+  const { web3, account } = state.web3;
+
+  let dataSymbolPair = [];
+
+  if (web3 && ADDRESS_FACTORY) {
+      const contractFactory = new web3.eth.Contract(ERC20ABI_FACTORY, ADDRESS_FACTORY);
+      const allPairsLength = await contractFactory.methods.allPairsLength().call();
+      for (let index = 0; index < allPairsLength; index++) {
+        const poolAddress = await contractFactory.methods.allPairs(index).call();
+        let addressTokenA = "";
+        let addressTokenB = "";
+        if (poolAddress && account){
+          const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
+          addressTokenA = await contractPair.methods.token0().call();
+          addressTokenB = await contractPair.methods.token1().call();
+          let symbolTokenA = selectAssetByAddress(state, addressTokenA).assetsChain;
+          let symbolTokenB = selectAssetByAddress(state, addressTokenB).assetsChain;
+          dataSymbolPair.push({symbolTokenA: symbolTokenA, symbolTokenB: symbolTokenB});
+        }
+      }
+      dispatch(getSymbolPairs(dataSymbolPair));
+  }
+};

@@ -6,6 +6,7 @@ const initialState = {
   desireTokenAddress: process.env.REACT_APP_TOKEN_VEBANK,
   isModalSelectTokenOpen: false,
   nameToken: swapConstants.FIRST_TOKEN,
+  symbolPairs: [],
 };
 
 const swapAssetSlice = createSlice({
@@ -37,6 +38,9 @@ const swapAssetSlice = createSlice({
     closeModalSelectToken: (state, action) => {
       state.isModalSelectTokenOpen = false;
     },
+    getSymbolPairs: (state, action) => {
+      state.symbolPairs = action.payload;
+    },
   },
 });
 
@@ -48,6 +52,7 @@ export const {
   closeModalSelectToken,
   selectSourceTokenFromModal,
   selectDesireTokenFromModal,
+  getSymbolPairs,
 } = swapAssetSlice.actions;
 
 export const selectSourceToken = (state) => state.swapAsset.sourceTokenAddress;
@@ -55,3 +60,4 @@ export const selectDesireToken = (state) => state.swapAsset.desireTokenAddress;
 export const selectNameTokenState = (state) => state.swapAsset.nameToken;
 export const selectOpenChooseTokenState = (state) =>
   state.swapAsset.isModalSelectTokenOpen;
+export const selectSymbolPairs = (state) => state.swapAsset.symbolPairs;
