@@ -1,19 +1,19 @@
 import { ethers } from "ethers";
-
-import { poolConstants } from "../constants";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import ERC20ABI_VB from "../_contracts/assets/VB.json";
-import ERC20ABI_ROUTER from "../_contracts/router.json";
-import { selectPoolInfoByAddress } from "../reducers/assetsPool.reducer";
+
+import { poolConstants } from "../../constants";
+import ERC20ABI_VB from "../../_contracts/assets/VB.json";
+import ERC20ABI_ROUTER from "../../_contracts/router.json";
+import { selectPoolInfoByAddress } from "../../reducers/assetsPool.reducer";
 import {
   getDecimalForAsset,
   getDecimalForAssetPair,
   isContainVET,
-} from "../utils/lib";
-import ERC20ABI_PAIR from "../_contracts/pair.json";
-import { selectLiquidityPool } from "../reducers/removeLiquidity.reducer";
-import { selectAssetAbiByAssetAddress } from "../reducers/web3.reducer";
-import assetAbi from "../_contracts/asset-abi";
+} from "../../utils/lib";
+import ERC20ABI_PAIR from "../../_contracts/pair.json";
+import { selectLiquidityPool } from "../../reducers/removeLiquidity.reducer";
+// import { selectAssetAbiByAssetAddress } from "../reducers/web3.reducer";
+// import assetAbi from "../_contracts/asset-abi";
 
 const ADDRESS_ROUTER = process.env.REACT_APP_ADDRESS_ROUTER;
 
@@ -42,13 +42,12 @@ export const loadDetailRemoveLiquidity = createAsyncThunk(
       const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
       addressTokenA = await contractPair.methods.token0().call();
       addressTokenB = await contractPair.methods.token1().call();
-      const balanceBigN = await contractPair.methods.balanceOf(account).call();
 
+      const balanceBigN = await contractPair.methods.balanceOf(account).call();
       balanceAccount = ethers.utils.formatUnits(
         balanceBigN,
         getDecimalForAssetPair(addressTokenA, addressTokenB)
       );
-      // balanceAccount = ethers.utils.formatUnits(balanceAccount,assetsDecimals);
 
       //Lấy tokenA nắm giữ của account
       try {
@@ -67,9 +66,7 @@ export const loadDetailRemoveLiquidity = createAsyncThunk(
 
       //Lấy tokenB nắm giữ của account
       try {
-        amountTokenB = await contractPair.methods
-          .providerAssets(account, addressTokenB)
-          .call();
+        amountTokenB = await contractPair.methods.providerAssets(account, addressTokenB).call();
         if (amountTokenB) {
           amountTokenB = ethers.utils.formatUnits(
             amountTokenB,
@@ -80,19 +77,20 @@ export const loadDetailRemoveLiquidity = createAsyncThunk(
         console.error(e);
       }
 
-      approvePool = await contractPair.methods.allowance(account, ADDRESS_ROUTER).call();
+      if(account){
+        approvePool = await contractPair.methods.allowance(account, ADDRESS_ROUTER).call();
+        const poolInfo = selectPoolInfoByAddress(currentState, poolAddress);
+        approvePool = ethers.utils.formatUnits(
+          approvePool,
+          poolInfo?.assetsDecimals
+        );
+        approvePool = Number(approvePool);
+      }
 
-      const poolInfo = selectPoolInfoByAddress(currentState, poolAddress);
-      approvePool = ethers.utils.formatUnits(
-        approvePool,
-        poolInfo?.assetsDecimals
-      );
-      approvePool = Number(approvePool);
     }
     return {
       addressTokenA,
       addressTokenB,
-
       approvePool,
       amountTokenA,
       amountTokenB,

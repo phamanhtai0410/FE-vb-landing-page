@@ -1,22 +1,21 @@
 import { ethers } from "ethers";
 
-import { poolConstants } from "../constants";
+import { poolConstants } from "../../constants";
 
-import ERC20ABI_VB from "../_contracts/assets/VB.json";
+import ERC20ABI_VB from "../../_contracts/assets/VB.json";
 
-import ERC20ABI_ROUTER from "../_contracts/router.json";
-import ERC20ABI_FACTORY from "../_contracts/factory.json";
-import ERC20ABI_PAIR from "../_contracts/pair.json";
+import ERC20ABI_ROUTER from "../../_contracts/router.json";
+import ERC20ABI_FACTORY from "../../_contracts/factory.json";
+import ERC20ABI_PAIR from "../../_contracts/pair.json";
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
-import assetAbi from "../_contracts/asset-abi";
+import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
+import assetAbi from "../../_contracts/asset-abi";
 
-const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_ROUTER = process.env.REACT_APP_ADDRESS_ROUTER;
 const ADDRESS_FACTORY = process.env.REACT_APP_ADDRESS_FACTORY;
 
-// ------------------------ BORROW ------------------------ //
+// ------------------------ ADD LIQUIDITY ------------------------ //
 
 export const loadSelectToken = (dataToken) => async (dispatch, getState) => {
   dispatch({

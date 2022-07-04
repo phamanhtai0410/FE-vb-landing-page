@@ -8,19 +8,16 @@ import IcCaretDown from "../../assets/images/ic_caret_down-fill.svg";
 import PoolRowAction from "./PoolRowAction";
 
 import * as actions from "../../actions";
-import CurrencyAssets from "../markets/CurrencyAssets";
 import LiquidPairIcon from "../partials/LiquidPairIcon";
 
 const AssetsPool = () => {
+
   const [openRowAssets, setOpenRowAssets] = useState([]);
 
   const dispatch = useDispatch();
 
   const { web3 } = useSelector((state) => state.web3, shallowEqual);
-  const { data } = useSelector(
-    (state) => state.assetsPoolReducer,
-    shallowEqual
-  );
+  const { data } = useSelector(  (state) => state.assetsPoolReducer,  shallowEqual );
 
   useEffect(() => {
     if (web3) {

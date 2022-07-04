@@ -1,12 +1,7 @@
 import React from "react";
-import { useParams } from "react-router";
-import AccountAssets from "../components/account/AccountAssets";
 
 import AssetsPool from "../components/pool/AssetsPool";
 import FrmSearchPool from "../components/pool/FrmSearchPool";
-import ModalAddLiquidity from "../components/liquidity/AddLiquidity/ModalAddLiquidity";
-import ModalSelectToken from "../components/liquidity/AddLiquidity/selectToken/ModalSelectToken";
-import ModalRemoveLiquidity from "../components/pool/RemoveLiquidity";
 
 const PoolPage = () => {
   return (
@@ -27,14 +22,11 @@ const PoolPage = () => {
               </label>
             </div>
           </div>
-
           <FrmSearchPool />
         </div>
 
         <AssetsPool />
-        <ModalAddLiquidity />
-        <ModalSelectToken />
-        <ModalRemoveLiquidity />
+
       </div>
     </section>
   );
