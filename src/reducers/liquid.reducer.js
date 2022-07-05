@@ -1,5 +1,10 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { addLiquidity, approveFirstTokenAddLiquidity, approveSecondTokenAddLiquidity, loadDetailAddLiquidity } from "../actions";
+import {
+  addLiquidity,
+  approveFirstTokenAddLiquidity,
+  approveSecondTokenAddLiquidity,
+  loadDetailAddLiquidity,
+} from "../actions";
 import { poolConstants } from "../constants";
 import { selectAssetByAddress } from "./assetsMarket.reducer";
 
@@ -105,16 +110,32 @@ export function liquidReducer(state = initialState, action) {
       };
 
     case poolConstants.SELECT_FIRST_TOKEN: {
+      const newFirstToken = action.payload;
+      if (state.secondToken === newFirstToken) {
+        return {
+          ...state,
+          firstToken: newFirstToken,
+          secondToken: state.firstToken,
+        };
+      }
       return {
         ...state,
-        firstToken: action.payload,
+        firstToken: newFirstToken,
       };
     }
 
     case poolConstants.SELECT_SECOND_TOKEN: {
+      const newSecondToken = action.payload;
+      if (state.firstToken === newSecondToken) {
+        return {
+          ...state,
+          firstToken: state.secondToken,
+          secondToken: newSecondToken,
+        };
+      }
       return {
         ...state,
-        secondToken: action.payload,
+        secondToken: newSecondToken,
       };
     }
 
@@ -126,10 +147,17 @@ export function liquidReducer(state = initialState, action) {
         errorCode: null,
         message: null,
       };
+      const newToken = action.payload;
       if (state.tokenSelecting === poolConstants.FIRST_TOKEN) {
-        newState.firstToken = action.payload;
+        if (newToken === state.secondToken) {
+          newState.secondToken = state.firstToken;
+        }
+        newState.firstToken = newToken;
       } else {
-        newState.secondToken = action.payload;
+        if (newToken === state.firstToken) {
+          newState.firstToken = state.secondToken;
+        }
+        newState.secondToken = newToken;
       }
       return newState;
     }
@@ -232,7 +260,6 @@ export function liquidReducer(state = initialState, action) {
         ...state,
         isApproving: true,
       };
-
     }
     case approveFirstTokenAddLiquidity.fulfilled.type: {
       return {
@@ -246,14 +273,12 @@ export function liquidReducer(state = initialState, action) {
         ...state,
         isApproving: false,
       };
-
     }
     case approveSecondTokenAddLiquidity.pending.type: {
       return {
         ...state,
         isApproving: true,
       };
-
     }
     case approveSecondTokenAddLiquidity.fulfilled.type: {
       return {
@@ -273,21 +298,21 @@ export function liquidReducer(state = initialState, action) {
       return {
         ...state,
         isAddingLiquidity: true,
-      }
+      };
     }
     case addLiquidity.fulfilled.type: {
       return {
         ...state,
         isAddingLiquidity: false,
         isAddingLiquiditySuccess: true,
-      }
+      };
     }
     case addLiquidity.rejected.type: {
       return {
         ...state,
         isAddingLiquidity: false,
         isAddingLiquiditySuccess: false,
-      }
+      };
     }
 
     case poolConstants.LIQUIDITY_CLEAR_SELECTED_TOKENS: {
@@ -310,13 +335,18 @@ export const selectOpenAddLiquidState = (state) =>
   state.liquidReducer.isAddLiquidModalOpen;
 export const selectOpenRemoveLiquidState = (state) =>
   state.liquidReducer.isRemoveLiquidModalOpen;
+export const selectFirstTokenExchangeRate = (state) =>
+  state.liquidReducer.abExchangeRate;
+export const selectSecondTokenExchangeRate = (state) =>
+  state.liquidReducer.baExchangeRate;
 export const selectFirstToken = (state) => state.liquidReducer.firstToken;
 export const selectSecondToken = (state) => state.liquidReducer.secondToken;
-export const selectApproveFirstToken = (state) => state.liquidReducer.approveTokenA;
-export const selectApproveSecondToken = (state) => state.liquidReducer.approveTokenB;
+export const selectApproveFirstToken = (state) =>
+  state.liquidReducer.approveTokenA;
+export const selectApproveSecondToken = (state) =>
+  state.liquidReducer.approveTokenB;
 export const selectApproveState = (state) => state.liquidReducer.isApproving;
-export const selectAddingLiquidityState = (state) => state.liquidReducer.isAddingLiquidity
-export const selectAddingLiquidityFinishState = (state) => state.liquidReducer.isAddingLiquiditySuccess
-// export const selectFirstTokenData = createSelector([selectFirstToken], (firstTokenAddress) => {
-//   selectAssetByAddress(state)
-// })
+export const selectAddingLiquidityState = (state) =>
+  state.liquidReducer.isAddingLiquidity;
+export const selectAddingLiquidityFinishState = (state) =>
+  state.liquidReducer.isAddingLiquiditySuccess;
