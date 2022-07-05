@@ -59,10 +59,10 @@ const SwapPage = () => {
           } flex flex-row p-2 space-x-6`}
         >
           <div className="flex flex-col">
-            <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-[172px]">
+            {/* <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-[172px]">
               <Wallet />
-            </div>
-            <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-auto mt-6">
+            </div> */}
+            <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-auto">
               <TrendingPairs />
             </div>
           </div>
