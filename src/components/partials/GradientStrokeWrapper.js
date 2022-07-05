@@ -27,10 +27,10 @@ const GradientStrokeWrapper = ({
   }
 
   if (colors.length !== 0 && opacities.length === 0) {
-    console.log("No opacities")
+    // console.log("No opacities")
     for (let i = 1; i <= colors.length; ++i) opacities.push(1);
   } else if (opacities.length < colors.length) {
-    console.log("Lack of opacities");
+    // console.log("Lack of opacities");
     for (let i = opacities.length + 1; i <= colors.length; ++i) opacities.push(1)
   }
 

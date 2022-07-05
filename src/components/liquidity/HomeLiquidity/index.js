@@ -56,8 +56,8 @@ const Liquidity = () => {
           <div className="py-6 col-y-center gap-4">
             {/* <TransitionGroup className="gap-4"> */}
             {userPoolAddresses.map((address) => (
-              <CSSTransition key={address} timeout={500} classNames="item">
-                <LiquidityExcerpt poolAddress={address} />
+              <CSSTransition key={address} timeout={500}>
+                <LiquidityExcerpt key={address} poolAddress={address} />
               </CSSTransition>
             ))}
             {/* </TransitionGroup> */}
