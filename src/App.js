@@ -27,14 +27,14 @@ function App() {
 
   return (
     <Suspense fallback={<div className="bg-[#0b1329] min-h-screen min-w-full"/>}>
-      <HelmetProvider>
+      {/* <HelmetProvider>
       <Helmet>
         <meta property="og:title" content="VeChain - Multi-purpose DeFi platform"></meta>
         <meta property="og:description" content="VeBank Protocol One-stop DeFi Platform on vechain" />
         <meta property="og:image" content="https://beta.vebank.io/image_vebank.jpg"></meta>
         <link rel="canonical" href="https://www.vebank.io/" />
         </Helmet>
-      </HelmetProvider>
+      </HelmetProvider> */}
       <Routes history={history} >
 
         <Route path="/" element={<MainLayout />} >
