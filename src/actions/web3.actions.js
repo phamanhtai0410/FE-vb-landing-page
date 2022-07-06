@@ -46,7 +46,7 @@ export const web3Connect = (isLogin) => async (dispatch) => {
 
   if (!_acc && isLogin) {
     // Ask user to sign the agreement
-    connex.vendor
+    await connex.vendor
       .sign("cert", {
         purpose: "agreement",
         payload: {
