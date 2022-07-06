@@ -1,54 +1,54 @@
-import React, { useState } from "react";
-import TradeChart from "../components/trade/TradeChart";
+import React from "react";
+// import TradeChart from "../components/trade/TradeChart";
+// import IcVeBank from "../assets/images/ic_vebank.svg";
+// import IcVThor from "../assets/images/ic_vtho.svg";
+// import IcVeUSD from "../assets/images/ic_veusd.svg";
+// import IcVeChain from "../assets/images/ic_vechain.svg";
+// import Wallet from "../components/swap/Wallet";
 import Swap from "../components/swap/Swap";
-import IcVeBank from "../assets/images/ic_vebank.svg";
-import IcVThor from "../assets/images/ic_vtho.svg";
-import IcVeUSD from "../assets/images/ic_veusd.svg";
-import IcVeChain from "../assets/images/ic_vechain.svg";
-import Wallet from "../components/swap/Wallet";
 import TrendingPairs from "../components/swap/TrendingPairs";
 import PoolChart from "../components/swap/PoolChart";
 import ModalSelectToken from "../components/swap/ModalSelectToken";
 import { useSelector } from "react-redux";
 import { selectOpenChooseTokenState } from "../reducers/swap.reducer";
 
-const COIN_TYPES = [
-  {
-    symbol: "VB",
-    icon: IcVeBank,
-    price: 10,
-  },
-  {
-    symbol: "VTHO",
-    icon: IcVThor,
-    price: 20,
-  },
-  {
-    symbol: "VEUSD",
-    icon: IcVeUSD,
-    price: 1,
-  },
-  {
-    symbol: "VET",
-    icon: IcVeChain,
-    price: 15,
-  },
-];
+// const COIN_TYPES = [
+//   {
+//     symbol: "VB",
+//     icon: IcVeBank,
+//     price: 10,
+//   },
+//   {
+//     symbol: "VTHO",
+//     icon: IcVThor,
+//     price: 20,
+//   },
+//   {
+//     symbol: "VEUSD",
+//     icon: IcVeUSD,
+//     price: 1,
+//   },
+//   {
+//     symbol: "VET",
+//     icon: IcVeChain,
+//     price: 15,
+//   },
+// ];
 
 const SwapPage = () => {
   const isSelectTokenModalOpen = useSelector(selectOpenChooseTokenState);
-  const [swapToken, setSwapToken] = useState({
-    from: {
-      symbol: COIN_TYPES[0].symbol,
-      icon: COIN_TYPES[0].icon,
-      price: COIN_TYPES[0].price,
-    },
-    to: {
-      symbol: COIN_TYPES[1].symbol,
-      icon: COIN_TYPES[1].icon,
-      price: COIN_TYPES[1].price,
-    },
-  });
+  // const [swapToken, setSwapToken] = useState({
+  //   from: {
+  //     symbol: COIN_TYPES[0].symbol,
+  //     icon: COIN_TYPES[0].icon,
+  //     price: COIN_TYPES[0].price,
+  //   },
+  //   to: {
+  //     symbol: COIN_TYPES[1].symbol,
+  //     icon: COIN_TYPES[1].icon,
+  //     price: COIN_TYPES[1].price,
+  //   },
+  // });
 
   return (
     <section className="box-borrows mx-auto bg-cover bg-center">
@@ -68,10 +68,7 @@ const SwapPage = () => {
           </div>
 
           <div className="rounded-2xl border border-vbLine bg-popupVb h-full p-8 w-full md:w-[568px]">
-            <Swap
-              coinType={COIN_TYPES}
-              getSwapToken={(data) => setSwapToken(data)}
-            />
+            <Swap />
           </div>
           <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[370px] h-[266px]">
             <PoolChart />

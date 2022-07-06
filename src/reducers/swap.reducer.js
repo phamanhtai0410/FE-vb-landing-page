@@ -7,12 +7,24 @@ const initialState = {
   isModalSelectTokenOpen: false,
   nameToken: swapConstants.FIRST_TOKEN,
   symbolPairs: [],
+  exchangeRateAB: 0,
+  exchangeRateBA: 0,
+  isSwap: true,
 };
 
 const swapAssetSlice = createSlice({
   name: "swapAsset",
   initialState,
   reducers: {
+    updateStatusSwap: (state, action) => {
+      state.isSwap = action.payload;
+    },
+    countExchangeRate: (state, action) => {
+      state.exchangeRateAB =
+        action.payload.reserves2 / action.payload.reserves1;
+      state.exchangeRateBA =
+        action.payload.reserves1 / action.payload.reserves2;
+    },
     selectSourceTokenFromModal: (state, action) => {
       if (action.payload) {
         state.sourceTokenAddress = action.payload;
@@ -53,6 +65,8 @@ export const {
   selectSourceTokenFromModal,
   selectDesireTokenFromModal,
   getSymbolPairs,
+  countExchangeRate,
+  updateStatusSwap,
 } = swapAssetSlice.actions;
 
 export const selectSourceToken = (state) => state.swapAsset.sourceTokenAddress;
@@ -61,3 +75,5 @@ export const selectNameTokenState = (state) => state.swapAsset.nameToken;
 export const selectOpenChooseTokenState = (state) =>
   state.swapAsset.isModalSelectTokenOpen;
 export const selectSymbolPairs = (state) => state.swapAsset.symbolPairs;
+export const selectExchangeRate = (state) => state.swapAsset.exchangeRateAB;
+export const selectIsSwap = (state) => state.swapAsset.isSwap;

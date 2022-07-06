@@ -17,9 +17,12 @@ import { svgSymbolConfig } from "../../_helpers/param";
 
 const Swap = () => {
   const {
+    isSwap,
     account,
-    inputAmount,
+    exchangeRate,
     inputAmountIn,
+    amountOutMin,
+    inputAmountOut,
     inputSlippage,
     sourceTokenInfo,
     desireTokenInfo,
@@ -28,8 +31,8 @@ const Swap = () => {
     sourceTokenBalance,
     desireTokenBalance,
     vthoBalance,
-    sourcePerDesireTokenPrice,
-    desireTokenAmount,
+    // sourcePerDesireTokenPrice,
+    // desireTokenAmount,
     setInputAmount,
     setInputSlippage,
     onSwapAssetToken,
@@ -94,13 +97,13 @@ const Swap = () => {
               <input
                 className="bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
                 type="text"
-                value={inputAmount}
+                value={inputAmountIn}
                 onChange={(event) => onChangeSourceInput(event.target.value)}
                 placeholder="0.0"
               />
             </div>
           </div>
-          <p className="self-end">${inputAmount * sourceTokenPrice}</p>
+          <p className="self-end">${inputAmountIn * sourceTokenPrice}</p>
         </div>
       </div>
 
@@ -116,7 +119,7 @@ const Swap = () => {
           <div>
             <div className="row-center space-x-4">
               <p>
-                1 {sourceTokenInfo?.assetsChain} = {sourcePerDesireTokenPrice}{" "}
+                1 {sourceTokenInfo?.assetsChain} = {exchangeRate}{" "}
                 {desireTokenInfo?.assetsChain}
               </p>
               <img src={IcSwapWhiteNoBackground} alt="Swap" />
@@ -159,20 +162,20 @@ const Swap = () => {
               <input
                 className="w-fit bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
                 type="number"
-                value={inputAmountIn}
+                value={inputAmountOut}
                 onChange={(event) => onChangeDesireInput(event.target.value)}
                 placeholder="0.0"
               />
             </div>
           </div>
-          <p className="float-right">${inputAmountIn * desireTokenPrice}</p>
+          <p className="float-right">${inputAmountOut * desireTokenPrice}</p>
         </div>
       </div>
 
       <div className="col-x-center justify-center space-y-4">
         {!account ? (
           <BtnConnectInPage className="w-full btn-veb h-12" />
-        ) : inputAmount !== "" ? (
+        ) : inputAmountIn !== "" ? (
           <div className="flex flex-col w-full space-y-4">
             <div className="col px-4 py-5 space-y-4 rounded-md border border-vbLine p-2">
               <div className="flex justify-between">
@@ -181,8 +184,7 @@ const Swap = () => {
                   <img src={IcQuestionCircle} alt="" />
                 </div>
                 <p>
-                  {(desireTokenAmount * inputSlippage) / 100}{" "}
-                  {desireTokenInfo?.assetsChain}
+                  {amountOutMin} {desireTokenInfo?.assetsChain}
                 </p>
               </div>
               <div className="flex justify-between">
@@ -218,7 +220,13 @@ const Swap = () => {
                 <p>0.0025 {sourceTokenInfo?.assetsChain}</p>
               </div>
             </div>
-            <button onClick={onSwapAssetToken} className="w-full btn-veb h-12">
+            <button
+              disabled={!isSwap}
+              onClick={onSwapAssetToken}
+              className={`w-full ${
+                isSwap ? "btn-veb" : "bg-btn-veb-disabled rounded-lg"
+              }  h-12`}
+            >
               Swap
             </button>
           </div>

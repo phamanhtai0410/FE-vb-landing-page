@@ -8,9 +8,11 @@ import { TransitionGroup } from "react-transition-group";
 
 import {
   closeModalSelectToken,
+  selectDesireToken,
   selectDesireTokenFromModal,
   selectNameTokenState,
   selectOpenChooseTokenState,
+  selectSourceToken,
   selectSourceTokenFromModal,
 } from "../../reducers/swap.reducer";
 import { selectUserAssetsBalance } from "../../reducers/accountBalance.reducer";
@@ -20,6 +22,7 @@ import { iconsModalSelectToken } from "../../assets";
 import SearchBar from "../partials/SearchBar";
 import AssetExcerpt from "../liquidity/AddLiquidity/selectToken/AssetExcerpt";
 import { swapConstants } from "../../constants";
+import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
 
 const customStyles = {
   content: {
@@ -42,6 +45,9 @@ const ModalSelectToken = () => {
   const nameToken = useSelector(selectNameTokenState);
   const isSelectTokenModalOpen = useSelector(selectOpenChooseTokenState);
 
+  const sourceTokenAddress = useSelector(selectSourceToken);
+  const desireTokenAddress = useSelector(selectDesireToken);
+
   const assetList = useSelector(selectUserAssetsBalance, shallowEqual);
   // const assetPriceList = useSelector(selectAssetPrice, shallowEqual);
 
@@ -59,13 +65,21 @@ const ModalSelectToken = () => {
 
   const onTokenSelected = useCallback(
     async (tokenData) => {
-      await dispatch(
-        nameToken === swapConstants.FIRST_TOKEN
-          ? selectSourceTokenFromModal(tokenData)
-          : selectDesireTokenFromModal(tokenData)
-      );
+      if (nameToken === swapConstants.FIRST_TOKEN) {
+        await dispatch(
+          tokenData !== desireTokenAddress
+            ? selectSourceTokenFromModal(tokenData)
+            : actions.alertActions.warning("Do not choose the same key pair")
+        );
+      } else {
+        await dispatch(
+          tokenData !== sourceTokenAddress
+            ? selectDesireTokenFromModal(tokenData)
+            : actions.alertActions.warning("Do not choose the same key pair")
+        );
+      }
     },
-    [dispatch, nameToken]
+    [desireTokenAddress, dispatch, nameToken, sourceTokenAddress]
   );
 
   return (
