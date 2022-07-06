@@ -19,6 +19,8 @@ const Swap = () => {
   const {
     account,
     inputAmount,
+    inputAmountIn,
+    inputSlippage,
     sourceTokenInfo,
     desireTokenInfo,
     sourceTokenPrice,
@@ -29,9 +31,12 @@ const Swap = () => {
     sourcePerDesireTokenPrice,
     desireTokenAmount,
     setInputAmount,
+    setInputSlippage,
     onSwapAssetToken,
     onSwapDesireToken,
     onShowModalSelectToken,
+    onChangeDesireInput,
+    onChangeSourceInput,
   } = useSwapFacade();
 
   return (
@@ -85,12 +90,12 @@ const Swap = () => {
                 </button>
               </div>
             </div>
-            <div className="relative flex flex-col w-[30%]">
+            <div className="relative flex flex-col w-fit">
               <input
-                className="h-50 bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+                className="bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
                 type="text"
                 value={inputAmount}
-                onChange={(event) => setInputAmount(event.target.value)}
+                onChange={(event) => onChangeSourceInput(event.target.value)}
                 placeholder="0.0"
               />
             </div>
@@ -143,22 +148,31 @@ const Swap = () => {
               </h1>
               <img className="w-4" src={IcDropDown} alt="" />
             </button>
-            <p
+            {/* <p
               className={`flex bg-transparent focus:outline-none ${
                 desireTokenAmount ? "text-grey-1" : "text-vbDisableText"
               } font-poppins appearance-none text-base text-right`}
             >
               {desireTokenAmount || 0.0}
-            </p>
+            </p> */}
+            <div className="relative flex flex-col w-fit">
+              <input
+                className="w-fit bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+                type="number"
+                value={inputAmountIn}
+                onChange={(event) => onChangeDesireInput(event.target.value)}
+                placeholder="0.0"
+              />
+            </div>
           </div>
-          <p className="float-right">${desireTokenAmount * desireTokenPrice}</p>
+          <p className="float-right">${inputAmountIn * desireTokenPrice}</p>
         </div>
       </div>
 
       <div className="col-x-center justify-center space-y-4">
         {!account ? (
           <BtnConnectInPage className="w-full btn-veb h-12" />
-        ) : parseFloat(inputAmount) !== 0 ? (
+        ) : inputAmount !== "" ? (
           <div className="flex flex-col w-full space-y-4">
             <div className="col px-4 py-5 space-y-4 rounded-md border border-vbLine p-2">
               <div className="flex justify-between">
@@ -167,7 +181,8 @@ const Swap = () => {
                   <img src={IcQuestionCircle} alt="" />
                 </div>
                 <p>
-                  {desireTokenAmount} {desireTokenInfo?.assetsChain}
+                  {(desireTokenAmount * inputSlippage) / 100}{" "}
+                  {desireTokenInfo?.assetsChain}
                 </p>
               </div>
               <div className="flex justify-between">
@@ -182,10 +197,18 @@ const Swap = () => {
                   <p className="text-[#ABC2FC] min-w-fit">Slippage tolerance</p>
                   <img className="w-5" src={IcQuestionCircle} alt="" />
                 </div>
-                <p className="px-4 py-[0.0625rem] rounded bg-item">
+                <input
+                  className="bg-item w-fit py-[0.0625rem] rounded focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+                  type="number"
+                  min={0.1}
+                  value={inputSlippage}
+                  onChange={(event) => setInputSlippage(event.target.value)}
+                  placeholder="0.1"
+                />
+                {/* <p className="px-4 py-[0.0625rem] rounded bg-item">
                   {" "}
                   &lt; 0.5%{" "}
-                </p>
+                </p> */}
               </div>
               <div className="flex justify-between">
                 <div className="flex space-x-2">
