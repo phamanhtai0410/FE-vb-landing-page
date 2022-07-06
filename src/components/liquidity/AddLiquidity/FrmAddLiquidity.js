@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import "./styles.scss";
 
-import { numberWithCommas } from "../../../utils/lib";
+import { nFormatter, numberWithCommas } from "../../../utils/lib";
 import IcCloseWhite from "../../../assets/images/buttons/ic_close.svg";
 import IcBackWhite from "../../../assets/images/buttons/ic_back_white.svg";
 import IcSettingWhite from "../../../assets/images/buttons/ic_setting_white.svg";
@@ -177,25 +177,34 @@ const FrmAddLiquidity = () => {
             className="mt-8"
           />
 
-          {firstToken && secondToken && firstTokenVolume && secondTokenVolume && (
-            <div className="flex flex-1 flex-col mt-8">
-              <p className="text-xl text-grey-2">Price and pool share</p>
-              <div className="flex flex-1 flex-row justify-between items-center mt-4 px-2 py-5 liquid-wrapper">
-                <div className="price-pool-item">
-                  <p className="value">{firstPerSecondTokenPrice}</p>
-                  <p className="label">{`${firstTokenInfo?.assetsChain} per ${secondTokenInfo?.assetsChain}`}</p>
-                </div>
-                <div className="price-pool-item">
-                  <p className="value">{secondPerFirstTokenPrice}</p>
-                  <p className="label">{`${secondTokenInfo?.assetsChain} per ${firstTokenInfo?.assetsChain}`}</p>
-                </div>
-                <div className="price-pool-item">
-                  <p className="value">{"<0,01%"}</p>
-                  <p className="label">Share of Pool</p>
+          {firstToken &&
+            secondToken &&
+            firstTokenVolume &&
+            secondTokenVolume &&
+            firstPerSecondTokenPrice &&
+            secondPerFirstTokenPrice ? (
+              <div className="flex flex-1 flex-col mt-8">
+                <p className="text-xl text-grey-2">Price and pool share</p>
+                <div className="flex flex-1 flex-row justify-between items-center mt-4 px-2 py-5 liquid-wrapper">
+                  <div className="price-pool-item">
+                    <p className="value">
+                      {nFormatter(firstPerSecondTokenPrice, 6)}
+                    </p>
+                    <p className="label">{`${secondTokenInfo?.assetsChain} per ${firstTokenInfo?.assetsChain}`}</p>
+                  </div>
+                  <div className="price-pool-item">
+                    <p className="value">
+                      {nFormatter(secondPerFirstTokenPrice, 6)}
+                    </p>
+                    <p className="label">{`${firstTokenInfo?.assetsChain} per ${secondTokenInfo?.assetsChain}`}</p>
+                  </div>
+                  <div className="price-pool-item">
+                    <p className="value">{"<0,01%"}</p>
+                    <p className="label">Share of Pool</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            ) : ""}
         </div>
 
         {/* STEP 2 */}

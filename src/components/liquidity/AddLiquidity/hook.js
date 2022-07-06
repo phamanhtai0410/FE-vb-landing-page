@@ -11,7 +11,9 @@ import {
   selectApproveFirstToken,
   selectApproveSecondToken,
   selectFirstToken,
+  selectFirstTokenExchangeRate,
   selectSecondToken,
+  selectSecondTokenExchangeRate,
 } from "../../../reducers/liquid.reducer";
 import { nFormatter } from "../../../utils/lib";
 import { selectBalanceById } from "../../../reducers/accountBalance.reducer";
@@ -44,27 +46,35 @@ const useAddLiquidFacade = () => {
   const secondTokenBalance = useSelector((state) =>
     selectBalanceById(state, secondToken)
   );
-  const firstTokenPrice = useSelector((state) =>
-    selectPriceByTokenAddress(state, firstToken)
-  );
-  const secondTokenPrice = useSelector((state) =>
-    selectPriceByTokenAddress(state, secondToken)
-  );
-
-  const firstPerSecondTokenPrice = useMemo(
-    () => nFormatter(firstTokenPrice / secondTokenPrice, 6),
-    [firstTokenPrice, secondTokenPrice]
-  );
-  const secondPerFirstTokenPrice = useMemo(
-    () => nFormatter(secondTokenPrice / firstTokenPrice, 6),
-    [firstTokenPrice, secondTokenPrice]
-  );
+  // const firstTokenPrice = useSelector((state) =>
+  //   selectPriceByTokenAddress(state, firstToken)
+  // );
+  // const secondTokenPrice = useSelector((state) =>
+  //   selectPriceByTokenAddress(state, secondToken)
+  // );
 
   const [step, setStep] = useState(1);
   const [continueAvailable, setContinueAvailable] = useState(false);
   const [firstTokenVolume, setFirstTokenVolume] = useState("");
   const [secondTokenVolume, setSecondTokenVolume] = useState("");
   const [primaryButtonLabel, setPrimaryButtonLabel] = useState("Invalid pair");
+
+  const firstPerSecondTokenPrice =
+    useSelector(selectFirstTokenExchangeRate) ||
+    secondTokenVolume / firstTokenVolume;
+
+  // useMemo(
+  //   () => nFormatter(firstTokenPrice / secondTokenPrice, 6),
+  //   [firstTokenPrice, secondTokenPrice]
+  // );
+  const secondPerFirstTokenPrice =
+    useSelector(selectSecondTokenExchangeRate) ||
+    firstTokenVolume / secondTokenVolume;
+
+  // useMemo(
+  //   () => nFormatter(secondTokenPrice / firstTokenPrice, 6),
+  //   [firstTokenPrice, secondTokenPrice]
+  // );
 
   const onSelectFirstCurrency = useCallback(
     (e) => {
@@ -82,10 +92,10 @@ const useAddLiquidFacade = () => {
   const onChangeFirstTokenAmount = useCallback(
     (value) => {
       const secondTokenAmount = value * firstPerSecondTokenPrice;
-      // if (value <= firstTokenBalance && secondTokenAmount <= secondTokenBalance) {
-      if (value <= firstTokenBalance) {
+      if (value <= firstTokenBalance && secondTokenAmount <= secondTokenBalance) {
+      // if (value <= firstTokenBalance) {
         setFirstTokenVolume(value);
-        // setSecondTokenVolume(secondTokenAmount);
+        setSecondTokenVolume(secondTokenAmount);
       }
     },
     [firstPerSecondTokenPrice, firstTokenBalance, secondTokenBalance]
@@ -94,10 +104,10 @@ const useAddLiquidFacade = () => {
   const onChangeSecondTokenAmount = useCallback(
     (value) => {
       const firstTokenAmount = value * secondPerFirstTokenPrice;
-      // if (value <= secondTokenBalance && firstTokenAmount <= firstTokenBalance) {
-      if (value <= secondTokenBalance) {
+      if (value <= secondTokenBalance && firstTokenAmount <= firstTokenBalance) {
+      // if (value <= secondTokenBalance) {
         setSecondTokenVolume(value);
-        // setFirstTokenVolume(value * secondPerFirstTokenPrice);
+        setFirstTokenVolume(value * secondPerFirstTokenPrice);
       }
     },
     [secondPerFirstTokenPrice, firstTokenBalance, secondTokenBalance]
@@ -192,11 +202,10 @@ const useAddLiquidFacade = () => {
         // User decline or adding liquidity failed
         setStep(2);
       } else if (addLiquidityState === true) {
-        setPrimaryButtonLabel("+ Add Liquidity");
         navigate(RouteName.LIQUIDITY);
       }
     }
-  }, [isAddingLiquidity, addLiquidityState, step]);
+  }, [isAddingLiquidity, addLiquidityState, step, navigate]);
 
   useEffect(() => {
     if (dispatch && poolInfo) {
@@ -204,10 +213,14 @@ const useAddLiquidFacade = () => {
       dispatch(actions.setSecondToken(poolInfo?.addressTokenB));
     }
     return () => {
+      resetFrm();
       dispatch(actions.clearSelectedTokens());
-    }
-
+    };
   }, [dispatch, poolInfo]);
+
+  useEffect(() => {
+    dispatch(actions.loadDetailAddLiquidity(poolAddress));
+  }, [dispatch, poolAddress]);
 
   return {
     step,

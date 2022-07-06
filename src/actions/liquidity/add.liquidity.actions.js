@@ -10,7 +10,12 @@ import ERC20ABI_PAIR from "../../_contracts/pair.json";
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
+import {
+  selectFirstToken as _selectFirstToken,
+  selectSecondToken as _selectSecondToken,
+} from "../../reducers/liquid.reducer";
 import assetAbi from "../../_contracts/asset-abi";
+import { getDecimalForAsset } from "../../utils/lib";
 
 const ADDRESS_ROUTER = process.env.REACT_APP_ADDRESS_ROUTER;
 const ADDRESS_FACTORY = process.env.REACT_APP_ADDRESS_FACTORY;
@@ -61,8 +66,6 @@ export const approveFirstTokenAddLiquidity = createAsyncThunk(
     const state = getState();
 
     const { web3, account, connex } = state.web3;
-
-    console.log("approveSecondTokenAddLiquidity", tokenAddress, ADDRESS_ROUTER);
 
     const contractAddLiquidity = new web3.eth.Contract(
       ERC20ABI_VB,
@@ -116,7 +119,6 @@ export const approveSecondTokenAddLiquidity = createAsyncThunk(
       tokenAddress
     );
 
-    console.log("approveSecondTokenAddLiquidity", tokenAddress, ADDRESS_ROUTER);
     const tokenInfo = selectAssetByAddress(state, tokenAddress);
 
     const amountMax = 1_000_000_000;
@@ -143,24 +145,37 @@ export const approveSecondTokenAddLiquidity = createAsyncThunk(
 
 export const loadDetailAddLiquidity = createAsyncThunk(
   poolConstants.LOAD_DETAIL_ADD_LIQUIDITY,
-  async (_, { getState }) => {
+  async (poolAddress, { getState, dispatch }) => {
     const currentState = getState();
     const { web3, account } = currentState.web3;
-    const { firstToken, secondToken } = currentState.liquidReducer;
+    let firstTokenAddress, secondTokenAddress, contractPair;
+
+    if (poolAddress) {
+      contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
+      firstTokenAddress = await contractPair.methods.token0().call();
+      secondTokenAddress = await contractPair.methods.token1().call();
+    } else {
+      firstTokenAddress = _selectFirstToken(currentState);
+      secondTokenAddress = _selectSecondToken(currentState);
+    }
+
+    firstTokenAddress && dispatch(setFirstToken(firstTokenAddress));
+    secondTokenAddress && dispatch(setSecondToken(secondTokenAddress));
 
     let approveTokenA = 0;
     let approveTokenB = 0;
+    let abExchangeRate, baExchangeRate;
 
-    if (firstToken) {
+    if (firstTokenAddress) {
       const contractAddLiquidityA = new web3.eth.Contract(
         ERC20ABI_VB,
-        firstToken
+        firstTokenAddress
       );
 
       approveTokenA = await contractAddLiquidityA.methods
         .allowance(account, ADDRESS_ROUTER)
         .call();
-      const tokenInfo = selectAssetByAddress(currentState, firstToken);
+      const tokenInfo = selectAssetByAddress(currentState, firstTokenAddress);
       approveTokenA = ethers.utils.formatUnits(
         approveTokenA,
         tokenInfo.assetsDecimals
@@ -168,16 +183,16 @@ export const loadDetailAddLiquidity = createAsyncThunk(
       approveTokenA = Number(approveTokenA);
     }
 
-    if (secondToken) {
+    if (secondTokenAddress) {
       const contractAddLiquidityB = new web3.eth.Contract(
         ERC20ABI_VB,
-        secondToken
+        secondTokenAddress
       );
 
       approveTokenB = await contractAddLiquidityB.methods
         .allowance(account, ADDRESS_ROUTER)
         .call();
-      const tokenInfo = selectAssetByAddress(currentState, secondToken);
+      const tokenInfo = selectAssetByAddress(currentState, secondTokenAddress);
       approveTokenB = ethers.utils.formatUnits(
         approveTokenB,
         tokenInfo.assetsDecimals
@@ -185,29 +200,35 @@ export const loadDetailAddLiquidity = createAsyncThunk(
       approveTokenB = Number(approveTokenB);
     }
 
-    if (firstToken && secondToken) {
+    if (firstTokenAddress && secondTokenAddress) {
       let contractFactory = new web3.eth.Contract(
         ERC20ABI_FACTORY,
         ADDRESS_FACTORY
       );
 
-      const assetsPoolAddress = await contractFactory.methods
-        .getPair(firstToken, secondToken)
-        .call();
-      const emptyAddress = /^0x0+$/.test(assetsPoolAddress); // true chưa có
+      if (!poolAddress) {
+        poolAddress = await contractFactory.methods
+          .getPair(firstTokenAddress, secondTokenAddress)
+          .call();
+      }
+      const emptyAddress = /^0x0+$/.test(poolAddress); // true chưa có
 
-      console.log("emptyAddress", emptyAddress);
-      if (emptyAddress === false) {
-        const contractPair = new web3.eth.Contract(
-          ERC20ABI_PAIR,
-          assetsPoolAddress
+      if (emptyAddress === false && contractPair) {
+        const reserves = await contractPair.methods?.getReserves().call();
+        const reserves1 = ethers.utils.formatUnits(
+          reserves?.[0],
+          getDecimalForAsset(firstTokenAddress)
         );
-        const getReserves = await contractPair.methods.getReserves().call();
-        console.log("getReserves", getReserves);
+        const reserves2 = ethers.utils.formatUnits(
+          reserves?.[1],
+          getDecimalForAsset(secondTokenAddress)
+        );
+        abExchangeRate = reserves2 / reserves1;
+        baExchangeRate = reserves1 / reserves2;
       }
     }
 
-    return { approveTokenA, approveTokenB };
+    return { approveTokenA, approveTokenB, abExchangeRate, baExchangeRate };
   }
 );
 
@@ -251,17 +272,17 @@ export const addLiquidity = createAsyncThunk(
 
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
 
-    console.table([
-      ["tokenA", firstToken],
-      ["tokenB", secondToken],
-      ["transactionFee", transactionFee],
-      ["amountA", amountA],
-      ["amountB", amountB],
-      ["amountAMin", amountAMin],
-      ["amountBMin", amountBMin],
-      ["account", account],
-      ["deadline", deadline],
-    ]);
+    // console.table([
+    //   ["tokenA", firstToken],
+    //   ["tokenB", secondToken],
+    //   ["transactionFee", transactionFee],
+    //   ["amountA", amountA],
+    //   ["amountB", amountB],
+    //   ["amountAMin", amountAMin],
+    //   ["amountBMin", amountBMin],
+    //   ["account", account],
+    //   ["deadline", deadline],
+    // ]);
 
     let transaction;
 
@@ -293,8 +314,6 @@ export const addLiquidity = createAsyncThunk(
           amountETHMin: amountB,
         };
       }
-
-      console.log("tokenDesired", tokenDesired);
 
       methodAddLiquidityETH.value(tokenDesired.amountETHMin);
 

@@ -104,7 +104,7 @@ const listAsset = [
 
   {
     iconOrigin: IcVeUSD,
-    iconAssets: IcVtho,
+    iconAssets: IcVeBank,
     assetsPoolName: "VEUSD-VB",
     assetsKey:
     process.env.REACT_APP_TOKEN_VEUSD+ process.env.REACT_APP_TOKEN_VEBANK,
