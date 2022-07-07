@@ -22,7 +22,9 @@ const Wallet = () => {
     }, []);
 
     useEffect(() => {
-        fetchAccountInit();
+        if(account){
+            fetchAccountInit();
+        }
     }, [account]);
 
 

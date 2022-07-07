@@ -13,7 +13,7 @@ const BtnConnect = () => {
   const [isConnecting, setIsConnecting] = useState(false);
   const [showModalWallet, setShowModalWallet] = useState(false);
 
-  const { account } = useSelector((state) => state.web3, shallowEqual);
+  const account = useSelector((state) => state.web3.account, shallowEqual);
 
   const dispatch = useDispatch();
 
@@ -45,6 +45,8 @@ const BtnConnect = () => {
         console.log(err);
       });
   };
+
+  console.log("BtnConnect account",account);
 
   return (
     <>

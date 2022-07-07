@@ -42,9 +42,7 @@ export const web3Connect = (isLogin) => async (dispatch) => {
     });
 
     return _acc;
-  }
-
-  if (!_acc && isLogin) {
+  }else if (!_acc && isLogin) {
     // Ask user to sign the agreement
     await connex.vendor
       .sign("cert", {
@@ -72,15 +70,15 @@ export const web3Connect = (isLogin) => async (dispatch) => {
 
         return _acc;
       });
+  }else{
+    dispatch({
+      type: web3Constants.WEB3_CONNECT, 
+      web3,
+      connex
+    });
+  
+    return _acc;
   }
-
-  dispatch({
-    type: web3Constants.WEB3_CONNECT, 
-    web3,
-    connex
-  });
-
-  return _acc;
 
 };
 
@@ -193,6 +191,7 @@ export const instantiateVEUSDContracts = createAsyncThunk(
         balance = Math.round(balance * 100) / 100;
       }
       return {balance, contractVEUSD};
+
     }
   }
 );

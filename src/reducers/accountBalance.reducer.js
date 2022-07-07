@@ -19,20 +19,24 @@ const accountBalanceSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(web3Constants.INIT_CONTRACT_VB, (state, action) => {
-        if (!state.ids.includes(action.contractVB.assetsAddress)) {
-          state.ids.push(action.contractVB.options.address);
-        }
-        if (state?.entities) {
-          state.entities[action.contractVB.options.address] = action.balance;
+        if(action.contractVB){
+          if (!state.ids.includes(action.contractVB.assetsAddress)) {
+            state.ids.push(action.contractVB.options.address);
+          }
+          if (state?.entities) {
+            state.entities[action.contractVB.options.address] = action.balance;
+          }
         }
       })
       .addCase(instantiateVEUSDContracts.fulfilled, (state, action) => {
-        const { contractVEUSD, balance } = action.payload;
-        if (!state.ids.includes(contractVEUSD.options.address)) {
-          state.ids.push(contractVEUSD.options.address);
-        }
-        if (state?.entities) {
-          state.entities[contractVEUSD.options.address] = balance;
+        if(action.payload){
+          const { contractVEUSD, balance } = action.payload;
+          if (!state.ids.includes(contractVEUSD.options.address)) {
+            state.ids.push(contractVEUSD.options.address);
+          }
+          if (state?.entities) {
+            state.entities[contractVEUSD.options.address] = balance;
+          }
         }
       })
       .addCase(web3Constants.INIT_CONTRACT_VET, (state, action) => {

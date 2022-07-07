@@ -4,7 +4,6 @@ import { NavLink } from 'react-router-dom';
 
 import IcLogo from '../../assets/images/ic_logo.svg';
 
-import BtnConnect from '../account/BtnConnect';
 import HeaderAccount from '../account/HeaderAccount';
 import MenuLink from './MenuLink';
 
