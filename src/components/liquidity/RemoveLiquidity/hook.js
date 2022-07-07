@@ -13,12 +13,12 @@ import {
   selectApprovingState,
   selectFirstTokenExchangeRate,
   selectPoolApproval,
+  selectRemoveTransactionId,
   selectRemovingFinishState,
   selectRemovingState,
   selectSecondTokenExchangeRate,
 } from "../../../reducers/removeLiquidity.reducer";
 import { selectWeb3 } from "../../../reducers/web3.reducer";
-import { nFormatter } from "../../../utils/lib";
 
 const useRemoveLiquidFacade = () => {
   const dispatch = useDispatch();
@@ -26,6 +26,7 @@ const useRemoveLiquidFacade = () => {
   const navigation = useNavigate();
 
   const web3 = useSelector(selectWeb3);
+  const txid = useSelector(selectRemoveTransactionId);
   const isApproving = useSelector(selectApprovingState);
   const approvePoolState = useSelector(selectPoolApproval);
   const isRemoving = useSelector(selectRemovingState);
@@ -187,6 +188,7 @@ const useRemoveLiquidFacade = () => {
 
   return {
     step,
+    txid,
     firstTokenInfo,
     secondTokenInfo,
     amountTokenA,

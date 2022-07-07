@@ -14,6 +14,7 @@ import ProgressBar from "../../partials/ProgressBar";
 const ModalRemoveLiquidity = () => {
   const {
     step,
+    txid,
     firstTokenInfo,
     secondTokenInfo,
     amountTokenA,
@@ -232,13 +233,13 @@ const ModalRemoveLiquidity = () => {
         <div
           className={`${
             step === 4 ? "" : "hidden"
-          } flex flex-col justify-center mt-4`}
+          } flex flex-col items-center mt-4`}
         >
           <img src={ImgSubmitted} alt="" className="w-19 self-center" />
           <p className="text-4xl text-center mt-12">Transaction Submitted</p>
-          <button className="mt-4 text-lg font-poppins_medium text-[#22D4EC]">
+          <a target="_blank" href={`${process.env.REACT_APP_CHECK_TRANSACTION_URL}${txid}#info`} className="mt-4 text-lg font-poppins_medium text-[#22D4EC]" rel="noreferrer">
             View on Explore
-          </button>
+          </a>
         </div>
       </div>
 

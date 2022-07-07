@@ -55,9 +55,12 @@ const removeLiquiditySlice = createSlice({
       .addCase(removeLiquidity.pending, (state, _) => {
         state.isRemoving = true;
       })
-      .addCase(removeLiquidity.fulfilled, (state, _) => {
+      .addCase(removeLiquidity.fulfilled, (state, action) => {
         state.isRemoving = false;
         state.isRemoveSuccess = true;
+        if (action.payload) {
+          state.txid = action.payload.txid;
+        }
       })
       .addCase(removeLiquidity.rejected, (state, _) => {
         state.isRemoving = false;
@@ -87,5 +90,7 @@ export const selectFirstTokenExchangeRate = (state) =>
   state.removeLiquidity.abExchangeRate;
 export const selectSecondTokenExchangeRate = (state) =>
   state.removeLiquidity.baExchangeRate;
+
+export const selectRemoveTransactionId = (state) => state.removeLiquidity.txid;
 
 export const { initialRemoveLiquidityPage } = removeLiquiditySlice.actions;
