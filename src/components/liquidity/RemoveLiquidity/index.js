@@ -9,7 +9,6 @@ import IcQuestionCircle from "../../../assets/images/buttons/ic_question_outline
 
 import useRemoveLiquidFacade from "./hook";
 import GradientStrokeWrapper from "../../partials/GradientStrokeWrapper";
-import { PartialConstants } from "../../../constants/partial.constants";
 import ProgressBar from "../../partials/ProgressBar";
 
 const ModalRemoveLiquidity = () => {
@@ -21,8 +20,8 @@ const ModalRemoveLiquidity = () => {
     amountTokenB,
     removeAvailable,
     enableBtnLabel,
-    firstPerSecondTokenPrice,
-    secondPerFirstTokenPrice,
+    firstPerSecondTokenExchangeRate,
+    secondPerFirstTokenExchangeRate,
     amountPercentage,
     isEnableBtnEnabled,
     primaryButtonLabel,
@@ -52,7 +51,6 @@ const ModalRemoveLiquidity = () => {
     <div className="w-full lg:w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative z-50">
       {/*Header*/}
       <GradientStrokeWrapper
-        colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
         borderRadius="1rem"
         className="-z-10"
       />
@@ -131,55 +129,61 @@ const ModalRemoveLiquidity = () => {
               </div>
             </div>
           </div>
-          <div className="mt-8">
-            <p className="text-xl font-poppins_semi_bold text-[#678BCA]">
-              YOU WILL RECEIVE
-            </p>
-            <div className="mt-4 col p-4 gap-4.5 border rounded-lg border-[#4F92A7]">
-              <div className="full-row-between-center gap-4">
-                <img src={firstTokenInfo?.icon} alt="" className="w-8 h-8" />
-                <p className="flex flex-grow text-lg font-poppins_semi_bold">
-                  {firstTokenInfo?.assetsChain || ""}
-                </p>
-                <p className="flex flex-grow justify-end text-xl">
-                  {amountTokenA}
-                </p>
-              </div>
-              <div className="full-row-between-center gap-4">
-                <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
-                <p className="flex flex-grow text-lg font-poppins_semi_bold">
-                  {secondTokenInfo?.assetsChain || ""}
-                </p>
-                <p className="flex flex-grow justify-end text-xl">
-                  {amountTokenB}
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="mt-8">
-            <p className="text-xl font-poppins_semi_bold text-[#678BCA]">
-              PRICES
-            </p>
-            <div className="mt-4 col p-4 gap-4.5 border rounded-lg border-[#4F92A7]">
-              <div className="full-row-between-center">
-                <p className="text-xl font-poppins_semi_bold">
-                  1 {firstTokenInfo?.assetsChain || ""} =
-                </p>
-                <p className="text-xl">
-                  {firstPerSecondTokenPrice}{" "}
-                  {secondTokenInfo?.assetsChain || ""}
-                </p>
-              </div>
-              <div className="full-row-between-center">
-                <p className="text-xl font-poppins_semi_bold">
-                  1 {secondTokenInfo?.assetsChain || ""} =
-                </p>
-                <p className="text-xl">
-                  {secondPerFirstTokenPrice} {firstTokenInfo?.assetsChain || ""}
-                </p>
+          {firstTokenInfo && secondTokenInfo && (
+            <div className="mt-8">
+              <p className="text-xl font-poppins_semi_bold text-[#678BCA]">
+                YOU WILL RECEIVE
+              </p>
+              <div className="mt-4 col p-4 gap-4.5 border rounded-lg border-[#4F92A7]">
+                <div className="full-row-between-center gap-4">
+                  <img src={firstTokenInfo?.icon} alt="" className="w-8 h-8" />
+                  <p className="flex flex-grow text-lg font-poppins_semi_bold">
+                    {firstTokenInfo?.assetsChain || ""}
+                  </p>
+                  <p className="flex flex-grow justify-end text-xl">
+                    {amountTokenA}
+                  </p>
+                </div>
+                <div className="full-row-between-center gap-4">
+                  <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
+                  <p className="flex flex-grow text-lg font-poppins_semi_bold">
+                    {secondTokenInfo?.assetsChain || ""}
+                  </p>
+                  <p className="flex flex-grow justify-end text-xl">
+                    {amountTokenB}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {firstPerSecondTokenExchangeRate && secondPerFirstTokenExchangeRate && (
+            <div className="mt-8">
+              <p className="text-xl font-poppins_semi_bold text-[#678BCA]">
+                PRICES
+              </p>
+              <div className="mt-4 col p-4 gap-4.5 border rounded-lg border-[#4F92A7]">
+                <div className="full-row-between-center">
+                  <p className="text-xl font-poppins_semi_bold">
+                    1 {firstTokenInfo?.assetsChain || ""} =
+                  </p>
+                  <p className="text-xl">
+                    {firstPerSecondTokenExchangeRate}{" "}
+                    {secondTokenInfo?.assetsChain || ""}
+                  </p>
+                </div>
+                <div className="full-row-between-center">
+                  <p className="text-xl font-poppins_semi_bold">
+                    1 {secondTokenInfo?.assetsChain || ""} =
+                  </p>
+                  <p className="text-xl">
+                    {secondPerFirstTokenExchangeRate}{" "}
+                    {firstTokenInfo?.assetsChain || ""}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* STEP 2 */}

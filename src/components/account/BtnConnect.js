@@ -5,7 +5,6 @@ import * as actions from "../../actions";
 import IcWallet from "../../assets/images/ic_wallet.svg";
 import IcUp from "../../assets/images/up.svg";
 import IcDown from "../../assets/images/down.svg";
-import { PartialConstants } from "../../constants/partial.constants";
 import GradientStrokeWrapper from "../partials/GradientStrokeWrapper";
 import { copyTextToClipboard } from "../../utils/lib";
 import ModalWallet from "./ModalWallet";
@@ -57,7 +56,6 @@ const BtnConnect = () => {
             onClick={() => setShowModalWallet(!showModalWallet)}
           >
             <GradientStrokeWrapper
-              colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
               borderRadius="1.25rem"
               className="z-[1]"
             />

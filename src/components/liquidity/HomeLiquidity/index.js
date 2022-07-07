@@ -18,7 +18,6 @@ const Liquidity = () => {
     <div className="w-full lg:w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative z-50">
       {/*Header*/}
       <GradientStrokeWrapper
-        colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
         borderRadius="1rem"
         className="-z-10"
       />

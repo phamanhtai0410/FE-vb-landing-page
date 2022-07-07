@@ -3,7 +3,6 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import * as actions from "../../../actions";
 import { selectAssetByAddress } from "../../../reducers/assetsMarket.reducer";
-import { selectPriceByTokenAddress } from "../../../reducers/assetsPrice.reducer";
 import { selectPoolInfoByAddress } from "../../../reducers/assetsPool.reducer";
 import {
   selectAddingLiquidityFinishState,
@@ -12,8 +11,12 @@ import {
   selectApproveSecondToken,
   selectFirstToken,
   selectFirstTokenExchangeRate,
+  selectTotalSupply,
   selectSecondToken,
   selectSecondTokenExchangeRate,
+  selectReserveA,
+  selectReserveB,
+  selectLiquidityPool,
 } from "../../../reducers/liquid.reducer";
 import { nFormatter } from "../../../utils/lib";
 import { selectBalanceById } from "../../../reducers/accountBalance.reducer";
@@ -46,6 +49,12 @@ const useAddLiquidFacade = () => {
   const secondTokenBalance = useSelector((state) =>
     selectBalanceById(state, secondToken)
   );
+
+  const userCurrentLiquidityPool = useSelector(selectLiquidityPool);
+  const totalSupply = useSelector(selectTotalSupply);
+  const reserveB = useSelector(selectReserveA);
+  const reserveA = useSelector(selectReserveB);
+
   // const firstTokenPrice = useSelector((state) =>
   //   selectPriceByTokenAddress(state, firstToken)
   // );
@@ -59,7 +68,7 @@ const useAddLiquidFacade = () => {
   const [secondTokenVolume, setSecondTokenVolume] = useState("");
   const [primaryButtonLabel, setPrimaryButtonLabel] = useState("Invalid pair");
 
-  const firstPerSecondTokenPrice =
+  const firstPerSecondTokenExchangeRate =
     useSelector(selectFirstTokenExchangeRate) ||
     secondTokenVolume / firstTokenVolume;
 
@@ -67,9 +76,42 @@ const useAddLiquidFacade = () => {
   //   () => nFormatter(firstTokenPrice / secondTokenPrice, 6),
   //   [firstTokenPrice, secondTokenPrice]
   // );
-  const secondPerFirstTokenPrice =
+  const secondPerFirstTokenExchangeRate =
     useSelector(selectSecondTokenExchangeRate) ||
     firstTokenVolume / secondTokenVolume;
+
+  const liquidityEstimated = useMemo(() => {
+    if (totalSupply === 0 || totalSupply === 0.0) {
+      console.log("🐶🐶  ~ liquidityEstimated ~ totalSupply", totalSupply);
+      console.log(
+        "🐶🐶  ~ useAddLiquidFacade ~ firstTokenVolume",
+        firstTokenVolume
+      );
+      console.log(
+        "🐶🐶  ~ liquidityEstimated ~ Number(process.env.MINIMUM_LIQUIDITY)",
+        process.env.REACT_APP_MINIMUM_LIQUIDITY
+      );
+      return (
+        Math.sqrt(firstTokenVolume * secondTokenVolume) -
+        Number(process.env.REACT_APP_MINIMUM_LIQUIDITY)
+      );
+    }
+    return Math.min(
+      (firstTokenVolume * totalSupply) / reserveA,
+      (secondTokenVolume * totalSupply) / reserveB
+    );
+  }, [totalSupply, firstTokenVolume, reserveA, secondTokenVolume, reserveB]);
+  console.log(
+    "🐶🐶  ~ liquidityEstimated ~ liquidityEstimated",
+    liquidityEstimated
+  );
+
+  const shareAPool = useMemo(
+    () =>
+      ((liquidityEstimated + Number(userCurrentLiquidityPool)) * 100.0) /
+      (Number(totalSupply) + liquidityEstimated),
+    [liquidityEstimated, totalSupply, userCurrentLiquidityPool]
+  );
 
   // useMemo(
   //   () => nFormatter(secondTokenPrice / firstTokenPrice, 6),
@@ -91,26 +133,40 @@ const useAddLiquidFacade = () => {
 
   const onChangeFirstTokenAmount = useCallback(
     (value) => {
-      const secondTokenAmount = value * firstPerSecondTokenPrice;
-      if (value <= firstTokenBalance && secondTokenAmount <= secondTokenBalance) {
-      // if (value <= firstTokenBalance) {
+      if (totalSupply === 0) {
+        setFirstTokenVolume(value);
+      } else {
+        const secondTokenAmount = value * firstPerSecondTokenExchangeRate;
+        // if (
+        //   value <= firstTokenBalance &&
+        //   secondTokenAmount <= secondTokenBalance
+        // ) {
+        // if (value <= firstTokenBalance) {
         setFirstTokenVolume(value);
         setSecondTokenVolume(secondTokenAmount);
+        // }
       }
     },
-    [firstPerSecondTokenPrice, firstTokenBalance, secondTokenBalance]
+    [firstPerSecondTokenExchangeRate, totalSupply]
   );
 
   const onChangeSecondTokenAmount = useCallback(
     (value) => {
-      const firstTokenAmount = value * secondPerFirstTokenPrice;
-      if (value <= secondTokenBalance && firstTokenAmount <= firstTokenBalance) {
-      // if (value <= secondTokenBalance) {
+      if (totalSupply === 0) {
         setSecondTokenVolume(value);
-        setFirstTokenVolume(value * secondPerFirstTokenPrice);
+      } else {
+        const firstTokenAmount = value * secondPerFirstTokenExchangeRate;
+        // if (
+        //   value <= secondTokenBalance &&
+        //   firstTokenAmount <= firstTokenBalance
+        // ) {
+        // if (value <= secondTokenBalance) {
+        setSecondTokenVolume(value);
+        setFirstTokenVolume(firstTokenAmount);
+        // }
       }
     },
-    [secondPerFirstTokenPrice, firstTokenBalance, secondTokenBalance]
+    [totalSupply, secondPerFirstTokenExchangeRate]
   );
 
   const closeModal = () => {
@@ -144,7 +200,7 @@ const useAddLiquidFacade = () => {
       firstTokenVolume > 0 &&
       secondTokenVolume > 0
     ) {
-      dispatch(actions.loadDetailAddLiquidity());
+      dispatch(actions.loadDetailAddLiquidity(poolAddress));
       setStep(2);
       setPrimaryButtonLabel("Confirm Supply");
     }
@@ -180,6 +236,12 @@ const useAddLiquidFacade = () => {
         ) {
           setPrimaryButtonLabel("Enter an amount");
           setContinueAvailable(false);
+        } else if (
+          firstTokenVolume > firstTokenBalance ||
+          secondTokenVolume > secondTokenBalance
+        ) {
+          setContinueAvailable(false);
+          setPrimaryButtonLabel("Balance not available");
         } else {
           setContinueAvailable(true);
           setPrimaryButtonLabel("Supply");
@@ -224,6 +286,8 @@ const useAddLiquidFacade = () => {
 
   return {
     step,
+    shareAPool,
+    liquidityEstimated,
     firstToken,
     secondToken,
     continueAvailable,
@@ -234,8 +298,8 @@ const useAddLiquidFacade = () => {
     approveSecondToken,
     firstTokenInfo,
     secondTokenInfo,
-    firstPerSecondTokenPrice,
-    secondPerFirstTokenPrice,
+    firstPerSecondTokenExchangeRate,
+    secondPerFirstTokenExchangeRate,
     closeModal,
     handlerStepToStep,
     closeModalAndDashboard,

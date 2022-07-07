@@ -17,7 +17,6 @@ import {
 } from "../../reducers/swap.reducer";
 import { selectUserAssetsBalance } from "../../reducers/accountBalance.reducer";
 import GradientStrokeWrapper from "../partials/GradientStrokeWrapper";
-import { PartialConstants } from "../../constants/partial.constants";
 import { iconsModalSelectToken } from "../../assets";
 import SearchBar from "../partials/SearchBar";
 import AssetExcerpt from "../liquidity/AddLiquidity/selectToken/AssetExcerpt";
@@ -91,7 +90,6 @@ const ModalSelectToken = () => {
       overlayClassName="overlay"
     >
       <GradientStrokeWrapper
-        colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
         className="-z-50"
         borderRadius="1rem"
       />
