@@ -3,7 +3,7 @@ import BtnOpenAddLiquidity from "./BtnOpenAddLiquidity";
 import BtnOpenRemoveLiquidity from "./BtnOpenRemoveLiquidity";
 
 const PoolRowAction = ({ openRowAssets, item }) => {
-  
+
   if (openRowAssets.indexOf(item.assetsPoolAddress) === -1) {
     return <></>;
   }
@@ -22,7 +22,7 @@ const PoolRowAction = ({ openRowAssets, item }) => {
           <label className="font-poppins text-[14px] text-[#678BCA]">
             Your Liquidity
           </label>
-          <div className="font-montserrat text-[16px] text-[#3EE8FF]">${showAmountUSD()}</div>
+          <div className="font-montserrat text-[16px] text-[#3EE8FF]">${nFormatter(showAmountUSD(), 2)}</div>
           <div className="font-montserrat text-[16px] text-[#3EE8FF]">
             {item.balanceAccount} LP
           </div>
@@ -45,7 +45,7 @@ const PoolRowAction = ({ openRowAssets, item }) => {
           Your Share
           </label>
           <div className="font-montserrat text-[16px] text-[#3EE8FF]">
-            {nFormatter((item.balanceAccount * 100) / item.liquidity, 2)}%
+            {item.liquidity > 0 ? nFormatter((item.balanceAccount * 100) / item.liquidity, 2) : 0}%
           </div>
         </div>
 

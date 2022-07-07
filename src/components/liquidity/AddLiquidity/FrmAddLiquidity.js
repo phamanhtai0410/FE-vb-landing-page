@@ -23,6 +23,8 @@ const FrmAddLiquidity = () => {
     step,
     firstToken,
     secondToken,
+    shareAPool,
+    liquidityEstimated,
     firstTokenVolume,
     continueAvailable,
     secondTokenVolume,
@@ -31,8 +33,8 @@ const FrmAddLiquidity = () => {
     approveSecondToken,
     firstTokenInfo,
     secondTokenInfo,
-    firstPerSecondTokenPrice,
-    secondPerFirstTokenPrice,
+    firstPerSecondTokenExchangeRate,
+    secondPerFirstTokenExchangeRate,
     onSelectFirstCurrency,
     onSelectSecondCurrency,
     closeModalAndDashboard,
@@ -86,7 +88,6 @@ const FrmAddLiquidity = () => {
     <div className="w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative z-50">
       {/*Header*/}
       <GradientStrokeWrapper
-        colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
         borderRadius="1rem"
         className="-z-10"
       />
@@ -178,40 +179,46 @@ const FrmAddLiquidity = () => {
           />
 
           {firstToken &&
-            secondToken &&
-            firstTokenVolume &&
-            secondTokenVolume &&
-            firstPerSecondTokenPrice &&
-            secondPerFirstTokenPrice ? (
-              <div className="flex flex-1 flex-col mt-8">
-                <p className="text-xl text-grey-2">Price and pool share</p>
-                <div className="flex flex-1 flex-row justify-between items-center mt-4 px-2 py-5 liquid-wrapper">
-                  <div className="price-pool-item">
-                    <p className="value">
-                      {nFormatter(firstPerSecondTokenPrice, 6)}
-                    </p>
-                    <p className="label">{`${secondTokenInfo?.assetsChain} per ${firstTokenInfo?.assetsChain}`}</p>
-                  </div>
-                  <div className="price-pool-item">
-                    <p className="value">
-                      {nFormatter(secondPerFirstTokenPrice, 6)}
-                    </p>
-                    <p className="label">{`${firstTokenInfo?.assetsChain} per ${secondTokenInfo?.assetsChain}`}</p>
-                  </div>
-                  <div className="price-pool-item">
-                    <p className="value">{"<0,01%"}</p>
-                    <p className="label">Share of Pool</p>
-                  </div>
+          secondToken &&
+          firstTokenVolume &&
+          secondTokenVolume &&
+          firstPerSecondTokenExchangeRate &&
+          secondPerFirstTokenExchangeRate ? (
+            <div className="flex flex-1 flex-col mt-8">
+              <p className="text-xl text-grey-2">Price and pool share</p>
+              <div className="flex flex-1 flex-row justify-between items-center mt-4 px-2 py-5 liquid-wrapper">
+                <div className="price-pool-item">
+                  <p className="value">
+                    {nFormatter(firstPerSecondTokenExchangeRate, 6)}
+                  </p>
+                  <p className="label">{`${secondTokenInfo?.assetsChain} per ${firstTokenInfo?.assetsChain}`}</p>
+                </div>
+                <div className="price-pool-item">
+                  <p className="value">
+                    {nFormatter(secondPerFirstTokenExchangeRate, 6)}
+                  </p>
+                  <p className="label">{`${firstTokenInfo?.assetsChain} per ${secondTokenInfo?.assetsChain}`}</p>
+                </div>
+                <div className="price-pool-item">
+                  <p className="value">
+                    {shareAPool < 0.01 ? "<0,01" : nFormatter(shareAPool, 8)}%
+                  </p>
+                  <p className="label">Share of Pool</p>
                 </div>
               </div>
-            ) : ""}
+            </div>
+          ) : (
+            ""
+          )}
         </div>
 
         {/* STEP 2 */}
         <div className={`${step === 2 ? "" : "hidden"} flex flex-col`}>
           <div className="flex flex-col space-y-6">
             <div className="flex flex-row items-center">
-              <p className=" text-4xl font-poppins_medium mr-8">0,0390929</p>
+              <p className=" text-4xl font-poppins_medium mr-8">
+                {liquidityEstimated}
+              </p>
               <div className="flex flex-row space-x-3">
                 <img src={firstTokenInfo?.icon} alt="" className="w-8 h-8" />
                 <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
@@ -246,13 +253,13 @@ const FrmAddLiquidity = () => {
             <div className="price-pool-share-row items-start">
               <p className="self-start font-poppins_light">Rates</p>
               <div className="flex flex-col justify-end">
-                <p className="text-right">{`1 ${firstTokenInfo?.assetsChain} = ${firstPerSecondTokenPrice} ${secondTokenInfo?.assetsChain}`}</p>
-                <p className="text-right">{`1 ${secondTokenInfo?.assetsChain} = ${secondPerFirstTokenPrice} ${firstTokenInfo?.assetsChain}`}</p>
+                <p className="text-right">{`1 ${firstTokenInfo?.assetsChain} = ${firstPerSecondTokenExchangeRate} ${secondTokenInfo?.assetsChain}`}</p>
+                <p className="text-right">{`1 ${secondTokenInfo?.assetsChain} = ${secondPerFirstTokenExchangeRate} ${firstTokenInfo?.assetsChain}`}</p>
               </div>
             </div>
             <div className="price-pool-share-row">
               <p>Share a Pool</p>
-              <p>0.00005958%</p>
+              <p>{shareAPool < 0.01 ? "<0,01" : nFormatter(shareAPool, 8)}%</p>
             </div>
           </div>
         </div>
@@ -271,7 +278,8 @@ const FrmAddLiquidity = () => {
           <div className="flex flex-col space-y-4">
             <p className="text-4xl text-center">Waiting For Confirmation</p>
             <p className="text-lg text-center">
-              Supplying {firstTokenVolume} VET and {secondTokenVolume} VEUSD
+              Supplying {firstTokenVolume} {firstTokenInfo?.assetsChain} and{" "}
+              {secondTokenVolume} {secondTokenInfo?.assetsChain}
             </p>
             <p className="text-lg text-center text-[#678BCA] cursor-pointer">
               Confirm this transaction in your wallet

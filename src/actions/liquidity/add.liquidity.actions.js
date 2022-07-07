@@ -15,7 +15,12 @@ import {
   selectSecondToken as _selectSecondToken,
 } from "../../reducers/liquid.reducer";
 import assetAbi from "../../_contracts/asset-abi";
-import { getDecimalForAsset } from "../../utils/lib";
+import {
+  getDecimalForAsset,
+  getDecimalForAssetPair,
+  nFormatter,
+} from "../../utils/lib";
+import PartialConstants from "../../constants/partial.constants";
 
 const ADDRESS_ROUTER = process.env.REACT_APP_ADDRESS_ROUTER;
 const ADDRESS_FACTORY = process.env.REACT_APP_ADDRESS_FACTORY;
@@ -92,7 +97,7 @@ export const approveFirstTokenAddLiquidity = createAsyncThunk(
         )
         .request();
 
-      return { result, approveTokenA: 1 };
+      return { result, approveTokenA: amountMax };
       // .then((result) => {
       //   console.log("🐶🐶  ~ result", result);
 
@@ -138,7 +143,7 @@ export const approveSecondTokenAddLiquidity = createAsyncThunk(
         )
         .request();
 
-      return { result, approveTokenB: 1 };
+      return { result, approveTokenB: amountMax };
     }
   }
 );
@@ -164,6 +169,10 @@ export const loadDetailAddLiquidity = createAsyncThunk(
 
     let approveTokenA = 0;
     let approveTokenB = 0;
+    let reserveA = 0;
+    let reserveB = 0;
+    let totalSupply = 0;
+    let liquidityPool = 0;
     let abExchangeRate, baExchangeRate;
 
     if (firstTokenAddress) {
@@ -201,6 +210,11 @@ export const loadDetailAddLiquidity = createAsyncThunk(
     }
 
     if (firstTokenAddress && secondTokenAddress) {
+      const assetsDecimal = getDecimalForAssetPair(
+        firstTokenAddress,
+        secondTokenAddress
+      );
+
       let contractFactory = new web3.eth.Contract(
         ERC20ABI_FACTORY,
         ADDRESS_FACTORY
@@ -215,20 +229,60 @@ export const loadDetailAddLiquidity = createAsyncThunk(
 
       if (emptyAddress === false && contractPair) {
         const reserves = await contractPair.methods?.getReserves().call();
-        const reserves1 = ethers.utils.formatUnits(
+        // console.log("🐶🐶  ~ reserves", reserves);
+        reserveA = ethers.utils.formatUnits(
           reserves?.[0],
           getDecimalForAsset(firstTokenAddress)
         );
-        const reserves2 = ethers.utils.formatUnits(
+        reserveB = ethers.utils.formatUnits(
           reserves?.[1],
           getDecimalForAsset(secondTokenAddress)
         );
-        abExchangeRate = reserves2 / reserves1;
-        baExchangeRate = reserves1 / reserves2;
+
+        // if (reserveA < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+        //   reserveA = 0//nFormatter(reserveA, 2);
+        // }
+        // if (reserveB < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+        //   reserveB = 0//nFormatter(reserveB, 2);
+        // }
+
+        if (reserveA == 0) abExchangeRate = 0;
+        else abExchangeRate = reserveB / reserveA;
+        if (reserveB == 0) baExchangeRate = 0;
+        else baExchangeRate = reserveA / reserveB;
+
+        // if (abExchangeRate < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+        //   abExchangeRate = nFormatter(abExchangeRate, 2);
+        // }
+        // if (baExchangeRate < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+        //   baExchangeRate = nFormatter(baExchangeRate, 2);
+        // }
+
+        const balanceBigN = await contractPair.methods
+          .balanceOf(account)
+          .call();
+        liquidityPool = ethers.utils.formatUnits(balanceBigN, assetsDecimal);
+
+        totalSupply = await contractPair.methods?.totalSupply().call();
+        if (totalSupply) {
+          totalSupply = ethers.utils.formatUnits(totalSupply, assetsDecimal);
+          // if (totalSupply < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+          //   totalSupply = 0;
+          // }
+        }
       }
     }
 
-    return { approveTokenA, approveTokenB, abExchangeRate, baExchangeRate };
+    return {
+      approveTokenA,
+      approveTokenB,
+      abExchangeRate,
+      baExchangeRate,
+      reserveB,
+      reserveA,
+      totalSupply,
+      liquidityPool,
+    };
   }
 );
 

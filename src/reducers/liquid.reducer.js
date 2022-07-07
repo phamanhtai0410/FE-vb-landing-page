@@ -350,3 +350,8 @@ export const selectAddingLiquidityState = (state) =>
   state.liquidReducer.isAddingLiquidity;
 export const selectAddingLiquidityFinishState = (state) =>
   state.liquidReducer.isAddingLiquiditySuccess;
+
+export const selectTotalSupply = (state) => state.liquidReducer.totalSupply;
+export const selectLiquidityPool = (state) => state.liquidReducer.liquidityPool;
+export const selectReserveA = (state) => state.liquidReducer.reserveA;
+export const selectReserveB = (state) => state.liquidReducer.reserveB;

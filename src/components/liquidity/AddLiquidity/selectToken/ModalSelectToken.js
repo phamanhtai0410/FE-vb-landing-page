@@ -12,7 +12,6 @@ import { selectOpenChooseTokenState } from "../../../../reducers/liquid.reducer"
 import SearchBar from "../../../partials/SearchBar";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import GradientStrokeWrapper from "../../../partials/GradientStrokeWrapper";
-import { PartialConstants } from "../../../../constants/partial.constants";
 import { selectUserAssetsBalance } from "../../../../reducers/accountBalance.reducer";
 import AssetExcerpt from "./AssetExcerpt";
 
@@ -68,7 +67,6 @@ const ModalSelectToken = () => {
       overlayClassName="overlay"
     >
       <GradientStrokeWrapper
-        colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
         className="-z-50"
         borderRadius="1rem"
       />

@@ -49,6 +49,8 @@ const removeLiquiditySlice = createSlice({
         state.amountTokenA = action.payload.amountTokenA;
         state.amountTokenB = action.payload.amountTokenB;
         state.liquidityPool = action.payload.liquidityPool;
+        state.abExchangeRate = action.payload.abExchangeRate;
+        state.baExchangeRate = action.payload.baExchangeRate;
       })
       .addCase(removeLiquidity.pending, (state, _) => {
         state.isRemoving = true;
@@ -73,10 +75,17 @@ export const selectRemovingFinishState = (state) =>
   state.removeLiquidity.isRemoveSuccess;
 
 export const selectPoolApproval = (state) => state.removeLiquidity.poolApproval;
-export const selectAddressTokenA = (state) => state.removeLiquidity.addressTokenA;
-export const selectAddressTokenB = (state) => state.removeLiquidity.addressTokenB;
+export const selectAddressTokenA = (state) =>
+  state.removeLiquidity.addressTokenA;
+export const selectAddressTokenB = (state) =>
+  state.removeLiquidity.addressTokenB;
 export const selectAmountTokenA = (state) => state.removeLiquidity.amountTokenA;
 export const selectAmountTokenB = (state) => state.removeLiquidity.amountTokenB;
-export const selectLiquidityPool = (state) => state.removeLiquidity.liquidityPool;
+export const selectLiquidityPool = (state) =>
+  state.removeLiquidity.liquidityPool;
+export const selectFirstTokenExchangeRate = (state) =>
+  state.removeLiquidity.abExchangeRate;
+export const selectSecondTokenExchangeRate = (state) =>
+  state.removeLiquidity.baExchangeRate;
 
 export const { initialRemoveLiquidityPage } = removeLiquiditySlice.actions;

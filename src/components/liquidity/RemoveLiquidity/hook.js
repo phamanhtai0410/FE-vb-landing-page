@@ -11,9 +11,11 @@ import {
   selectAmountTokenA,
   selectAmountTokenB,
   selectApprovingState,
+  selectFirstTokenExchangeRate,
   selectPoolApproval,
   selectRemovingFinishState,
   selectRemovingState,
+  selectSecondTokenExchangeRate,
 } from "../../../reducers/removeLiquidity.reducer";
 import { selectWeb3 } from "../../../reducers/web3.reducer";
 import { nFormatter } from "../../../utils/lib";
@@ -33,26 +35,30 @@ const useRemoveLiquidFacade = () => {
     selectAssetByAddress(state, firstTokenAddress)
   );
   const firstTokenAmount = useSelector(selectAmountTokenA);
-  const firstTokenPrice = useSelector((state) =>
-    selectPriceByTokenAddress(state, firstTokenAddress)
-  );
+  // const firstTokenPrice = useSelector((state) =>
+  //   selectPriceByTokenAddress(state, firstTokenAddress)
+  // );
   const secondTokenAddress = useSelector(selectAddressTokenB);
   const secondTokenInfo = useSelector((state) =>
     selectAssetByAddress(state, secondTokenAddress)
   );
   const secondTokenAmount = useSelector(selectAmountTokenB);
-  const secondTokenPrice = useSelector((state) =>
-    selectPriceByTokenAddress(state, secondTokenAddress)
-  );
+  // const secondTokenPrice = useSelector((state) =>
+  //   selectPriceByTokenAddress(state, secondTokenAddress)
+  // );
 
-  const firstPerSecondTokenPrice = useMemo(
-    () => nFormatter(firstTokenPrice / secondTokenPrice, 5),
-    [firstTokenPrice, secondTokenPrice]
-  );
-  const secondPerFirstTokenPrice = useMemo(
-    () => nFormatter(secondTokenPrice / firstTokenPrice, 5),
-    [firstTokenPrice, secondTokenPrice]
-  );
+  const firstPerSecondTokenExchangeRate = useSelector(selectFirstTokenExchangeRate);
+
+  // useMemo(
+  //   () => nFormatter(firstTokenPrice / secondTokenPrice, 5),
+  //   [firstTokenPrice, secondTokenPrice]
+  // );
+  const secondPerFirstTokenExchangeRate = useSelector(selectSecondTokenExchangeRate);
+
+  // useMemo(
+  //   () => nFormatter(secondTokenPrice / firstTokenPrice, 5),
+  //   [firstTokenPrice, secondTokenPrice]
+  // );
 
   const [step, setStep] = useState(1);
   const [enableBtnLabel, setEnableBtnLabel] = useState("Enable");
@@ -186,8 +192,8 @@ const useRemoveLiquidFacade = () => {
     amountTokenA,
     amountTokenB,
     enableBtnLabel,
-    firstPerSecondTokenPrice,
-    secondPerFirstTokenPrice,
+    firstPerSecondTokenExchangeRate,
+    secondPerFirstTokenExchangeRate,
     removeAvailable,
     isEnableBtnEnabled,
     amountPercentage,

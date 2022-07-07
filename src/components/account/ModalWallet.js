@@ -15,7 +15,6 @@ const ModalWallet = ({ isOpen, onCopy, disConnectWallet, account }) => {
     >
       <div className="relative">
         <GradientStrokeWrapper
-          colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
           borderRadius="1rem"
           className="z-[1]"
         />

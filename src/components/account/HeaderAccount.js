@@ -1,5 +1,4 @@
 import React from "react";
-import { PartialConstants } from "../../constants/partial.constants";
 import GradientStrokeWrapper from "../partials/GradientStrokeWrapper";
 
 import BalanceVB from "./BalanceVB";
@@ -15,7 +14,6 @@ const HeaderAccount = () => {
           type="submit"
         >
           <GradientStrokeWrapper
-            colors={PartialConstants.PRIMARY_GRADIENT_COLOR_LIST}
             borderRadius="1.25rem"
             className="z-[1]"
           />
