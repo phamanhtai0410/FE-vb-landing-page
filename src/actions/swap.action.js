@@ -83,7 +83,6 @@ export const swapAsset = createAsyncThunk(
     const currentState = getState();
 
     const { connex, account, web3 } = currentState.web3;
-
     const assetsPoolName = `${tokenAInfo?.assetsChain} - ${tokenBInfo?.assetsChain}`;
 
     const addressTokenA = tokenAInfo?.assetsAddress || "";
@@ -100,6 +99,8 @@ export const swapAsset = createAsyncThunk(
     const emptyAddress = /^0x0+$/.test(assetsPoolAddress); // true chưa có
 
     const isPairContainVET = isContainVET(addressTokenA, addressTokenB);
+    console.log("isPairContainVET",isPairContainVET);
+
     const functionName = isPairContainVET
       ? "swapExactTokensForETH"
       : "swapExactTokensForTokens";
@@ -113,8 +114,7 @@ export const swapAsset = createAsyncThunk(
     const y = minAmountOut;
     const x = amountInToSwap;
     const m = amountInToSwap;
-    const amountToOut =
-    (y * (1000 * m - fee * m)) / (1000 * x + (1000 * m - fee * m));
+    const amountToOut = (y * (1000 * m - fee * m)) / (1000 * x + (1000 * m - fee * m));
     
     const amountOutMin = web3.utils.toWei(
       amountToOut.toString(),
@@ -126,57 +126,39 @@ export const swapAsset = createAsyncThunk(
       getDecimalForAsset(addressTokenB) === 6 ? "mwei" : "ether"
     );
 
+    console.table([
+      ["method",functionName],
+      ["addressTokenA",addressTokenA],
+      ["addressTokenB",addressTokenB],
+      ["amountOutMin",amountOutMin],
+      ["amountIn",amountIn]
+    ]);
+    
+
     let transaction;
     if (!emptyAddress) {
       if (isPairContainVET) {
-        // const assetDesired =
-        //   addressTokenA === process.env.REACT_APP_TOKEN_WVET
-        //     ? {
-        //         address: addressTokenB,
-        //         amountTokenMin: amountBMin,
-        //         amountETHMin: amountOutMin,
-        //       }
-        //     : {
-        //         address: addressTokenA,
-        //         amountTokenMin: amountOutMin,
-        //         amountETHMin: amountBMin,
-        //       };
 
-        // methodSwapToken.value(assetDesired.amountETHMin);
+        let pathAddress = [];
 
-        console.log(
-          "amountIn",
-          amountIn,
-          "amountOutMin",
-          amountOutMin,
-          "account",
-          account,
-          "deadline",
-          deadline
-        );
+        if (addressTokenA === process.env.REACT_APP_TOKEN_WVET) {
+          pathAddress = pathAddress.concat([addressTokenB, addressTokenA]);
+        } else {
+          pathAddress = pathAddress.concat([addressTokenA, addressTokenB]);
+        }
 
         transaction = await methodSwapToken
           .transact(
             amountIn,
             amountOutMin,
-            [addressTokenA, addressTokenB],
+            pathAddress,
             account,
             deadline
           )
           .comment(`transaction swap ${assetsPoolName} from VeBank`)
           .request();
-      } else {
-        console.log(
-          "amountIn",
-          amountIn,
-          "amountOutMin",
-          amountOutMin,
-          "account",
-          account,
-          "deadline",
-          deadline
-        );
 
+      } else {
         transaction = await methodSwapToken
           .transact(
             amountIn,
