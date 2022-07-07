@@ -2,6 +2,7 @@ import { alertConstants } from '../constants';
 
 export const alertActions = {
     loading,
+    update,
     warning,
     success,
     error,
@@ -11,6 +12,9 @@ export const alertActions = {
 function loading(message, key) {
     // console.log("duration", duration);
     return { type: alertConstants.LOADING, message, key };
+}
+function update(message, key, status) {
+    return { type: alertConstants.UPDATE, message, key, status };
 }
 function success(message, key) {
     return { type: alertConstants.SUCCESS, message, key };

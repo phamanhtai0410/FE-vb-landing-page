@@ -58,6 +58,8 @@ module.exports = {
       hint: "#7694DE",
       item: "#182844",
       popupVb: "#182233",
+      notiSuccess: "#0FE3E3",
+      notiWarning: "#FA8C16",
       grey: {
         1: "#ffffff",
         2: "#FAFAFA",

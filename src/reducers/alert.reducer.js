@@ -2,6 +2,19 @@ import { alertConstants } from '../constants';
 
 export function alert(state = {}, action) {
   switch (action.type) {
+    case alertConstants.LOADING:
+      return {
+        type: 'loading',
+        message: action.message,
+        key: action.key
+      };
+    case alertConstants.UPDATE:
+      return {
+        type: 'update',
+        message: action.message,
+        key: action.key,
+        status: action.status
+      };
     case alertConstants.SUCCESS:
       return {
         type: 'success',
