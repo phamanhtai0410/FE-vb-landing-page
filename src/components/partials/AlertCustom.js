@@ -4,7 +4,7 @@ import IcSuccess from "../../assets/images/toast/success.svg";
 import IcWarning from "../../assets/images/toast/warning.svg";
 import { useSelector } from "react-redux";
 
-const AlertCustom = ({ type, message, description }) => {
+const AlertCustom = ({ message, description, closeToast  }) => {
   const alert = useSelector((state) => state.alert);
   const [icon, setIcon] = useState("");
   useEffect(() => {
@@ -31,7 +31,7 @@ const AlertCustom = ({ type, message, description }) => {
           </span>
         </div>
       </div>
-      <img src={IcClose} alt="" />
+      {icon ? <img src={IcClose} alt="" onClick={closeToast} /> : null}
     </div>
   );
 };
