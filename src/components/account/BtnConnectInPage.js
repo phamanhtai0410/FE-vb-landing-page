@@ -39,13 +39,12 @@ const BtnConnectInPage = ({ ...props }) => {
   };
 
   const alertLoginHandler = (pending, data) => {
-    dispatch(actions.alertActions.success(data, data.id));
-    // if (pending) {
-    //     dispatch(actions.alertActions.loading(data, data.id));
-    // }
-    // else {
-    //     dispatch(actions.alertActions.update(data, data.id));
-    // }
+    if (pending) {
+        dispatch(actions.alertActions.loading(data, data.id));
+    }
+    else {
+        dispatch(actions.alertActions.update(data, data.id));
+    }
   };
 
   return (
