@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import IcClose from "../../assets/images/toast/close.svg";
+import AlertCustom from "./AlertCustom";
 
 const AlertMessages = () => {
   const alert = useSelector((state) => state.alert);
@@ -22,25 +23,25 @@ const AlertMessages = () => {
     if (alert) {
       switch (alert.type) {
         case "error":
-          toast.error(alert.message);
+          toast.error(genMessage(alert.message));
           break;
 
         case "warning":
-          toast.warning(alert.message);
+          toast.warning(genMessage(alert.message));
           break;
 
         case "success":
-          toast.success(alert.message);
+          toast.success(genMessage(alert.message));
           break;
 
         case "loading":
-          toast.loading(alert.message, { icon: true, toastId: alert.key });
+          toast.loading(genMessage(alert.message), { icon: true, toastId: alert.message.id });
           break;
 
         case "update":
-          toast.update(alert.key, {
-            render: alert.message,
-            type: alert.status,
+          toast.update(alert.message.id, {
+            render: genMessage(alert.message),
+            type: alert.message.status,
             isLoading: false,
             icon: false,
             autoClose: 5000
@@ -55,6 +56,9 @@ const AlertMessages = () => {
     // Remove given toast
   }, [alert]);
 
+  const genMessage = (message) => {
+    return <AlertCustom message={message} />
+  } 
   return (
     <ToastContainer
       toastClassName={({ type }) =>

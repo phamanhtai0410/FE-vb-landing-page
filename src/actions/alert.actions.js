@@ -10,11 +10,10 @@ export const alertActions = {
 };
 
 function loading(message, key) {
-    // console.log("duration", duration);
     return { type: alertConstants.LOADING, message, key };
 }
-function update(message, key, status) {
-    return { type: alertConstants.UPDATE, message, key, status };
+function update(message, key) {
+    return { type: alertConstants.UPDATE, message, key };
 }
 function success(message, key) {
     return { type: alertConstants.SUCCESS, message, key };

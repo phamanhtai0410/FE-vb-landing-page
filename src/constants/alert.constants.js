@@ -6,3 +6,9 @@ export const alertConstants = {
     WARNING: 'ALERT_MESSAGE_WARNING',
     CLEAR: 'ALERT_MESSAGE_CLEAR'
 };
+
+export const alertVariable = {
+    LOGIN_LOADING: 'Waiting for connect wallet',
+    LOGIN_SUCCESS: 'Syn2 Wallet Connected',
+    LOGIN_ERROR: 'Syn2 Wallet Error',
+};

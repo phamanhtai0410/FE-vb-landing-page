@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux";
 
 import * as actions from "../../actions";
 import AlertCustom from "../partials/AlertCustom";
+import { v4 as uuidv4 } from "uuid";
+import { alertVariable } from "../../constants";
 
 const BtnConnectInPage = ({ ...props }) => {
   const [isConnecting, setIsConnecting] = useState(false);
@@ -10,48 +12,40 @@ const BtnConnectInPage = ({ ...props }) => {
   const dispatch = useDispatch();
 
   const connectWalletHandler = async () => {
+    const alertData = {
+      id: uuidv4(),
+      status: "loading",
+      title: alertVariable.LOGIN_LOADING,
+      description: "Wallets: 0x5566...0d6a",
+      ext: "",
+    };
     if (!isConnecting) {
       setIsConnecting(true);
-      alertLoginHandler(true, "loading");
+      alertLoginHandler(true, alertData);
       await dispatch(actions.web3Connect(true))
         .then(() => {
           setIsConnecting(false);
-          alertLoginHandler(false, "success");
+          alertData.title = alertVariable.LOGIN_SUCCESS;
+          alertData.status = "success";
+          alertLoginHandler(false, alertData);
         })
         .catch((e) => {
           setIsConnecting(false);
-          alertLoginHandler(false, "warning");
+          alertData.title = alertVariable.LOGIN_ERROR;
+          alertData.status = "warning";
+          alertLoginHandler(false, alertData);
         });
     }
   };
 
-  const alertLoginHandler = (isConnecting, status) => {
-    if (isConnecting) {
-      dispatch(
-        actions.alertActions.loading(
-          <AlertCustom
-            type="loading"
-            message="Waiting for connect wallet"
-            description="Wallets: 0x5566...0d6a"
-          />,
-          "login",
-          status
-        )
-      );
-    } else {
-      dispatch(
-        actions.alertActions.update(
-          <AlertCustom
-            // type={status}
-            message={status==="success" ? "Syn2 Wallet Connected" : "Syn2 Wallet Rejected"}
-            description="Wallets: 0x5566...0d6a"
-          />,
-          "login",
-          status
-        )
-      );
-    }
-    return;
+  const alertLoginHandler = (pending, data) => {
+    dispatch(actions.alertActions.success(data, data.id));
+    // if (pending) {
+    //     dispatch(actions.alertActions.loading(data, data.id));
+    // }
+    // else {
+    //     dispatch(actions.alertActions.update(data, data.id));
+    // }
   };
 
   return (

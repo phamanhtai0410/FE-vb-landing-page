@@ -30,6 +30,7 @@
     "redux-thunk": "^2.4.1",
     "thor-devkit": "^2.0.4",
     "thorify": "^1.6.2",
+    "uuid": "^8.3.2",
     "web3": "^1.7.1"
   },
   "scripts": {
