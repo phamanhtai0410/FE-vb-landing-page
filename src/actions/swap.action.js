@@ -97,18 +97,7 @@ export const swapAsset = createAsyncThunk(
       .getPair(addressTokenA, addressTokenB)
       .call();
     const emptyAddress = /^0x0+$/.test(assetsPoolAddress); // true chưa có
-
     const isPairContainVET = isContainVET(addressTokenA, addressTokenB);
-    console.log("isPairContainVET",isPairContainVET);
-
-    const functionName = isPairContainVET
-      ? "swapExactTokensForETH"
-      : "swapExactTokensForTokens";
-
-    const swapABI = ERC20ABI_ROUTER.find(
-      ({ name, type }) => name === functionName && type === "function"
-    );
-    const methodSwapToken = connex.thor.account(ADDRESS_ROUTER).method(swapABI);
 
     const fee = 0.03;
     const y = minAmountOut;
@@ -126,6 +115,25 @@ export const swapAsset = createAsyncThunk(
       getDecimalForAsset(addressTokenB) === 6 ? "mwei" : "ether"
     );
 
+    let functionName ="";
+    let pathAddress = [];
+    if (addressTokenA === process.env.REACT_APP_TOKEN_WVET) { // Đổi VET sang token khác
+      pathAddress = pathAddress.concat([addressTokenA, addressTokenB]);
+      functionName = "swapETHForExactTokens";
+    } else if (addressTokenB === process.env.REACT_APP_TOKEN_WVET) { // Đổi token sang VET khác
+      pathAddress = pathAddress.concat([addressTokenB, addressTokenA]);
+      functionName = "swapExactTokensForETH";
+    } else { // Token to Token
+      pathAddress = pathAddress.concat([addressTokenA, addressTokenB]);
+      functionName = "swapExactTokensForTokens";
+    }
+
+    const swapABI = ERC20ABI_ROUTER.find(
+      ({ name, type }) => name === functionName && type === "function"
+    );
+
+    const methodSwapToken = connex.thor.account(ADDRESS_ROUTER).method(swapABI);
+
     console.table([
       ["method",functionName],
       ["addressTokenA",addressTokenA],
@@ -134,19 +142,10 @@ export const swapAsset = createAsyncThunk(
       ["amountIn",amountIn]
     ]);
     
+  let transaction;
+  if (!emptyAddress) {
 
-    let transaction;
-    if (!emptyAddress) {
       if (isPairContainVET) {
-
-        let pathAddress = [];
-
-        if (addressTokenA === process.env.REACT_APP_TOKEN_WVET) {
-          pathAddress = pathAddress.concat([addressTokenB, addressTokenA]);
-        } else {
-          pathAddress = pathAddress.concat([addressTokenA, addressTokenB]);
-        }
-
         transaction = await methodSwapToken
           .transact(
             amountIn,

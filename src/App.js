@@ -14,7 +14,7 @@ const HomePage = React.lazy(() => import('./pages/HomePage'));
 const MarketPage = React.lazy(() => import('./pages/MarketPage'));
 const PoolPage = React.lazy(() => import('./pages/PoolPage'));
 const FarmPage = React.lazy(() => import('./pages/FarmPage'));
-const TradePage = React.lazy(() => import('./pages/TradePage'));
+// const TradePage = React.lazy(() => import('./pages/TradePage'));
 const StakingPage = React.lazy(() => import('./pages/StakingPage'));
 const LaunchPadPage = React.lazy(() => import('./pages/LaunchPadPage'));
 const ComingSoon = React.lazy(() => import('./components/partials/ComingSoon'));
@@ -49,7 +49,7 @@ function App() {
 
           <Route path="/farm" element={<FarmPage/>} />
 
-          <Route path="/trade" element={<TradePage />} />
+          {/* <Route path="/trade" element={<TradePage />} /> */}
 
           <Route path="/stake" element={<StakingPage />} />
 
