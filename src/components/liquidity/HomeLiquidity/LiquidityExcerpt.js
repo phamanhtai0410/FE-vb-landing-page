@@ -61,7 +61,7 @@ const LiquidityExcerpt = ({ poolAddress }) => {
         />
       </div>
       {isExpanded && (
-        <Fragment className="fade-in-box">
+        <div className="fade-in-box full-col-y-center">
           <div className="col mt-10 space-y-6">
             <div className="full-row-between-center space-x-4">
               <img src={poolInfo?.iconOrigin} alt="" className="w-8 h-8" />
@@ -98,7 +98,7 @@ const LiquidityExcerpt = ({ poolAddress }) => {
           >
             + Add liquidity instead
           </p>
-        </Fragment>
+        </div>
       )}
     </div>
   );

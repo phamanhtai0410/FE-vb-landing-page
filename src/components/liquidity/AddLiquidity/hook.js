@@ -101,10 +101,6 @@ const useAddLiquidFacade = () => {
       (secondTokenVolume * totalSupply) / reserveB
     );
   }, [totalSupply, firstTokenVolume, reserveA, secondTokenVolume, reserveB]);
-  console.log(
-    "🐶🐶  ~ liquidityEstimated ~ liquidityEstimated",
-    liquidityEstimated
-  );
 
   const shareAPool = useMemo(
     () =>
@@ -200,7 +196,13 @@ const useAddLiquidFacade = () => {
       firstTokenVolume > 0 &&
       secondTokenVolume > 0
     ) {
-      dispatch(actions.loadDetailAddLiquidity(poolAddress));
+      // Check if both token approval is enough for this current add liquidity process
+      dispatch(
+        actions.checkApproval({
+          firstTokenAddress: firstToken,
+          secondTokenAddress: secondToken,
+        })
+      );
       setStep(2);
       setPrimaryButtonLabel("Confirm Supply");
     }

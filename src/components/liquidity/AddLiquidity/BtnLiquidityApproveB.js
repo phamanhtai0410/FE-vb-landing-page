@@ -3,11 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Beforeunload } from "react-beforeunload";
 
 import * as actions from "../../../actions";
-import { selectApproveState } from "../../../reducers/liquid.reducer";
+import { selectApproveState, selectCheckApprovalState } from "../../../reducers/liquid.reducer";
 import { selectAssetByAddress } from "../../../reducers/assetsMarket.reducer";
 
 const BtnLiquidityApproveB = ({ tokenAddress }) => {
   const isApproving = useSelector(selectApproveState);
+  const isCheckingApproval = useSelector(selectCheckApprovalState);
   const tokenInfo = useSelector((state) =>
     selectAssetByAddress(state, tokenAddress)
   );
@@ -31,12 +32,12 @@ const BtnLiquidityApproveB = ({ tokenAddress }) => {
           approveHandler(e);
         }}
         className={`btn-modal-veb w-full ${
-            isApproving ? "bg-btn-veb-disabled hidden" : "bg-btn-veb"
+          isCheckingApproval || isApproving ? "bg-btn-veb-disabled" : "bg-btn-veb"
         }`}
         type="submit"
-
+        disabled={isCheckingApproval || isApproving}
       >
-        {isApproving ? "Approving..." : `Approve ${tokenInfo?.assetsChain}`}{" "}
+        {isCheckingApproval ? "Checking..." : isApproving ? "Approving..." : `Approve ${tokenInfo?.assetsChain}`}{" "}
       </button>
     </>
   );
