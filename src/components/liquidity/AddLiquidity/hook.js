@@ -271,19 +271,23 @@ const useAddLiquidFacade = () => {
     }
   }, [isAddingLiquidity, addLiquidityState, step, navigate]);
 
+  // useEffect(() => {
+  //   if (dispatch && poolInfo) {
+  //     dispatch(actions.setFirstToken(poolInfo?.addressTokenA));
+  //     dispatch(actions.setSecondToken(poolInfo?.addressTokenB));
+  //   }
+  //   return () => {
+  //     resetFrm();
+  //     dispatch(actions.clearSelectedTokens());
+  //   };
+  // }, [dispatch, poolInfo]);
+
   useEffect(() => {
-    if (dispatch && poolInfo) {
-      dispatch(actions.setFirstToken(poolInfo?.addressTokenA));
-      dispatch(actions.setSecondToken(poolInfo?.addressTokenB));
-    }
+    dispatch(actions.loadDetailAddLiquidity(poolAddress));
     return () => {
       resetFrm();
       dispatch(actions.clearSelectedTokens());
     };
-  }, [dispatch, poolInfo]);
-
-  useEffect(() => {
-    dispatch(actions.loadDetailAddLiquidity(poolAddress));
   }, [dispatch, poolAddress]);
 
   return {
