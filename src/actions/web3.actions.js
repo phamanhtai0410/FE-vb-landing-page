@@ -14,7 +14,7 @@ import ERC20ABI_VB from "../_contracts/assets/VB.json";
 import * as actions from "./";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
-import { randomKeyUUID } from "../utils/lib";
+import { addressWalletCompact, randomKeyUUID } from "../utils/lib";
 import {
   selectBalanceById,
   selectUserAssetsBalance,
@@ -53,13 +53,12 @@ export const web3Connect = (isLogin) => async (dispatch) => {
     return _acc;
   }else if (!_acc && isLogin) {
 
-    const alertData = {
-      id: randomKeyUUID(),
+    const key = randomKeyUUID();
+
+    dispatch(actions.alertActions.loading({
       title: "Connecting",
       description: `Wallet sync2 waiting...`,
-    };
-
-    dispatch(actions.alertActions.loading(alertData, alertData.id));
+    }, key));
 
     // Ask user to sign the agreement
     await connex.vendor.sign("cert", {
@@ -87,23 +86,21 @@ export const web3Connect = (isLogin) => async (dispatch) => {
         });
 
         dispatch(actions.alertActions.update({
-          ...alertData,
           status: "success",
           title: "Connected",
-          description:`Wallet: ${_acc.slice(0, 6)}...${_acc.slice(
-            _acc.length - 4,
-            _acc.length
-          )}`
-        }, alertData.id));
+          description:`Wallet: ${addressWalletCompact(_acc)}`
+        }, key));
+
         return _acc;
 
       }).catch((e) => {
+
         dispatch(actions.alertActions.update({
-          ...alertData,
           title: "Connect",
           status: "warning",
           description: e.message
-        }, alertData.id));
+        }, key));
+
       });
   } else {
     dispatch({

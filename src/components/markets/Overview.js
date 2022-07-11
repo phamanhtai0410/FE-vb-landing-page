@@ -40,7 +40,7 @@ const Overview = () => {
             <h2 className='text-lg'>Overview</h2>
             <div className='bg-overview flex justify-center justify-items-center items-center text-center rounded mt-3 p-4'>
 
-                {accountTotalSupplied || accountTotalBorrowed ? <>
+                {accountTotalSupplied && accountTotalBorrowed ? <>
                     <div className='flex-1'>
                         <p className='text-xs font-normal text-slate-50'>Net APY</p>
                         <span className='text-xl font-bold'>4.57K %</span>
@@ -57,14 +57,14 @@ const Overview = () => {
                     <span className='text-xl font-bold'>$ {accountTotalBorrowed ? nFormatter(accountTotalBorrowed, 2) : 0}</span>
                 </div>
 
-                {accountTotalSupplied || accountTotalBorrowed ? <>|<div className='flex-1'>
+                {accountTotalSupplied && accountTotalBorrowed ? <>|<div className='flex-1'>
                     <p className='text-xs font-normal text-slate-50'>Health factor</p>
                     <span className='text-xl font-bold'>
                         {healthFactor ? parseInt(healthFactor) : 0}
                     </span>
                 </div> </> : ""}
 
-                {accountTotalSupplied || accountTotalBorrowed ? <>|<div className='flex-1'>
+                {accountTotalSupplied && accountTotalBorrowed ? <>|<div className='flex-1'>
                     <p className='text-xs font-normal text-slate-50'>Available rewards</p>
                     <span className='text-xl font-bold'>0 %</span>
                 </div></> : ""}

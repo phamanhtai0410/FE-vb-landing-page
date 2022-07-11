@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import PartialConstants from "../constants/partial.constants";
 import { v4 as uuidv4 } from "uuid";
+import { address } from "thor-devkit";
 
 var CryptoJS = require("crypto-js");
 
@@ -107,3 +108,10 @@ export async function copyTextToClipboard(text) {
 export const randomKeyUUID = () => {
   return  uuidv4();
 };
+
+export const addressWalletCompact = (address) =>{
+  return `${address.slice(0, 6)}...${address.slice(
+    address.length - 4,
+    address.length
+  )}`;
+} 

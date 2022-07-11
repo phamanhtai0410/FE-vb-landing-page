@@ -52,7 +52,7 @@ const MenuLink = ({ menuToggleHandler }) => {
       {MENU_LINKS.map((item, index) => (
         <li
           key={index}
-          className="flex items-center h-full p-4 md:p-0 relative"
+          className="flex items-center p-8 md:p-0 relative"
           onMouseOver={item.name === "Trade" ? onMouseOver : undefined}
           onMouseLeave={item.name === "Trade" ? onMouseOut : undefined}
         >

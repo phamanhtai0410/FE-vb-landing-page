@@ -8,6 +8,7 @@ import ERC20ABI_VB from '../../_contracts/assets/VB.json';
 
 import ERC20ABI_WETH_GETAWAY from '../../_contracts/lend/WETHGateway.json';
 import ERC20ABI_POOL from '../../_contracts/lend/Pool.json';
+import { randomKeyUUID } from '../../utils/lib';
 
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
@@ -125,12 +126,18 @@ export const approveSupply = (dataToken) => async (dispatch, getState) => {
  */
 export const supplyMarket = (dataToken, amount) => async (dispatch, getState) => {
 
-
     const state = getState();
 
     const { account, connex } = state.web3;
 
     if (connex && account && dataToken.assetsAddress) {
+
+        const key = randomKeyUUID();
+
+        dispatch(actions.alertActions.loading({
+            title: "Waiting For Confirmation",
+            description: `Supply ${amount} ${dataToken.assetsChain}`,
+          }, key));
 
         dispatch({
             type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
@@ -153,6 +160,12 @@ export const supplyMarket = (dataToken, amount) => async (dispatch, getState) =>
                     transaction: 1
                 });
 
+                dispatch(actions.alertActions.update({
+                    status: "success",
+                    title: "Transaction Submitted",
+                    description: `Supply ${amount} ${dataToken.assetsChain}`,
+                  }, key));
+
                 dispatch(actions.reloadAccountAssets());
 
                 return transaction;
@@ -163,6 +176,11 @@ export const supplyMarket = (dataToken, amount) => async (dispatch, getState) =>
                 dispatch({
                     type: marketplaceConstants.MODAL_SUPPLY_MARKET_ERROR
                 });
+                dispatch(actions.alertActions.update({
+                    status: "warning",
+                    title: "Transaction Rejected",
+                    description: e.message
+                  }, key));
                 return e;
 
             });
