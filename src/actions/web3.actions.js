@@ -4,6 +4,7 @@ import Connex from "@vechain/connex";
 // import { Certificate, blake2b256, secp256k1 } from "thor-devkit";
 
 import {
+  alertVariable,
   web3Constants,
 } from "../constants";
 import getWeb3 from "../utils/getWeb3";
@@ -13,6 +14,7 @@ import ERC20ABI_VB from "../_contracts/assets/VB.json";
 import * as actions from "./";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
+import { randomKeyUUID } from "../utils/lib";
 
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
@@ -43,9 +45,17 @@ export const web3Connect = (isLogin) => async (dispatch) => {
 
     return _acc;
   }else if (!_acc && isLogin) {
+
+    const alertData = {
+      id: randomKeyUUID(),
+      title: "Connecting",
+      description: `Wallet sync2 waiting...`,
+    };
+
+    dispatch(actions.alertActions.loading(alertData, alertData.id));
+    
     // Ask user to sign the agreement
-    await connex.vendor
-      .sign("cert", {
+    await connex.vendor.sign("cert", {
         purpose: "agreement",
         payload: {
           type: "text",
@@ -54,6 +64,7 @@ export const web3Connect = (isLogin) => async (dispatch) => {
       })
       .request()
       .then((signer) => {
+
         _acc = signer.annex.signer;
         _sign = JSON.stringify(signer);
 
@@ -68,8 +79,26 @@ export const web3Connect = (isLogin) => async (dispatch) => {
           account: _acc,
         });
 
+        dispatch(actions.alertActions.update({ 
+          ...alertData, 
+          status: "success",
+          title: "Connected",
+          description:`Wallet: ${_acc.slice(0, 6)}...${_acc.slice(
+            _acc.length - 4,
+            _acc.length
+          )}`
+        }, alertData.id));
         return _acc;
+        
+      }).catch((e) => {
+        dispatch(actions.alertActions.update({
+          ...alertData,
+          title: "Connect",
+          status: "warning",
+          description: e.message
+        }, alertData.id));
       });
+
   }else{
     dispatch({
       type: web3Constants.WEB3_CONNECT, 
@@ -98,6 +127,11 @@ export const web3Disconnect = () => async (dispatch, getState) => {
   });
 
   dispatch(actions.getAccountAssets());
+
+  dispatch(actions.alertActions.update({
+     title: "Wallet Sync2",
+  description: `Waiting connecting...`
+}));
 
   // setTimeout(() => {
   //     dispatch({ type: destroyConstants.DESTROY_SESSION });

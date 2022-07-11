@@ -46,8 +46,6 @@ const BtnConnect = () => {
       });
   };
 
-  console.log("BtnConnect account",account);
-
   return (
     <>
       {account ? (

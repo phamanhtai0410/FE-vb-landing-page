@@ -18,7 +18,6 @@ function update(message, key) {
 function success(message, key) {
     return { type: alertConstants.SUCCESS, message, key };
 }
-
 function warning(message, key) {
     return { type: alertConstants.WARNING, message, key };
 }

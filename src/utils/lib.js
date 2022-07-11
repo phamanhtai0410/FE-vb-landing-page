@@ -1,5 +1,7 @@
 import { ethers } from "ethers";
 import PartialConstants from "../constants/partial.constants";
+import { v4 as uuidv4 } from "uuid";
+
 var CryptoJS = require("crypto-js");
 
 export function numberWithCommas(x) {
@@ -101,3 +103,7 @@ export async function copyTextToClipboard(text) {
     return document.execCommand("copy", true, text);
   }
 }
+
+export const randomKeyUUID = () => {
+  return  uuidv4();
+};
