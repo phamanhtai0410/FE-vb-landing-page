@@ -9,7 +9,6 @@ const AlertCustom = ({ dataItem, closeToast ,status  }) => {
   const { message ,isLoading } = dataItem;
 
   const loadIconView  = (status) => {
-
     switch (status) {
       case "success":
         return  <img src={IcSuccess} alt="Ic Success" /> ;
