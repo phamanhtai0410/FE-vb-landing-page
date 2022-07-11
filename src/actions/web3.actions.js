@@ -15,10 +15,17 @@ import * as actions from "./";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
 import { randomKeyUUID } from "../utils/lib";
+import {
+  selectBalanceById,
+  selectUserAssetsBalance,
+} from "../reducers/accountBalance.reducer";
+import assetAbi from "../_contracts/asset-abi";
 
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
 
+const TOKEN_VTHO = process.env.REACT_APP_TOKEN_VTHO;
+const TOKEN_VET = process.env.REACT_APP_TOKEN_WVET;
 const TOKEN_VEBANK = process.env.REACT_APP_TOKEN_VEBANK;
 const TOKEN_VEUSD = process.env.REACT_APP_TOKEN_VEUSD;
 
@@ -53,7 +60,7 @@ export const web3Connect = (isLogin) => async (dispatch) => {
     };
 
     dispatch(actions.alertActions.loading(alertData, alertData.id));
-    
+
     // Ask user to sign the agreement
     await connex.vendor.sign("cert", {
         purpose: "agreement",
@@ -79,8 +86,8 @@ export const web3Connect = (isLogin) => async (dispatch) => {
           account: _acc,
         });
 
-        dispatch(actions.alertActions.update({ 
-          ...alertData, 
+        dispatch(actions.alertActions.update({
+          ...alertData,
           status: "success",
           title: "Connected",
           description:`Wallet: ${_acc.slice(0, 6)}...${_acc.slice(
@@ -89,7 +96,7 @@ export const web3Connect = (isLogin) => async (dispatch) => {
           )}`
         }, alertData.id));
         return _acc;
-        
+
       }).catch((e) => {
         dispatch(actions.alertActions.update({
           ...alertData,
@@ -98,21 +105,18 @@ export const web3Connect = (isLogin) => async (dispatch) => {
           description: e.message
         }, alertData.id));
       });
-
-  }else{
+  } else {
     dispatch({
-      type: web3Constants.WEB3_CONNECT, 
+      type: web3Constants.WEB3_CONNECT,
       web3,
-      connex
+      connex,
     });
-  
+
     return _acc;
   }
-
 };
 
 export const web3Disconnect = () => async (dispatch, getState) => {
-  
   // const state = getState();
   // const { web3 } = state.web3;
 
@@ -145,6 +149,10 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
 
   if (account) {
     const accInfo = await connex.thor.account(account).get();
+    console.log(
+      "🐶🐶  ~ instantiateVetContracts ~ accInfo",
+      ethers.utils.formatEther(accInfo.balance)
+    );
 
     let balanceVET = 0;
     let balanceVTHO = 0;
@@ -182,12 +190,44 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
   if (web3 && account) {
     let contractVB = new web3.eth.Contract(ERC20ABI_VB, TOKEN_VEBANK);
 
+    // let subscription = web3.eth.subscribe("logs", {}, (err, event) => {
+    //   if (!err) console.log(event);
+    // });
+
+    // subscription.on("data", (event) => console.log("event", event));
+    // subscription.on("changed", (changed) => console.log("changed", changed));
+
     let balance = 0;
 
     if (contractVB && account) {
       const balanceBigN = await contractVB.methods.balanceOf(account).call();
       balance = ethers.utils.formatEther(balanceBigN);
       balance = Math.round(balance * 100) / 100;
+
+      contractVB.events
+        .Transfer({})
+        .on("data", async function (event) {
+          // console.log("onTransferEvent", event);
+          // Do something here
+          let balance = Number(selectBalanceById(getState(), TOKEN_VEBANK));
+          const { from, value } = event?.returnValues;
+          const formattedValue = Number(ethers.utils.formatUnits(value, 18));
+          if (from.toLowerCase() === account) {
+            // console.log("User send amount away");
+            balance -= formattedValue;
+          } else balance += formattedValue;
+          balance = Math.round(balance * 100) / 100;
+          dispatch({
+            type: web3Constants.INIT_CONTRACT_VB,
+            contractVB,
+            balance,
+          });
+        })
+        .on("changed", (changed) =>
+          // When event is attached or removed from the chain
+          console.log("🐶🐶  ~ instantiateVBContracts ~ changed", changed)
+        )
+        .on("error", console.error);
     }
 
     dispatch({
@@ -208,25 +248,59 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
 
 export const instantiateVEUSDContracts = createAsyncThunk(
   "accountBalance/fetchVEUSD",
-  async (_, { getState }) => {
+  async (_, { getState, dispatch }) => {
     const currentState = getState();
     const { web3, account } = currentState.web3;
 
     if (web3 && account) {
-      let contractVEUSD = new web3.eth.Contract(ERC20ABI_VB, TOKEN_VEUSD);
+      let contractVEUSD = new web3.eth.Contract(
+        assetAbi[TOKEN_VEUSD],
+        TOKEN_VEUSD
+      );
 
       let balance = 0;
 
-      const tokenInfo = selectAssetByAddress(currentState, TOKEN_VEUSD)
+      const tokenInfo = selectAssetByAddress(currentState, TOKEN_VEUSD);
 
       if (contractVEUSD && account) {
-        const balanceBigN = await contractVEUSD.methods.balanceOf(account).call();
-        balance = ethers.utils.formatUnits(balanceBigN, tokenInfo?.assetsDecimals || 6);
+        const balanceBigN = await contractVEUSD.methods
+          .balanceOf(account)
+          .call();
+        balance = ethers.utils.formatUnits(
+          balanceBigN,
+          tokenInfo?.assetsDecimals || 6
+        );
         balance = Math.round(balance * 100) / 100;
-      }
-      return {balance, contractVEUSD};
 
+        contractVEUSD.events
+          .Transfer({})
+          .on("data", async function (event) {
+            // console.log("onTransferEvent", event);
+            // Do something here
+            let balance = Number(selectBalanceById(getState(), TOKEN_VEUSD));
+            const { from, value } = event?.returnValues;
+            const formattedValue = Number(ethers.utils.formatUnits(value, 6));
+            if (from.toLowerCase() === account) {
+              console.log("User send amount away");
+              balance -= formattedValue;
+            } else balance += formattedValue;
+            balance = Math.round(balance * 100) / 100;
+            // console.log("🐶🐶  ~ VEUSD balance", balance);
+            dispatch({
+              type: instantiateVEUSDContracts.fulfilled.type,
+              payload: {
+                contractVEUSD,
+                balance,
+              },
+            });
+          })
+          .on("changed", (changed) =>
+            // When event is attached or removed from the chain
+            console.log("🐶🐶  ~ instantiateVBContracts ~ changed", changed)
+          )
+          .on("error", console.error);
+      }
+      return { balance, contractVEUSD };
     }
   }
 );
-
