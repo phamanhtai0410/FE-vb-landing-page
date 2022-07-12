@@ -9,12 +9,18 @@ import ERC20ABI_PAIR from "../_contracts/pair.json";
 import ERC20ABI_VB from "../_contracts/assets/VB.json";
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getDeadline, getDecimalForAsset, isContainVET } from "../utils/lib";
+import {
+  getDeadline,
+  getDecimalForAsset,
+  isContainVET,
+  randomKeyUUID,
+} from "../utils/lib";
 
 import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
 import {
   countExchangeRate,
   getSymbolPairs,
+  refreshDataSwap,
   updateStatusSwap,
 } from "../reducers/swap.reducer";
 
@@ -133,7 +139,7 @@ export const getAmountsOut = createAsyncThunk(
         amountsOut[1],
         getDecimalForAsset(addressTokenB)
       );
-      return amountsOutFormat;
+      return {inputAmountIn, amountsOutFormat};
     }
   }
 );
@@ -168,7 +174,7 @@ export const getAmountsIn = createAsyncThunk(
         amountsIn[0],
         getDecimalForAsset(addressTokenA)
       );
-      return amountsInFormat;
+      return {amountsInFormat, inputAmountOut};
     }
   }
 );
@@ -226,14 +232,9 @@ export const onApproveTokenForAccount = createAsyncThunk(
       approveMethod
         .transact(ADDRESS_ROUTER, web3.utils.toWei(amountMax.toString()))
         .comment(`approve ${tokenInfo.assetsChain} on VeBank`)
-        .request()
-        .then((result) => {
-          return amountMax;
-        })
-        .catch((e) => {
-          console.log("error----", e);
-          return e;
-        });
+        .request();
+
+      return amountMax;
     }
   }
 );
@@ -310,40 +311,35 @@ export const swapAsset = createAsyncThunk(
       ["amountIn", amountIn],
     ]);
 
-    // let contractPair;
-
-    // if (poolAddress) {
-    //   contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
-    //   contractPair.events
-    //     .allEvents()
-    //     .on("data", async (data) => {
-    //       console.log("mau - data", data);
-    //     })
-    //     .on("error", (err) => {
-    //       console.log("mau - err", err);
-    //     });
-    //   console.log("mau - contractPair.events", contractPair.events);
-    // }
-
     let transaction;
+
+    let contractPair;
+
+    if (poolAddress) {
+      contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
+      contractPair.events.allEvents().on("data", async (data) => {
+        const event = data?.event;
+        if (event === "Swap") {
+          const key = randomKeyUUID();
+
+          dispatch(refreshDataSwap());
+          dispatch(
+            actions.alertActions.success(
+              {
+                title: "Success",
+                description: `Swap ${assetsPoolName} successfully`,
+              },
+              key
+            )
+          );
+        }
+      });
+    }
+
     if (!emptyAddress) {
       if (isPairContainVET) {
-        //  "swapETHForExactTokens(
-        //   uint amountOut,
-        //   address[] calldata path,
-        //   address to,
-        //   uint deadline
-        //  )"
-
-        // "swapExactTokensForETH(
-        //   uint amountIn,
-        //   uint amountOutMin,
-        //   address[] calldata path,
-        //   address to,
-        //   uint deadline
-        // )"
-
         if (functionName === "swapExactETHForTokens") {
+          // swap VET to another tokens
           console.table([
             ["method", functionName],
             ["addressTokenA", addressTokenA],
@@ -358,12 +354,14 @@ export const swapAsset = createAsyncThunk(
             .comment(`transaction swap ${assetsPoolName} from VeBank`)
             .request();
         } else {
+          //swap another token to VET token
           transaction = await methodSwapToken
             .transact(amountIn, amountOutMin, pathAddress, account, deadline)
             .comment(`transaction swap ${assetsPoolName} from VeBank`)
             .request();
         }
       } else {
+        // swap token to token
         transaction = await methodSwapToken
           .transact(
             amountIn,

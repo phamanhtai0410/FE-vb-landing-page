@@ -6,6 +6,7 @@ import {
   getAmountsOut,
   getPairsFee,
   onApproveTokenForAccount,
+  swapAsset,
 } from "../actions";
 import { swapConstants } from "../constants";
 
@@ -70,6 +71,10 @@ const swapAssetSlice = createSlice({
     getSymbolPairs: (state, action) => {
       state.symbolPairs = action.payload;
     },
+    refreshDataSwap: (state) => {
+      state.amountsIn = "";
+      state.amountsOut = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -88,7 +93,8 @@ const swapAssetSlice = createSlice({
       })
       .addCase(getAmountsOut.fulfilled, (state, action) => {
         state.loadingGetAmountOut = false;
-        state.amountsOut = action.payload;
+        state.amountsIn = action.payload.inputAmountIn;
+        state.amountsOut = action.payload.amountsOutFormat;
       })
       .addCase(getAmountsOut.rejected, (state, action) => {
         state.loadingGetAmountOut = false;
@@ -98,7 +104,8 @@ const swapAssetSlice = createSlice({
       })
       .addCase(getAmountsIn.fulfilled, (state, action) => {
         state.loadingGetAmountIn = false;
-        state.amountsIn = action.payload;
+        state.amountsIn = action.payload.amountsInFormat;
+        state.amountsOut = action.payload.inputAmountOut;
       })
       .addCase(getAmountsIn.rejected, (state, action) => {
         state.loadingGetAmountIn = false;
@@ -112,7 +119,11 @@ const swapAssetSlice = createSlice({
       })
       .addCase(checkAssetExistsPools.fulfilled, (state, action) => {
         state.poolAddress = action.payload;
-      });
+      })
+      // .addCase(swapAsset.fulfilled, (state) => {
+      //   state.amountsIn = "";
+      //   state.amountsOut = "";
+      // });
   },
 });
 
@@ -127,6 +138,7 @@ export const {
   getSymbolPairs,
   countExchangeRate,
   updateStatusSwap,
+  refreshDataSwap,
 } = swapAssetSlice.actions;
 
 export const selectSourceToken = (state) => state.swapAsset.sourceTokenAddress;

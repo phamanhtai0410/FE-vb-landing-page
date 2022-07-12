@@ -127,20 +127,24 @@ const useSwapFacade = () => {
   const onChangeSourceInput = useCallback(
     (value) => {
       setInputAmountIn(value);
-      dispatch(
-        getAmountsOut({
-          inputAmountIn: value,
-          tokenAInfo: sourceTokenInfo,
-          tokenBInfo: desireTokenInfo,
-        })
-      );
+      if (value !== "") {
+        dispatch(
+          getAmountsOut({
+            inputAmountIn: value,
+            tokenAInfo: sourceTokenInfo,
+            tokenBInfo: desireTokenInfo,
+          })
+        );
+      } else {
+        setInputAmountOut("");
+      }
       // setInputAmountOut(value !== "" ? value * exchangeRate : "");
-      dispatch(
-        getPairsFee({
-          tokenAInfo: sourceTokenInfo,
-          tokenBInfo: desireTokenInfo,
-        })
-      );
+      // dispatch(
+      //   getPairsFee({
+      //     tokenAInfo: sourceTokenInfo,
+      //     tokenBInfo: desireTokenInfo,
+      //   })
+      // );
     },
     [desireTokenInfo, dispatch, sourceTokenInfo]
   );
@@ -148,20 +152,24 @@ const useSwapFacade = () => {
   const onChangeDesireInput = useCallback(
     (value) => {
       setInputAmountOut(value);
-      dispatch(
-        getAmountsIn({
-          inputAmountOut: value,
-          tokenAInfo: sourceTokenInfo,
-          tokenBInfo: desireTokenInfo,
-        })
-      );
+      if (value !== "") {
+        dispatch(
+          getAmountsIn({
+            inputAmountOut: value,
+            tokenAInfo: sourceTokenInfo,
+            tokenBInfo: desireTokenInfo,
+          })
+        );
+      } else {
+        setInputAmountIn("");
+      }
       // setInputAmountIn(value !== "" ? value * desirePerSourceTokenPrice : "");
-      dispatch(
-        getPairsFee({
-          tokenAInfo: sourceTokenInfo,
-          tokenBInfo: desireTokenInfo,
-        })
-      );
+      // dispatch(
+      //   getPairsFee({
+      //     tokenAInfo: sourceTokenInfo,
+      //     tokenBInfo: desireTokenInfo,
+      //   })
+      // );
     },
     [desireTokenInfo, dispatch, sourceTokenInfo]
   );
@@ -212,15 +220,11 @@ const useSwapFacade = () => {
   }, [desireTokenAddress, exchangeRate]);
 
   useEffect(() => {
-    if (amountsOut !== "") {
-      setInputAmountOut(amountsOut);
-    }
+    setInputAmountOut(amountsOut);
   }, [amountsOut]);
 
   useEffect(() => {
-    if (amountsIn !== "") {
-      setInputAmountIn(amountsIn);
-    }
+    setInputAmountIn(amountsIn);
   }, [amountsIn]);
 
   return {
