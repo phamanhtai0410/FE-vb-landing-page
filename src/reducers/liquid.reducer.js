@@ -10,9 +10,7 @@ import { poolConstants } from "../constants";
 import { selectAssetByAddress } from "./assetsMarket.reducer";
 
 const initialState = {
-  isAddLiquidModalOpen: false,
   isSelectTokenModalOpen: false,
-  isRemoveLiquidModalOpen: false,
   pending: false,
 
   transaction: null,
@@ -30,6 +28,7 @@ const initialState = {
   isApproving: false,
   isAddingLiquidity: false,
   isAddingLiquiditySuccess: null,
+  isLoadingLiquidityDetail: false,
 
   dataToken: null,
   data: {},
@@ -246,18 +245,21 @@ export function liquidReducer(state = initialState, action) {
     case loadDetailAddLiquidity.pending.type: {
       return {
         ...state,
+        isLoadingLiquidityDetail: true
       };
     }
     case loadDetailAddLiquidity.fulfilled.type: {
       return {
         ...state,
         isAddingLiquidity: false,
+        isLoadingLiquidityDetail: false,
         ...action.payload,
       };
     }
     case loadDetailAddLiquidity.rejected.type: {
       return {
         ...state,
+        isLoadingLiquidityDetail: false,
       };
     }
 
@@ -378,6 +380,7 @@ export const selectAddingLiquidityFinishState = (state) =>
   state.liquidReducer.isAddingLiquiditySuccess;
 export const selectCheckApprovalState = (state) =>
   state.liquidReducer.isCheckingApproval;
+export const selectLoadLiquidityDetail = state => state.liquidReducer.isLoadingLiquidityDetail;
 
 export const selectTotalSupply = (state) => state.liquidReducer.totalSupply;
 export const selectLiquidityPool = (state) => state.liquidReducer.liquidityPool;
