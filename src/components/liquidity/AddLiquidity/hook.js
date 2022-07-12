@@ -22,6 +22,7 @@ import {
 import { nFormatter } from "../../../utils/lib";
 import { selectBalanceById } from "../../../reducers/accountBalance.reducer";
 import RouteName from "../../../constants/routeName.constants";
+import { selectAccount } from "../../../reducers/web3.reducer";
 
 const useAddLiquidFacade = () => {
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ const useAddLiquidFacade = () => {
     selectBalanceById(state, secondToken)
   );
 
+  const account = useSelector(selectAccount);
   const userCurrentLiquidityPool = useSelector(selectLiquidityPool);
   const totalSupply = useSelector(selectTotalSupply);
   const reserveB = useSelector(selectReserveA);
@@ -178,7 +180,9 @@ const useAddLiquidFacade = () => {
   };
 
   const handlerStepToStep = (e) => {
-    if (
+    if (!account) {
+      dispatch(actions.web3Connect(true))
+    } else if (
       step === 1 &&
       firstToken &&
       secondToken &&
@@ -249,13 +253,21 @@ const useAddLiquidFacade = () => {
       if (!firstToken || !secondToken) {
         setPrimaryButtonLabel("Invalid pair");
       }
+
+      if (!account) {
+        setContinueAvailable(true);
+        setPrimaryButtonLabel("Connect wallet");
+      }
     }
   }, [isLoadingLiquidityDetail]);
 
   useEffect(() => {
     switch (step) {
       case 1: {
-        if (!firstToken || !secondToken) {
+        if (!account) {
+          setContinueAvailable(true);
+          setPrimaryButtonLabel("Connect wallet");
+        } else if (!firstToken || !secondToken) {
           setPrimaryButtonLabel("Invalid pair");
           setContinueAvailable(false);
         } else if (
@@ -286,7 +298,7 @@ const useAddLiquidFacade = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstToken, secondToken, firstTokenVolume, secondTokenVolume]);
+  }, [firstToken, secondToken, firstTokenVolume, secondTokenVolume, account]);
 
   useEffect(() => {
     if (step === 3 && !isAddingLiquidity) {

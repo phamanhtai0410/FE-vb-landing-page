@@ -4,6 +4,7 @@ import IcDropDown from "../../../assets/images/ic_dropdown.svg";
 import { useSelector } from "react-redux";
 import { selectBalanceById } from "../../../reducers/accountBalance.reducer";
 import { selectAssetByAddress } from "../../../reducers/assetsMarket.reducer";
+import { selectAccount } from "../../../reducers/web3.reducer";
 
 const Asset = ({
   assetAddress,
@@ -13,10 +14,7 @@ const Asset = ({
   onVolumeChange = () => {},
 }) => {
 
-  const onClickMaxButton = () => {
-    onVolumeChange(assetBalance);
-  };
-
+  const account = useSelector(selectAccount);
   const assetBalance = useSelector(state => selectBalanceById(state, assetAddress));
   const assetInfo = useSelector(state => selectAssetByAddress(state, assetAddress));
 
@@ -24,11 +22,24 @@ const Asset = ({
     () => assetBalance || assetBalance === 0,
     [assetBalance]
   );
+
+  const _onClickSelectCurrency = () => {
+    if (account) {
+      onClickSelectCurrency();
+    } else {
+      // TODO: Display account not connected error
+    }
+  }
+
+  const onClickMaxButton = () => {
+    onVolumeChange(assetBalance);
+  };
+
   return (
     <div className={`flex flex-col ${className}`}>
       <div className="flex flex-row flex-1 justify-between">
         <div
-          onClick={onClickSelectCurrency}
+          onClick={_onClickSelectCurrency}
           className="flex flex-row items-center space-x-2 cursor-pointer"
         >
           {assetInfo?.icon && (
