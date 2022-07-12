@@ -7,6 +7,9 @@ import ERC20ABI_WETH_GETAWAY from '../../_contracts/lend/WETHGateway.json';
 import ERC20ABI_POOL from '../../_contracts/lend/Pool.json';
 import ABI_ATOKEN from '../../_contracts/lend/AToken.json';
 
+import { randomKeyUUID } from '../../utils/lib';
+import * as actions from '../.';
+
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
@@ -96,6 +99,13 @@ export const approveWithdraw = (dataToken, rateMode = 2) => async (dispatch, get
         let approveMethod = connex.thor.account(process.env.REACT_APP_ATOKEN_VET).method(approveABI);
 
         if (approveMethod) {
+            const key = randomKeyUUID();
+
+            dispatch(actions.alertActions.loading({
+                title: "Waiting For Approve",
+                description: `Approve withdraw ${dataToken.assetsChain} on VeBank`,
+            }, key));
+
             approveMethod.transact(TOKEN_APPROVE, web3.utils.toWei(amountMaxApprove.toString()))
                 .comment(`ATOKEN approve ${TOKEN_APPROVE} on VeBank`)
                 .request()
@@ -106,10 +116,21 @@ export const approveWithdraw = (dataToken, rateMode = 2) => async (dispatch, get
                         accountApprove: amountMaxApprove
                     });
 
+                    dispatch(actions.alertActions.update({
+                        status: "success",
+                        title: "Approve Success",
+                        description: `Approve withdraw ${dataToken.assetsChain} on VeBank success!`,
+                      }, key));
+
                     return result;
 
                 }).catch((e) => {
                     console.log("error----", e);
+                    dispatch(actions.alertActions.update({
+                        status: "warning",
+                        title: "Approve Withdraw Rejected",
+                        description: e.message
+                      }, key));
                     return e;
                 });
         }
@@ -135,6 +156,13 @@ export const withdrawMarket = (dataToken, amount) => async (dispatch, getState) 
 
     if (connex && account && dataToken.assetsAddress) {
 
+        const key = randomKeyUUID();
+
+        dispatch(actions.alertActions.loading({
+            title: "Waiting For Confirmation",
+            description: `Withdraw ${amount} ${dataToken.assetsChain}`,
+          }, key));
+
         dispatch({
             type: marketplaceConstants.MODAL_WITHDRAW_MARKET_REQUEST
         });
@@ -159,6 +187,12 @@ export const withdrawMarket = (dataToken, amount) => async (dispatch, getState) 
                     transaction: 1
                 });
 
+                dispatch(actions.alertActions.update({
+                    status: "success",
+                    title: "Transaction Submitted",
+                    description: `Transfer ${amount} ${dataToken.assetsChain} to Withdraw VeBank`,
+                  }, key));
+
                 return transaction;
 
             }).catch((e) => {
@@ -167,6 +201,11 @@ export const withdrawMarket = (dataToken, amount) => async (dispatch, getState) 
                 dispatch({
                     type: marketplaceConstants.MODAL_WITHDRAW_MARKET_ERROR
                 });
+                dispatch(actions.alertActions.update({
+                    status: "warning",
+                    title: "Transaction Withdraw Rejected",
+                    description: e.message
+                  }, key));
                 return e;
 
             });
@@ -192,6 +231,13 @@ export const withdrawETHMarket = (dataToken, amount) => async (dispatch, getStat
     const { web3, account, connex } = state.web3;
 
     if (connex && account && amount) {
+
+        const key = randomKeyUUID();
+
+        dispatch(actions.alertActions.loading({
+            title: "Waiting For Confirmation",
+            description: `Withdraw ${amount} ${dataToken.assetsChain}`,
+          }, key));
 
         dispatch({
             type: marketplaceConstants.MODAL_WITHDRAW_MARKET_REQUEST
@@ -219,6 +265,12 @@ export const withdrawETHMarket = (dataToken, amount) => async (dispatch, getStat
                     transaction: 1
                 });
 
+                dispatch(actions.alertActions.update({
+                    status: "success",
+                    title: "Transaction Submitted",
+                    description: `Transfer ${amount} to withdrawETH`,
+                  }, key));
+
                 return transaction;
 
             }).catch((e) => {
@@ -227,6 +279,12 @@ export const withdrawETHMarket = (dataToken, amount) => async (dispatch, getStat
                 dispatch({
                     type: marketplaceConstants.MODAL_WITHDRAW_MARKET_ERROR
                 });
+
+                dispatch(actions.alertActions.update({
+                    status: "warning",
+                    title: "Transaction Withdraw Rejected",
+                    description: e.message
+                  }, key));
 
                 return e;
 
