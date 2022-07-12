@@ -21,7 +21,6 @@ import { iconsModalSelectToken } from "../../assets";
 import SearchBar from "../partials/SearchBar";
 import AssetExcerpt from "../liquidity/AddLiquidity/selectToken/AssetExcerpt";
 import { swapConstants } from "../../constants";
-import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
 
 const customStyles = {
   content: {

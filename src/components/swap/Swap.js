@@ -14,11 +14,14 @@ import useSwapFacade from "./hooks";
 import HighlightedAssetIcon from "./HighlightedAssetIcon";
 import { swapConstants } from "../../constants";
 import { svgSymbolConfig } from "../../_helpers/param";
+import "./styles.scss";
 
 const Swap = () => {
   const {
     isSwap,
+    swapFee,
     account,
+    loadingFee,
     exchangeRate,
     inputAmountIn,
     amountOutMin,
@@ -40,6 +43,10 @@ const Swap = () => {
     onShowModalSelectToken,
     onChangeDesireInput,
     onChangeSourceInput,
+    loadingGetAmountIn,
+    loadingGetAmountOut,
+    accountApprove,
+    onApproveToken,
   } = useSwapFacade();
 
   return (
@@ -94,16 +101,22 @@ const Swap = () => {
               </div>
             </div>
             <div className="relative flex flex-col w-fit">
-              <input
-                className="bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
-                type="text"
-                value={inputAmountIn}
-                onChange={(event) => onChangeSourceInput(event.target.value)}
-                placeholder="0.0"
-              />
+              {loadingGetAmountIn ? (
+                <div className="loading" />
+              ) : (
+                <input
+                  className="bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+                  type="text"
+                  value={inputAmountIn}
+                  onChange={(event) => onChangeSourceInput(event.target.value)}
+                  placeholder="0.0"
+                />
+              )}
             </div>
           </div>
-          <p className="self-end">${inputAmountIn * sourceTokenPrice}</p>
+          {!loadingGetAmountIn && (
+            <p className="self-end">${inputAmountIn * sourceTokenPrice}</p>
+          )}
         </div>
       </div>
 
@@ -159,16 +172,22 @@ const Swap = () => {
               {desireTokenAmount || 0.0}
             </p> */}
             <div className="relative flex flex-col w-fit">
-              <input
-                className="w-fit bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
-                type="number"
-                value={inputAmountOut}
-                onChange={(event) => onChangeDesireInput(event.target.value)}
-                placeholder="0.0"
-              />
+              {loadingGetAmountOut ? (
+                <div className="loading" />
+              ) : (
+                <input
+                  className="w-fit bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+                  type="number"
+                  value={inputAmountOut}
+                  onChange={(event) => onChangeDesireInput(event.target.value)}
+                  placeholder="0.0"
+                />
+              )}
             </div>
           </div>
-          <p className="float-right">${inputAmountOut * desireTokenPrice}</p>
+          {!loadingGetAmountOut && (
+            <p className="float-right">${inputAmountOut * desireTokenPrice}</p>
+          )}
         </div>
       </div>
 
@@ -212,22 +231,28 @@ const Swap = () => {
                   &lt; 0.5%{" "}
                 </p> */}
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <div className="flex space-x-2">
                   <p className="text-[#ABC2FC]">Swap fee</p>
                   <img src={IcQuestionCircle} alt="" />
                 </div>
-                <p>0.0025 {sourceTokenInfo?.assetsChain}</p>
+                {loadingFee ? (
+                  <div className="loading" />
+                ) : (
+                  <p>
+                    {swapFee} {sourceTokenInfo?.assetsChain}
+                  </p>
+                )}
               </div>
             </div>
             <button
               disabled={!isSwap}
-              onClick={onSwapAssetToken}
+              onClick={accountApprove === 0 ? onApproveToken :onSwapAssetToken}
               className={`w-full ${
                 isSwap ? "btn-veb" : "bg-btn-veb-disabled rounded-lg"
               }  h-12`}
             >
-              Swap
+              {accountApprove === 0 ? "Approve" : "Swap"}
             </button>
           </div>
         ) : (

@@ -1,4 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
+import {
+  checkApproveToken,
+  checkAssetExistsPools,
+  getAmountsIn,
+  getAmountsOut,
+  getPairsFee,
+  onApproveTokenForAccount,
+} from "../actions";
 import { swapConstants } from "../constants";
 
 const initialState = {
@@ -10,6 +18,15 @@ const initialState = {
   exchangeRateAB: 0,
   exchangeRateBA: 0,
   isSwap: true,
+  loadingFee: false,
+  pairFee: 0,
+  loadingGetAmountOut: false,
+  loadingGetAmountIn: false,
+  amountsOut: "",
+  amountsIn: "",
+  accountApprove: 0,
+  contractSwap: "",
+  poolAddress: "",
 };
 
 const swapAssetSlice = createSlice({
@@ -54,6 +71,49 @@ const swapAssetSlice = createSlice({
       state.symbolPairs = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getPairsFee.pending, (state, action) => {
+        state.loadingFee = true;
+      })
+      .addCase(getPairsFee.fulfilled, (state, action) => {
+        state.loadingFee = false;
+        state.pairFee = action.payload;
+      })
+      .addCase(getPairsFee.rejected, (state, action) => {
+        state.loadingFee = false;
+      })
+      .addCase(getAmountsOut.pending, (state, action) => {
+        state.loadingGetAmountOut = true;
+      })
+      .addCase(getAmountsOut.fulfilled, (state, action) => {
+        state.loadingGetAmountOut = false;
+        state.amountsOut = action.payload;
+      })
+      .addCase(getAmountsOut.rejected, (state, action) => {
+        state.loadingGetAmountOut = false;
+      })
+      .addCase(getAmountsIn.pending, (state, action) => {
+        state.loadingGetAmountIn = true;
+      })
+      .addCase(getAmountsIn.fulfilled, (state, action) => {
+        state.loadingGetAmountIn = false;
+        state.amountsIn = action.payload;
+      })
+      .addCase(getAmountsIn.rejected, (state, action) => {
+        state.loadingGetAmountIn = false;
+      })
+      .addCase(checkApproveToken.fulfilled, (state, action) => {
+        state.accountApprove = action.payload.accountApprove;
+        state.contractSwap = action.payload.contractSwap;
+      })
+      .addCase(onApproveTokenForAccount.fulfilled, (state, action) => {
+        state.accountApprove = action.payload;
+      })
+      .addCase(checkAssetExistsPools.fulfilled, (state, action) => {
+        state.poolAddress = action.payload;
+      });
+  },
 });
 
 export default swapAssetSlice.reducer;
@@ -77,3 +137,12 @@ export const selectOpenChooseTokenState = (state) =>
 export const selectSymbolPairs = (state) => state.swapAsset.symbolPairs;
 export const selectExchangeRate = (state) => state.swapAsset.exchangeRateAB;
 export const selectIsSwap = (state) => state.swapAsset.isSwap;
+export const selectLoadingFee = (state) => state.swapAsset.loadingFee;
+export const selectPairsFee = (state) => state.swapAsset.pairFee;
+export const selectLoadingGetAmountOut = (state) =>
+  state.swapAsset.loadingGetAmountOut;
+export const selectAmountsOut = (state) => state.swapAsset.amountsOut;
+export const selectLoadingGetAmountIn = (state) =>
+  state.swapAsset.loadingGetAmountIn;
+export const selectAmountsIn = (state) => state.swapAsset.amountsIn;
+export const selectAccountApprove = (state) => state.swapAsset.accountApprove;
