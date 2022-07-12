@@ -10,6 +10,9 @@ import ERC20ABI_POOL from '../../_contracts/lend/Pool.json';
 import ERC20ABI_STABLE_DEBT_TOKEN from '../../_contracts/lend/StableDebtToken.json';
 import ERC20ABI_VARIBLE_DEBT_TOKEN from '../../_contracts/lend/VariableDebtToken.json';
 
+import { randomKeyUUID } from '../../utils/lib';
+import * as actions from '../.';
+
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 
@@ -116,6 +119,12 @@ export const approveBorrow = (dataToken, rateMode) => async (dispatch, getState)
     let amountApprove = 999999999;
 
     if (account && dataToken.assetsAddress && rateMode) {
+        const key = randomKeyUUID();
+
+        dispatch(actions.alertActions.loading({
+            title: "Waiting For Approve",
+            description: `Approve borrow ${dataToken.assetsChain} on VeBank`,
+          }, key));
 
         let approveABI;
         let TOKEN_APPROVE;
@@ -151,10 +160,20 @@ export const approveBorrow = (dataToken, rateMode) => async (dispatch, getState)
                         type: marketplaceConstants.MODAL_OPEN_BORROW_MARKET,
                         accountApprove: amountApprove
                     });
+                    dispatch(actions.alertActions.update({
+                        status: "success",
+                        title: "Approve success",
+                        description: `Approve borrow ${dataToken.assetsChain} on VeBank success!`,
+                      }, key));
                     return result;
 
                 }).catch((e) => {
                     console.log("error----", e);
+                    dispatch(actions.alertActions.update({
+                        status: "warning",
+                        title: "Approve Borrow Rejected",
+                        description: e.message
+                      }, key));
                     return e;
                 });
         }
@@ -180,6 +199,13 @@ export const borrowMarket = (dataToken, amount, rateMode) => async (dispatch, ge
 
     if (connex && account && dataToken.assetsAddress) {
 
+        const key = randomKeyUUID();
+
+        dispatch(actions.alertActions.loading({
+            title: "Waiting For Confirmation",
+            description: `Borrow ${amount} ${dataToken.assetsChain}`,
+          }, key));
+
         dispatch({
             type: marketplaceConstants.MODAL_BORROW_MARKET_REQUEST
         });
@@ -199,6 +225,12 @@ export const borrowMarket = (dataToken, amount, rateMode) => async (dispatch, ge
                     transaction: 1
                 });
 
+                dispatch(actions.alertActions.update({
+                    status: "success",
+                    title: "Transaction Submitted",
+                    description: `Transfer ${amount} ${dataToken.assetsChain} to Borrow VeBank`,
+                  }, key));
+
                 return transaction;
 
             }).catch((e) => {
@@ -207,6 +239,11 @@ export const borrowMarket = (dataToken, amount, rateMode) => async (dispatch, ge
                 dispatch({
                     type: marketplaceConstants.MODAL_BORROW_MARKET_ERROR
                 });
+                dispatch(actions.alertActions.update({
+                    status: "warning",
+                    title: "Transaction Borrow Rejected",
+                    description: e.message
+                  }, key));
                 return e;
 
             });
@@ -232,6 +269,13 @@ export const borrowETHMarket = (addressAsset, amount, rateMode) => async (dispat
 
     if (connex && account && amount) {
 
+        const key = randomKeyUUID();
+
+        dispatch(actions.alertActions.loading({
+            title: "Waiting For Confirmation",
+            description: `Borrow ${amount} ${addressAsset.assetsChain}`,
+        }, key));
+
         dispatch({
             type: marketplaceConstants.MODAL_BORROW_MARKET_REQUEST
         });
@@ -251,6 +295,12 @@ export const borrowETHMarket = (addressAsset, amount, rateMode) => async (dispat
                     transaction: 1
                 });
 
+                dispatch(actions.alertActions.update({
+                    status: "success",
+                    title: "Transaction Submitted",
+                    description: `Transfer ${amount} VET to borrowETH`,
+                  }, key));
+
                 return transaction;
 
             }).catch((e) => {
@@ -258,6 +308,11 @@ export const borrowETHMarket = (addressAsset, amount, rateMode) => async (dispat
                 dispatch({
                     type: marketplaceConstants.MODAL_BORROW_MARKET_ERROR
                 });
+                dispatch(actions.alertActions.update({
+                    status: "warning",
+                    title: "Transaction Borrow Rejected",
+                    description: e.message
+                  }, key));
                 return e;
 
             });

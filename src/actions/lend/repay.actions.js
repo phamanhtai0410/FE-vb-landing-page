@@ -7,6 +7,9 @@ import ERC20ABI_WETH_GETAWAY from '../../_contracts/lend/WETHGateway.json';
 import ERC20ABI_POOL from '../../_contracts/lend/Pool.json';
 import ERC20ABI_VARIBLE_DEBT_TOKEN from '../../_contracts/lend/VariableDebtToken.json';
 
+import { randomKeyUUID } from '../../utils/lib';
+import * as actions from '../.';
+
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
@@ -99,6 +102,13 @@ export const repayMarket = (dataToken, amount, rateMode = 2) => async (dispatch,
 
     if (connex && account && dataToken.assetsAddress && rateMode) {
 
+        const key = randomKeyUUID();
+
+        dispatch(actions.alertActions.loading({
+            title: "Waiting For Confirmation",
+            description: `Repay ${amount} ${dataToken.assetsChain}`,
+          }, key));
+
         dispatch({
             type: marketplaceConstants.MODAL_WITHDRAW_MARKET_REQUEST
         });
@@ -120,7 +130,7 @@ export const repayMarket = (dataToken, amount, rateMode = 2) => async (dispatch,
 
         connex.vendor
             .sign('tx', [c1_approve, c2_repay])
-            .comment(`transfer ${amount} ${dataToken.assetsChain} to Repay  VeBank`)
+            .comment(`transfer ${amount} ${dataToken.assetsChain} to Repay VeBank`)
             .request()
             .then(transaction => {
 
@@ -128,6 +138,12 @@ export const repayMarket = (dataToken, amount, rateMode = 2) => async (dispatch,
                     type: marketplaceConstants.MODAL_REPAY_MARKET_SUCCESS,
                     transaction: 1
                 });
+
+                dispatch(actions.alertActions.update({
+                    status: "success",
+                    title: "Transaction Submitted",
+                    description: `Transfer ${amount} ${dataToken.assetsChain} to Repay VeBank`,
+                  }, key));
 
                 return transaction;
 
@@ -137,6 +153,11 @@ export const repayMarket = (dataToken, amount, rateMode = 2) => async (dispatch,
                 dispatch({
                     type: marketplaceConstants.MODAL_REPAY_MARKET_ERROR
                 });
+                dispatch(actions.alertActions.update({
+                    status: "warning",
+                    title: "Transaction Repay Rejected",
+                    description: e.message
+                  }, key));
                 return e;
 
             });
@@ -163,6 +184,13 @@ export const repayETHMarket = (dataToken, amount, rateMode = 2) => async (dispat
     // console.log("repayETHMarket", connex, account, amount);
 
     if (connex && account && amount) {
+
+        const key = randomKeyUUID();
+
+        dispatch(actions.alertActions.loading({
+            title: "Waiting For Confirmation",
+            description: `Repay ${amount} ${dataToken.assetsChain}`,
+          }, key));
 
         dispatch({
             type: marketplaceConstants.MODAL_WITHDRAW_MARKET_REQUEST
@@ -195,6 +223,12 @@ export const repayETHMarket = (dataToken, amount, rateMode = 2) => async (dispat
                     transaction: 1
                 });
 
+                dispatch(actions.alertActions.update({
+                    status: "success",
+                    title: "Transaction Submitted",
+                    description: `Transfer ${amount} VET to repayETH`,
+                  }, key));
+
                 return transaction;
 
             }).catch((e) => {
@@ -203,6 +237,12 @@ export const repayETHMarket = (dataToken, amount, rateMode = 2) => async (dispat
                 dispatch({
                     type: marketplaceConstants.MODAL_REPAY_MARKET_ERROR
                 });
+
+                dispatch(actions.alertActions.update({
+                    status: "warning",
+                    title: "Transaction Repay Rejected",
+                    description: e.message
+                  }, key));
 
                 return e;
 

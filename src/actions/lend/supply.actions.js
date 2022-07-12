@@ -85,7 +85,7 @@ export const approveSupply = (dataToken) => async (dispatch, getState) => {
 
         dispatch(actions.alertActions.loading({
             title: "Waiting For Approve",
-            description: `Approve ${dataToken.assetsChain} on VeBank`,
+            description: `Approve Supply ${dataToken.assetsChain} on VeBank`,
           }, key));
 
         const approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
@@ -110,7 +110,7 @@ export const approveSupply = (dataToken) => async (dispatch, getState) => {
                 dispatch(actions.alertActions.update({
                     status: "success",
                     title: "Approve success",
-                    description: `Approve ${dataToken.assetsChain} on VeBank success!`,
+                    description: `Approve supply ${dataToken.assetsChain} on VeBank success!`,
                   }, key));
 
                 return result;
@@ -120,7 +120,7 @@ export const approveSupply = (dataToken) => async (dispatch, getState) => {
                 console.log("error----", e);
                 dispatch(actions.alertActions.update({
                     status: "warning",
-                    title: "Approve Rejected",
+                    title: "Approve Supply Rejected",
                     description: e.message
                   }, key));
                 return e;
@@ -180,7 +180,7 @@ export const supplyMarket = (dataToken, amount) => async (dispatch, getState) =>
                 dispatch(actions.alertActions.update({
                     status: "success",
                     title: "Transaction Submitted",
-                    description: `Supply ${amount} ${dataToken.assetsChain}`,
+                    description: `Transfer ${amount} ${dataToken.assetsChain} to Supply VeBank`,
                   }, key));
 
                 dispatch(actions.reloadAccountAssets());
@@ -195,7 +195,7 @@ export const supplyMarket = (dataToken, amount) => async (dispatch, getState) =>
                 });
                 dispatch(actions.alertActions.update({
                     status: "warning",
-                    title: "Transaction Rejected",
+                    title: "Transaction Supply Rejected",
                     description: e.message
                   }, key));
                 return e;
@@ -254,7 +254,7 @@ export const supplyDepositETHMarket = (addressAsset, amount) => async (dispatch,
                 dispatch(actions.alertActions.update({
                     status: "success",
                     title: "Transaction Submitted",
-                    description: `Supply ${amount} ${addressAsset.assetsChain}`,
+                    description: `Transfer ${amount} VET to DepositETH`,
                   }, key));
 
                 return transaction;
@@ -268,7 +268,7 @@ export const supplyDepositETHMarket = (addressAsset, amount) => async (dispatch,
 
                 dispatch(actions.alertActions.update({
                     status: "warning",
-                    title: "Transaction Rejected",
+                    title: "Transaction Supply Rejected",
                     description: e.message
                   }, key));
 
