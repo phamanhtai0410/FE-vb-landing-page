@@ -3,10 +3,7 @@ import Connex from "@vechain/connex";
 
 // import { Certificate, blake2b256, secp256k1 } from "thor-devkit";
 
-import {
-  alertVariable,
-  web3Constants,
-} from "../constants";
+import { alertVariable, web3Constants } from "../constants";
 import getWeb3 from "../utils/getWeb3";
 
 import ERC20ABI_VB from "../_contracts/assets/VB.json";
@@ -61,7 +58,8 @@ export const web3Connect = (isLogin) => async (dispatch) => {
     }, key));
 
     // Ask user to sign the agreement
-    await connex.vendor.sign("cert", {
+    await connex.vendor
+      .sign("cert", {
         purpose: "agreement",
         payload: {
           type: "text",
@@ -70,7 +68,6 @@ export const web3Connect = (isLogin) => async (dispatch) => {
       })
       .request()
       .then((signer) => {
-
         _acc = signer.annex.signer;
         _sign = JSON.stringify(signer);
 
@@ -127,12 +124,14 @@ export const web3Disconnect = () => async (dispatch, getState) => {
     account: null,
   });
 
-  dispatch(actions.getAccountAssets());
+  // dispatch(actions.getAccountAssets());
 
-  dispatch(actions.alertActions.update({
-     title: "Wallet Sync2",
-  description: `Waiting connecting...`
-}));
+  dispatch(
+    actions.alertActions.update({
+      title: "Wallet Sync2",
+      description: `Waiting connection...`,
+    })
+  );
 
   // setTimeout(() => {
   //     dispatch({ type: destroyConstants.DESTROY_SESSION });

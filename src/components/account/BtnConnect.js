@@ -67,7 +67,7 @@ const BtnConnect = () => {
             />
             {addressWalletCompact(account)}
             <img
-              src={showModalWallet ? IcDown : IcUp}
+              src={showModalWallet ? IcUp : IcDown}
               alt="icon up"
               className="w-5 h-5 ml-1"
             />
