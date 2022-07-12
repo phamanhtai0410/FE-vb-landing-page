@@ -81,6 +81,12 @@ export const approveSupply = (dataToken) => async (dispatch, getState) => {
     const amountMax = 1000000000;
 
     if (account && contractSupply && dataToken.assetsAddress) {
+        const key = randomKeyUUID();
+
+        dispatch(actions.alertActions.loading({
+            title: "Waiting For Approve",
+            description: `Approve ${dataToken.assetsChain} on VeBank`,
+          }, key));
 
         const approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
         const approveMethod = connex.thor.account(dataToken.assetsAddress).method(approveABI);
@@ -101,11 +107,22 @@ export const approveSupply = (dataToken) => async (dispatch, getState) => {
                     accountApprove: amountMax
                 });
 
+                dispatch(actions.alertActions.update({
+                    status: "success",
+                    title: "Approve success",
+                    description: `Approve ${dataToken.assetsChain} on VeBank success!`,
+                  }, key));
+
                 return result;
 
             }).catch((e) => {
 
                 console.log("error----", e);
+                dispatch(actions.alertActions.update({
+                    status: "warning",
+                    title: "Approve Rejected",
+                    description: e.message
+                  }, key));
                 return e;
 
             });
@@ -199,12 +216,19 @@ export const supplyMarket = (dataToken, amount) => async (dispatch, getState) =>
  * 
  */
 export const supplyDepositETHMarket = (addressAsset, amount) => async (dispatch, getState) => {
-
+    
     const state = getState();
 
     const { web3, account, connex } = state.web3;
 
     if (connex && account && amount) {
+
+        const key = randomKeyUUID();
+
+        dispatch(actions.alertActions.loading({
+            title: "Waiting For Confirmation",
+            description: `Supply ${amount} ${addressAsset.assetsChain}`,
+        }, key));
 
         dispatch({
             type: marketplaceConstants.MODAL_SUPPLY_MARKET_REQUEST
@@ -227,6 +251,12 @@ export const supplyDepositETHMarket = (addressAsset, amount) => async (dispatch,
 
                 dispatch(actions.reloadAccountAssets());
 
+                dispatch(actions.alertActions.update({
+                    status: "success",
+                    title: "Transaction Submitted",
+                    description: `Supply ${amount} ${addressAsset.assetsChain}`,
+                  }, key));
+
                 return transaction;
 
             }).catch((e) => {
@@ -235,6 +265,13 @@ export const supplyDepositETHMarket = (addressAsset, amount) => async (dispatch,
                 dispatch({
                     type: marketplaceConstants.MODAL_BORROW_MARKET_ERROR
                 });
+
+                dispatch(actions.alertActions.update({
+                    status: "warning",
+                    title: "Transaction Rejected",
+                    description: e.message
+                  }, key));
+
                 return e;
 
             });
