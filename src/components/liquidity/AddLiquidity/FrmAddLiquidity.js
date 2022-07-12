@@ -45,9 +45,9 @@ const FrmAddLiquidity = () => {
 
   const showConfirmButton = useCallback(() => {
     if (step === 2) {
-      if (approveFirstToken === 0) {
+      if (approveFirstToken < firstTokenVolume) {
         return <BtnLiquidityApproveA tokenAddress={firstToken} />;
-      } else if (approveSecondToken === 0) {
+      } else if (approveSecondToken < secondTokenVolume) {
         return <BtnLiquidityApproveB tokenAddress={secondToken} />;
       }
     }
@@ -70,7 +70,9 @@ const FrmAddLiquidity = () => {
     continueAvailable,
     primaryButtonLabel,
     approveFirstToken,
+    firstTokenVolume,
     approveSecondToken,
+    secondTokenVolume,
     firstToken,
     secondToken,
     handlerStepToStep,
@@ -87,10 +89,7 @@ const FrmAddLiquidity = () => {
   return (
     <div className="w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative z-50">
       {/*Header*/}
-      <GradientStrokeWrapper
-        borderRadius="1rem"
-        className="-z-10"
-      />
+      <GradientStrokeWrapper borderRadius="1rem" className="-z-10" />
       {step !== 1 && step !== 4 ? (
         <div className="flex flex-row flex-1 items-center justify-between">
           <p className="font-poppins_medium text-white text-3xl">

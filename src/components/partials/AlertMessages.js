@@ -2,63 +2,72 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import IcClose from "../../assets/images/toast/close.svg";
+
+import { randomKeyUUID } from "../../utils/lib";
+
 import AlertCustom from "./AlertCustom";
 
+const contextClass = {
+  success: "bg-popupVb",
+  error: "bg-popupVb",
+  info: "bg-popupVb",
+  warning: "bg-popupVb",
+  loading: "bg-popupVb",
+  update: "bg-popupVb",
+  default: "bg-popupVb",
+  dark: "bg-popupVb",
+};
+
 const AlertMessages = () => {
+
   const alert = useSelector((state) => state.alert);
 
-  const contextClass = {
-    success: "bg-popupVb",
-    error: "bg-popupVb",
-    info: "bg-popupVb",
-    warning: "bg-popupVb",
-    loading: "bg-popupVb",
-    update: "bg-popupVb",
-    default: "bg-popupVb",
-    dark: "bg-popupVb",
-  };
+  const getItemAlert  = (item) =>{
 
-  useEffect(() => {
-    if (alert) {
-      switch (alert.type) {
-        case "error":
-          toast.error(genMessage(alert.message));
-          break;
-
-        case "warning":
-          toast.warning(genMessage(alert.message));
-          break;
-
-        case "success":
-          toast.success(genMessage(alert.message));
-          break;
-
-        case "loading":
-          toast.loading(genMessage(alert.message), { icon: true, toastId: alert.message.id });
-          break;
-
-        case "update":
-          toast.update(alert.message.id, {
-            render: genMessage(alert.message),
-            type: alert.message.status,
-            isLoading: false,
-            icon: false,
-            autoClose: 5000
-          });
-          break;
-
-        default:
-          break;
-      }
+    const key = item.key || randomKeyUUID();
+    
+    const option = {
+      toastId: key,
+      type: item.type,
+      render:  <AlertCustom dataItem={item} key={key} status={ item.message.status ? item.message.status : item.type} />,
+      isLoading: false,
+      autoClose: item.duration || item.type === "loading"
     }
 
-    // Remove given toast
+    console.log("option",option);
+
+    switch (alert.type) {
+      case "error":
+        toast.error(option.render, option);
+        break;
+      case "warning":
+        toast.warning(option.render, option);
+        break;
+      case "success":
+        toast.success(option.render, option);
+        break;
+      case "loading":
+        toast.loading(option.render, {
+          ...option,
+          autoClose:false,
+          isLoading: true
+        });
+        break;
+      case "update":
+        toast.update(key, option);
+        break;
+      default:
+        break;
+    }
+
+  }
+
+  useEffect(() => {
+    if (alert && alert.type) {
+      getItemAlert(alert);
+    }
   }, [alert]);
 
-  const genMessage = (message) => {
-    return <AlertCustom message={message} />
-  } 
   return (
     <ToastContainer
       toastClassName={({ type }) =>
@@ -68,7 +77,6 @@ const AlertMessages = () => {
         } rounded-md justify-between overflow-hidden cursor-pointer`
       }
       position={toast.POSITION.BOTTOM_RIGHT}
-      autoClose={5000}
       hideProgressBar={false}
       newestOnTop={false}
       closeOnClick

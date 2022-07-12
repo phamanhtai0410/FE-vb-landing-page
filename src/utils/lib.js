@@ -1,4 +1,8 @@
 import { ethers } from "ethers";
+import PartialConstants from "../constants/partial.constants";
+import { v4 as uuidv4 } from "uuid";
+import { address } from "thor-devkit";
+
 var CryptoJS = require("crypto-js");
 
 export function numberWithCommas(x) {
@@ -53,21 +57,45 @@ export function nFormatter(num, digits) {
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 }
 
-export const isContainVET = (...agrs) => {
-  console.log("🐶🐶  ~ isContainVET ~ agrs", agrs);
-
-  return [...agrs].includes(process.env.REACT_APP_TOKEN_WVET);
-};
+export const isContainVET = (...ags) => [...ags].includes(process.env.REACT_APP_TOKEN_WVET);
 
 export const getDecimalForAsset = (assetsAddress) =>
-  assetsAddress === process.env.REACT_APP_TOKEN_VEUSD ? 6 : 18;
+  assetsAddress === process.env.REACT_APP_TOKEN_VEUSD
+    ? PartialConstants.VEUSD_DECIMAL
+    : PartialConstants.DEFAULT_ASSET_DECIMAL;
+
+export const typeOf = (value) => Object.prototype.toString.call(value);
+
+export const getWeiUnitByDecimal = (decimal) => {
+  switch (decimal) {
+    case 6:
+      return "mwei";
+    case 12:
+      return "micro";
+    case 18:
+      return "ether";
+    default:
+      return "";
+  }
+};
+
+export const getAmountInWeiFormatted = (web3, amount, decimalNumber) => {
+  if (!web3) throw new Error("Web3 is required");
+  else if (!amount) throw new Error("Amount is required");
+  else if (!decimalNumber) throw new Error("DecimalNumber is required");
+
+  return web3?.utils.toWei(
+    amount.toString(),
+    getWeiUnitByDecimal(decimalNumber)
+  );
+};
 
 export const getDecimalForAssetPair = (firstAssetAddress, secondAssetAddress) =>
   [firstAssetAddress, secondAssetAddress].includes(
     process.env.REACT_APP_TOKEN_VEUSD
   )
-    ? 12
-    : 18;
+    ? PartialConstants.LIQUIDITY_PAIR_CONTAIN_VET_DECIMAL
+    : PartialConstants.DEFAULT_ASSET_DECIMAL;
 
 export async function copyTextToClipboard(text) {
   if ("clipboard" in navigator) {
@@ -76,3 +104,14 @@ export async function copyTextToClipboard(text) {
     return document.execCommand("copy", true, text);
   }
 }
+
+export const randomKeyUUID = () => {
+  return  uuidv4();
+};
+
+export const addressWalletCompact = (address) =>{
+  return `${address.slice(0, 6)}...${address.slice(
+    address.length - 4,
+    address.length
+  )}`;
+} 

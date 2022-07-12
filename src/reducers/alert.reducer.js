@@ -1,37 +1,50 @@
 import { alertConstants } from '../constants';
 
+const autoClose = 3000;
+
 export function alert(state = {}, action) {
-  console.log("action", action)
   switch (action.type) {
     case alertConstants.LOADING:
       return {
         type: 'loading',
-        message: action.message,
-        key: action.key
+        key: action.key,
+        duration: 0,
+        message: action.message
       };
     case alertConstants.UPDATE:
       return {
         type: 'update',
-        message: action.message,
         key: action.key,
+        duration:action.duration || autoClose,
+        message: action.message
       };
     case alertConstants.SUCCESS:
       return {
         type: 'success',
+        key: action.key,
+        duration:action.duration || autoClose,
         message: action.message
       };
     case alertConstants.WARNING:
       return {
         type: 'warning',
+        key: action.key,
+        duration:action.duration || autoClose,
         message: action.message
       };
     case alertConstants.ERROR:
       return {
         type: 'error',
+        key: action.key,
+        duration:action.duration || autoClose,
         message: action.message
       };
     case alertConstants.CLEAR:
-      return {};
+      return {
+        type: 'clear',
+        key: action.key,
+        duration: 2
+      };
     default:
       return state
   }

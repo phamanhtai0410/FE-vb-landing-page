@@ -12,7 +12,7 @@ import { selectOpenChooseTokenState } from "../../../../reducers/liquid.reducer"
 import SearchBar from "../../../partials/SearchBar";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import GradientStrokeWrapper from "../../../partials/GradientStrokeWrapper";
-import { selectUserAssetsBalance } from "../../../../reducers/accountBalance.reducer";
+import { selectBalancesIds, selectUserAssetsBalance } from "../../../../reducers/accountBalance.reducer";
 import AssetExcerpt from "./AssetExcerpt";
 
 const customStyles = {
@@ -35,7 +35,7 @@ const customStyles = {
 const ModalSelectToken = () => {
   const isSelectTokenModalOpen = useSelector(selectOpenChooseTokenState);
 
-  const assetList = useSelector(selectUserAssetsBalance, shallowEqual);
+  const assetAddressList = useSelector(selectBalancesIds);
   // const assetPriceList = useSelector(selectAssetPrice, shallowEqual);
 
   const dispatch = useDispatch();
@@ -89,12 +89,12 @@ const ModalSelectToken = () => {
         </div>
 
         <TransitionGroup>
-          {assetList &&
-            assetList.length > 0 &&
-            assetList.map((item) => (
+          {assetAddressList &&
+            assetAddressList.length > 0 &&
+            assetAddressList.map((assetAddress) => (
               <AssetExcerpt
-                key={item.assetsAddress}
-                id={item.assetsAddress}
+                key={assetAddress}
+                id={assetAddress}
                 onTokenSelected={onTokenSelected}
               />
             ))}

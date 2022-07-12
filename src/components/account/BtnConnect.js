@@ -6,10 +6,11 @@ import IcWallet from "../../assets/images/ic_wallet.svg";
 import IcUp from "../../assets/images/up.svg";
 import IcDown from "../../assets/images/down.svg";
 import GradientStrokeWrapper from "../partials/GradientStrokeWrapper";
-import { copyTextToClipboard } from "../../utils/lib";
+import { addressWalletCompact, copyTextToClipboard } from "../../utils/lib";
 import ModalWallet from "./ModalWallet";
 
 const BtnConnect = () => {
+  
   const [isConnecting, setIsConnecting] = useState(false);
   const [showModalWallet, setShowModalWallet] = useState(false);
 
@@ -46,8 +47,6 @@ const BtnConnect = () => {
       });
   };
 
-  console.log("BtnConnect account",account);
-
   return (
     <>
       {account ? (
@@ -66,12 +65,9 @@ const BtnConnect = () => {
               src={IcWallet}
               alt="icon Wallet"
             />
-            {`${account.slice(0, 6)}...${account.slice(
-              account.length - 4,
-              account.length
-            )}`}
+            {addressWalletCompact(account)}
             <img
-              src={showModalWallet ? IcDown : IcUp}
+              src={showModalWallet ? IcUp : IcDown}
               alt="icon up"
               className="w-5 h-5 ml-1"
             />

@@ -3,6 +3,7 @@ import {
   addLiquidity,
   approveFirstTokenAddLiquidity,
   approveSecondTokenAddLiquidity,
+  checkApproval,
   loadDetailAddLiquidity,
 } from "../actions";
 import { poolConstants } from "../constants";
@@ -25,6 +26,7 @@ const initialState = {
   secondToken: null,
   tokenSelecting: "",
 
+  isCheckingApproval: false,
   isApproving: false,
   isAddingLiquidity: false,
   isAddingLiquiditySuccess: null,
@@ -151,11 +153,15 @@ export function liquidReducer(state = initialState, action) {
       if (state.tokenSelecting === poolConstants.FIRST_TOKEN) {
         if (newToken === state.secondToken) {
           newState.secondToken = state.firstToken;
+          newState.reserveA = state.reserveB;
+          newState.reserveB = state.reserveA;
         }
         newState.firstToken = newToken;
       } else {
         if (newToken === state.firstToken) {
           newState.firstToken = state.secondToken;
+          newState.reserveA = state.reserveB;
+          newState.reserveB = state.reserveA;
         }
         newState.secondToken = newToken;
       }
@@ -323,6 +329,26 @@ export function liquidReducer(state = initialState, action) {
       };
     }
 
+    case checkApproval.pending.type: {
+      return {
+        ...state,
+        isCheckingApproval: true,
+      };
+    }
+    case checkApproval.fulfilled.type: {
+      return {
+        ...state,
+        isCheckingApproval: false,
+        ...action.payload,
+      };
+    }
+    case checkApproval.rejected.type: {
+      return {
+        ...state,
+        isCheckingApproval: false,
+      };
+    }
+
     default:
       return state;
   }
@@ -350,6 +376,8 @@ export const selectAddingLiquidityState = (state) =>
   state.liquidReducer.isAddingLiquidity;
 export const selectAddingLiquidityFinishState = (state) =>
   state.liquidReducer.isAddingLiquiditySuccess;
+export const selectCheckApprovalState = (state) =>
+  state.liquidReducer.isCheckingApproval;
 
 export const selectTotalSupply = (state) => state.liquidReducer.totalSupply;
 export const selectLiquidityPool = (state) => state.liquidReducer.liquidityPool;
