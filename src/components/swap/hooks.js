@@ -45,7 +45,7 @@ const useSwapFacade = () => {
 
   const exchangeRate = useSelector(selectExchangeRate);
   const isSwap = useSelector(selectIsSwap);
-  const swapFee = useSelector(selectPairsFee);
+  const fee = useSelector(selectPairsFee);
   const loadingFee = useSelector(selectLoadingFee);
   const loadingSwap = useSelector(selectLoadingSwap);
   const loadingGetAmountOut = useSelector(selectLoadingGetAmountOut);
@@ -74,6 +74,11 @@ const useSwapFacade = () => {
   );
   const vthoBalance = useSelector((state) =>
     selectBalanceById(state, process.env.REACT_APP_TOKEN_VTHO)
+  );
+
+  const swapFee = useMemo(
+    () =>  inputAmountIn * (fee * 0.1) /100,
+    [fee, inputAmountIn]
   );
 
   const sourcePerDesireTokenPrice = useMemo(
