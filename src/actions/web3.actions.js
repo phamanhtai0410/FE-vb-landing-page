@@ -171,24 +171,48 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
 
     const contractVET = new web3.eth.Contract(assetAbi[TOKEN_VET], TOKEN_VET);
     if (contractVET) {
+      console.log(
+        "🐶🐶  ~ instantiateVetContracts ~ contractVET.events",
+        contractVET.events
+      );
+
+      contractVET.events
+        .Approval()
+        .on("data", async (data) => {
+          console.log("🐶🐶  ~ contractVET.events.Approval ~ data", data);
+        })
+        .on("error", async (err) => {
+          console.log("🐶🐶  ~ contractVET.events.Approval ~ err", err);
+        });
+
+      contractVET.events
+        .Withdrawal()
+        .on("data", async (data) => {
+          console.log("🐶🐶  ~ contractVET.events.Withdrawal ~ data", data);
+        })
+        .on("error", async (err) => {
+          console.log("🐶🐶  ~ contractVET.events.Withdrawal ~ err", err);
+        });
+
       contractVET.events
         .Transfer({})
         .on("data", async function (event) {
           console.log("onTransferEvent - VET", event);
           // Do something here
-          let balance = Number(selectBalanceById(getState(), TOKEN_VET));
-          const { wad: value } = event?.returnValues;
+          // let balance = Number(selectBalanceById(getState(), TOKEN_VET));
+          // const { wad: value } = event?.returnValues;
           const { txOrigin } = event?.meta;
-          const formattedValue = Number(ethers.utils.formatUnits(value, 18));
+          // const formattedValue = Number(ethers.utils.formatUnits(value, 18));
           if (txOrigin?.toLowerCase() === account) {
             // console.log("User send amount away");
-            balance -= formattedValue;
-          } else balance += formattedValue;
-          balance = Math.round(balance * 100) / 100;
-          dispatch({
-            type: web3Constants.ON_VET_BALANCE_CHANGED,
-            payload: balance,
-          });
+            // balance -= formattedValue;
+            dispatch(instantiateVetContracts());
+          }
+          // balance = Math.round(balance * 100) / 100;
+          // dispatch({
+          //   type: web3Constants.ON_VET_BALANCE_CHANGED,
+          //   payload: balance,
+          // });
         })
         .on("changed", (changed) =>
           // When event is attached or removed from the chain
@@ -202,24 +226,48 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
       TOKEN_VTHO
     );
     if (contractVTHO) {
+      console.log(
+        "🐶🐶  ~ instantiateVetContracts ~ contractVTHO.events",
+        contractVTHO.events
+      );
+
+      contractVTHO.events
+        .Approval?.()
+        .on("data", async (data) => {
+          console.log("🐶🐶  ~ contractVTHO.events.Approval ~ data", data);
+        })
+        .on("error", async (err) => {
+          console.log("🐶🐶  ~ contractVTHO.events.Approval ~ err", err);
+        });
+
+      contractVTHO.events
+        .Withdrawal?.()
+        .on("data", async (data) => {
+          console.log("🐶🐶  ~ contractVTHO.events.Withdrawal ~ data", data);
+        })
+        .on("error", async (err) => {
+          console.log("🐶🐶  ~ contractVTHO.events.Withdrawal ~ err", err);
+        });
+
       contractVTHO.events
         .Transfer({})
         .on("data", async function (event) {
           // console.log("onTransferEvent", event);
           // Do something here
-          let balance = Number(selectBalanceById(getState(), TOKEN_VTHO));
-          const { wad: value } = event?.returnValues;
+          // let balance = Number(selectBalanceById(getState(), TOKEN_VTHO));
+          // const { wad: value } = event?.returnValues;
           const { txOrigin } = event?.meta;
-          const formattedValue = Number(ethers.utils.formatUnits(value, 18));
+          // const formattedValue = Number(ethers.utils.formatUnits(value, 18));
           if (txOrigin.toLowerCase() === account) {
             // console.log("User send amount away");
-            balance -= formattedValue;
-          } else balance += formattedValue;
-          balance = Math.round(balance * 100) / 100;
-          dispatch({
-            type: web3Constants.ON_VTHO_BALANCE_CHANGED,
-            payload: balance,
-          });
+            // balance -= formattedValue;
+            dispatch(instantiateVetContracts());
+          }
+          // balance = Math.round(balance * 100) / 100;
+          // dispatch({
+          //   type: web3Constants.ON_VTHO_BALANCE_CHANGED,
+          //   payload: balance,
+          // });
         })
         .on("changed", (changed) =>
           // When event is attached or removed from the chain
@@ -270,27 +318,51 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
       balance = ethers.utils.formatEther(balanceBigN);
       balance = Math.round(balance * 100) / 100;
 
+      console.log('🐶🐶  ~ instantiateVBContracts ~ contractVB.events', contractVB.events)
+      contractVB.events
+        .Approval?.()
+        .on("data", async (data) => {
+          console.log("🐶🐶  ~ contractVB.events.Approval ~ data", data);
+        })
+        .on("error", async (err) => {
+          console.log("🐶🐶  ~ contractVB.events.Approval ~ err", err);
+        });
+
+      contractVB.events
+        .Withdrawal?.()
+        .on("data", async (data) => {
+          console.log("🐶🐶  ~ contractVB.events.Withdrawal ~ data", data);
+        })
+        .on("error", async (err) => {
+          console.log("🐶🐶  ~ contractVB.events.Withdrawal ~ err", err);
+        });
+
       contractVB.events
         .Transfer({})
         .on("data", async function (event) {
           console.log("onTransferEvent - VB", event);
           // Do something here
-          let balance = Number(
-            selectBalanceById(getState(), TOKEN_VEBANK) || 0
-          );
-          const { value } = event?.returnValues;
+          // let balance = Number(
+          //   selectBalanceById(getState(), TOKEN_VEBANK) || 0
+          // );
+          // const { value, from, to } = event?.returnValues;
           const { txOrigin } = event?.meta;
-          const formattedValue = Number(ethers.utils.formatUnits(value, 18));
+          // const formattedValue = Number(ethers.utils.formatUnits(value, 18));
           if (txOrigin.toLowerCase() === account) {
             // console.log("User send amount away");
-            balance -= formattedValue;
-          } else balance += formattedValue;
-          balance = Math.round(balance * 100) / 100;
-          dispatch({
-            type: web3Constants.INIT_CONTRACT_VB,
-            contractVB,
-            balance,
-          });
+            // if (account.toLowerCase() === to) {
+            //   balance += formattedValue;
+            // } else if (from.toLowerCase() === account) {
+            //   balance -= formattedValue;
+            // }
+            dispatch(instantiateVBContracts());
+            // balance = Math.round(balance * 100) / 100;
+          }
+          // dispatch({
+          //   type: web3Constants.INIT_CONTRACT_VB,
+          //   contractVB,
+          //   balance,
+          // });
         })
         .on("changed", (changed) =>
           // When event is attached or removed from the chain
@@ -341,28 +413,50 @@ export const instantiateVEUSDContracts = createAsyncThunk(
         );
         balance = Math.round(balance * 100) / 100;
 
+        console.log('🐶🐶  ~ contractVEUSD.events', contractVEUSD.events)
+        contractVEUSD.events
+          .Approval?.()
+          .on("data", async (data) => {
+            console.log("🐶🐶  ~ contractVEUSD.events.Approval ~ data", data);
+          })
+          .on("error", async (err) => {
+            console.log("🐶🐶  ~ contractVEUSD.events.Approval ~ err", err);
+          });
+
+        contractVEUSD.events
+          .Withdrawal?.()
+          .on("data", async (data) => {
+            console.log("🐶🐶  ~ contractVEUSD.events.Withdrawal ~ data", data);
+          })
+          .on("error", async (err) => {
+            console.log("🐶🐶  ~ contractVEUSD.events.Withdrawal ~ err", err);
+          });
+
         contractVEUSD.events
           .Transfer({})
           .on("data", async function (event) {
-            // console.log("onTransferEvent", event);
+            console.log("onTransferEvent - VeUSD", event);
             // Do something here
-            let balance = Number(selectBalanceById(getState(), TOKEN_VEUSD));
-            const { value } = event?.returnValues;
+            // let balance = Number(selectBalanceById(getState(), TOKEN_VEUSD));
+            // const { value, to } = event?.returnValues;
             const { txOrigin } = event?.meta;
-            const formattedValue = Number(ethers.utils.formatUnits(value, 6));
+            // const formattedValue = Number(ethers.utils.formatUnits(value, 6));
             if (txOrigin.toLowerCase() === account) {
-              console.log("User send amount away");
-              balance -= formattedValue;
-            } else balance += formattedValue;
-            balance = Math.round(balance * 100) / 100;
+              // console.log("User send amount away");
+              // if (account.toLowerCase() === to) {
+              //   balance += formattedValue;
+              // } else balance -= formattedValue;
+              // balance = Math.round(balance * 100) / 100;
+              dispatch(instantiateVEUSDContracts());
+            }
             // console.log("🐶🐶  ~ VEUSD balance", balance);
-            dispatch({
-              type: instantiateVEUSDContracts.fulfilled.type,
-              payload: {
-                contractVEUSD,
-                balance,
-              },
-            });
+            // dispatch({
+            //   type: instantiateVEUSDContracts.fulfilled.type,
+            //   payload: {
+            //     contractVEUSD,
+            //     balance,
+            //   },
+            // });
           })
           .on("changed", (changed) =>
             // When event is attached or removed from the chain
