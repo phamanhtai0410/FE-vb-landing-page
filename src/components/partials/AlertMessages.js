@@ -23,18 +23,15 @@ const AlertMessages = () => {
   const alert = useSelector((state) => state.alert);
 
   const getItemAlert  = (item) =>{
-
     const key = item.key || randomKeyUUID();
     
     const option = {
       toastId: key,
-      type: item.type,
+      type: item.message.status ? item.message.status : item.type,
       render:  <AlertCustom dataItem={item} key={key} status={ item.message.status ? item.message.status : item.type} />,
       isLoading: false,
       autoClose: item.duration || item.type === "loading"
     }
-
-    console.log("option",option);
 
     switch (alert.type) {
       case "error":
@@ -72,7 +69,7 @@ const AlertMessages = () => {
     <ToastContainer
       toastClassName={({ type }) =>
         contextClass[type || "default"] +
-        ` relative flex px-4 py-6 h-[100px] border-2 border-solid ${
+        ` relative flex px-4 py-4 border-2 border-solid ${
           type === "warning" ? "border-notiWarning" : "border-notiSuccess"
         } rounded-md justify-between overflow-hidden cursor-pointer`
       }
