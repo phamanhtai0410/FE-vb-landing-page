@@ -139,7 +139,7 @@ export const getAmountsOut = createAsyncThunk(
         amountsOut[1],
         getDecimalForAsset(addressTokenB)
       );
-      return {inputAmountIn, amountsOutFormat};
+      return { inputAmountIn, amountsOutFormat };
     }
   }
 );
@@ -174,7 +174,7 @@ export const getAmountsIn = createAsyncThunk(
         amountsIn[0],
         getDecimalForAsset(addressTokenA)
       );
-      return {amountsInFormat, inputAmountOut};
+      return { amountsInFormat, inputAmountOut };
     }
   }
 );
@@ -254,15 +254,6 @@ export const swapAsset = createAsyncThunk(
     const addressTokenA = tokenAInfo?.assetsAddress || "";
     const addressTokenB = tokenBInfo?.assetsAddress || "";
 
-    let contractFactory = new web3.eth.Contract(
-      ERC20ABI_FACTORY,
-      ADDRESS_FACTORY
-    );
-
-    const assetsPoolAddress = await contractFactory.methods
-      .getPair(addressTokenA, addressTokenB)
-      .call();
-    const emptyAddress = /^0x0+$/.test(assetsPoolAddress); // true chưa có
     const isPairContainVET = isContainVET(addressTokenA, addressTokenB);
 
     // const y = minAmountOut;
@@ -315,11 +306,11 @@ export const swapAsset = createAsyncThunk(
 
     let contractPair;
 
-    if (poolAddress) {
+    if (poolAddress && account) {
       contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
-      contractPair.events.allEvents().on("data", async (data) => {
-        const event = data?.event;
-        if (event === "Swap") {
+      contractPair.events.Swap({}).on("data", async (event) => {
+        const eventSwap = event?.event;
+        if (eventSwap === "Swap") {
           const key = randomKeyUUID();
 
           dispatch(refreshDataSwap());
@@ -336,49 +327,55 @@ export const swapAsset = createAsyncThunk(
       });
     }
 
-    if (!emptyAddress) {
-      if (isPairContainVET) {
-        if (functionName === "swapExactETHForTokens") {
-          // swap VET to another tokens
-          console.table([
-            ["method", functionName],
-            ["addressTokenA", addressTokenA],
-            ["addressTokenB", addressTokenB],
-            ["amountOutMin", amountOutMin],
-          ]);
+    if (isPairContainVET) {
+      if (functionName === "swapExactETHForTokens") {
+        // swap VET to another tokens
+        console.table([
+          ["method", functionName],
+          ["addressTokenA", addressTokenA],
+          ["addressTokenB", addressTokenB],
+          ["amountOutMin", amountOutMin],
+        ]);
 
-          methodSwapToken.value(amountIn);
+        methodSwapToken.value(amountIn);
 
-          transaction = await methodSwapToken
-            .transact(amountOutMin, pathAddress, account, deadline)
-            .comment(`transaction swap ${assetsPoolName} from VeBank`)
-            .request();
-        } else {
-          //swap another token to VET token
-          transaction = await methodSwapToken
-            .transact(amountIn, amountOutMin, pathAddress, account, deadline)
-            .comment(`transaction swap ${assetsPoolName} from VeBank`)
-            .request();
-        }
-      } else {
-        // swap token to token
         transaction = await methodSwapToken
-          .transact(
-            amountIn,
-            amountOutMin,
-            [addressTokenA, addressTokenB],
-            account,
-            deadline
-          )
+          .transact(amountOutMin, pathAddress, account, deadline)
+          .comment(`transaction swap ${assetsPoolName} from VeBank`)
+          .request()
+      } else {
+        //swap another token to VET token
+        transaction = await methodSwapToken
+          .transact(amountIn, amountOutMin, pathAddress, account, deadline)
           .comment(`transaction swap ${assetsPoolName} from VeBank`)
           .request();
       }
-      return transaction;
     } else {
-      dispatch(
-        actions.alertActions.warning(`${assetsPoolName} not existing in pools`)
-      );
+      // swap token to token
+      transaction = await methodSwapToken
+        .transact(
+          amountIn,
+          amountOutMin,
+          [addressTokenA, addressTokenB],
+          account,
+          deadline
+        )
+        .comment(`transaction swap ${assetsPoolName} from VeBank`)
+        .request();
     }
+    // if (transaction) {
+    //   const key = randomKeyUUID();
+    //   dispatch(
+    //     actions.alertActions.success(
+    //       {
+    //         title: "Success",
+    //         description: `Swap ${assetsPoolName} successfully`,
+    //       },
+    //       key
+    //     )
+    //   );
+    // }
+    return transaction;
   }
 );
 
