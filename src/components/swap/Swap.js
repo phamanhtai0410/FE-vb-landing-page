@@ -108,7 +108,8 @@ const Swap = () => {
               ) : (
                 <input
                   className="bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
-                  type="text"
+                  type="number"
+                  min={1}
                   value={inputAmountIn}
                   onChange={(event) => onChangeSourceInput(event.target.value)}
                   placeholder="0.0"
@@ -180,6 +181,7 @@ const Swap = () => {
                 <input
                   className="w-fit bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
                   type="number"
+                  min={1}
                   value={inputAmountOut}
                   onChange={(event) => onChangeDesireInput(event.target.value)}
                   placeholder="0.0"

@@ -133,7 +133,7 @@ const useSwapFacade = () => {
   };
 
   const checkBalance = (amount) => {
-    if (parseInt(amount) > sourceTokenBalance) {
+    if (parseFloat(amount) > sourceTokenBalance) {
       setShowErr(true);
       setInputAmountIn(amount);
     } else {
