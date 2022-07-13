@@ -49,14 +49,19 @@ const Swap = () => {
     accountApprove,
     onApproveToken,
     loadingSwap,
+    loadingExchangeRate,
   } = useSwapFacade();
 
   return (
     <div className="flex flex-col p-2 space-y-4">
       <div className="flex justify-between w-full">
         <h2 className="font-poppins_semi_bold text-xl">Swap</h2>
-        <div className="flex space-x-2">
-          <img className="cursor-pointer" src={IcReload} alt="Refresh" />
+        <div className="flex space-x-2 items-center">
+          {loadingExchangeRate ? (
+            <div className="loading__exchange__rate" />
+          ) : (
+            <img className="cursor-pointer" src={IcReload} alt="Refresh" />
+          )}
           <img className="cursor-pointer" src={IcSetting} alt="" />
         </div>
       </div>
@@ -143,7 +148,6 @@ const Swap = () => {
             <p className="text-vbLine text-sm">Low Price Impact</p>
           </div>
         </div>
-        {/* <img  alt="Loading" /> */}
       </div>
 
       {/* To section */}

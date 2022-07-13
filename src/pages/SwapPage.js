@@ -58,21 +58,21 @@ const SwapPage = () => {
             isSelectTokenModalOpen ? "hidden" : "flex"
           } flex flex-row p-2 space-x-6`}
         >
-          <div className="flex flex-col">
-            {/* <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-[172px]">
+          {/* <div className="flex flex-col">
+            <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-[172px]">
               <Wallet />
-            </div> */}
+            </div>
             <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-auto">
               <TrendingPairs />
             </div>
-          </div>
+          </div> */}
 
           <div className="rounded-2xl border border-vbLine bg-popupVb h-full p-8 w-full md:w-[568px]">
             <Swap />
           </div>
-          <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[370px] h-[266px]">
+          {/* <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[370px] h-[266px]">
             <PoolChart />
-          </div>
+          </div> */}
         </div>
         <ModalSelectToken />
       </div>
