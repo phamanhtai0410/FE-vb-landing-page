@@ -14,6 +14,7 @@ import {
   selectOpenChooseTokenState,
   selectSourceToken,
   selectSourceTokenFromModal,
+  swapTokenDesire,
 } from "../../reducers/swap.reducer";
 import { selectUserAssetsBalance } from "../../reducers/accountBalance.reducer";
 import GradientStrokeWrapper from "../partials/GradientStrokeWrapper";
@@ -67,13 +68,13 @@ const ModalSelectToken = () => {
         await dispatch(
           tokenData !== desireTokenAddress
             ? selectSourceTokenFromModal(tokenData)
-            : actions.alertActions.warning("Do not choose the same key pair")
+            : swapTokenDesire()
         );
       } else {
         await dispatch(
           tokenData !== sourceTokenAddress
             ? selectDesireTokenFromModal(tokenData)
-            : actions.alertActions.warning("Do not choose the same key pair")
+            : swapTokenDesire()
         );
       }
     },
@@ -88,10 +89,7 @@ const ModalSelectToken = () => {
       portalClassName="modal-veb"
       overlayClassName="overlay"
     >
-      <GradientStrokeWrapper
-        className="-z-50"
-        borderRadius="1rem"
-      />
+      <GradientStrokeWrapper className="-z-50" borderRadius="1rem" />
       <div className="header">
         <h2>Select a token</h2>
         <img

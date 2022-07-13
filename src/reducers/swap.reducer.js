@@ -56,6 +56,7 @@ const swapAssetSlice = createSlice({
       }
     },
     swapTokenDesire: (state, action) => {
+      state.isModalSelectTokenOpen = false;
       const sourceAddress = state.sourceTokenAddress;
       const desireAddress = state.desireTokenAddress;
       state.sourceTokenAddress = desireAddress;
