@@ -381,6 +381,7 @@ export const swapAsset = createAsyncThunk(
                 status: "success",
                 title: "Swap successfully",
                 description: `Swap ${assetsPoolName} successfully`,
+                details: {message: "View on VeChain Stats", txid: data.meta.txID}
               },
               key
             )
