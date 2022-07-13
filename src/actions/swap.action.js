@@ -250,6 +250,16 @@ export const swapAsset = createAsyncThunk(
     const { connex, account, web3 } = currentState.web3;
     const { pairFee, poolAddress } = currentState.swapAsset;
     const assetsPoolName = `${tokenAInfo?.assetsChain} - ${tokenBInfo?.assetsChain}`;
+    const key = randomKeyUUID();
+    dispatch(
+      actions.alertActions.loading(
+        {
+          title: "Waiting For Swap",
+          description: `Swap ${assetsPoolName} on VeBank`,
+        },
+        key
+      )
+    );
 
     const addressTokenA = tokenAInfo?.assetsAddress || "";
     const addressTokenB = tokenBInfo?.assetsAddress || "";
@@ -308,16 +318,18 @@ export const swapAsset = createAsyncThunk(
 
     if (poolAddress && account) {
       contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
-      contractPair.events.Swap({}).on("data", async (event) => {
-        const eventSwap = event?.event;
-        if (eventSwap === "Swap") {
-          const key = randomKeyUUID();
-
+      contractPair.events.Swap({}).on("data", async (data) => {
+        const { event, returnValues } = data;
+        if (
+          event === "Swap" &&
+          returnValues.to.toLowerCase() === account.toLowerCase()
+        ) {
           dispatch(refreshDataSwap());
           dispatch(
-            actions.alertActions.success(
+            actions.alertActions.update(
               {
-                title: "Success",
+                status: "success",
+                title: "Swap successfully",
                 description: `Swap ${assetsPoolName} successfully`,
               },
               key
@@ -343,12 +355,42 @@ export const swapAsset = createAsyncThunk(
           .transact(amountOutMin, pathAddress, account, deadline)
           .comment(`transaction swap ${assetsPoolName} from VeBank`)
           .request()
+          .then((transaction) => {
+            return transaction;
+          })
+          .catch((e) => {
+            dispatch(
+              actions.alertActions.update(
+                {
+                  status: "warning",
+                  title: "Swap rejected",
+                  description: `Swap ${assetsPoolName} rejected`,
+                },
+                key
+              )
+            );
+          });
       } else {
         //swap another token to VET token
         transaction = await methodSwapToken
           .transact(amountIn, amountOutMin, pathAddress, account, deadline)
           .comment(`transaction swap ${assetsPoolName} from VeBank`)
-          .request();
+          .request()
+          .then((transaction) => {
+            return transaction;
+          })
+          .catch((e) => {
+            dispatch(
+              actions.alertActions.update(
+                {
+                  status: "warning",
+                  title: "Swap rejected",
+                  description: `Swap ${assetsPoolName} rejected`,
+                },
+                key
+              )
+            );
+          });
       }
     } else {
       // swap token to token
@@ -361,20 +403,23 @@ export const swapAsset = createAsyncThunk(
           deadline
         )
         .comment(`transaction swap ${assetsPoolName} from VeBank`)
-        .request();
+        .request()
+        .then((transaction) => {
+          return transaction;
+        })
+        .catch((e) => {
+          dispatch(
+            actions.alertActions.update(
+              {
+                status: "warning",
+                title: "Swap rejected",
+                description: `Swap ${assetsPoolName} rejected`,
+              },
+              key
+            )
+          );
+        });
     }
-    // if (transaction) {
-    //   const key = randomKeyUUID();
-    //   dispatch(
-    //     actions.alertActions.success(
-    //       {
-    //         title: "Success",
-    //         description: `Swap ${assetsPoolName} successfully`,
-    //       },
-    //       key
-    //     )
-    //   );
-    // }
     return transaction;
   }
 );

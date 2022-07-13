@@ -20,6 +20,7 @@ const initialState = {
   exchangeRateBA: 0,
   isSwap: true,
   loadingFee: false,
+  loadingSwap: false,
   pairFee: 0,
   loadingGetAmountOut: false,
   loadingGetAmountIn: false,
@@ -75,6 +76,7 @@ const swapAssetSlice = createSlice({
     refreshDataSwap: (state) => {
       state.amountsIn = "";
       state.amountsOut = "";
+      state.loadingSwap = false;
     },
   },
   extraReducers: (builder) => {
@@ -121,10 +123,15 @@ const swapAssetSlice = createSlice({
       .addCase(checkAssetExistsPools.fulfilled, (state, action) => {
         state.poolAddress = action.payload;
       })
-      // .addCase(swapAsset.fulfilled, (state) => {
-      //   state.amountsIn = "";
-      //   state.amountsOut = "";
-      // });
+      .addCase(swapAsset.pending, (state) => {
+        state.loadingSwap = true;
+      })
+      .addCase(swapAsset.fulfilled, (state) => {
+        state.loadingSwap = false;
+      })
+      .addCase(swapAsset.rejected, (state) => {
+        state.loadingSwap = false;
+      });
   },
 });
 
@@ -159,3 +166,4 @@ export const selectLoadingGetAmountIn = (state) =>
   state.swapAsset.loadingGetAmountIn;
 export const selectAmountsIn = (state) => state.swapAsset.amountsIn;
 export const selectAccountApprove = (state) => state.swapAsset.accountApprove;
+export const selectLoadingSwap = (state) => state.swapAsset.loadingSwap;

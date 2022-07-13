@@ -47,6 +47,7 @@ const Swap = () => {
     loadingGetAmountOut,
     accountApprove,
     onApproveToken,
+    loadingSwap,
   } = useSwapFacade();
 
   return (
@@ -246,13 +247,19 @@ const Swap = () => {
               </div>
             </div>
             <button
-              disabled={!isSwap}
-              onClick={accountApprove === 0 ? onApproveToken :onSwapAssetToken}
+              disabled={!isSwap || loadingSwap}
+              onClick={accountApprove === 0 ? onApproveToken : onSwapAssetToken}
               className={`w-full ${
-                isSwap ? "btn-veb" : "bg-btn-veb-disabled rounded-lg"
+                isSwap && !loadingSwap
+                  ? "btn-veb"
+                  : "bg-btn-veb-disabled rounded-lg"
               }  h-12`}
             >
-              {accountApprove === 0 ? "Approve" : "Swap"}
+              {accountApprove === 0
+                ? "Approve"
+                : loadingSwap
+                ? "Swapping..."
+                : "Swap"}
             </button>
           </div>
         ) : (

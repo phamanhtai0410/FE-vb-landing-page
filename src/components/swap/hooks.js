@@ -14,6 +14,7 @@ import {
   selectLoadingGetAmountOut,
   selectLoadingGetAmountIn,
   selectAccountApprove,
+  selectLoadingSwap,
 } from "../../reducers/swap.reducer";
 import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
 import { selectPriceByTokenAddress } from "../../reducers/assetsPrice.reducer";
@@ -45,6 +46,7 @@ const useSwapFacade = () => {
   const isSwap = useSelector(selectIsSwap);
   const swapFee = useSelector(selectPairsFee);
   const loadingFee = useSelector(selectLoadingFee);
+  const loadingSwap = useSelector(selectLoadingSwap);
   const loadingGetAmountOut = useSelector(selectLoadingGetAmountOut);
   const loadingGetAmountIn = useSelector(selectLoadingGetAmountIn);
   const amountsOut = useSelector(selectAmountsOut);
@@ -261,6 +263,7 @@ const useSwapFacade = () => {
     loadingGetAmountOut,
     accountApprove,
     onApproveToken,
+    loadingSwap,
   };
 };
 
