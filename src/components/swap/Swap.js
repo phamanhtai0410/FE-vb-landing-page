@@ -20,6 +20,7 @@ const Swap = () => {
   const {
     isSwap,
     swapFee,
+    showErr,
     account,
     loadingFee,
     exchangeRate,
@@ -88,13 +89,13 @@ const Swap = () => {
               <div className="w-[1px] bg-[#7694DE] ml-4"></div>
               <div className="flex flex-row text-[#647BB4] space-x-1 ml-4">
                 <button
-                  onClick={() => setInputAmount(sourceTokenBalance)}
+                  onClick={() => onChangeSourceInput(sourceTokenBalance)}
                   className="w-[57px] h-[28px] bg-[#203557] rounded"
                 >
                   Max
                 </button>
                 <button
-                  onClick={() => setInputAmount(sourceTokenBalance / 2.0)}
+                  onClick={() => onChangeSourceInput(sourceTokenBalance / 2.0)}
                   className="w-[57px] h-[28px] bg-[#203557] rounded"
                 >
                   Half
@@ -247,16 +248,18 @@ const Swap = () => {
               </div>
             </div>
             <button
-              disabled={!isSwap || loadingSwap}
+              disabled={!isSwap || loadingSwap || showErr}
               onClick={accountApprove === 0 ? onApproveToken : onSwapAssetToken}
               className={`w-full ${
-                isSwap && !loadingSwap
+                isSwap && !loadingSwap && !showErr
                   ? "btn-veb"
                   : "bg-btn-veb-disabled rounded-lg"
               }  h-12`}
             >
               {accountApprove === 0
                 ? "Approve"
+                : showErr
+                ? `Your ${sourceTokenInfo?.assetsChain} balance is not enough`
                 : loadingSwap
                 ? "Swapping..."
                 : "Swap"}

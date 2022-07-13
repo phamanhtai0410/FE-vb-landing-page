@@ -38,6 +38,7 @@ const useSwapFacade = () => {
   const [inputAmountOut, setInputAmountOut] = useState("");
   const [inputSlippage, setInputSlippage] = useState("0.1");
   const [pressSwap, setPressSwap] = useState(false);
+  const [showErr, setShowErr] = useState(false);
 
   const sourceTokenAddress = useSelector(selectSourceToken);
   const desireTokenAddress = useSelector(selectDesireToken);
@@ -126,9 +127,19 @@ const useSwapFacade = () => {
     dispatch(openModalSelectToken(nameToken));
   };
 
+  const checkBalance = (amount) => {
+    if (parseInt(amount) > sourceTokenBalance) {
+      setShowErr(true);
+      setInputAmountIn(amount);
+    } else {
+      setShowErr(false);
+      setInputAmountIn(amount);
+    }
+  };
+
   const onChangeSourceInput = useCallback(
     (value) => {
-      setInputAmountIn(value);
+      checkBalance(value);
       if (value !== "") {
         dispatch(
           getAmountsOut({
@@ -148,7 +159,7 @@ const useSwapFacade = () => {
       //   })
       // );
     },
-    [desireTokenInfo, dispatch, sourceTokenInfo]
+    [desireTokenInfo, dispatch, sourceTokenBalance, sourceTokenInfo]
   );
 
   const onChangeDesireInput = useCallback(
@@ -201,7 +212,8 @@ const useSwapFacade = () => {
 
   useEffect(() => {
     if (pressSwap) {
-      setInputAmountIn(inputAmountOut);
+      checkBalance(inputAmountOut);
+      // setInputAmountIn(inputAmountOut);
       setPressSwap(false);
     } else {
       setInputAmountOut(
@@ -226,11 +238,13 @@ const useSwapFacade = () => {
   }, [amountsOut]);
 
   useEffect(() => {
-    setInputAmountIn(amountsIn);
+    checkBalance(amountsIn);
+    // setInputAmountIn(amountsIn);
   }, [amountsIn]);
 
   return {
     isSwap,
+    showErr,
     swapFee,
     account,
     loadingFee,
