@@ -17,22 +17,21 @@ import {
   selectReserveA,
   selectReserveB,
   selectLiquidityPool,
+  selectLoadLiquidityDetail,
 } from "../../../reducers/liquid.reducer";
 import { nFormatter } from "../../../utils/lib";
 import { selectBalanceById } from "../../../reducers/accountBalance.reducer";
 import RouteName from "../../../constants/routeName.constants";
+import { selectAccount } from "../../../reducers/web3.reducer";
 
 const useAddLiquidFacade = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { addressPool: poolAddress } = useParams();
-
-  const poolInfo = useSelector((state) =>
-    selectPoolInfoByAddress(state, poolAddress)
-  );
   const firstToken = useSelector(selectFirstToken, shallowEqual);
   const secondToken = useSelector(selectSecondToken, shallowEqual);
+  const isLoadingLiquidityDetail = useSelector(selectLoadLiquidityDetail);
   const isAddingLiquidity = useSelector(selectAddingLiquidityState);
   const addLiquidityState = useSelector(selectAddingLiquidityFinishState);
   const approveFirstToken = useSelector(selectApproveFirstToken);
@@ -50,6 +49,7 @@ const useAddLiquidFacade = () => {
     selectBalanceById(state, secondToken)
   );
 
+  const account = useSelector(selectAccount);
   const userCurrentLiquidityPool = useSelector(selectLiquidityPool);
   const totalSupply = useSelector(selectTotalSupply);
   const reserveB = useSelector(selectReserveA);
@@ -82,15 +82,6 @@ const useAddLiquidFacade = () => {
 
   const liquidityEstimated = useMemo(() => {
     if (totalSupply === 0 || totalSupply === 0.0) {
-      console.log("🐶🐶  ~ liquidityEstimated ~ totalSupply", totalSupply);
-      console.log(
-        "🐶🐶  ~ useAddLiquidFacade ~ firstTokenVolume",
-        firstTokenVolume
-      );
-      console.log(
-        "🐶🐶  ~ liquidityEstimated ~ Number(process.env.MINIMUM_LIQUIDITY)",
-        process.env.REACT_APP_MINIMUM_LIQUIDITY
-      );
       return (
         Math.sqrt(firstTokenVolume * secondTokenVolume) -
         Number(process.env.REACT_APP_MINIMUM_LIQUIDITY)
@@ -189,7 +180,9 @@ const useAddLiquidFacade = () => {
   };
 
   const handlerStepToStep = (e) => {
-    if (
+    if (!account) {
+      dispatch(actions.web3Connect(true))
+    } else if (
       step === 1 &&
       firstToken &&
       secondToken &&
@@ -222,12 +215,59 @@ const useAddLiquidFacade = () => {
     );
   };
 
-  const findOtherLiquidPoolTokens = () => {};
+  useEffect(() => {
+    if (isLoadingLiquidityDetail) {
+      setContinueAvailable(false);
+      setPrimaryButtonLabel("Loading details...");
+    } else {
+      // Load detail finished or first initialized
+      if (reserveA > 0 && reserveB > 0) {
+        // If pair loaded
+        if (
+          firstTokenVolume !== 0 &&
+          firstTokenVolume !== "" &&
+          secondTokenVolume !== 0 &&
+          secondTokenVolume !== ""
+        ) {
+          const secondAmount =
+            firstTokenVolume * firstPerSecondTokenExchangeRate;
+          if (secondTokenVolume !== secondAmount) {
+            setSecondTokenVolume(secondAmount);
+          }
+          setPrimaryButtonLabel("Supply");
+        } else if (secondTokenVolume === 0 || secondTokenVolume === "") {
+          if (firstTokenVolume !== 0 && firstTokenVolume !== "") {
+            setSecondTokenVolume(
+              firstTokenVolume * firstPerSecondTokenExchangeRate
+            );
+          } else setPrimaryButtonLabel("Enter an amount");
+        } else {
+          setFirstTokenVolume(
+            secondTokenVolume * secondPerFirstTokenExchangeRate
+          );
+          setPrimaryButtonLabel("Supply");
+        }
+        setContinueAvailable(true);
+      }
+
+      if (!firstToken || !secondToken) {
+        setPrimaryButtonLabel("Invalid pair");
+      }
+
+      if (!account) {
+        setContinueAvailable(true);
+        setPrimaryButtonLabel("Connect wallet");
+      }
+    }
+  }, [isLoadingLiquidityDetail]);
 
   useEffect(() => {
     switch (step) {
       case 1: {
-        if (!firstToken || !secondToken) {
+        if (!account) {
+          setContinueAvailable(true);
+          setPrimaryButtonLabel("Connect wallet");
+        } else if (!firstToken || !secondToken) {
           setPrimaryButtonLabel("Invalid pair");
           setContinueAvailable(false);
         } else if (
@@ -258,7 +298,7 @@ const useAddLiquidFacade = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstToken, secondToken, firstTokenVolume, secondTokenVolume]);
+  }, [firstToken, secondToken, firstTokenVolume, secondTokenVolume, account]);
 
   useEffect(() => {
     if (step === 3 && !isAddingLiquidity) {
@@ -270,17 +310,6 @@ const useAddLiquidFacade = () => {
       }
     }
   }, [isAddingLiquidity, addLiquidityState, step, navigate]);
-
-  // useEffect(() => {
-  //   if (dispatch && poolInfo) {
-  //     dispatch(actions.setFirstToken(poolInfo?.addressTokenA));
-  //     dispatch(actions.setSecondToken(poolInfo?.addressTokenB));
-  //   }
-  //   return () => {
-  //     resetFrm();
-  //     dispatch(actions.clearSelectedTokens());
-  //   };
-  // }, [dispatch, poolInfo]);
 
   useEffect(() => {
     dispatch(actions.loadDetailAddLiquidity(poolAddress));
@@ -311,7 +340,6 @@ const useAddLiquidFacade = () => {
     closeModalAndDashboard,
     onSelectFirstCurrency,
     onSelectSecondCurrency,
-    findOtherLiquidPoolTokens,
     onChangeFirstTokenAmount,
     onChangeSecondTokenAmount,
   };

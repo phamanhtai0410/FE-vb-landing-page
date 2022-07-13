@@ -23,7 +23,7 @@ const accountBalanceSlice = createSlice({
             state.ids.push(action.contractVB.options.address);
           }
           if (state?.entities) {
-            state.entities[action.contractVB.options.address] = action.balance;
+            state.entities[action.contractVB.options.address] = action.balance || 0;
           }
         }
       })
@@ -34,7 +34,7 @@ const accountBalanceSlice = createSlice({
             state.ids.push(contractVEUSD.options.address);
           }
           if (state?.entities) {
-            state.entities[contractVEUSD.options.address] = balance;
+            state.entities[contractVEUSD.options.address] = balance || 0;
           }
         }
       })
@@ -46,9 +46,15 @@ const accountBalanceSlice = createSlice({
           state.ids.push(process.env.REACT_APP_TOKEN_VTHO);
         }
         if (state?.entities) {
-          state.entities[process.env.REACT_APP_TOKEN_WVET] = action.balanceVET;
-          state.entities[process.env.REACT_APP_TOKEN_VTHO] = action.balanceVTHO;
+          state.entities[process.env.REACT_APP_TOKEN_WVET] = action.balanceVET || 0;
+          state.entities[process.env.REACT_APP_TOKEN_VTHO] = action.balanceVTHO || 0;
         }
+      })
+      .addCase(web3Constants.ON_VET_BALANCE_CHANGED, (state, action) => {
+        state.entities[process.env.REACT_APP_TOKEN_WVET] = action.payload || 0;
+      })
+      .addCase(web3Constants.ON_VTHO_BALANCE_CHANGED, (state, action) => {
+        state.entities[process.env.REACT_APP_TOKEN_VTHO] = action.payload || 0;
       })
       .addCase(web3Constants.WEB3_DISCONNECT, (state, _) => {
         // Reset all user's asset balances to 0

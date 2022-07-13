@@ -7,6 +7,13 @@ import {
   openModalSelectToken,
   selectExchangeRate,
   selectIsSwap,
+  selectPairsFee,
+  selectLoadingFee,
+  selectAmountsOut,
+  selectAmountsIn,
+  selectLoadingGetAmountOut,
+  selectLoadingGetAmountIn,
+  selectAccountApprove,
 } from "../../reducers/swap.reducer";
 import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
 import { selectPriceByTokenAddress } from "../../reducers/assetsPrice.reducer";
@@ -14,7 +21,14 @@ import { useMemo } from "react";
 import { selectBalanceById } from "../../reducers/accountBalance.reducer";
 import { selectAccount } from "../../reducers/web3.reducer";
 import * as actions from "../../actions";
-import { checkAssetExistsPools } from "../../actions";
+import {
+  checkApproveToken,
+  checkAssetExistsPools,
+  getAmountsIn,
+  getAmountsOut,
+  getPairsFee,
+  onApproveTokenForAccount,
+} from "../../actions";
 
 const useSwapFacade = () => {
   const dispatch = useDispatch();
@@ -29,6 +43,13 @@ const useSwapFacade = () => {
 
   const exchangeRate = useSelector(selectExchangeRate);
   const isSwap = useSelector(selectIsSwap);
+  const swapFee = useSelector(selectPairsFee);
+  const loadingFee = useSelector(selectLoadingFee);
+  const loadingGetAmountOut = useSelector(selectLoadingGetAmountOut);
+  const loadingGetAmountIn = useSelector(selectLoadingGetAmountIn);
+  const amountsOut = useSelector(selectAmountsOut);
+  const amountsIn = useSelector(selectAmountsIn);
+  const accountApprove = useSelector(selectAccountApprove);
 
   const sourceTokenInfo = useSelector((state) =>
     selectAssetByAddress(state, sourceTokenAddress)
@@ -71,8 +92,8 @@ const useSwapFacade = () => {
   );
 
   const amountOutMin = useMemo(
-    () => desireTokenAmount - (desireTokenAmount * inputSlippage) / 100,
-    [inputSlippage, desireTokenAmount]
+    () => inputAmountOut - (inputAmountOut * inputSlippage) / 100,
+    [inputAmountOut, inputSlippage]
   );
 
   const onSwapDesireToken = () => {
@@ -91,6 +112,14 @@ const useSwapFacade = () => {
     );
   };
 
+  const onApproveToken = () => {
+    dispatch(
+      onApproveTokenForAccount({
+        tokenInfo: sourceTokenInfo,
+      })
+    );
+  };
+
   const onShowModalSelectToken = (nameToken) => {
     dispatch(openModalSelectToken(nameToken));
   };
@@ -98,17 +127,51 @@ const useSwapFacade = () => {
   const onChangeSourceInput = useCallback(
     (value) => {
       setInputAmountIn(value);
-      setInputAmountOut(value !== "" ? value * exchangeRate : "");
+      if (value !== "") {
+        dispatch(
+          getAmountsOut({
+            inputAmountIn: value,
+            tokenAInfo: sourceTokenInfo,
+            tokenBInfo: desireTokenInfo,
+          })
+        );
+      } else {
+        setInputAmountOut("");
+      }
+      // setInputAmountOut(value !== "" ? value * exchangeRate : "");
+      // dispatch(
+      //   getPairsFee({
+      //     tokenAInfo: sourceTokenInfo,
+      //     tokenBInfo: desireTokenInfo,
+      //   })
+      // );
     },
-    [exchangeRate]
+    [desireTokenInfo, dispatch, sourceTokenInfo]
   );
 
   const onChangeDesireInput = useCallback(
     (value) => {
       setInputAmountOut(value);
-      setInputAmountIn(value !== "" ? value * desirePerSourceTokenPrice : "");
+      if (value !== "") {
+        dispatch(
+          getAmountsIn({
+            inputAmountOut: value,
+            tokenAInfo: sourceTokenInfo,
+            tokenBInfo: desireTokenInfo,
+          })
+        );
+      } else {
+        setInputAmountIn("");
+      }
+      // setInputAmountIn(value !== "" ? value * desirePerSourceTokenPrice : "");
+      // dispatch(
+      //   getPairsFee({
+      //     tokenAInfo: sourceTokenInfo,
+      //     tokenBInfo: desireTokenInfo,
+      //   })
+      // );
     },
-    [desirePerSourceTokenPrice]
+    [desireTokenInfo, dispatch, sourceTokenInfo]
   );
 
   useEffect(() => {
@@ -118,7 +181,21 @@ const useSwapFacade = () => {
         tokenBInfo: desireTokenInfo,
       })
     );
+    dispatch(
+      getPairsFee({
+        tokenAInfo: sourceTokenInfo,
+        tokenBInfo: desireTokenInfo,
+      })
+    );
   }, [sourceTokenAddress, desireTokenAddress]);
+
+  useEffect(() => {
+    dispatch(
+      checkApproveToken({
+        tokenInfo: sourceTokenInfo,
+      })
+    );
+  }, [dispatch, sourceTokenInfo]);
 
   useEffect(() => {
     if (pressSwap) {
@@ -142,9 +219,19 @@ const useSwapFacade = () => {
     }
   }, [desireTokenAddress, exchangeRate]);
 
+  useEffect(() => {
+    setInputAmountOut(amountsOut);
+  }, [amountsOut]);
+
+  useEffect(() => {
+    setInputAmountIn(amountsIn);
+  }, [amountsIn]);
+
   return {
     isSwap,
+    swapFee,
     account,
+    loadingFee,
     amountOutMin,
     inputAmountOut,
     sourceTokenAddress,
@@ -170,6 +257,10 @@ const useSwapFacade = () => {
     sourceTokenAmount,
     onChangeDesireInput,
     onChangeSourceInput,
+    loadingGetAmountIn,
+    loadingGetAmountOut,
+    accountApprove,
+    onApproveToken,
   };
 };
 
