@@ -99,6 +99,7 @@ const swapAssetSlice = createSlice({
       })
       .addCase(getAmountsOut.pending, (state, action) => {
         state.loadingGetAmountOut = true;
+        state.amountsOut = "";
       })
       .addCase(getAmountsOut.fulfilled, (state, action) => {
         state.loadingGetAmountOut = false;

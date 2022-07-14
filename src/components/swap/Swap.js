@@ -122,9 +122,7 @@ const Swap = () => {
               )}
             </div>
           </div>
-          {!loadingGetAmountIn && (
-            <p className="self-end">${inputAmountIn * sourceTokenPrice}</p>
-          )}
+          <p className="self-end">${inputAmountIn * sourceTokenPrice}</p>
         </div>
       </div>
 
@@ -193,9 +191,7 @@ const Swap = () => {
               )}
             </div>
           </div>
-          {!loadingGetAmountOut && (
-            <p className="float-right">${inputAmountOut * desireTokenPrice}</p>
-          )}
+          <p className="float-right">${inputAmountOut * desireTokenPrice}</p>
         </div>
       </div>
 

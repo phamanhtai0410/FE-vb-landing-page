@@ -236,22 +236,18 @@ const useSwapFacade = () => {
       // setInputAmountIn(inputAmountOut);
       setPressSwap(false);
     } else {
-      setInputAmountOut(
-        inputAmountIn !== "" ? inputAmountIn * exchangeRate : ""
-      );
+      getAmountOutDebounced(inputAmountIn);
     }
-  }, [sourceTokenAddress, exchangeRate]);
+  }, [sourceTokenAddress]);
 
   useEffect(() => {
     if (pressSwap) {
       setInputAmountOut(inputAmountIn);
       setPressSwap(false);
     } else {
-      setInputAmountOut(
-        inputAmountIn !== "" ? inputAmountIn * exchangeRate : ""
-      );
+      getAmountOutDebounced(inputAmountIn);
     }
-  }, [desireTokenAddress, exchangeRate]);
+  }, [desireTokenAddress]);
 
   useEffect(() => {
     setInputAmountOut(amountsOut);
