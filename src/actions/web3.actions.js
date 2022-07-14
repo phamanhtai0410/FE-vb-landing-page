@@ -3,7 +3,7 @@ import Connex from "@vechain/connex";
 
 // import { Certificate, blake2b256, secp256k1 } from "thor-devkit";
 
-import { alertVariable, web3Constants } from "../constants";
+import { destroyConstants, web3Constants } from "../constants";
 import getWeb3 from "../utils/getWeb3";
 
 import ERC20ABI_VB from "../_contracts/assets/VB.json";
@@ -123,8 +123,8 @@ export const web3Connect = (isLogin) => async (dispatch) => {
 };
 
 export const web3Disconnect = () => async (dispatch, getState) => {
-  // const state = getState();
-  // const { web3 } = state.web3;
+  const state = getState();
+  const { account } = state.web3;
 
   localStorage.removeItem("_acc");
   localStorage.removeItem("_sign");
@@ -136,18 +136,17 @@ export const web3Disconnect = () => async (dispatch, getState) => {
     account: null,
   });
 
-  // dispatch(actions.getAccountAssets());
-
   dispatch(
-    actions.alertActions.update({
-      title: "Wallet Sync2",
-      description: `Waiting connection...`,
+    actions.alertActions.success({
+      title: "Disconected",
+      description: `Wallet: ${addressWalletCompact(account)}`,
     })
   );
 
   // setTimeout(() => {
   //     dispatch({ type: destroyConstants.DESTROY_SESSION });
   // }, 1000);
+  
 };
 
 export const instantiateVetContracts = () => async (dispatch, getState) => {

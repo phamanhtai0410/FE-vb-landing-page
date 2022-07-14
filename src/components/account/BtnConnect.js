@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import * as actions from "../../actions";
 import IcWallet from "../../assets/images/ic_wallet.svg";
@@ -9,6 +10,8 @@ import GradientStrokeWrapper from "../partials/GradientStrokeWrapper";
 import { addressWalletCompact, copyTextToClipboard } from "../../utils/lib";
 import ModalWallet from "./ModalWallet";
 
+
+
 const BtnConnect = () => {
   
   const [isConnecting, setIsConnecting] = useState(false);
@@ -17,6 +20,7 @@ const BtnConnect = () => {
   const account = useSelector((state) => state.web3.account, shallowEqual);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const connectWalletHandler = async () => {
     if (!isConnecting) {
@@ -31,9 +35,16 @@ const BtnConnect = () => {
     }
   };
 
+  const refreshPage = () => {
+    navigate(0);
+  }
+
   const disConnectWallet = async () => {
     await dispatch(actions.web3Disconnect());
     setShowModalWallet(false);
+    setTimeout(async () => {                  
+      refreshPage();
+    },500);
   };
 
   const onCopy = () => {
