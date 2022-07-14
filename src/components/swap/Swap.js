@@ -1,6 +1,7 @@
 import React from "react";
 
 import IcSwap from "../../assets/images/ic_swap.svg";
+import IcBtnSwap from "../../assets/images/swap_btn.svg";
 import IcDropDown from "../../assets/images/ic_dropdown.svg";
 import IcReload from "../../assets/images/ic_reload.svg";
 import IcSetting from "../../assets/images/buttons/ic_setting_outline.svg";
@@ -67,14 +68,14 @@ const Swap = () => {
       </div>
 
       {/* From section */}
-      <div className="bg-item rounded-md p-4 space-y-4 text-hint">
+      <div className="bg-itemForm rounded-md p-4 space-y-4 text-hint">
         <div className="full-row-between-center">
           <p className="text-sm">From</p>
           <p className="text-sm">Balance: {sourceTokenBalance}</p>
         </div>
         <div className="flex flex-col">
           <div className="flex flex-row w-full justify-between">
-            <div className="flex flex-row w-full">
+            <div className="flex flex-row w-full items-center">
               <div
                 // type="button"
                 className="flex flex-row items-center space-x-[10px] cursor-pointer"
@@ -91,7 +92,7 @@ const Swap = () => {
                 </h1>
                 <img className="w-[16px]" src={IcDropDown} alt="" />
               </div>
-              <div className="w-[1px] bg-[#7694DE] ml-4"></div>
+              <div className="w-[1px] h-full bg-[#7694DE] ml-8"></div>
               <div className="flex flex-row text-[#647BB4] space-x-1 ml-4">
                 <button
                   onClick={() => onChangeSourceInput(sourceTokenBalance)}
@@ -107,7 +108,7 @@ const Swap = () => {
                 </button>
               </div>
             </div>
-            <div className="relative flex flex-col w-fit">
+            <div className="relative flex flex-col w-full justify-center ml-4">
               {loadingGetAmountIn ? (
                 <div className="loading" />
               ) : (
@@ -122,12 +123,20 @@ const Swap = () => {
               )}
             </div>
           </div>
-          <p className="self-end">${inputAmountIn * sourceTokenPrice}</p>
+          {/* <p className="self-end">${inputAmountIn * sourceTokenPrice}</p> */}
         </div>
       </div>
 
       {/* Swap button */}
-      <div className="full-row-between-center px-7">
+      <div className="flex flex-row items-center justify-center">
+        <img
+          onClick={onSwapDesireToken}
+          className="cursor-pointer w-6 h-6"
+          src={IcBtnSwap}
+          alt="Swap"
+        />
+      </div>
+      {/* <div className="full-row-between-center px-7">
         <div className="row-center space-x-4">
           <img
             onClick={onSwapDesireToken}
@@ -146,10 +155,10 @@ const Swap = () => {
             <p className="text-vbLine text-sm">Low Price Impact</p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* To section */}
-      <div className="bg-item rounded-md p-4 space-y-4 text-hint">
+      <div className="bg-itemForm rounded-md p-4 space-y-4 text-hint">
         <div className="full-row-between-center">
           <p className="text-sm">To</p>
           <p className="text-sm">Balance: {desireTokenBalance}</p>
@@ -176,12 +185,12 @@ const Swap = () => {
             >
               {desireTokenAmount || 0.0}
             </p> */}
-            <div className="relative flex flex-col w-fit">
+            <div className="relative flex flex-col w-full">
               {loadingGetAmountOut ? (
                 <div className="loading" />
               ) : (
                 <input
-                  className="w-fit bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+                  className="w-full bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
                   type="number"
                   min={1}
                   value={inputAmountOut}
@@ -191,7 +200,7 @@ const Swap = () => {
               )}
             </div>
           </div>
-          <p className="float-right">${inputAmountOut * desireTokenPrice}</p>
+          {/* <p className="float-right">${inputAmountOut * desireTokenPrice}</p> */}
         </div>
       </div>
 
@@ -218,18 +227,21 @@ const Swap = () => {
                 <p className="text-vbLine"> &lt; 0.01% </p>
               </div>
               <div className="flex justify-between">
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 w-full">
                   <p className="text-[#ABC2FC] min-w-fit">Slippage tolerance</p>
                   <img className="w-5" src={IcQuestionCircle} alt="" />
                 </div>
-                <input
-                  className="bg-item w-fit py-[0.0625rem] rounded focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
-                  type="number"
-                  min={0.1}
-                  value={inputSlippage}
-                  onChange={(event) => setInputSlippage(event.target.value)}
-                  placeholder="0.1"
-                />
+                <div className="w-full flex flex-row justify-end">
+                  <input
+                    className="bg-transparent w-fit py-[0.0625rem] rounded focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+                    type="number"
+                    min={0.1}
+                    value={inputSlippage}
+                    onChange={(event) => setInputSlippage(event.target.value)}
+                    placeholder="0.1"
+                  />
+                  <p>%</p>
+                </div>
                 {/* <p className="px-4 py-[0.0625rem] rounded bg-item">
                   {" "}
                   &lt; 0.5%{" "}

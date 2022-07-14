@@ -60,6 +60,8 @@ module.exports = {
       popupVb: "#182233",
       notiSuccess: "#0FE3E3",
       notiWarning: "#FA8C16",
+      newForm: "#0D1522",
+      itemForm: "#0E1B31",
       grey: {
         1: "#ffffff",
         2: "#FAFAFA",
