@@ -15,6 +15,7 @@ import {
   selectLoadingGetAmountIn,
   selectAccountApprove,
   selectLoadingSwap,
+  selectLoadingExchangeRate,
 } from "../../reducers/swap.reducer";
 import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
 import { selectPriceByTokenAddress } from "../../reducers/assetsPrice.reducer";
@@ -45,7 +46,7 @@ const useSwapFacade = () => {
 
   const exchangeRate = useSelector(selectExchangeRate);
   const isSwap = useSelector(selectIsSwap);
-  const swapFee = useSelector(selectPairsFee);
+  const fee = useSelector(selectPairsFee);
   const loadingFee = useSelector(selectLoadingFee);
   const loadingSwap = useSelector(selectLoadingSwap);
   const loadingGetAmountOut = useSelector(selectLoadingGetAmountOut);
@@ -53,6 +54,7 @@ const useSwapFacade = () => {
   const amountsOut = useSelector(selectAmountsOut);
   const amountsIn = useSelector(selectAmountsIn);
   const accountApprove = useSelector(selectAccountApprove);
+  const loadingExchangeRate = useSelector(selectLoadingExchangeRate);
 
   const sourceTokenInfo = useSelector((state) =>
     selectAssetByAddress(state, sourceTokenAddress)
@@ -74,6 +76,11 @@ const useSwapFacade = () => {
   );
   const vthoBalance = useSelector((state) =>
     selectBalanceById(state, process.env.REACT_APP_TOKEN_VTHO)
+  );
+
+  const swapFee = useMemo(
+    () =>  inputAmountIn * (fee * 0.1) /100,
+    [fee, inputAmountIn]
   );
 
   const sourcePerDesireTokenPrice = useMemo(
@@ -128,7 +135,7 @@ const useSwapFacade = () => {
   };
 
   const checkBalance = (amount) => {
-    if (parseInt(amount) > sourceTokenBalance) {
+    if (parseFloat(amount) > sourceTokenBalance) {
       setShowErr(true);
       setInputAmountIn(amount);
     } else {
@@ -278,6 +285,7 @@ const useSwapFacade = () => {
     accountApprove,
     onApproveToken,
     loadingSwap,
+    loadingExchangeRate,
   };
 };
 

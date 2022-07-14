@@ -49,14 +49,19 @@ const Swap = () => {
     accountApprove,
     onApproveToken,
     loadingSwap,
+    loadingExchangeRate,
   } = useSwapFacade();
 
   return (
     <div className="flex flex-col p-2 space-y-4">
       <div className="flex justify-between w-full">
         <h2 className="font-poppins_semi_bold text-xl">Swap</h2>
-        <div className="flex space-x-2">
-          <img className="cursor-pointer" src={IcReload} alt="Refresh" />
+        <div className="flex space-x-2 items-center">
+          {loadingExchangeRate ? (
+            <div className="loading__exchange__rate" />
+          ) : (
+            <img className="cursor-pointer" src={IcReload} alt="Refresh" />
+          )}
           <img className="cursor-pointer" src={IcSetting} alt="" />
         </div>
       </div>
@@ -108,7 +113,8 @@ const Swap = () => {
               ) : (
                 <input
                   className="bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
-                  type="text"
+                  type="number"
+                  min={1}
                   value={inputAmountIn}
                   onChange={(event) => onChangeSourceInput(event.target.value)}
                   placeholder="0.0"
@@ -142,7 +148,6 @@ const Swap = () => {
             <p className="text-vbLine text-sm">Low Price Impact</p>
           </div>
         </div>
-        {/* <img  alt="Loading" /> */}
       </div>
 
       {/* To section */}
@@ -180,6 +185,7 @@ const Swap = () => {
                 <input
                   className="w-fit bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
                   type="number"
+                  min={1}
                   value={inputAmountOut}
                   onChange={(event) => onChangeDesireInput(event.target.value)}
                   placeholder="0.0"

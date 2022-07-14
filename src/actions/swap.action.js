@@ -41,7 +41,7 @@ export const checkAssetExistsPools = createAsyncThunk(
     const addressTokenA = tokenAInfo?.assetsAddress || "";
     const addressTokenB = tokenBInfo?.assetsAddress || "";
 
-    const { web3 } = state.web3;
+    const { web3, account } = state.web3;
     if (web3 && ADDRESS_FACTORY) {
       let contractFactory = new web3.eth.Contract(
         ERC20ABI_FACTORY,
@@ -58,16 +58,40 @@ export const checkAssetExistsPools = createAsyncThunk(
           assetsPoolAddress
         );
 
-        const reserves = await contractPair.methods.getReserves().call();
-        const reserves1 = ethers.utils.formatUnits(
-          reserves?.[0],
-          getDecimalForAsset(addressTokenA)
+        if (account) {
+          contractPair.events.Swap({}).on("data", async (data) => {
+            const { event } = data;
+            if (event === "Swap") {
+              dispatch(
+                checkExchangeRatePool({
+                  tokenAddressA: addressTokenA,
+                  tokenAddressB: addressTokenB,
+                  assetsPoolAddress: assetsPoolAddress,
+                })
+              );
+            }
+          });
+        }
+
+        // const reserves = await contractPair.methods.getReserves().call();
+        // const reserves1 = ethers.utils.formatUnits(
+        //   reserves?.[0],
+        //   getDecimalForAsset(addressTokenA)
+        // );
+        // const reserves2 = ethers.utils.formatUnits(
+        //   reserves?.[1],
+        //   getDecimalForAsset(addressTokenB)
+        // );
+
+        // dispatch(countExchangeRate({ reserves1, reserves2 }));
+        const addressTokenA = tokenAInfo?.assetsAddress || "";
+        dispatch(
+          checkExchangeRatePool({
+            tokenAddressA: addressTokenA,
+            tokenAddressB: addressTokenB,
+            assetsPoolAddress: assetsPoolAddress,
+          })
         );
-        const reserves2 = ethers.utils.formatUnits(
-          reserves?.[1],
-          getDecimalForAsset(addressTokenB)
-        );
-        dispatch(countExchangeRate({ reserves1, reserves2 }));
         dispatch(updateStatusSwap(true));
       } else {
         dispatch(
@@ -78,6 +102,36 @@ export const checkAssetExistsPools = createAsyncThunk(
         dispatch(updateStatusSwap(false));
       }
       return assetsPoolAddress;
+    }
+  }
+);
+
+export const checkExchangeRatePool = createAsyncThunk(
+  "checkExchangeRatePool",
+  async (
+    { tokenAddressA, tokenAddressB, assetsPoolAddress },
+    { dispatch, getState }
+  ) => {
+    const state = getState();
+    const { web3 } = state.web3;
+    const { poolAddress, sourceTokenAddress, desireTokenAddress } =
+      state.swapAsset;
+    if (web3 && ADDRESS_FACTORY) {
+      const contractPair = new web3.eth.Contract(
+        ERC20ABI_PAIR,
+        assetsPoolAddress ? assetsPoolAddress : poolAddress
+      );
+      const reserves = await contractPair.methods.getReserves().call();
+      const reserves1 = ethers.utils.formatUnits(
+        reserves?.[0],
+        getDecimalForAsset(tokenAddressA ? tokenAddressA : sourceTokenAddress)
+      );
+      const reserves2 = ethers.utils.formatUnits(
+        reserves?.[1],
+        getDecimalForAsset(tokenAddressB ? tokenAddressB : desireTokenAddress)
+      );
+
+      return { reserves1, reserves2 };
     }
   }
 );
@@ -247,8 +301,8 @@ export const swapAsset = createAsyncThunk(
   ) => {
     const currentState = getState();
 
-    const { connex, account, web3 } = currentState.web3;
     const { pairFee, poolAddress } = currentState.swapAsset;
+    const { connex, account, web3 } = currentState.web3;
     const assetsPoolName = `${tokenAInfo?.assetsChain} - ${tokenBInfo?.assetsChain}`;
     const key = randomKeyUUID();
     dispatch(
@@ -312,12 +366,8 @@ export const swapAsset = createAsyncThunk(
       ["amountIn", amountIn],
     ]);
 
-    let transaction;
-
-    let contractPair;
-
     if (poolAddress && account) {
-      contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
+      const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
       contractPair.events.Swap({}).on("data", async (data) => {
         const { event, returnValues } = data;
         if (
@@ -340,6 +390,7 @@ export const swapAsset = createAsyncThunk(
       });
     }
 
+    let transaction;
     if (isPairContainVET) {
       if (functionName === "swapExactETHForTokens") {
         // swap VET to another tokens

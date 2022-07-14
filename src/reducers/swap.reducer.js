@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   checkApproveToken,
   checkAssetExistsPools,
+  checkExchangeRatePool,
   getAmountsIn,
   getAmountsOut,
   getPairsFee,
@@ -24,6 +25,7 @@ const initialState = {
   pairFee: 0,
   loadingGetAmountOut: false,
   loadingGetAmountIn: false,
+  loadingExchangeRate: false,
   amountsOut: "",
   amountsIn: "",
   accountApprove: 0,
@@ -131,6 +133,19 @@ const swapAssetSlice = createSlice({
       })
       .addCase(swapAsset.rejected, (state) => {
         state.loadingSwap = false;
+      })
+      .addCase(checkExchangeRatePool.pending, (state) => {
+        state.loadingExchangeRate = true;
+      })
+      .addCase(checkExchangeRatePool.fulfilled, (state, action) => {
+        state.loadingExchangeRate = false;
+        state.exchangeRateAB =
+          action.payload.reserves2 / action.payload.reserves1;
+        state.exchangeRateBA =
+          action.payload.reserves1 / action.payload.reserves2;
+      })
+      .addCase(checkExchangeRatePool.rejected, (state) => {
+        state.loadingExchangeRate = false;
       });
   },
 });
@@ -167,3 +182,5 @@ export const selectLoadingGetAmountIn = (state) =>
 export const selectAmountsIn = (state) => state.swapAsset.amountsIn;
 export const selectAccountApprove = (state) => state.swapAsset.accountApprove;
 export const selectLoadingSwap = (state) => state.swapAsset.loadingSwap;
+export const selectLoadingExchangeRate = (state) =>
+  state.swapAsset.loadingExchangeRate;
