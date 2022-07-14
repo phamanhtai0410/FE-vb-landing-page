@@ -60,7 +60,7 @@ const Swap = () => {
           {loadingExchangeRate ? (
             <div className="loading__exchange__rate" />
           ) : (
-            <img className="cursor-pointer" src={IcReload} alt="Refresh" />
+            <img src={IcReload} alt="Refresh" />
           )}
           <img className="cursor-pointer" src={IcSetting} alt="" />
         </div>
