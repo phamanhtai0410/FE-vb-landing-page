@@ -67,7 +67,7 @@ const MenuLink = ({ menuToggleHandler }) => {
           {item.name === "Trade" && isMenuHover && (
             <div
               className={
-                "col justify-center items-start top-[100%] absolute bg-[#00051e] md:w-[160px] p-4 md:p-0 rounded-b-lg"
+                "col justify-center items-start top-[100%] absolute bg-[#00051e] md:w-[160px] p-4 md:p-0 rounded-b-lg z-50"
               }
             >
               <NavLink

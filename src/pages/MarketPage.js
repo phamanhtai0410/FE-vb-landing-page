@@ -42,7 +42,6 @@ const MarketPage = () => {
       <ModalWithdraw />
       <ModalRepay />
 
-
     </section>
 
   );
