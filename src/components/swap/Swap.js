@@ -1,7 +1,10 @@
 import React from "react";
 
-import IcSwap from "../../assets/images/ic_swap.svg";
+// import IcSwap from "../../assets/images/ic_swap.svg";
+import IcGas from "../../assets/images/gas.svg";
 import IcBtnSwap from "../../assets/images/swap_btn.svg";
+import IcDown from "../../assets/images/down_fill.svg";
+import IcUp from "../../assets/images/up_fill.svg";
 import IcDropDown from "../../assets/images/ic_dropdown.svg";
 import IcReload from "../../assets/images/ic_reload.svg";
 import IcSetting from "../../assets/images/buttons/ic_setting_outline.svg";
@@ -53,6 +56,9 @@ const Swap = () => {
     onApproveToken,
     loadingSwap,
     loadingExchangeRate,
+    onShowDetailInfo,
+    showDetailInfo,
+    isSwapSuccess,
   } = useSwapFacade();
 
   return (
@@ -78,9 +84,8 @@ const Swap = () => {
         <div className="flex flex-col">
           <div className="flex flex-row w-full justify-between">
             <div className="flex flex-row w-full items-center">
-              <div
-                // type="button"
-                className="flex flex-row items-center space-x-[10px] cursor-pointer"
+              <button
+                className="flex flex-row items-center space-x-[10px]"
                 onClick={() =>
                   onShowModalSelectToken(swapConstants.FIRST_TOKEN)
                 }
@@ -93,7 +98,7 @@ const Swap = () => {
                   {sourceTokenInfo?.assetsChain}
                 </h1>
                 <img className="w-[16px]" src={IcDropDown} alt="" />
-              </div>
+              </button>
               <div className="w-[1px] h-full bg-[#7694DE] ml-8"></div>
               <div className="flex flex-row text-[#647BB4] space-x-1 ml-4">
                 <button
@@ -168,7 +173,7 @@ const Swap = () => {
         <div>
           <div className="full-row-between-center">
             <button
-              className="flex space-x-3 w-1/2 items-center"
+              className="flex space-x-[10px] w-1/2 items-center"
               onClick={() => onShowModalSelectToken(swapConstants.SECOND_TOKEN)}
             >
               <HighlightedAssetIcon
@@ -207,65 +212,102 @@ const Swap = () => {
       </div>
 
       <div className="col-x-center justify-center space-y-4">
-        {userInputRef.current !== "" && (
+        {userInputRef.current !== "" && !isSwapSuccess && (
           <div className="flex flex-col w-full space-y-4">
-            {/* <button
-            className="h-12 text-sm bg-itemForm border-[1px] border-vbDisableText"
-          >
-            Enter an amount to see more trading details.
-          </button> */}
-            <div className="col px-4 py-5 space-y-4 rounded-md border border-vbLine p-2">
-              <div className="flex justify-between">
-                <div className="flex space-x-2">
-                  <p className="text-[#ABC2FC]">Minimum received</p>
-                  <img src={IcQuestionCircle} alt="" />
-                </div>
-                <p>
-                  {amountOutMin} {desireTokenInfo?.assetsChain}
-                </p>
+            <button
+              onClick={onShowDetailInfo}
+              className="px-4 h-12 text-sm rounded-lg bg-transparent border-[1px] border-vbDisableText"
+            >
+              <div className="flex flex-row justify-start items-center">
+                {loadingGetAmountOut || loadingGetAmountIn ? (
+                  <div className="loading mr-2" />
+                ) : (
+                  <img src={IcReload} alt="Refresh" className="w-4 h-4 mr-2" />
+                )}
+                {loadingGetAmountOut || loadingGetAmountIn ? (
+                  <p>Fetching price...</p>
+                ) : (
+                  <div className="w-full flex flex-row items-center justify-between">
+                    <div className="row-center space-x-2 w-full">
+                      <p>
+                        1 {sourceTokenInfo?.assetsChain} = {exchangeRate}{" "}
+                        {desireTokenInfo?.assetsChain}
+                      </p>
+                      <p>{`($${(exchangeRate * desireTokenPrice).toFixed(
+                        3
+                      )})`}</p>
+                    </div>
+                    <div className="w-fit flex flex-row items-center">
+                      <div className="bg-itemForm rounded-lg p-2 flex flex-row items-center">
+                        <img src={IcGas} alt="gas" className="w-4" />
+                        <p className="mr-4 ml-1">$0.69</p>
+                      </div>
+                      <img
+                        src={showDetailInfo ? IcUp : IcDown}
+                        alt="IcDown"
+                        className="w-4"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="flex justify-between">
-                <div className="flex space-x-2">
-                  <p className="text-vbLine">Price Impact</p>
-                  <img src={IcQuestionCircle} alt="" />
+            </button>
+            {showDetailInfo && (
+              <div className="col px-4 py-5 space-y-4 rounded-md border border-vbLine p-2">
+                <div className="flex justify-between">
+                  <div className="flex space-x-2">
+                    <p className="text-[#ABC2FC]">Minimum received</p>
+                    <img src={IcQuestionCircle} alt="" />
+                  </div>
+                  <p>
+                    {amountOutMin} {desireTokenInfo?.assetsChain}
+                  </p>
                 </div>
-                <p className="text-vbLine"> &lt; 0.01% </p>
-              </div>
-              <div className="flex justify-between">
-                <div className="flex space-x-2 w-full">
-                  <p className="text-[#ABC2FC] min-w-fit">Slippage tolerance</p>
-                  <img className="w-5" src={IcQuestionCircle} alt="" />
+                <div className="flex justify-between">
+                  <div className="flex space-x-2">
+                    <p className="text-vbLine">Price Impact</p>
+                    <img src={IcQuestionCircle} alt="" />
+                  </div>
+                  <p className="text-vbLine"> &lt; 0.01% </p>
                 </div>
-                <div className="w-full flex flex-row justify-end">
-                  <input
-                    className="bg-transparent w-fit py-[0.0625rem] rounded focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
-                    type="number"
-                    min={0.1}
-                    value={inputSlippage}
-                    onChange={(event) => setInputSlippage(event.target.value)}
-                    placeholder="0.1"
-                  />
-                  <p className="ml-1">%</p>
-                </div>
-                {/* <p className="px-4 py-[0.0625rem] rounded bg-item">
+                <div className="flex justify-between">
+                  <div className="flex space-x-2 w-full">
+                    <p className="text-[#ABC2FC] min-w-fit">
+                      Slippage tolerance
+                    </p>
+                    <img className="w-5" src={IcQuestionCircle} alt="" />
+                  </div>
+                  <div className="w-full flex flex-row justify-end">
+                    <input
+                      className="bg-transparent w-fit py-[0.0625rem] rounded focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+                      type="number"
+                      min={0.1}
+                      value={inputSlippage}
+                      onChange={(event) => setInputSlippage(event.target.value)}
+                      placeholder="0.1"
+                    />
+                    <p className="ml-1">%</p>
+                  </div>
+                  {/* <p className="px-4 py-[0.0625rem] rounded bg-item">
                   {" "}
                   &lt; 0.5%{" "}
                 </p> */}
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="flex space-x-2">
-                  <p className="text-[#ABC2FC]">Swap fee</p>
-                  <img src={IcQuestionCircle} alt="" />
                 </div>
-                {loadingFee ? (
-                  <div className="loading" />
-                ) : (
-                  <p>
-                    {swapFee} {sourceTokenInfo?.assetsChain}
-                  </p>
-                )}
+                <div className="flex justify-between items-center">
+                  <div className="flex space-x-2">
+                    <p className="text-[#ABC2FC]">Swap fee</p>
+                    <img src={IcQuestionCircle} alt="" />
+                  </div>
+                  {loadingFee ? (
+                    <div className="loading" />
+                  ) : (
+                    <p>
+                      {swapFee} {sourceTokenInfo?.assetsChain}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
             {account && (
               <button
                 disabled={!isSwap || loadingSwap || showErr}
