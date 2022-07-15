@@ -3,6 +3,7 @@ import {
   checkApproveToken,
   checkAssetExistsPools,
   checkExchangeRatePool,
+  checkTotalSupplyAvailable,
   getAmountsIn,
   getAmountsOut,
   getPairsFee,
@@ -31,6 +32,9 @@ const initialState = {
   accountApprove: 0,
   contractSwap: "",
   poolAddress: "",
+  reserves1: null,
+  reserves2: null,
+  totalSupply: null,
 };
 
 const swapAssetSlice = createSlice({
@@ -40,12 +44,12 @@ const swapAssetSlice = createSlice({
     updateStatusSwap: (state, action) => {
       state.isSwap = action.payload;
     },
-    countExchangeRate: (state, action) => {
-      state.exchangeRateAB =
-        action.payload.reserves2 / action.payload.reserves1;
-      state.exchangeRateBA =
-        action.payload.reserves1 / action.payload.reserves2;
-    },
+    // countExchangeRate: (state, action) => {
+    //   state.exchangeRateAB =
+    //     action.payload.reserves2 / action.payload.reserves1;
+    //   state.exchangeRateBA =
+    //     action.payload.reserves1 / action.payload.reserves2;
+    // },
     selectSourceTokenFromModal: (state, action) => {
       if (action.payload) {
         state.sourceTokenAddress = action.payload;
@@ -95,6 +99,7 @@ const swapAssetSlice = createSlice({
       })
       .addCase(getAmountsOut.pending, (state, action) => {
         state.loadingGetAmountOut = true;
+        state.amountsOut = "";
       })
       .addCase(getAmountsOut.fulfilled, (state, action) => {
         state.loadingGetAmountOut = false;
@@ -139,6 +144,8 @@ const swapAssetSlice = createSlice({
       })
       .addCase(checkExchangeRatePool.fulfilled, (state, action) => {
         state.loadingExchangeRate = false;
+        state.reserves1 = action.payload.reserves1;
+        state.reserves2 = action.payload.reserves2;
         state.exchangeRateAB =
           action.payload.reserves2 / action.payload.reserves1;
         state.exchangeRateBA =
@@ -146,6 +153,10 @@ const swapAssetSlice = createSlice({
       })
       .addCase(checkExchangeRatePool.rejected, (state) => {
         state.loadingExchangeRate = false;
+      })
+      .addCase(checkTotalSupplyAvailable.fulfilled, (state, action) => {
+        state.totalSupply = action.payload.totalSupply;
+        state.isSwap = action.payload.isSwap;
       });
   },
 });
@@ -159,7 +170,7 @@ export const {
   selectSourceTokenFromModal,
   selectDesireTokenFromModal,
   getSymbolPairs,
-  countExchangeRate,
+  // countExchangeRate,
   updateStatusSwap,
   refreshDataSwap,
 } = swapAssetSlice.actions;

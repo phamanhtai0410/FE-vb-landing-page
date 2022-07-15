@@ -12,6 +12,7 @@ import * as actions from '../../actions';
 
 import BtnWithdraw from './BtnWithdraw';
 import BtnWithdrawApprove from './BtnWithdrawApprove';
+import useAutoFocus from '../common/hooks/useAutoFocus';
 
 const customStyles = {
     content: {
@@ -30,13 +31,14 @@ const customStyles = {
 
 const ModalWithdraw = () => {
 
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState('');
     const [values, setValues] = useState([0]);
     const [step, setStep] = useState(1);
 
     const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.withdrawReducer, shallowEqual);
 
     const dispatch = useDispatch();
+    const amountInputRef = useAutoFocus();
 
     useEffect(() => {
         resetFrm();
@@ -44,10 +46,13 @@ const ModalWithdraw = () => {
 
     useEffect(() => {
         resetFrm();
+        if(isOpen){
+            setAmount('');
+        }
     }, [isOpen]);
 
     const resetFrm = () => {
-        setAmount(0);
+        setAmount('');
         setValues([0]);
         setStep(1);
     }
@@ -76,10 +81,25 @@ const ModalWithdraw = () => {
 
     const onChangeAmount = (e) => {
         const { value } = e.target;
-        if (value <= accountBalance) {
+
+        // Giá trị rỗng
+        if(e.target.value === ""){
+            setAmount(value)
+            setValues([0]);
+        }
+
+        // Lớn hơn giá trị cho phép
+        if (Number(value) > Number(accountBalance)) {
+            return;
+        }
+
+        // kiêm tra input number
+        let pattern = /^\d+$/;
+        if (pattern.test(value)) {
             setAmount(value)
             setValues([value]);
         }
+
     }
 
     const handlerStepToStep = (e) => {
@@ -162,6 +182,7 @@ const ModalWithdraw = () => {
                         <img className='w-12 h-8 pr-3' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
 
                         <input
+                            ref={amountInputRef}
                             value={amount}
                             onChange={onChangeAmount}
                             className="bg-transparent focus:outline-none placeholder-slate-400 font-poppins appearance-none text-base w-full"

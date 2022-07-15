@@ -26,11 +26,13 @@ import * as actions from "../../actions";
 import {
   checkApproveToken,
   checkAssetExistsPools,
+  checkTotalSupplyAvailable,
   getAmountsIn,
   getAmountsOut,
   getPairsFee,
   onApproveTokenForAccount,
 } from "../../actions";
+import { useDebouncedCallback } from "use-debounce";
 
 const useSwapFacade = () => {
   const dispatch = useDispatch();
@@ -79,7 +81,7 @@ const useSwapFacade = () => {
   );
 
   const swapFee = useMemo(
-    () =>  inputAmountIn * (fee * 0.1) /100,
+    () => (inputAmountIn * (fee * 0.1)) / 100,
     [fee, inputAmountIn]
   );
 
@@ -134,27 +136,44 @@ const useSwapFacade = () => {
     dispatch(openModalSelectToken(nameToken));
   };
 
-  const checkBalance = (amount) => {
-    if (parseFloat(amount) > sourceTokenBalance) {
-      setShowErr(true);
-      setInputAmountIn(amount);
-    } else {
-      setShowErr(false);
-      setInputAmountIn(amount);
-    }
-  };
+  const checkBalance = useCallback(
+    (amount) => {
+      if (parseFloat(amount) > sourceTokenBalance) {
+        setShowErr(true);
+        setInputAmountIn(amount);
+      } else {
+        setShowErr(false);
+        setInputAmountIn(amount);
+      }
+    },
+    [sourceTokenBalance]
+  );
+
+  const getAmountOutDebounced = useDebouncedCallback((value) => {
+    dispatch(
+      getAmountsOut({
+        inputAmountIn: value,
+        tokenAInfo: sourceTokenInfo,
+        tokenBInfo: desireTokenInfo,
+      })
+    );
+  }, 1000);
+
+  const getAmountsInDebounced = useDebouncedCallback((value) => {
+    dispatch(
+      getAmountsIn({
+        inputAmountOut: value,
+        tokenAInfo: sourceTokenInfo,
+        tokenBInfo: desireTokenInfo,
+      })
+    );
+  }, 1000);
 
   const onChangeSourceInput = useCallback(
     (value) => {
       checkBalance(value);
       if (value !== "") {
-        dispatch(
-          getAmountsOut({
-            inputAmountIn: value,
-            tokenAInfo: sourceTokenInfo,
-            tokenBInfo: desireTokenInfo,
-          })
-        );
+        getAmountOutDebounced(value);
       } else {
         setInputAmountOut("");
       }
@@ -166,20 +185,14 @@ const useSwapFacade = () => {
       //   })
       // );
     },
-    [desireTokenInfo, dispatch, sourceTokenBalance, sourceTokenInfo]
+    [checkBalance, getAmountOutDebounced]
   );
 
   const onChangeDesireInput = useCallback(
     (value) => {
       setInputAmountOut(value);
       if (value !== "") {
-        dispatch(
-          getAmountsIn({
-            inputAmountOut: value,
-            tokenAInfo: sourceTokenInfo,
-            tokenBInfo: desireTokenInfo,
-          })
-        );
+        getAmountsInDebounced(value);
       } else {
         setInputAmountIn("");
       }
@@ -191,7 +204,7 @@ const useSwapFacade = () => {
       //   })
       // );
     },
-    [desireTokenInfo, dispatch, sourceTokenInfo]
+    [getAmountsInDebounced]
   );
 
   useEffect(() => {
@@ -223,22 +236,18 @@ const useSwapFacade = () => {
       // setInputAmountIn(inputAmountOut);
       setPressSwap(false);
     } else {
-      setInputAmountOut(
-        inputAmountIn !== "" ? inputAmountIn * exchangeRate : ""
-      );
+      getAmountOutDebounced(inputAmountIn);
     }
-  }, [sourceTokenAddress, exchangeRate]);
+  }, [sourceTokenAddress]);
 
   useEffect(() => {
     if (pressSwap) {
       setInputAmountOut(inputAmountIn);
       setPressSwap(false);
     } else {
-      setInputAmountOut(
-        inputAmountIn !== "" ? inputAmountIn * exchangeRate : ""
-      );
+      getAmountOutDebounced(inputAmountIn);
     }
-  }, [desireTokenAddress, exchangeRate]);
+  }, [desireTokenAddress]);
 
   useEffect(() => {
     setInputAmountOut(amountsOut);
@@ -246,8 +255,8 @@ const useSwapFacade = () => {
 
   useEffect(() => {
     checkBalance(amountsIn);
-    // setInputAmountIn(amountsIn);
-  }, [amountsIn]);
+    dispatch(checkTotalSupplyAvailable());
+  }, [amountsIn, checkBalance, dispatch]);
 
   return {
     isSwap,

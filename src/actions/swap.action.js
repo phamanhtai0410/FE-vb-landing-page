@@ -13,16 +13,17 @@ import {
   getDeadline,
   getDecimalForAsset,
   isContainVET,
+  nFormatter,
   randomKeyUUID,
 } from "../utils/lib";
 
 import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
 import {
-  countExchangeRate,
   getSymbolPairs,
   refreshDataSwap,
   updateStatusSwap,
 } from "../reducers/swap.reducer";
+import PartialConstants from "../constants/partial.constants";
 
 // const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_ROUTER = process.env.REACT_APP_ADDRESS_ROUTER;
@@ -93,6 +94,7 @@ export const checkAssetExistsPools = createAsyncThunk(
           })
         );
         dispatch(updateStatusSwap(true));
+        return assetsPoolAddress;
       } else {
         dispatch(
           actions.alertActions.warning(
@@ -101,7 +103,6 @@ export const checkAssetExistsPools = createAsyncThunk(
         );
         dispatch(updateStatusSwap(false));
       }
-      return assetsPoolAddress;
     }
   }
 );
@@ -132,6 +133,49 @@ export const checkExchangeRatePool = createAsyncThunk(
       );
 
       return { reserves1, reserves2 };
+    }
+  }
+);
+
+export const checkTotalSupplyAvailable = createAsyncThunk(
+  "checkTotalSupplyAvailable",
+  async (_, { dispatch, getState }) => {
+    const state = getState();
+    const { web3 } = state.web3;
+    const {
+      amountsIn,
+      reserves2,
+      poolAddress,
+      sourceTokenAddress,
+      desireTokenAddress,
+    } = state.swapAsset;
+
+    if (web3 && ADDRESS_FACTORY) {
+      let assetsDecimals = 18;
+      if (
+        sourceTokenAddress === process.env.REACT_APP_TOKEN_VEUSD ||
+        desireTokenAddress === process.env.REACT_APP_TOKEN_VEUSD
+      ) {
+        assetsDecimals = 12;
+      }
+      const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
+
+      let totalSupply = await contractPair.methods.totalSupply().call();
+      if (totalSupply) {
+        totalSupply = ethers.utils.formatUnits(totalSupply, assetsDecimals);
+        if (totalSupply < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+          totalSupply = nFormatter(totalSupply);
+        }
+      }
+
+      if (
+        parseFloat(amountsIn) > parseFloat(reserves2) ||
+        parseFloat(totalSupply) <= 0.0
+      ) {
+        return { totalSupply: totalSupply, isSwap: false };
+      } else {
+        return { totalSupply: totalSupply, isSwap: true };
+      }
     }
   }
 );
@@ -381,7 +425,10 @@ export const swapAsset = createAsyncThunk(
                 status: "success",
                 title: "Swap successfully",
                 description: `Swap ${assetsPoolName} successfully`,
-                details: {message: "View on VeChain Stats", txid: data.meta.txID}
+                details: {
+                  message: "View on VeChain Stats",
+                  txid: data.meta.txID,
+                },
               },
               key
             )
