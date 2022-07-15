@@ -1,6 +1,11 @@
-export const PartialConstants = {
+const PartialConstants = {
   PRIMARY_GRADIENT_COLOR_LIST: [
-    { offset: "0%", stopColor: "#0FE3E3" },
-    { offset: "51.04%", stopColor: "#02A4FF" },
+    "#0FE3E3", "#02A4FF"
   ],
+  MIN_AMOUNT_TO_FORMAT: 0.00001,
+  VEUSD_DECIMAL: 6,
+  DEFAULT_ASSET_DECIMAL: 18,
+  LIQUIDITY_PAIR_CONTAIN_VET_DECIMAL: 12,
 };
+
+export default PartialConstants;

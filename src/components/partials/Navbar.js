@@ -4,7 +4,6 @@ import { NavLink } from 'react-router-dom';
 
 import IcLogo from '../../assets/images/ic_logo.svg';
 
-import BtnConnect from '../account/BtnConnect';
 import HeaderAccount from '../account/HeaderAccount';
 import MenuLink from './MenuLink';
 
@@ -18,17 +17,17 @@ const Navbar = () => {
 
     return (
 
-        <nav className="py-4 flex justify-between">
+        <nav className="flex justify-between">
 
             <div className="flex flex-row items-center justify-center space-x-8">
 
-                <div>
+                <div className="py-4">
                     <NavLink to="/home">
                         <img src={IcLogo} alt="logo VEBank" />
                     </NavLink>
                 </div>
 
-                <div className="hidden lg:flex flex-wrap items-center justify-between ">
+                <div className="hidden md:flex h-full flex-wrap items-center justify-between ">
                     <MenuLink />
                 </div>
 
@@ -36,16 +35,7 @@ const Navbar = () => {
 
             <HeaderAccount />
 
-            {/* 
-            <div className="hidden lg:flex flex-wrap items-center justify-between ">
-
-                <div className="flex flex-row justify-center items-center my-auto space-x-2">
-                    <BtnConnect />
-                </div>
-            </div> 
-            */}
-
-            <section className="MOBILE-MENU flex lg:hidden">
+            <section className="MOBILE-MENU flex md:hidden">
 
                 <button
                     onClick={() => setIsNavOpen((prev) => !prev)} // toggle isNavOpen state on click

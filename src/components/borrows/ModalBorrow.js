@@ -16,6 +16,7 @@ import BtnBorrow from './BtnBorrow';
 import BtnBorrowApprove from './BtnBorrowApprove';
 
 import * as actions from '../../actions';
+import useAutoFocus from '../common/hooks/useAutoFocus';
 
 const customStyles = {
     content: {
@@ -34,7 +35,7 @@ const customStyles = {
 
 const ModalBorrow = () => {
 
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState('');
     const [values, setValues] = useState([0]);
     const [step, setStep] = useState(1);
     const [rate, setRate] = useState(2);
@@ -42,6 +43,8 @@ const ModalBorrow = () => {
     const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, accountVariableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
 
     const dispatch = useDispatch();
+    const amountInputRef = useAutoFocus();
+
 
     useEffect(() => {
         resetFrm();
@@ -49,10 +52,13 @@ const ModalBorrow = () => {
 
     useEffect(() => {
         setStep(1);
+        if(isOpen){
+            setAmount('');
+        }
     }, [isOpen]);
 
     const resetFrm = () => {
-        setAmount(0);
+        setAmount('');
         setValues([0]);
         setStep(1);
         setRate(2);
@@ -78,8 +84,23 @@ const ModalBorrow = () => {
     }
 
     const onChangeAmount = (e) => {
+
         const { value } = e.target;
-        if (value <= accountBalance) {
+
+         // Giá trị rỗng
+         if(e.target.value === ""){
+            setAmount(value)
+            setValues([0]);
+        }
+
+        // Lớn hơn giá trị cho phép
+        if (Number(value) > Number(accountBalance)) {
+            return;
+        }
+
+        // kiêm tra input number
+        let pattern = /^\d+$/;
+        if (pattern.test(value)) {
             setAmount(value)
             setValues([value]);
         }
@@ -120,7 +141,6 @@ const ModalBorrow = () => {
                 <div className='font-poppins font-light'>New health factor  <span className='font-bold'>1.03</span></div>
             )
         }
-
     }
 
     const showBtnView = () => {
@@ -144,7 +164,6 @@ const ModalBorrow = () => {
     return (
 
         <Modal
-            // isOpen={Object.keys(data).length > 0 ? true : false}
             isOpen={isOpen}
             ariaHideApp={false}
             style={customStyles}
@@ -183,6 +202,7 @@ const ModalBorrow = () => {
 
                         <input
                             value={amount}
+                            ref={amountInputRef}
                             onChange={onChangeAmount}
                             className="bg-transparent focus:outline-none placeholder-slate-400 font-poppins appearance-none text-base w-full"
                             type="text"

@@ -1,5 +1,5 @@
 import React from "react";
-import { PartialConstants } from "../../constants/partial.constants";
+import PartialConstants from "../../constants/partial.constants";
 import GradientStrokeWrapper from "./GradientStrokeWrapper";
 
 const SecondaryButton = ({

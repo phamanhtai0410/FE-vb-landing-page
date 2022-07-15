@@ -1,0 +1,482 @@
+import { ethers, FixedNumber } from "ethers";
+
+import { poolConstants } from "../../constants";
+
+import ERC20ABI_VB from "../../_contracts/assets/VB.json";
+
+import ERC20ABI_ROUTER from "../../_contracts/router.json";
+import ERC20ABI_FACTORY from "../../_contracts/factory.json";
+import ERC20ABI_PAIR from "../../_contracts/pair.json";
+
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
+import {
+  selectFirstToken as _selectFirstToken,
+  selectSecondToken as _selectSecondToken,
+} from "../../reducers/liquid.reducer";
+import assetAbi from "../../_contracts/asset-abi";
+import {
+  getAmountInWeiFormatted,
+  getDecimalForAsset,
+  getDecimalForAssetPair,
+  getWeiUnitByDecimal,
+  isContainVET,
+  nFormatter,
+} from "../../utils/lib";
+import PartialConstants from "../../constants/partial.constants";
+import assert from "assert";
+
+const ADDRESS_ROUTER = process.env.REACT_APP_ADDRESS_ROUTER;
+const ADDRESS_FACTORY = process.env.REACT_APP_ADDRESS_FACTORY;
+
+// ------------------------ ADD LIQUIDITY ------------------------ //
+
+export const loadSelectToken = (dataToken) => ({
+  type: poolConstants.MODAL_OPEN_SELECT_TOKEN,
+  dataToken,
+});
+
+export const setFirstToken = (firstToken) => ({
+  type: poolConstants.SELECT_FIRST_TOKEN,
+  payload: firstToken,
+});
+
+export const setSecondToken = (secondToken) => ({
+  type: poolConstants.SELECT_SECOND_TOKEN,
+  payload: secondToken,
+});
+
+export const selectFirstToken = () => ({
+  type: poolConstants.MODAL_OPEN_SELECT_FIRST_TOKEN,
+});
+
+export const selectSecondToken = () => ({
+  type: poolConstants.MODAL_OPEN_SELECT_SECOND_TOKEN,
+});
+
+export const selectToken = (dataToken) => ({
+  type: poolConstants.MODAL_SELECT_TOKEN,
+  payload: dataToken,
+});
+
+export const closeSelectToken = () => ({
+  type: poolConstants.MODAL_CLOSE_SELECT_TOKEN,
+});
+
+export const clearSelectedTokens = () => ({
+  type: poolConstants.LIQUIDITY_CLEAR_SELECTED_TOKENS,
+});
+
+export const approveFirstTokenAddLiquidity = createAsyncThunk(
+  poolConstants.APPROVE_FIRST_TOKEN,
+  async (tokenAddress, { getState }) => {
+    if (!tokenAddress) return;
+
+    const state = getState();
+
+    const { web3, account, connex } = state.web3;
+
+    const tokenAbi = assetAbi[tokenAddress];
+    const contractAddLiquidity = new web3.eth.Contract(tokenAbi, tokenAddress);
+
+    const tokenInfo = selectAssetByAddress(state, tokenAddress);
+
+    const amountMax = 1_000_000_000;
+
+    if (account && contractAddLiquidity && tokenAddress) {
+      const approveABI = tokenAbi.find(
+        ({ name, type }) => name === "approve" && type === "function"
+      );
+
+      const approveMethod = connex.thor
+        .account(tokenAddress)
+        .method(approveABI);
+
+      const result = await approveMethod
+        .transact(ADDRESS_ROUTER, web3.utils.toWei(amountMax.toString()))
+        .comment(
+          `approve ${tokenInfo.assetsChain} on Pool router ${ADDRESS_ROUTER}`
+        )
+        .request();
+
+      return { result, approveTokenA: amountMax };
+      // .then((result) => {
+      //   console.log("🐶🐶  ~ result", result);
+
+      //   return { result, approveTokenA: 1 };
+      // })
+      // .catch((e) => {
+      //   console.log("error----", e);
+      //   return e;
+      // });
+    }
+  }
+);
+
+export const approveSecondTokenAddLiquidity = createAsyncThunk(
+  poolConstants.APPROVE_SECOND_TOKEN,
+  async (tokenAddress, { getState }) => {
+    if (!tokenAddress) return;
+
+    const state = getState();
+
+    const { web3, account, connex } = state.web3;
+    const tokenAbi = assetAbi[tokenAddress];
+    const contractAddLiquidity = new web3.eth.Contract(tokenAbi, tokenAddress);
+
+    const tokenInfo = selectAssetByAddress(state, tokenAddress);
+
+    const amountMax = 1_000_000_000;
+
+    if (account && contractAddLiquidity && tokenAddress) {
+      const approveABI = tokenAbi.find(
+        ({ name, type }) => name === "approve" && type === "function"
+      );
+      const approveMethod = connex.thor
+        .account(tokenAddress)
+        .method(approveABI);
+
+      const result = await approveMethod
+        .transact(ADDRESS_ROUTER, web3.utils.toWei(amountMax.toString()))
+        .comment(
+          `approve ${tokenInfo.assetsChain} on Pool router ${ADDRESS_ROUTER}`
+        )
+        .request();
+
+      return { result, approveTokenB: amountMax };
+    }
+  }
+);
+
+export const checkApproval = createAsyncThunk(
+  "addLiquidity/checkApproval",
+  async ({ firstTokenAddress, secondTokenAddress }, { getState }) => {
+    assert(firstTokenAddress, "Missing first token address");
+    assert(secondTokenAddress, "Missing second token address");
+
+    const currentState = getState();
+    const { web3, account } = currentState.web3;
+
+    let approveTokenA = 0;
+    let approveTokenB = 0;
+
+    const contractAddLiquidityA = new web3.eth.Contract(
+      assetAbi[firstTokenAddress],
+      firstTokenAddress
+    );
+
+    approveTokenA = await contractAddLiquidityA.methods
+      .allowance(account, ADDRESS_ROUTER)
+      .call();
+    const firstTokenInfo = selectAssetByAddress(
+      currentState,
+      firstTokenAddress
+    );
+    approveTokenA = ethers.utils.formatUnits(
+      approveTokenA,
+      firstTokenInfo.assetsDecimals
+    );
+    approveTokenA = Number(approveTokenA);
+
+    const contractAddLiquidityB = new web3.eth.Contract(
+      assetAbi[secondTokenAddress],
+      secondTokenAddress
+    );
+
+    approveTokenB = await contractAddLiquidityB.methods
+      .allowance(account, ADDRESS_ROUTER)
+      .call();
+    const secondTokenInfo = selectAssetByAddress(
+      currentState,
+      secondTokenAddress
+    );
+    approveTokenB = ethers.utils.formatUnits(
+      approveTokenB,
+      secondTokenInfo.assetsDecimals
+    );
+    approveTokenB = Number(approveTokenB);
+
+    return { approveTokenA, approveTokenB };
+  }
+);
+
+export const loadDetailAddLiquidity = createAsyncThunk(
+  poolConstants.LOAD_DETAIL_ADD_LIQUIDITY,
+  async (poolAddress, { getState, dispatch }) => {
+    const currentState = getState();
+    const { web3, account } = currentState.web3;
+    let firstTokenAddress, secondTokenAddress, contractPair;
+
+    if (poolAddress) {
+      contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
+      firstTokenAddress = await contractPair.methods.token0().call();
+      secondTokenAddress = await contractPair.methods.token1().call();
+      firstTokenAddress && dispatch(setFirstToken(firstTokenAddress));
+      secondTokenAddress && dispatch(setSecondToken(secondTokenAddress));
+    } else {
+      console.log("No pool address");
+      firstTokenAddress = _selectFirstToken(currentState);
+      secondTokenAddress = _selectSecondToken(currentState);
+    }
+
+    // let approveTokenA = 0;
+    // let approveTokenB = 0;
+    let reserveA = 0;
+    let reserveB = 0;
+    let totalSupply = 0;
+    let liquidityPool = 0;
+    let abExchangeRate, baExchangeRate;
+
+    if (firstTokenAddress && secondTokenAddress) {
+      const assetsDecimal = getDecimalForAssetPair(
+        firstTokenAddress,
+        secondTokenAddress
+      );
+
+      let contractFactory = new web3.eth.Contract(
+        ERC20ABI_FACTORY,
+        ADDRESS_FACTORY
+      );
+
+      if (!poolAddress) {
+        poolAddress = await contractFactory.methods
+          .getPair(firstTokenAddress, secondTokenAddress)
+          .call();
+      }
+
+      const emptyAddress = /^0x0+$/.test(poolAddress); // true chưa có
+
+      if (emptyAddress === false && !contractPair) {
+        contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
+      }
+
+      if (emptyAddress === false && contractPair) {
+        const reserves = await contractPair.methods?.getReserves().call();
+        const _firstTokenAddress = await contractPair.methods.token0().call();
+        const _secondTokenAddress = await contractPair.methods.token1().call();
+        // console.log("🐶🐶  ~ reserves", reserves);
+        reserveA = ethers.utils.formatUnits(
+          reserves?.[firstTokenAddress === _firstTokenAddress ? 0 : 1], // the position is swap
+          getDecimalForAsset(firstTokenAddress)
+        );
+        reserveB = ethers.utils.formatUnits(
+          reserves?.[secondTokenAddress === _secondTokenAddress ? 1 : 0], // the position is swap
+          getDecimalForAsset(secondTokenAddress)
+        );
+
+        // if (reserveA < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+        //   reserveA = 0//nFormatter(reserveA, 2);
+        // }
+        // if (reserveB < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+        //   reserveB = 0//nFormatter(reserveB, 2);
+        // }
+
+        // If pool has been removed by all provider
+        if (reserveA == 0) abExchangeRate = 0;
+        else abExchangeRate = reserveB / reserveA;
+        // If pool has been removed by all provider
+        if (reserveB == 0) baExchangeRate = 0;
+        else baExchangeRate = reserveA / reserveB;
+
+        const balanceBigN = await contractPair.methods
+          .balanceOf(account)
+          .call();
+        liquidityPool = ethers.utils.formatUnits(balanceBigN, assetsDecimal);
+
+        totalSupply = await contractPair.methods?.totalSupply().call();
+        if (totalSupply) {
+          totalSupply = ethers.utils.formatUnits(totalSupply, assetsDecimal);
+          // if (totalSupply < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+          //   totalSupply = 0;
+          // }
+        }
+      }
+    }
+
+    return {
+      abExchangeRate,
+      baExchangeRate,
+      reserveB,
+      reserveA,
+      totalSupply,
+      liquidityPool,
+    };
+  }
+);
+
+export const addLiquidity = createAsyncThunk(
+  poolConstants.ADD_LIQUIDITY,
+  async ({ firstAmount, secondAmount }, { getState }) => {
+    const currentState = getState();
+    const { firstToken, secondToken } = currentState.liquidReducer;
+    const { connex, account, web3 } = currentState.web3;
+
+    const firstTokenInfo = selectAssetByAddress(currentState, firstToken);
+    const secondTokenInfo = selectAssetByAddress(currentState, secondToken);
+
+    let isPoolAddressExist = false;
+    const contractFactory = new web3.eth.Contract(
+      ERC20ABI_FACTORY,
+      ADDRESS_FACTORY
+    );
+    const contractRouter = new web3.eth.Contract(
+      ERC20ABI_ROUTER,
+      ADDRESS_ROUTER
+    );
+
+    let reserveA, reserveB;
+
+    if (contractFactory) {
+      const addressPair = await contractFactory.methods
+        .getPair(firstToken, secondToken)
+        .call();
+      isPoolAddressExist = !/^0x0+$/.test(addressPair);
+
+      // contractFactory.events.TransFer({}).on('data', async (event) => {
+      //   console.log('🐶🐶  ~ contractFactory.events.TransFer ~ event', event);
+      // });
+
+      if (isPoolAddressExist) {
+        const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, addressPair);
+        const reserves = await contractPair.methods?.getReserves().call();
+        const _firstTokenAddress = await contractPair.methods.token0().call();
+        const _secondTokenAddress = await contractPair.methods.token1().call();
+        // console.log("Address exist");
+        reserveA = reserves?.[firstToken === _firstTokenAddress ? 0 : 1]; // the position is swap
+        reserveB = reserves?.[secondToken === _secondTokenAddress ? 1 : 0]; // the position is swap
+
+        console.log("🐶🐶  ~ contractPair.methods", contractPair.events);
+        contractPair.events.TransFer?.({}).on("data", async function (event) {
+          console.log("Pair event emitted");
+          console.log("🐶🐶  ~ contractFactory.events.TransFer ~ event", event);
+        });
+      } else {
+        // First user add pool
+        reserveA = secondAmount / firstAmount;
+        reserveB = firstAmount / secondAmount;
+      }
+    }
+
+    const amountA = getAmountInWeiFormatted(
+      web3,
+      firstAmount,
+      firstTokenInfo?.assetsDecimals
+    );
+
+    const amountB = getAmountInWeiFormatted(
+      web3,
+      secondAmount,
+      secondTokenInfo?.assetsDecimals
+    );
+
+    const transactionFee = "50";
+
+    // Calculate amountMin to send to smart contract
+    const amountAMin = isPoolAddressExist
+      ? await contractRouter.methods.quote?.(amountB, reserveB, reserveA).call()
+      : amountA; // chua có người add pool
+
+    const amountBMin = isPoolAddressExist
+      ? await contractRouter.methods.quote?.(amountA, reserveA, reserveB).call()
+      : amountB; // chua có người add pool
+
+    const deadline = Math.round(new Date().getTime() / 1000) + 3600;
+
+    // console.table([
+    //   ["tokenA", firstToken],
+    //   ["tokenB", secondToken],
+    //   ["transactionFee", transactionFee],
+    //   ["amountA", amountA],
+    //   ["amountB", amountB],
+    //   ["amountAMin", amountAMin],
+    //   ["amountBMin", amountBMin],
+    //   ["account", account],
+    //   ["deadline", deadline],
+    // ]);
+
+    let transaction;
+
+    if (isContainVET(firstToken, secondToken)) {
+      const addLiquidityETHABI = ERC20ABI_ROUTER.find(
+        ({ name, type }) => name === "addLiquidityETH" && type === "function"
+      );
+
+      const methodAddLiquidityETH = connex.thor
+        .account(ADDRESS_ROUTER)
+        .method(addLiquidityETHABI);
+
+      let tokenDesired;
+      if (firstToken === process.env.REACT_APP_TOKEN_WVET) {
+        tokenDesired = {
+          address: secondToken,
+          amountTokenDesired: amountB,
+          amountTokenMin: amountBMin,
+          amountETHMin: amountAMin,
+        };
+      } else {
+        tokenDesired = {
+          address: firstToken,
+          amountTokenDesired: amountA,
+          amountTokenMin: amountAMin,
+          amountETHMin: amountBMin,
+        };
+      }
+
+      methodAddLiquidityETH.value(tokenDesired.amountETHMin);
+
+      transaction = await methodAddLiquidityETH
+        .transact(
+          tokenDesired.address,
+          transactionFee,
+          tokenDesired.amountTokenDesired,
+          tokenDesired.amountTokenMin,
+          tokenDesired.amountETHMin,
+          account,
+          deadline
+        )
+        .comment(
+          `transaction add pool ${firstTokenInfo.assetsChain}-${secondTokenInfo.assetsChain} to VeBank`
+        )
+        .request();
+
+      return transaction;
+    } else {
+      const addLiquidityABI = ERC20ABI_ROUTER.find(
+        ({ name, type }) => name === "addLiquidity" && type === "function"
+      );
+      const methodAddLiquidity = connex.thor
+        .account(ADDRESS_ROUTER)
+        .method(addLiquidityABI);
+
+      transaction = await methodAddLiquidity
+        .transact(
+          firstToken,
+          secondToken,
+          transactionFee,
+          amountA,
+          amountB,
+          amountAMin,
+          amountBMin,
+          account,
+          deadline
+        )
+        .comment(
+          `transaction add pool ${firstTokenInfo.assetsChain}-${secondTokenInfo.assetsChain} to VeBank`
+        )
+        .request();
+
+      return transaction;
+      // .then((transaction) => {
+      //   console.log("🐶🐶  ~ .then ~ transaction", transaction);
+      //   return transaction;
+      // })
+      // .catch((e) => {
+      //   console.log("error----", e);
+      //   // dispatch({
+      //   //   type: marketplaceConstants.MODAL_SUPPLY_MARKET_ERROR,
+      //   // });
+      //   return e;
+      // });
+    }
+  }
+);

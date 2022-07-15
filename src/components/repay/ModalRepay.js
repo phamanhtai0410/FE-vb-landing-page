@@ -33,7 +33,7 @@ const customStyles = {
 
 const ModalRepay = () => {
 
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState('');
     const [remain, setRemain] = useState(0);//Remaining to repay
     const [values, setValues] = useState([0]);
     const [step, setStep] = useState(1);
@@ -47,7 +47,7 @@ const ModalRepay = () => {
     }, [isOpen]);
 
     const resetFrm = () => {
-        setAmount(0);
+        setAmount('');
         setValues([0]);
         setStep(1);
     }
@@ -72,16 +72,14 @@ const ModalRepay = () => {
     const onChangeRangeAmount = (values) => {
         setValues(values);
         setAmount(values[0]);
-
     }
 
     const onChangeAmount = (e) => {
         const { value } = e.target;
         if (value <= accountBalance) {
-            setAmount(value)
+            setAmount(value);
             setValues([value]);
-            onChangeRemainAmount(value)
-
+            onChangeRemainAmount(value);
         }
     }
     const onChangeRemainAmount = (values) => {
@@ -93,7 +91,6 @@ const ModalRepay = () => {
         }
 
     }
-
 
     const handlerStepToStep = (e) => {
         if (step === 1 && amount > 0) {
@@ -175,6 +172,12 @@ const ModalRepay = () => {
                         <img className='w-12 h-8 pr-3' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
 
                         <input
+                            // ref={inputElement => {
+                            //     // constructs a new function on each render
+                            //     if (inputElement) {
+                            //     inputElement.focus();
+                            //     }
+                            // }}
                             value={amount}
                             onChange={onChangeAmount}
                             className="bg-transparent focus:outline-none placeholder-slate-400 font-poppins appearance-none text-base w-full"

@@ -4,6 +4,7 @@
 
 @import "./animation.scss";
 @import "./modal.scss";
+@import "./toastify.scss";
 
 @font-face {
   font-family: "Poppins";
@@ -94,6 +95,18 @@ html {
   html { font-size: 0.75rem; }
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .row {
   @apply flex flex-row
 }
@@ -110,11 +123,19 @@ html {
   @apply row items-center
 }
 
-.col-center {
+.col-y-center {
   @apply col justify-center
 }
 
-.full-col-center {
+.col-x-center {
+  @apply col items-center
+}
+
+.col-center {
+  @apply col justify-center items-center
+}
+
+.full-col-y-center {
   @apply full-col justify-center
 }
 
@@ -168,7 +189,7 @@ html {
   padding: 0.5rem 2.25rem;
   background-color: #2a364b;
   display: block;
-  @apply disabled:text-grey-7 h-14 rounded-lg text-grey-1 text-lg font-poppins_medium
+  @apply disabled:text-grey-7 h-16 rounded-lg text-grey-1 text-lg font-poppins_medium
 }
 
 .btn-modal-secondary {
@@ -237,7 +258,6 @@ html {
 }
 
 .btn-veb {
-  cursor: pointer;
   padding: 0.35rem 1.75rem;
   font-weight: 500;
   border-radius: 0.5rem;
@@ -395,4 +415,16 @@ input:checked ~ .dot {
 
 .text-linear {
   @apply text-transparent bg-gradient-to-r from-secondary to-primary bg-clip-text;
+}
+
+.farm {
+  &__tab {
+    border: 1px solid #d2c0f14d;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    .active {
+      background: linear-gradient(91.96deg, #0FE3E3 0%, #02A4FF 100%);
+      border-radius: 32px;
+    }
+  }
 }

@@ -1,0 +1,83 @@
+import React from "react";
+// import TradeChart from "../components/trade/TradeChart";
+// import IcVeBank from "../assets/images/ic_vebank.svg";
+// import IcVThor from "../assets/images/ic_vtho.svg";
+// import IcVeUSD from "../assets/images/ic_veusd.svg";
+// import IcVeChain from "../assets/images/ic_vechain.svg";
+// import Wallet from "../components/swap/Wallet";
+import Swap from "../components/swap/Swap";
+import TrendingPairs from "../components/swap/TrendingPairs";
+import PoolChart from "../components/swap/PoolChart";
+import ModalSelectToken from "../components/swap/ModalSelectToken";
+import { useSelector } from "react-redux";
+import { selectOpenChooseTokenState } from "../reducers/swap.reducer";
+
+// const COIN_TYPES = [
+//   {
+//     symbol: "VB",
+//     icon: IcVeBank,
+//     price: 10,
+//   },
+//   {
+//     symbol: "VTHO",
+//     icon: IcVThor,
+//     price: 20,
+//   },
+//   {
+//     symbol: "VEUSD",
+//     icon: IcVeUSD,
+//     price: 1,
+//   },
+//   {
+//     symbol: "VET",
+//     icon: IcVeChain,
+//     price: 15,
+//   },
+// ];
+
+const SwapPage = () => {
+  const isSelectTokenModalOpen = useSelector(selectOpenChooseTokenState);
+  // const [swapToken, setSwapToken] = useState({
+  //   from: {
+  //     symbol: COIN_TYPES[0].symbol,
+  //     icon: COIN_TYPES[0].icon,
+  //     price: COIN_TYPES[0].price,
+  //   },
+  //   to: {
+  //     symbol: COIN_TYPES[1].symbol,
+  //     icon: COIN_TYPES[1].icon,
+  //     price: COIN_TYPES[1].price,
+  //   },
+  // });
+
+  return (
+    <section className="box-borrows mx-auto bg-cover bg-center">
+      <div className="w-full h-full pb-9 min-h-screen flex items-center justify-center bg-content -z-50">
+        <div
+          className={`${
+            isSelectTokenModalOpen ? "hidden" : "flex"
+          } flex flex-row p-2 space-x-6`}
+        >
+          {/* <div className="flex flex-col">
+            <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-[172px]">
+              <Wallet />
+            </div>
+            <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-auto">
+              <TrendingPairs />
+            </div>
+          </div> */}
+
+          <div className="rounded-2xl border border-vbLine bg-newForm h-full p-8 w-full md:w-[568px]">
+            <Swap />
+          </div>
+          {/* <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[370px] h-[266px]">
+            <PoolChart />
+          </div> */}
+        </div>
+        <ModalSelectToken />
+      </div>
+    </section>
+  );
+};
+
+export default SwapPage;

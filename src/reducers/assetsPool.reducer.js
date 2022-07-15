@@ -5,14 +5,22 @@ import IcVeChain from "../assets/images/ic_vechain.svg";
 import IcVeBank from "../assets/images/ic_vebank.svg";
 import IcVtho from "../assets/images/ic_vtho.svg";
 
+
 const listAsset = [
   {
     iconOrigin: IcVeChain,
     iconAssets: IcVeUSD,
     assetsPoolName: "VET-VEUSD",
-    assetsPoolAddress: process.env.REACT_APP_TOKEN_VEUSD,
+    assetsKey:
+      process.env.REACT_APP_TOKEN_WVET + process.env.REACT_APP_TOKEN_VEUSD,
+    assetsChainA: "VET",
+    addressTokenA: process.env.REACT_APP_TOKEN_WVET,
+    assetsChainB: "VEUSD",
+    addressTokenB: process.env.REACT_APP_TOKEN_VEUSD,
+    assetsPoolAddress: "",
     assetsDecimals: 18,
-    liquidity: "87,402,803",
+    balanceAccount: 0,
+    liquidity: "0",
     volume: "87,402,803",
     fees: "199,905",
     apr: 32.12,
@@ -22,9 +30,16 @@ const listAsset = [
     iconOrigin: IcVeChain,
     iconAssets: IcVtho,
     assetsPoolName: "VET-VTHO",
-    assetsPoolAddress: process.env.REACT_APP_TOKEN_VTHO,
+    assetsKey:
+      process.env.REACT_APP_TOKEN_WVET + process.env.REACT_APP_TOKEN_VTHO,
+    assetsChainA: "VET",
+    addressTokenA: process.env.REACT_APP_TOKEN_WVET,
+    assetsChainB: "VTHO",
+    addressTokenB: process.env.REACT_APP_TOKEN_VTHO,
+    assetsPoolAddress: "",
     assetsDecimals: 18,
-    liquidity: "87,402,803",
+    balanceAccount: 0,
+    liquidity: "0",
     volume: "87,402,803",
     fees: "199,905",
     apr: 32.12,
@@ -34,9 +49,16 @@ const listAsset = [
     iconOrigin: IcVeChain,
     iconAssets: IcVeBank,
     assetsPoolName: "VET-VB",
-    assetsPoolAddress: process.env.REACT_APP_TOKEN_VEBANK,
+    assetsKey:
+      process.env.REACT_APP_TOKEN_WVET + process.env.REACT_APP_TOKEN_VEBANK,
+    assetsChainA: "VET",
+    addressTokenA: process.env.REACT_APP_TOKEN_WVET,
+    assetsChainB: "VB",
+    addressTokenB: process.env.REACT_APP_TOKEN_VEBANK,
+    assetsPoolAddress: "",
     assetsDecimals: 18,
-    liquidity: "87,402,803",
+    balanceAccount: 0,
+    liquidity: "0",
     volume: "87,402,803",
     fees: "199,905",
     apr: 32.12,
@@ -46,13 +68,59 @@ const listAsset = [
     iconOrigin: IcVeBank,
     iconAssets: IcVtho,
     assetsPoolName: "VB-VTHO",
-    assetsPoolAddress: process.env.REACT_APP_TOKEN_WVET,
+    assetsKey:
+      process.env.REACT_APP_TOKEN_VEBANK + process.env.REACT_APP_TOKEN_VTHO,
+    assetsChainA: "VB",
+    addressTokenA: process.env.REACT_APP_TOKEN_VEBANK,
+    assetsChainB: "VTHO",
+    addressTokenB: process.env.REACT_APP_TOKEN_VTHO,
+    assetsPoolAddress: "",
     assetsDecimals: 18,
-    liquidity: "87,402,803",
+    balanceAccount: 0,
+    liquidity: "0",
     volume: "87,402,803",
     fees: "199,905",
     apr: 32.12,
   },
+
+  {
+    iconOrigin: IcVeUSD,
+    iconAssets: IcVtho,
+    assetsPoolName: "VEUSD-VTHO",
+    assetsKey:
+    process.env.REACT_APP_TOKEN_VEUSD+ process.env.REACT_APP_TOKEN_VTHO,
+    assetsChainA: "VEUSD",
+    addressTokenA: process.env.REACT_APP_TOKEN_VEUSD,
+    assetsChainB: "VTHO",
+    addressTokenB: process.env.REACT_APP_TOKEN_VTHO,
+    assetsPoolAddress: "",
+    assetsDecimals: 6,
+    balanceAccount: 0,
+    liquidity: "0",
+    volume: "87,402,803",
+    fees: "199,905",
+    apr: 32.12,
+  },
+
+  {
+    iconOrigin: IcVeUSD,
+    iconAssets: IcVeBank,
+    assetsPoolName: "VEUSD-VB",
+    assetsKey:
+    process.env.REACT_APP_TOKEN_VEUSD+ process.env.REACT_APP_TOKEN_VEBANK,
+    assetsChainA: "VEUSD",
+    addressTokenA: process.env.REACT_APP_TOKEN_VEUSD,
+    assetsChainB: "VB",
+    addressTokenB: process.env.REACT_APP_TOKEN_VEBANK,
+    assetsPoolAddress: "",
+    assetsDecimals: 6,
+    balanceAccount: 0,
+    liquidity: "0",
+    volume: "87,402,803",
+    fees: "199,905",
+    apr: 32.12,
+  },
+
 ];
 
 const initialState = {
@@ -60,11 +128,13 @@ const initialState = {
   success: false,
   message: null,
   query: {},
-  totalSupply: 0,
-  totalBorrow: 0,
   total: 0,
-  data: listAsset || [],
+  listAsset,
+  ids: [],
+  entities: {},
+  data: [],
 };
+
 
 export function assetsPoolReducer(state = initialState, payload) {
   switch (payload.type) {
@@ -76,15 +146,20 @@ export function assetsPoolReducer(state = initialState, payload) {
       };
 
     case poolConstants.FETCH_POOL_ASSETS_SUCCESS:
-      return {
+      const nextState = {
         ...state,
         requesting: false,
         success: true,
         data: payload.data,
-        totalSupply: payload.totalSupply,
-        totalBorrow: payload.totalBorrow,
         total: payload.total,
       };
+      for (const pool of payload.data) {
+        if (!nextState.ids.includes(pool.assetsPoolAddress)) {
+          nextState.ids.push(pool.assetsPoolAddress);
+        }
+        nextState.entities[pool.assetsPoolAddress] = pool;
+      }
+      return nextState;
 
     case poolConstants.FETCH_POOL_ASSETS_ERROR:
       return {
@@ -97,3 +172,6 @@ export function assetsPoolReducer(state = initialState, payload) {
       return state;
   }
 }
+
+export const selectPoolInfoByAddress = (state, address) =>
+  state.assetsPoolReducer.entities[address];

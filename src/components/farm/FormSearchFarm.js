@@ -10,7 +10,7 @@ const FormSearchFarm = () => {
                 <input
                     className="bg-transparent focus:outline-none placeholder-slate-300 font-poppins appearance-none text-sm w-full"
                     type="text"
-                    placeholder={"Search farms"}
+                    placeholder={"Search by token"}
                 />
                 <img
                     alt="search_icon"

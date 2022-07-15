@@ -22,7 +22,9 @@ const Wallet = () => {
     }, []);
 
     useEffect(() => {
-        fetchAccountInit();
+        if(account){
+            fetchAccountInit();
+        }
     }, [account]);
 
 
@@ -34,11 +36,11 @@ const Wallet = () => {
     async function fetchAccountInit() {
 
         setTimeout(async () => {
-            await dispatch(actions.instantiateVBContracts());
             await dispatch(actions.instantiateVetContracts());
+            await dispatch(actions.instantiateVBContracts());
             await dispatch(actions.instantiateVEUSDContracts());
             // await dispatch(actions.getOverview());
-        }, 500);
+        }, 2000);
 
     }
 

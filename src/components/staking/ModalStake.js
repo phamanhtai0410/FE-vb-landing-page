@@ -261,8 +261,9 @@ const ModalStake = () => {
           </button> */}
           <SecondaryButton
             label="Cancel"
+            labelColor="white"
             onClick={closeModal}
-            className="w-full btn-modal-secondary h-11"
+            className="w-full btn-modal-secondary h-16 text-white"
           />
           <button
             onClick={showCheckStepContinue() && onConfirmClicked}

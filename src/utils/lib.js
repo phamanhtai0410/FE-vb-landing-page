@@ -1,53 +1,117 @@
+import { ethers } from "ethers";
+import PartialConstants from "../constants/partial.constants";
+import { v4 as uuidv4 } from "uuid";
+import { address } from "thor-devkit";
 
-import { ethers } from 'ethers';
 var CryptoJS = require("crypto-js");
 
 export function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+export const getDeadline = () => Math.round(new Date().getTime() / 1000) + 3600;
 
 export const getTimeStamp = () => new Date().getTime().toString();
 
 export function formatNumberEther(amount) {
-    const amountN = Number(ethers.utils.formatEther(amount, { commify: true }));
-    return numberWithCommas(Math.round(amountN * 100) / 100);
+  const amountN = Number(ethers.utils.formatEther(amount, { commify: true }));
+  return numberWithCommas(Math.round(amountN * 100) / 100);
 }
 
 export function formatUriSecure(url) {
+  const currentDate = new Date();
+  const secureKey = process.env.REACT_APP_SECURE_KEY;
+  const secureTime = process.env.REACT_APP_SECURE_TIME;
 
-    const currentDate = new Date()
-    const secureKey = process.env.REACT_APP_SECURE_KEY;
-    const secureTime = process.env.REACT_APP_SECURE_TIME;
+  let expireTime = currentDate.getTime() / 1000 + Number(secureTime);
+  expireTime = Math.round(expireTime);
 
-    let expireTime = (currentDate.getTime() / 1000) + Number(secureTime);
-    expireTime = Math.round(expireTime);
+  let secure_link = `${secureKey}${expireTime}${url}`;
+  secure_link = CryptoJS.MD5(secure_link, "binary").toString(
+    CryptoJS.enc.Base64
+  );
+  secure_link = secure_link.replaceAll("+", "-");
+  secure_link = secure_link.replaceAll("/", "_");
+  secure_link = secure_link.replace(/=/g, "");
 
-    let secure_link = `${secureKey}${expireTime}${url}`;
-    secure_link = CryptoJS.MD5(secure_link, "binary").toString(CryptoJS.enc.Base64);
-    secure_link = secure_link.replaceAll("+", "-");
-    secure_link = secure_link.replaceAll("/", "_");
-    secure_link = secure_link.replace(/=/g, "");
-
-    return url + `?st=${secure_link}&e=${expireTime}`;
-
+  return url + `?st=${secure_link}&e=${expireTime}`;
 }
 
 export function nFormatter(num, digits) {
-    var si = [
-        { value: 1, symbol: "" },
-        { value: 1E3, symbol: "k" },
-        { value: 1E6, symbol: "M" },
-        { value: 1E9, symbol: "G" },
-        { value: 1E12, symbol: "T" },
-        { value: 1E15, symbol: "P" },
-        { value: 1E18, symbol: "E" }
-    ];
-    var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-    var i;
-    for (i = si.length - 1; i > 0; i--) {
-        if (num >= si[i].value) {
-            break;
-        }
+  var si = [
+    { value: 1, symbol: "" },
+    { value: 1e3, symbol: "k" },
+    { value: 1e6, symbol: "M" },
+    { value: 1e9, symbol: "G" },
+    { value: 1e12, symbol: "T" },
+    { value: 1e15, symbol: "P" },
+    { value: 1e18, symbol: "E" },
+  ];
+  var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+  var i;
+  for (i = si.length - 1; i > 0; i--) {
+    if (num >= si[i].value) {
+      break;
     }
-    return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
+  }
+  return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 }
+
+export const isContainVET = (...ags) => [...ags].includes(process.env.REACT_APP_TOKEN_WVET);
+
+export const getDecimalForAsset = (assetsAddress) =>
+  assetsAddress === process.env.REACT_APP_TOKEN_VEUSD
+    ? PartialConstants.VEUSD_DECIMAL
+    : PartialConstants.DEFAULT_ASSET_DECIMAL;
+
+export const typeOf = (value) => Object.prototype.toString.call(value);
+
+export const getWeiUnitByDecimal = (decimal) => {
+  switch (decimal) {
+    case 6:
+      return "mwei";
+    case 12:
+      return "micro";
+    case 18:
+      return "ether";
+    default:
+      return "";
+  }
+};
+
+export const getAmountInWeiFormatted = (web3, amount, decimalNumber) => {
+  if (!web3) throw new Error("Web3 is required");
+  else if (!amount) throw new Error("Amount is required");
+  else if (!decimalNumber) throw new Error("DecimalNumber is required");
+
+  return web3?.utils.toWei(
+    amount.toString(),
+    getWeiUnitByDecimal(decimalNumber)
+  );
+};
+
+export const getDecimalForAssetPair = (firstAssetAddress, secondAssetAddress) =>
+  [firstAssetAddress, secondAssetAddress].includes(
+    process.env.REACT_APP_TOKEN_VEUSD
+  )
+    ? PartialConstants.LIQUIDITY_PAIR_CONTAIN_VET_DECIMAL
+    : PartialConstants.DEFAULT_ASSET_DECIMAL;
+
+export async function copyTextToClipboard(text) {
+  if ("clipboard" in navigator) {
+    return await navigator.clipboard.writeText(text);
+  } else {
+    return document.execCommand("copy", true, text);
+  }
+}
+
+export const randomKeyUUID = () => {
+  return  uuidv4();
+};
+
+export const addressWalletCompact = (address) =>{
+  return `${address.slice(0, 6)}...${address.slice(
+    address.length - 4,
+    address.length
+  )}`;
+} 

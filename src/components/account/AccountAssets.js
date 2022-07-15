@@ -17,20 +17,18 @@ const AccountAssets = () => {
 
     const [showAssets, setShowAssets] = useState(false);
 
-    const { web3 } = useSelector(state => state.web3, shallowEqual);
     const { data } = useSelector(state => state.accountAssetsReducer, shallowEqual);
+    const dataAssets = useSelector(state => state.assetsMarketReducer.data, shallowEqual);
     const dataPrice = useSelector(state => state.assetsPriceReducer.data, shallowEqual);
 
     useEffect(() => {
-        if (web3 && dataPrice && dataPrice.length === 0) {
+        if (dataAssets && dataAssets.length > 0 && data.length  === 0) {
             fetchAccountAssets();
         }
-    }, [web3, dataPrice]);
+    }, [dataAssets]);
 
     async function fetchAccountAssets() {
         await dispatch(actions.getAccountAssets());
-        await dispatch(actions.getAccountOverview());
-
     }
 
     const handlerClickShowAssets = (e) => {
@@ -63,7 +61,7 @@ const AccountAssets = () => {
                                     item.totalSupplied ? <>
                                         <div className="text-lg font-semibold">{nFormatter(item.totalSupplied, 2)}</div>
                                         <div className="flex flex-row justify-start items-center space-x-2" >
-                                            <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalSuppliedUSD ? nFormatter(item.totalSuppliedUSD, 6) : 0}</span>
+                                            <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalSupplied ? nFormatter(item.totalSupplied * dataPrice[item.assetsAddress], 6) : 0}</span>
                                         </div>
                                     </> : <div className="text-lg font-semibold">-</div>
                                 }
@@ -83,11 +81,10 @@ const AccountAssets = () => {
                             <div className="p-2 flex flex-col justify-center items-center font-semibold">
                                 {item.totalBorrowed ? <>  <div className="text-lg font-semibold">{nFormatter(item.totalBorrowed, 2)}</div>
                                     <div className="flex flex-row justify-start items-center space-x-2" >
-                                        <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalBorrowedUSD ? nFormatter(item.totalBorrowedUSD) : 0}</span>
+                                        <span className="font-light text-[14px] font-poppins text-gray-300">$ {item.totalBorrowed ? nFormatter(item.totalBorrowed * dataPrice[item.assetsAddress],6) : 0}</span>
                                     </div></> :
                                     <div className="text-lg font-semibold">-</div>
                                 }
-
                             </div>
 
                             {/* <div className="p-2 flex justify-center items-center font-semibold">{item.totalBorrowed} </div> */}
@@ -118,7 +115,6 @@ const AccountAssets = () => {
         }
 
     }
-
 
     return (
         <div className='bg-[#0b1329] mt-10 px-8 py-5 rounded '>

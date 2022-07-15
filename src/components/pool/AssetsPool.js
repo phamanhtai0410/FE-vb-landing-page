@@ -8,28 +8,25 @@ import IcCaretDown from "../../assets/images/ic_caret_down-fill.svg";
 import PoolRowAction from "./PoolRowAction";
 
 import * as actions from "../../actions";
-import CurrencyAssets from "../markets/CurrencyAssets";
 import LiquidPairIcon from "../partials/LiquidPairIcon";
 
 const AssetsPool = () => {
+
   const [openRowAssets, setOpenRowAssets] = useState([]);
 
   const dispatch = useDispatch();
 
   const { web3 } = useSelector((state) => state.web3, shallowEqual);
-  const { data } = useSelector(
-    (state) => state.assetsPoolReducer,
-    shallowEqual
-  );
+  const { data } = useSelector(  (state) => state.assetsPoolReducer,  shallowEqual );
 
   useEffect(() => {
     if (web3) {
-      // fetchMarketAssets();
+      fetchPoolAssets();
     }
   }, [web3]);
 
-  async function fetchMarketAssets() {
-    await dispatch(actions.getMarketAssets());
+  async function fetchPoolAssets() {
+    await dispatch(actions.getPoolAssets());
   }
 
   const onClickShowRowAssets = (assetsAddress) => {
@@ -77,7 +74,7 @@ const AssetsPool = () => {
               </div>
 
               <div className="p-4 col-span-2 flex justify-center items-center font-semibold">
-                ${item.liquidity}
+                {item.liquidity}
               </div>
 
               <div className="p-4 col-span-2 flex flex-col justify-center items-center content-center">
@@ -94,6 +91,7 @@ const AssetsPool = () => {
 
               <div className="p-4 col-span-1 flex justify-center items-center cursor-pointer">
                 <img
+                  alt="sort row"
                   className={`w-4 h-4 transition-transform delay-350 ${
                     checkShowDown(item.assetsPoolAddress) ? "rotate-180" : ""
                   }`}

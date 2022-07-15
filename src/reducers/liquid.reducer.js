@@ -1,23 +1,34 @@
+import { createSelector } from "@reduxjs/toolkit";
+import {
+  addLiquidity,
+  approveFirstTokenAddLiquidity,
+  approveSecondTokenAddLiquidity,
+  checkApproval,
+  loadDetailAddLiquidity,
+} from "../actions";
 import { poolConstants } from "../constants";
+import { selectAssetByAddress } from "./assetsMarket.reducer";
 
 const initialState = {
-  isAddLiquidModalOpen: false,
   isSelectTokenModalOpen: false,
-  isRemoveLiquidModalOpen: false,
   pending: false,
 
   transaction: null,
   errorCode: null,
   message: null,
 
-  accountBalance: 0,
-  accountApprove: 0,
-  accountStableDebtApprove: 0,
-  accountVariableDebtApprove: 0,
+  approveTokenA: 0,
+  approveTokenB: 0,
 
   firstToken: null,
   secondToken: null,
   tokenSelecting: "",
+
+  isCheckingApproval: false,
+  isApproving: false,
+  isAddingLiquidity: false,
+  isAddingLiquiditySuccess: null,
+  isLoadingLiquidityDetail: false,
 
   dataToken: null,
   data: {},
@@ -99,6 +110,36 @@ export function liquidReducer(state = initialState, action) {
         ...action,
       };
 
+    case poolConstants.SELECT_FIRST_TOKEN: {
+      const newFirstToken = action.payload;
+      if (state.secondToken === newFirstToken) {
+        return {
+          ...state,
+          firstToken: newFirstToken,
+          secondToken: state.firstToken,
+        };
+      }
+      return {
+        ...state,
+        firstToken: newFirstToken,
+      };
+    }
+
+    case poolConstants.SELECT_SECOND_TOKEN: {
+      const newSecondToken = action.payload;
+      if (state.firstToken === newSecondToken) {
+        return {
+          ...state,
+          firstToken: state.secondToken,
+          secondToken: newSecondToken,
+        };
+      }
+      return {
+        ...state,
+        secondToken: newSecondToken,
+      };
+    }
+
     case poolConstants.MODAL_SELECT_TOKEN: {
       const newState = {
         ...state,
@@ -107,10 +148,21 @@ export function liquidReducer(state = initialState, action) {
         errorCode: null,
         message: null,
       };
+      const newToken = action.payload;
       if (state.tokenSelecting === poolConstants.FIRST_TOKEN) {
-        newState.firstToken = action.payload;
+        if (newToken === state.secondToken) {
+          newState.secondToken = state.firstToken;
+          newState.reserveA = state.reserveB;
+          newState.reserveB = state.reserveA;
+        }
+        newState.firstToken = newToken;
       } else {
-        newState.secondToken = action.payload;
+        if (newToken === state.firstToken) {
+          newState.firstToken = state.secondToken;
+          newState.reserveA = state.reserveB;
+          newState.reserveB = state.reserveA;
+        }
+        newState.secondToken = newToken;
       }
       return newState;
     }
@@ -190,6 +242,115 @@ export function liquidReducer(state = initialState, action) {
         message: null,
       };
 
+    case loadDetailAddLiquidity.pending.type: {
+      return {
+        ...state,
+        isLoadingLiquidityDetail: true
+      };
+    }
+    case loadDetailAddLiquidity.fulfilled.type: {
+      return {
+        ...state,
+        isAddingLiquidity: false,
+        isLoadingLiquidityDetail: false,
+        ...action.payload,
+      };
+    }
+    case loadDetailAddLiquidity.rejected.type: {
+      return {
+        ...state,
+        isLoadingLiquidityDetail: false,
+      };
+    }
+
+    case approveFirstTokenAddLiquidity.pending.type: {
+      return {
+        ...state,
+        isApproving: true,
+      };
+    }
+    case approveFirstTokenAddLiquidity.fulfilled.type: {
+      return {
+        ...state,
+        isApproving: false,
+        approveTokenA: action.payload.approveTokenA,
+      };
+    }
+    case approveFirstTokenAddLiquidity.rejected.type: {
+      return {
+        ...state,
+        isApproving: false,
+      };
+    }
+    case approveSecondTokenAddLiquidity.pending.type: {
+      return {
+        ...state,
+        isApproving: true,
+      };
+    }
+    case approveSecondTokenAddLiquidity.fulfilled.type: {
+      return {
+        ...state,
+        isApproving: false,
+        approveTokenB: action.payload.approveTokenB,
+      };
+    }
+    case approveSecondTokenAddLiquidity.rejected.type: {
+      return {
+        ...state,
+        isApproving: false,
+      };
+    }
+
+    case addLiquidity.pending.type: {
+      return {
+        ...state,
+        isAddingLiquidity: true,
+      };
+    }
+    case addLiquidity.fulfilled.type: {
+      return {
+        ...state,
+        isAddingLiquidity: false,
+        isAddingLiquiditySuccess: true,
+      };
+    }
+    case addLiquidity.rejected.type: {
+      return {
+        ...state,
+        isAddingLiquidity: false,
+        isAddingLiquiditySuccess: false,
+      };
+    }
+
+    case poolConstants.LIQUIDITY_CLEAR_SELECTED_TOKENS: {
+      return {
+        ...state,
+        firstToken: null,
+        secondToken: null,
+      };
+    }
+
+    case checkApproval.pending.type: {
+      return {
+        ...state,
+        isCheckingApproval: true,
+      };
+    }
+    case checkApproval.fulfilled.type: {
+      return {
+        ...state,
+        isCheckingApproval: false,
+        ...action.payload,
+      };
+    }
+    case checkApproval.rejected.type: {
+      return {
+        ...state,
+        isCheckingApproval: false,
+      };
+    }
+
     default:
       return state;
   }
@@ -202,5 +363,26 @@ export const selectOpenAddLiquidState = (state) =>
   state.liquidReducer.isAddLiquidModalOpen;
 export const selectOpenRemoveLiquidState = (state) =>
   state.liquidReducer.isRemoveLiquidModalOpen;
+export const selectFirstTokenExchangeRate = (state) =>
+  state.liquidReducer.abExchangeRate;
+export const selectSecondTokenExchangeRate = (state) =>
+  state.liquidReducer.baExchangeRate;
 export const selectFirstToken = (state) => state.liquidReducer.firstToken;
 export const selectSecondToken = (state) => state.liquidReducer.secondToken;
+export const selectApproveFirstToken = (state) =>
+  state.liquidReducer.approveTokenA;
+export const selectApproveSecondToken = (state) =>
+  state.liquidReducer.approveTokenB;
+export const selectApproveState = (state) => state.liquidReducer.isApproving;
+export const selectAddingLiquidityState = (state) =>
+  state.liquidReducer.isAddingLiquidity;
+export const selectAddingLiquidityFinishState = (state) =>
+  state.liquidReducer.isAddingLiquiditySuccess;
+export const selectCheckApprovalState = (state) =>
+  state.liquidReducer.isCheckingApproval;
+export const selectLoadLiquidityDetail = state => state.liquidReducer.isLoadingLiquidityDetail;
+
+export const selectTotalSupply = (state) => state.liquidReducer.totalSupply;
+export const selectLiquidityPool = (state) => state.liquidReducer.liquidityPool;
+export const selectReserveA = (state) => state.liquidReducer.reserveA;
+export const selectReserveB = (state) => state.liquidReducer.reserveB;
