@@ -9,4 +9,5 @@ export const footer ={
     IcArrowBot: require("./images/footer/arrow_bot.svg").default,
     IcTelegram: require("./images/footer/telegram.svg").default,
     IcTwitter: require("./images/footer/twitter.svg").default,
+    IcFacebook: require("./images/footer/facebook.svg").default,
 }

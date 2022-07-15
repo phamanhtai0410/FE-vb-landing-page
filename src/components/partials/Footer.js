@@ -38,6 +38,11 @@ const Footer = () => {
       title: "Twitter",
       icon: footer.IcTwitter,
       link: "https://twitter.com/vebankprotocol"
+    },
+    {
+      title: "Facebook",
+      icon: footer.IcFacebook,
+      link: "https://www.facebook.com/vebankprotocol"
     }
   ]
 
