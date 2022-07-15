@@ -1,7 +1,6 @@
 
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import { Range } from "react-range";
 import { ThreeDots } from 'react-loading-icons';
 
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
@@ -16,6 +15,7 @@ import IcExplorer from '../../assets/images/ic_explorer.svg';
 import IcSuccess from '../../assets/images/ic_success.svg';
 import IcVeChain from '../../assets/images/ic_vechain.svg';
 
+import useAutoFocus from '../common/hooks/useAutoFocus';
 import BtnSupplyApprove from './BtnSupplyApprove';
 
 const customStyles = {
@@ -37,12 +37,13 @@ const IcVeb = IcVeChain;
 
 const ModalSupply = () => {
 
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState('');
     const [step, setStep] = useState(1);
 
     const { dataToken, accountBalance, accountApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.supplyReducer, shallowEqual);
 
     const dispatch = useDispatch();
+    const amountInputRef = useAutoFocus();
 
     useEffect(() => {
         resetFrm();
@@ -50,14 +51,13 @@ const ModalSupply = () => {
 
     useEffect(() => {
         setStep(1);
+        if(isOpen){
+            setAmount('');
+        }
     }, [isOpen]);
 
-    // useEffect(() => {
-    //     setValues(accountBalance);
-    // }, [accountBalance]);
-
     const resetFrm = () => {
-        setAmount(0);
+        setAmount('');
         setStep(1);
     }
 
@@ -84,10 +84,25 @@ const ModalSupply = () => {
     }
 
     const onChangeAmount = (e) => {
+
         const { value } = e.target;
-        if (Number(value) <= Number(accountBalance)) {
-            setAmount(Number(value))
+
+        // Giá trị rỗng
+        if(e.target.value === ""){
+            setAmount(value);
         }
+
+        // Lớn hơn giá trị cho phép
+        if (Number(value) > Number(accountBalance)) {
+            return;
+        }
+
+        // kiêm tra input number
+        let pattern = /^\d+$/;
+        if (pattern.test(value)) {
+            setAmount(value)
+        }
+
     }
 
     const handlerStepToStep = (e) => {
@@ -112,7 +127,6 @@ const ModalSupply = () => {
             }
         }
         return btn;
-
     }
 
     return (
@@ -154,6 +168,7 @@ const ModalSupply = () => {
                     <div className="bg-gradient-search rounded-lg flex flex-row mt-2 mx-8 py-4 px-4 justify-between">
                         <img className='w-12 h-8 pr-3' src={dataToken ? dataToken.icon : ""} alt="Token VEBank" />
                         <input
+                            ref={amountInputRef}
                             value={amount}
                             onChange={onChangeAmount}
                             className="bg-transparent focus:outline-none placeholder-slate-400 font-poppins appearance-none text-base w-full"

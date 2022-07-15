@@ -62,6 +62,8 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
     }
 
 
+    
+
     if (dataToken.assetsChain === "VET") {
 
         // check approveDelegation
