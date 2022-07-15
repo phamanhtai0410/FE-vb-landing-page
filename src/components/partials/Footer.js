@@ -1,51 +1,157 @@
-
-import IcScTwitter from '../../assets/images/social/ic_twitter.svg';
-import IcScTelegram from '../../assets/images/social/ic_telegram.svg';
-import IcScRobot from '../../assets/images/social/ic_robot.svg';
-import IcScGit from '../../assets/images/social/ic_git.svg';
-import IcScDiscord from '../../assets/images/social/ic_discord.svg';
+import { footer } from '../../assets';
+import { useState } from 'react';
+import { Link } from "react-router-dom";
 
 const Footer = () => {
+  const products = [
+    {title: "Trade", path: "#"},
+    {title: "Lend/Borrow", path: "/markets"},
+    {title: "Pool", path: "/pool"},
+    {title: "Stake", path: "/stake"},
+    {title: "Farm", path: "/farm"},
+    {title: "Launchpad", path: "/launchpad"}
+  ];
+  const supports = [
+    {title: "Getting Started", link: "https://docs.vebank.io/introduction-to-vebank/sync2-wallet"},
+    {title: "FAQ", link: "https://docs.vebank.io/products/faq"}
+  ];
+  const abouts = [
+    {title: "About us", link: "https://docs.vebank.io/"},
+    {title: "Docs", link: "https://docs.vebank.io/"}
+  ];
+  const communities = [
+    {
+      title: "Telegram",
+      icon: footer.IcTelegram,
+      details: [
+        {
+          title: "Official Announcement",
+          link: "https://t.me/vebank_offical_ann"
+        },
+        {
+          title: "Community",
+          link: "https://t.me/vebankcommunity"
+        }
+      ]
+    },
+    {
+      title: "Twitter",
+      icon: footer.IcTwitter,
+      link: "https://twitter.com/vebankprotocol"
+    }
+  ]
 
+  const [showMore, setShowMore] = useState(false);
   return (
 
     <footer>
 
-      <div className="lg:container mx-auto ">
+      <div className="w-full bg-[#000324]">
 
-        <div className="py-24 px-6 lg:px-10 flex flex-col md:flex-row">
+        <div className="py-16 px-6 lg:px-10 flex flex-col md:flex-row justify-between xl:px-52">
 
           <div className="flex flex-col font-poppins">
-            <h4 className="text-3xl leading-8 text-slate-50">ESOL Labs</h4>
-            <div className="text-[#7D86F5] text-base pt-7">Contact Us</div>
-            <p className="text-[#8C90BD] text-sm leading-5 pt-6">
-              &copy; 2022 ESOL Labs
+            <div className='flex flex-row items-center space-x-2'>
+              <img src={footer.IcLogo} alt="Logo VeBank" className="cursor-pointer" />
+              <img src={footer.IcLogoText} alt="Logo VeBank" className="cursor-pointer" />
+            </div>
+            
+            <span className="text-[#D9D9D9] text-base pt-8">One-stop DeFi Platform on VeChain</span>
+            <p className="text-[#4B5C86] text-sm pt-4">
+              &copy; 2022 VeBank
             </p>
           </div>
 
-          <div className="text-[#7D86F5] sm:ml-0 md:ml-14 md:ml-5s lg:ml-[120px]">
-
-            <div className='flex flex-rows items-left md:mt-9 md:max-w-xs md:justify-between space-x-8 lg:space-x-16 mt-7 md:mt-0'>
-              <img src={IcScTelegram} alt="icon Telegram" className="w-8 h-8 cursor-pointer" />
-              <img src={IcScDiscord} alt="icon Discord" className="w-8 h-8 cursor-pointer" />
-              <img src={IcScTwitter} alt="icon Twitter" className="w-8 h-8 cursor-pointer" />
-              <img src={IcScGit} alt="icon Git" className="w-8 h-8 cursor-pointer" />
-              <img src={IcScRobot} alt="icon Robot" className="w-8 h-8 cursor-pointer" />
+          <div className="grid grid-cols-4 w-[55%]">
+            <div className="flex flex-col">
+              <span className="font-poppins_semi_bold text-lg text-[#39C5F1]">PRODUCT</span>
+              <div className="flex flex-col space-y-4 mt-6">
+                {products.map((item, index) => (
+                  <Link
+                    to={item.path}
+                    className="text-sm text-[#D9D9D9]"
+                  >
+                    {item.title}
+                  </Link>
+                ))}
+              </div>
             </div>
-
-            <div className='mt-8'>
-              <ul className='font-poppins text-sm leading-6 text-[#7D86F5] flex space-x-6 cursor-pointer'>
-                <li>FAQ</li>
-                <li>Docs</li>
-                <li>Analytics</li>
-                <li>Investors</li>
-                <li>About Us</li>
-                <li>Support</li>
-              </ul>
+            <div className="flex flex-col">
+              <span className="font-poppins_semi_bold text-lg text-[#39C5F1]">SUPPORT</span>
+              <div className="flex flex-col space-y-4 mt-6">
+                {supports.map((item, index) => (
+                  <a
+                    key={index}
+                    href={item.link}
+                    target={"_blank"}
+                    rel="noopener noreferrer"
+                    className="text-sm text-[#D9D9D9]"
+                  >
+                    {item.title}
+                  </a>
+                ))}
+              </div>
             </div>
-
+            <div className="flex flex-col">
+              <span className="font-poppins_semi_bold text-lg text-[#39C5F1]">ABOUT</span>
+              <div className="flex flex-col space-y-4 mt-6">
+                {abouts.map((item, index) => (
+                  <a
+                    key={index}
+                    href={item.link}
+                    target={"_blank"}
+                    rel="noopener noreferrer"
+                    className="text-sm text-[#D9D9D9]"
+                  >
+                    {item.title}
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-poppins_semi_bold text-lg text-[#39C5F1]">COMMUNITY</span>
+              <div className="flex flex-col space-y-4 mt-6">
+                {communities.map((item, index) => (
+                  <div className="relative flex flex-row items-center space-x-3 cursor-pointer" onClick={() => setShowMore(!showMore)}>
+                    <img src={item.icon} alt={item.title} />
+                    {item?.link ? 
+                    <a
+                      key={index}
+                      href={item.link}
+                      target={"_blank"}
+                      rel="noopener noreferrer"
+                      className="text-sm text-[#D9D9D9]"
+                    >
+                      {item.title}
+                    </a> : <span key={index} className="text-sm text-[#D9D9D9]">{item.title}</span>
+                    }
+                    
+                    {item?.details &&
+                    <div>
+                      <img src={footer.IcArrowBot} alt={item.title} />
+                      {showMore && <div className="absolute flex flex-col divide-y-[1px] divide-[#000324] bg-[#0E1B31] rounded-lg px-4 py-2 top-0 left-36">
+                        {item.details.map((item, index) => (
+                          <div className="py-2">
+                            <a
+                              key={index}
+                              href={item.link}
+                              target={"_blank"}
+                              rel="noopener noreferrer"
+                              className="text-sm text-[#D9D9D9] whitespace-nowrap"
+                            >
+                              {item.title}
+                            </a>
+                          </div>
+                        ))}
+                      </div>}
+                    </div>
+                      
+                    }
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-
 
         </div>
 
