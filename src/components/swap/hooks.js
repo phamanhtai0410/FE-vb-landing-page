@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   selectDesireToken,
@@ -39,9 +39,13 @@ const useSwapFacade = () => {
   const account = useSelector(selectAccount);
   const [inputAmountIn, setInputAmountIn] = useState("");
   const [inputAmountOut, setInputAmountOut] = useState("");
-  const [inputSlippage, setInputSlippage] = useState("0.1");
+  const [inputSlippage, setInputSlippage] = useState(0.1);
   const [pressSwap, setPressSwap] = useState(false);
   const [showErr, setShowErr] = useState(false);
+  // const [userInput, setUserInput] = useState("");
+  const userInputRef = useRef(inputAmountIn);
+  const amountInRef = useRef(inputAmountIn);
+  const amountOutRef = useRef(inputAmountOut);
 
   const sourceTokenAddress = useSelector(selectSourceToken);
   const desireTokenAddress = useSelector(selectDesireToken);
@@ -171,6 +175,7 @@ const useSwapFacade = () => {
 
   const onChangeSourceInput = useCallback(
     (value) => {
+      userInputRef.current = value;
       checkBalance(value);
       if (value !== "") {
         getAmountOutDebounced(value);
@@ -190,6 +195,7 @@ const useSwapFacade = () => {
 
   const onChangeDesireInput = useCallback(
     (value) => {
+      userInputRef.current = value;
       setInputAmountOut(value);
       if (value !== "") {
         getAmountsInDebounced(value);
@@ -228,12 +234,16 @@ const useSwapFacade = () => {
         tokenInfo: sourceTokenInfo,
       })
     );
-  }, [dispatch, sourceTokenInfo]);
+  }, [dispatch, sourceTokenInfo, account]);
 
   useEffect(() => {
     if (pressSwap) {
-      checkBalance(inputAmountOut);
-      // setInputAmountIn(inputAmountOut);
+      amountInRef.current = inputAmountOut;
+      if (amountInRef.current === userInputRef.current) {
+        setInputAmountIn(userInputRef.current);
+        setInputAmountOut("");
+        getAmountOutDebounced(userInputRef.current);
+      }
       setPressSwap(false);
     } else {
       getAmountOutDebounced(inputAmountIn);
@@ -242,7 +252,12 @@ const useSwapFacade = () => {
 
   useEffect(() => {
     if (pressSwap) {
-      setInputAmountOut(inputAmountIn);
+      amountOutRef.current = inputAmountIn;
+      if (amountOutRef.current === userInputRef.current) {
+        setInputAmountOut(userInputRef.current);
+        setInputAmountIn("");
+        getAmountsInDebounced(userInputRef.current);
+      }
       setPressSwap(false);
     } else {
       getAmountOutDebounced(inputAmountIn);
@@ -256,7 +271,7 @@ const useSwapFacade = () => {
   useEffect(() => {
     checkBalance(amountsIn);
     dispatch(checkTotalSupplyAvailable());
-  }, [amountsIn, checkBalance, dispatch]);
+  }, [amountsIn, dispatch]);
 
   return {
     isSwap,
@@ -265,6 +280,7 @@ const useSwapFacade = () => {
     account,
     loadingFee,
     amountOutMin,
+    userInputRef,
     inputAmountOut,
     sourceTokenAddress,
     desireTokenAddress,

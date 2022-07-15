@@ -6,6 +6,7 @@ import IcDropDown from "../../assets/images/ic_dropdown.svg";
 import IcReload from "../../assets/images/ic_reload.svg";
 import IcSetting from "../../assets/images/buttons/ic_setting_outline.svg";
 import IcQuestionCircle from "../../assets/images/ic_question_circle.svg";
+import IcQuestionCircleYellow from "../../assets/images/question_circle_yellow.svg";
 import IcSwapWhiteNoBackground from "../../assets/images/ic_swap_white_no_background.svg";
 
 import BtnConnectInPage from "../account/BtnConnectInPage";
@@ -24,6 +25,7 @@ const Swap = () => {
     showErr,
     account,
     loadingFee,
+    userInputRef,
     exchangeRate,
     inputAmountIn,
     amountOutMin,
@@ -68,7 +70,7 @@ const Swap = () => {
       </div>
 
       {/* From section */}
-      <div className="bg-itemForm rounded-md p-4 space-y-4 text-hint">
+      <div className="bg-itemForm rounded-lg p-4 space-y-4 text-hint border-vbDisableText border-[1px]">
         <div className="full-row-between-center">
           <p className="text-sm">From</p>
           <p className="text-sm">Balance: {sourceTokenBalance}</p>
@@ -108,12 +110,12 @@ const Swap = () => {
                 </button>
               </div>
             </div>
-            <div className="relative flex flex-col w-full justify-center ml-4">
+            <div className="relative flex flex-col w-full justify-center ml-4 items-end">
               {loadingGetAmountIn ? (
                 <div className="loading" />
               ) : (
                 <input
-                  className="bg-transparent focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+                  className="bg-transparent w-full focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
                   type="number"
                   min={1}
                   value={inputAmountIn}
@@ -158,7 +160,7 @@ const Swap = () => {
       </div> */}
 
       {/* To section */}
-      <div className="bg-itemForm rounded-md p-4 space-y-4 text-hint">
+      <div className="bg-itemForm rounded-lg p-4 space-y-4 text-hint border-vbDisableText border-[1px]">
         <div className="full-row-between-center">
           <p className="text-sm">To</p>
           <p className="text-sm">Balance: {desireTokenBalance}</p>
@@ -185,7 +187,7 @@ const Swap = () => {
             >
               {desireTokenAmount || 0.0}
             </p> */}
-            <div className="relative flex flex-col w-full">
+            <div className="relative flex flex-col w-full items-end">
               {loadingGetAmountOut ? (
                 <div className="loading" />
               ) : (
@@ -205,10 +207,13 @@ const Swap = () => {
       </div>
 
       <div className="col-x-center justify-center space-y-4">
-        {!account ? (
-          <BtnConnectInPage className="w-full btn-veb h-12" />
-        ) : inputAmountIn !== "" ? (
+        {userInputRef.current !== "" && (
           <div className="flex flex-col w-full space-y-4">
+            {/* <button
+            className="h-12 text-sm bg-itemForm border-[1px] border-vbDisableText"
+          >
+            Enter an amount to see more trading details.
+          </button> */}
             <div className="col px-4 py-5 space-y-4 rounded-md border border-vbLine p-2">
               <div className="flex justify-between">
                 <div className="flex space-x-2">
@@ -240,7 +245,7 @@ const Swap = () => {
                     onChange={(event) => setInputSlippage(event.target.value)}
                     placeholder="0.1"
                   />
-                  <p>%</p>
+                  <p className="ml-1">%</p>
                 </div>
                 {/* <p className="px-4 py-[0.0625rem] rounded bg-item">
                   {" "}
@@ -261,35 +266,41 @@ const Swap = () => {
                 )}
               </div>
             </div>
-            <button
-              disabled={!isSwap || loadingSwap || showErr}
-              onClick={accountApprove === 0 ? onApproveToken : onSwapAssetToken}
-              className={`w-full ${
-                isSwap && !loadingSwap && !showErr
-                  ? "btn-veb"
-                  : "bg-btn-veb-disabled rounded-lg"
-              }  h-12`}
-            >
-              {accountApprove === 0
-                ? "Approve"
-                : showErr
-                ? `Your ${sourceTokenInfo?.assetsChain} balance is not enough`
-                : loadingSwap
-                ? "Swapping..."
-                : "Swap"}
-            </button>
+            {account && (
+              <button
+                disabled={!isSwap || loadingSwap || showErr}
+                onClick={
+                  accountApprove === 0 ? onApproveToken : onSwapAssetToken
+                }
+                className={`w-full ${
+                  isSwap && !loadingSwap && !showErr
+                    ? "btn-veb"
+                    : "bg-btn-veb-disabled rounded-lg"
+                }  h-12`}
+              >
+                {accountApprove === 0
+                  ? "Approve"
+                  : showErr
+                  ? `Your ${sourceTokenInfo?.assetsChain} balance is not enough`
+                  : loadingSwap
+                  ? "Swapping..."
+                  : "Swap"}
+              </button>
+            )}
           </div>
-        ) : (
+        )}
+        {!account && <BtnConnectInPage className="w-full btn-veb h-12 mt-4" />}
+        {/* (
           <button
             className="btn-veb h-12 text-sm bg-btn-veb-disabled border-[1px] border-[#4B5C86]"
             disabled={true}
           >
             Enter an amount to see more trading details.
           </button>
-        )}
-        <div className="flex space-x-4">
-          <p>VTHO balance: {vthoBalance}</p>
-          <img src={IcQuestionCircle} alt="" />
+        ) */}
+        <div className="flex space-x-2">
+          <p className="text-balanceVTHO">VTHO balance: {vthoBalance}</p>
+          <img src={IcQuestionCircleYellow} alt="" />
         </div>
       </div>
     </div>

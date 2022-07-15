@@ -62,6 +62,7 @@ module.exports = {
       notiWarning: "#FA8C16",
       newForm: "#0D1522",
       itemForm: "#0E1B31",
+      balanceVTHO: "#FAAD14",
       grey: {
         1: "#ffffff",
         2: "#FAFAFA",
