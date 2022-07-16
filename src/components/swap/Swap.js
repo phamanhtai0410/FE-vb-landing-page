@@ -233,9 +233,9 @@ const Swap = () => {
                         1 {sourceTokenInfo?.assetsChain} = {exchangeRate}{" "}
                         {desireTokenInfo?.assetsChain}
                       </p>
-                      <p>{`($${(exchangeRate * desireTokenPrice).toFixed(
+                      {/* <p>{`($${(exchangeRate * desireTokenPrice).toFixed(
                         3
-                      )})`}</p>
+                      )})`}</p> */}
                     </div>
                     <div className="w-fit flex flex-row items-center">
                       <div className="bg-itemForm rounded-lg p-2 flex flex-row items-center">
@@ -253,11 +253,11 @@ const Swap = () => {
               </div>
             </button>
             {showDetailInfo && (
-              <div className="col px-4 py-5 space-y-4 rounded-md border border-vbLine p-2">
+              <div className="col px-4 py-5 space-y-4 rounded-lg border border-vbDisableText p-2">
                 <div className="flex justify-between">
                   <div className="flex space-x-2">
-                    <p className="text-[#ABC2FC]">Minimum received</p>
-                    <img src={IcQuestionCircle} alt="" />
+                    <p className="text-grey-3">Minimum receive</p>
+                    {/* <img src={IcQuestionCircle} alt="" /> */}
                   </div>
                   <p>
                     {amountOutMin} {desireTokenInfo?.assetsChain}
@@ -266,16 +266,18 @@ const Swap = () => {
                 <div className="flex justify-between">
                   <div className="flex space-x-2">
                     <p className="text-vbLine">Price Impact</p>
-                    <img src={IcQuestionCircle} alt="" />
+                    {/* <img src={IcQuestionCircle} alt="" /> */}
                   </div>
-                  <p className="text-vbLine"> &lt; 0.01% </p>
+                  <p className="text-vbLine">
+                    {" "}
+                    {`-0.01% / -0.1 ${sourceTokenInfo?.assetsChain}`}{" "}
+                  </p>
+                  {/* <p className="text-vbLine"> &lt; 0.01% </p> */}
                 </div>
                 <div className="flex justify-between">
                   <div className="flex space-x-2 w-full">
-                    <p className="text-[#ABC2FC] min-w-fit">
-                      Slippage tolerance
-                    </p>
-                    <img className="w-5" src={IcQuestionCircle} alt="" />
+                    <p className="text-grey-3 min-w-fit">Slippage tolerance</p>
+                    {/* <img className="w-5" src={IcQuestionCircle} alt="" /> */}
                   </div>
                   <div className="w-full flex flex-row justify-end">
                     <input
@@ -295,14 +297,14 @@ const Swap = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="flex space-x-2">
-                    <p className="text-[#ABC2FC]">Swap fee</p>
-                    <img src={IcQuestionCircle} alt="" />
+                    <p className="text-grey-3">Swap fee</p>
+                    {/* <img src={IcQuestionCircle} alt="" /> */}
                   </div>
                   {loadingFee ? (
                     <div className="loading" />
                   ) : (
                     <p>
-                      {swapFee} {sourceTokenInfo?.assetsChain}
+                     {`0.30% /`} {swapFee} {sourceTokenInfo?.assetsChain}
                     </p>
                   )}
                 </div>

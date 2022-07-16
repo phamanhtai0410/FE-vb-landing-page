@@ -108,21 +108,26 @@ const swapAssetSlice = createSlice({
         state.amountsIn = action.payload.inputAmountIn;
         state.amountsOut = action.payload.amountsOutFormat;
         state.swapSuccess = false;
+        state.isSwap = true;
       })
       .addCase(getAmountsOut.rejected, (state, action) => {
         state.loadingGetAmountOut = false;
+        state.isSwap = false;
       })
       .addCase(getAmountsIn.pending, (state, action) => {
         state.loadingGetAmountIn = true;
+        state.amountsIn = "";
       })
       .addCase(getAmountsIn.fulfilled, (state, action) => {
         state.loadingGetAmountIn = false;
         state.amountsIn = action.payload.amountsInFormat;
         state.amountsOut = action.payload.inputAmountOut;
         state.swapSuccess = false;
+        state.isSwap = true;
       })
       .addCase(getAmountsIn.rejected, (state, action) => {
         state.loadingGetAmountIn = false;
+        state.isSwap = false;
       })
       .addCase(checkApproveToken.fulfilled, (state, action) => {
         state.accountApprove = action.payload.accountApprove;
