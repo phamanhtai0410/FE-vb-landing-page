@@ -3,20 +3,15 @@ import Connex from "@vechain/connex";
 
 // import { Certificate, blake2b256, secp256k1 } from "thor-devkit";
 
-import { destroyConstants, web3Constants } from "../constants";
+import { web3Constants, poolConstants } from "../constants";
 import getWeb3 from "../utils/getWeb3";
-
-import ERC20ABI_VB from "../_contracts/assets/VB.json";
 
 import * as actions from "./";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
 import { addressWalletCompact, randomKeyUUID } from "../utils/lib";
-import {
-  selectBalanceById,
-  selectUserAssetsBalance,
-} from "../reducers/accountBalance.reducer";
 import assetAbi from "../_contracts/asset-abi";
+import PartialConstants from "../constants/partial.constants";
 
 // VET : dung de staking duy tri he thong
 // VTH0 : dung de tra vi chay smart Contract
@@ -146,7 +141,7 @@ export const web3Disconnect = () => async (dispatch, getState) => {
   // setTimeout(() => {
   //     dispatch({ type: destroyConstants.DESTROY_SESSION });
   // }, 1000);
-  
+
 };
 
 export const instantiateVetContracts = () => async (dispatch, getState) => {
@@ -175,28 +170,87 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
         contractVET.events
       );
 
+      contractVET.events.Approval().removeAllListeners?.();
       contractVET.events
         .Approval()
         .on("data", async (data) => {
           console.log("🐶🐶  ~ contractVET.events.Approval ~ data", data);
+          // dispatch(instantiateVetContracts());
+
+          if (data.returnValues?.owner.toLowerCase?.() === account) {
+            const accInfo = await connex.thor.account(account).get();
+
+            let balanceVET = 0;
+            let balanceVTHO = 0;
+            const approveAmount = Number(
+              ethers.utils.formatEther(
+                data.returnValues?.value,
+                PartialConstants.DEFAULT_ASSET_DECIMAL
+              )
+            );
+
+            if (accInfo && accInfo.balance && accInfo.energy) {
+              balanceVET = ethers.utils.formatEther(accInfo.balance);
+              balanceVET = Math.round(balanceVET * 100) / 100;
+
+              balanceVTHO = ethers.utils.formatEther(accInfo.energy);
+              balanceVTHO = Math.round(balanceVTHO * 100) / 100;
+
+              dispatch({
+                type: web3Constants.INIT_CONTRACT_VET,
+                accInfo,
+                balanceVET,
+                balanceVTHO,
+              });
+            }
+
+            dispatch({
+              type: poolConstants.APPROVE_TOKEN,
+              payload: {
+                assetAddress: TOKEN_VET,
+                approveAmount,
+              },
+            });
+          }
         })
         .on("error", async (err) => {
           console.log("🐶🐶  ~ contractVET.events.Approval ~ err", err);
         });
 
+      contractVET.events.Withdrawal().removeAllListeners?.();
       contractVET.events
         .Withdrawal()
         .on("data", async (data) => {
-          console.log("🐶🐶  ~ contractVET.events.Withdrawal ~ data", data);
+          // console.log("🐶🐶  ~ contractVET.events.Withdrawal ~ data", data);
+          const accInfo = await connex.thor.account(account).get();
+
+          let balanceVET = 0;
+          let balanceVTHO = 0;
+
+          if (accInfo && accInfo.balance && accInfo.energy) {
+            balanceVET = ethers.utils.formatEther(accInfo.balance);
+            balanceVET = Math.round(balanceVET * 100) / 100;
+
+            balanceVTHO = ethers.utils.formatEther(accInfo.energy);
+            balanceVTHO = Math.round(balanceVTHO * 100) / 100;
+
+            dispatch({
+              type: web3Constants.INIT_CONTRACT_VET,
+              accInfo,
+              balanceVET,
+              balanceVTHO,
+            });
+          }
         })
         .on("error", async (err) => {
           console.log("🐶🐶  ~ contractVET.events.Withdrawal ~ err", err);
         });
 
+      contractVET.events.Transfer({}).removeAllListeners?.();
       contractVET.events
         .Transfer({})
         .on("data", async function (event) {
-          console.log("onTransferEvent - VET", event);
+          // console.log("onTransferEvent - VET", event);
           // Do something here
           // let balance = Number(selectBalanceById(getState(), TOKEN_VET));
           // const { wad: value } = event?.returnValues;
@@ -205,7 +259,26 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
           if (txOrigin?.toLowerCase() === account) {
             // console.log("User send amount away");
             // balance -= formattedValue;
-            dispatch(instantiateVetContracts());
+            // dispatch(instantiateVetContracts());
+            const accInfo = await connex.thor.account(account).get();
+
+            let balanceVET = 0;
+            let balanceVTHO = 0;
+
+            if (accInfo && accInfo.balance && accInfo.energy) {
+              balanceVET = ethers.utils.formatEther(accInfo.balance);
+              balanceVET = Math.round(balanceVET * 100) / 100;
+
+              balanceVTHO = ethers.utils.formatEther(accInfo.energy);
+              balanceVTHO = Math.round(balanceVTHO * 100) / 100;
+
+              dispatch({
+                type: web3Constants.INIT_CONTRACT_VET,
+                accInfo,
+                balanceVET,
+                balanceVTHO,
+              });
+            }
           }
           // balance = Math.round(balance * 100) / 100;
           // dispatch({
@@ -229,16 +302,53 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
         "🐶🐶  ~ instantiateVetContracts ~ contractVTHO.events",
         contractVTHO.events
       );
-
+      contractVTHO.events.Approval?.().removeAllListeners?.();
       contractVTHO.events
         .Approval?.()
         .on("data", async (data) => {
           console.log("🐶🐶  ~ contractVTHO.events.Approval ~ data", data);
+          // dispatch(instantiateVetContracts());
+          if (data.returnValues?.src?.toLowerCase?.() === account) {
+            const accInfo = await connex.thor.account(account).get();
+
+            let balanceVET = 0;
+            let balanceVTHO = 0;
+            const approveAmount = Number(
+              ethers.utils.formatEther(
+                data.returnValues?.value,
+                PartialConstants.DEFAULT_ASSET_DECIMAL
+              )
+            );
+
+            if (accInfo && accInfo.balance && accInfo.energy) {
+              balanceVET = ethers.utils.formatEther(accInfo.balance);
+              balanceVET = Math.round(balanceVET * 100) / 100;
+
+              balanceVTHO = ethers.utils.formatEther(accInfo.energy);
+              balanceVTHO = Math.round(balanceVTHO * 100) / 100;
+
+              dispatch({
+                type: web3Constants.INIT_CONTRACT_VET,
+                accInfo,
+                balanceVET,
+                balanceVTHO,
+              });
+            }
+
+            dispatch({
+              type: poolConstants.APPROVE_TOKEN,
+              payload: {
+                assetAddress: TOKEN_VTHO,
+                approveAmount,
+              },
+            });
+          }
         })
         .on("error", async (err) => {
           console.log("🐶🐶  ~ contractVTHO.events.Approval ~ err", err);
         });
 
+      contractVTHO.events.Withdrawal?.().removeAllListeners?.();
       contractVTHO.events
         .Withdrawal?.()
         .on("data", async (data) => {
@@ -248,6 +358,7 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
           console.log("🐶🐶  ~ contractVTHO.events.Withdrawal ~ err", err);
         });
 
+      contractVTHO.events.Transfer?.().removeAllListeners?.();
       contractVTHO.events
         .Transfer({})
         .on("data", async function (event) {
@@ -260,7 +371,26 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
           if (txOrigin.toLowerCase() === account) {
             // console.log("User send amount away");
             // balance -= formattedValue;
-            dispatch(instantiateVetContracts());
+            // dispatch(instantiateVetContracts());
+            const accInfo = await connex.thor.account(account).get();
+
+            let balanceVET = 0;
+            let balanceVTHO = 0;
+
+            if (accInfo && accInfo.balance && accInfo.energy) {
+              balanceVET = ethers.utils.formatEther(accInfo.balance);
+              balanceVET = Math.round(balanceVET * 100) / 100;
+
+              balanceVTHO = ethers.utils.formatEther(accInfo.energy);
+              balanceVTHO = Math.round(balanceVTHO * 100) / 100;
+
+              dispatch({
+                type: web3Constants.INIT_CONTRACT_VET,
+                accInfo,
+                balanceVET,
+                balanceVTHO,
+              });
+            }
           }
           // balance = Math.round(balance * 100) / 100;
           // dispatch({
@@ -317,16 +447,46 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
       balance = ethers.utils.formatEther(balanceBigN);
       balance = Math.round(balance * 100) / 100;
 
-      console.log('🐶🐶  ~ instantiateVBContracts ~ contractVB.events', contractVB.events)
+      contractVB.events.Approval?.().removeAllListeners?.();
       contractVB.events
         .Approval?.()
         .on("data", async (data) => {
-          console.log("🐶🐶  ~ contractVB.events.Approval ~ data", data);
+          console.log("🐶🐶  ~ VB approval event ~ data", data);
+
+          if (data.returnValues?.owner.toLowerCase?.() === account) {
+            contractVB.methods
+              .balanceOf(account)
+              .call()
+              .then((balanceBigNumber) => {
+                let balance = ethers.utils.formatEther(balanceBigNumber);
+                balance = Math.round(balance * 100) / 100;
+                dispatch({
+                  type: web3Constants.INIT_CONTRACT_VB,
+                  contractVB,
+                  balance,
+                });
+              });
+
+            const approveAmount = Number(
+              ethers.utils.formatEther(
+                data.returnValues?.value,
+                PartialConstants.DEFAULT_ASSET_DECIMAL
+              )
+            );
+            dispatch({
+              type: poolConstants.APPROVE_TOKEN,
+              payload: {
+                assetAddress: TOKEN_VEBANK,
+                approveAmount,
+              },
+            });
+          }
         })
         .on("error", async (err) => {
           console.log("🐶🐶  ~ contractVB.events.Approval ~ err", err);
         });
 
+      contractVB.events.Withdrawal?.().removeAllListeners?.();
       contractVB.events
         .Withdrawal?.()
         .on("data", async (data) => {
@@ -336,6 +496,7 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
           console.log("🐶🐶  ~ contractVB.events.Withdrawal ~ err", err);
         });
 
+      contractVB.events.Transfer?.().removeAllListeners?.();
       contractVB.events
         .Transfer({})
         .on("data", async function (event) {
@@ -354,8 +515,20 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
             // } else if (from.toLowerCase() === account) {
             //   balance -= formattedValue;
             // }
-            dispatch(instantiateVBContracts());
+            // dispatch(instantiateVBContracts());
             // balance = Math.round(balance * 100) / 100;
+            contractVB.methods
+              .balanceOf(account)
+              .call()
+              .then((balanceBigNumber) => {
+                let balance = ethers.utils.formatEther(balanceBigNumber);
+                balance = Math.round(balance * 100) / 100;
+                dispatch({
+                  type: web3Constants.INIT_CONTRACT_VB,
+                  contractVB,
+                  balance,
+                });
+              });
           }
           // dispatch({
           //   type: web3Constants.INIT_CONTRACT_VB,
@@ -412,16 +585,45 @@ export const instantiateVEUSDContracts = createAsyncThunk(
         );
         balance = Math.round(balance * 100) / 100;
 
-        console.log('🐶🐶  ~ contractVEUSD.events', contractVEUSD.events)
+        contractVEUSD.events.Approval?.()?.removeAllListeners?.();
         contractVEUSD.events
           .Approval?.()
           .on("data", async (data) => {
             console.log("🐶🐶  ~ contractVEUSD.events.Approval ~ data", data);
+            if (data.returnValues?.owner.toLowerCase?.() === account) {
+              contractVEUSD.methods
+                .balanceOf(account)
+                .call()
+                .then((balanceBigNumber) => {
+                  let balance = ethers.utils.formatEther(balanceBigNumber);
+                  balance = Math.round(balance * 100) / 100;
+                  dispatch({
+                    type: instantiateVEUSDContracts.fulfilled.type,
+                    contractVEUSD,
+                    balance,
+                  });
+                });
+
+                const approveAmount = Number(
+                  ethers.utils.formatEther(
+                    data.returnValues?.value,
+                    PartialConstants.VEUSD_DECIMAL
+                  )
+                );
+                dispatch({
+                  type: poolConstants.APPROVE_TOKEN,
+                  payload: {
+                    assetAddress: TOKEN_VEUSD,
+                    approveAmount,
+                  },
+                });
+            }
           })
           .on("error", async (err) => {
             console.log("🐶🐶  ~ contractVEUSD.events.Approval ~ err", err);
           });
 
+        contractVEUSD.events.Withdrawal?.()?.removeAllListeners?.();
         contractVEUSD.events
           .Withdrawal?.()
           .on("data", async (data) => {
@@ -431,6 +633,7 @@ export const instantiateVEUSDContracts = createAsyncThunk(
             console.log("🐶🐶  ~ contractVEUSD.events.Withdrawal ~ err", err);
           });
 
+        contractVEUSD.events.Transfer?.()?.removeAllListeners?.();
         contractVEUSD.events
           .Transfer({})
           .on("data", async function (event) {
@@ -446,7 +649,19 @@ export const instantiateVEUSDContracts = createAsyncThunk(
               //   balance += formattedValue;
               // } else balance -= formattedValue;
               // balance = Math.round(balance * 100) / 100;
-              dispatch(instantiateVEUSDContracts());
+              // dispatch(instantiateVEUSDContracts());
+              contractVEUSD.methods
+                .balanceOf(account)
+                .call()
+                .then((balanceBigNumber) => {
+                  let balance = ethers.utils.formatEther(balanceBigNumber);
+                  balance = Math.round(balance * 100) / 100;
+                  dispatch({
+                    type: instantiateVEUSDContracts.fulfilled.type,
+                    contractVEUSD,
+                    balance,
+                  });
+                });
             }
             // console.log("🐶🐶  ~ VEUSD balance", balance);
             // dispatch({

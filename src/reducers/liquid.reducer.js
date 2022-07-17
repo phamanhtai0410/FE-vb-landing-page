@@ -46,38 +46,6 @@ export function liquidReducer(state = initialState, action) {
         ...action,
       };
 
-    case poolConstants.MODAL_ADD_LIQUIDITY_REQUEST:
-      return {
-        ...state,
-        transaction: null,
-        pending: true,
-      };
-
-    case poolConstants.MODAL_ADD_LIQUIDITY_SUCCESS:
-      return {
-        ...state,
-        pending: false,
-        transaction: action.transaction,
-      };
-
-    case poolConstants.MODAL_ADD_LIQUIDITY_ERROR:
-      return {
-        ...state,
-        pending: false,
-        ...action,
-      };
-
-    case poolConstants.MODAL_CLOSE_ADD_LIQUIDITY:
-      return {
-        ...state,
-        isAddLiquidModalOpen: false,
-        pending: false,
-        transaction: null,
-        data: {},
-        // firstToken: null,
-        // secondToken: null,
-        message: null,
-      };
     case poolConstants.MODAL_OPEN_SELECT_TOKEN:
       return {
         ...state,
@@ -167,27 +135,6 @@ export function liquidReducer(state = initialState, action) {
       return newState;
     }
 
-    case poolConstants.MODAL_SELECT_TOKEN_REQUEST:
-      return {
-        ...state,
-        transaction: null,
-        pending: true,
-      };
-
-    case poolConstants.MODAL_SELECT_TOKEN_SUCCESS:
-      return {
-        ...state,
-        pending: false,
-        transaction: action.transaction,
-      };
-
-    case poolConstants.MODAL_SELECT_TOKEN_ERROR:
-      return {
-        ...state,
-        pending: false,
-        ...action,
-      };
-
     case poolConstants.MODAL_CLOSE_SELECT_TOKEN:
       return {
         ...state,
@@ -199,53 +146,10 @@ export function liquidReducer(state = initialState, action) {
         message: null,
       };
 
-    case poolConstants.MODAL_OPEN_REMOVE_LIQUIDITY:
-      return {
-        ...state,
-        isRemoveLiquidModalOpen: true,
-        pending: false,
-        errorCode: null,
-        message: null,
-        ...action,
-      };
-
-    case poolConstants.MODAL_REMOVE_LIQUIDITY_REQUEST:
-      return {
-        ...state,
-        transaction: null,
-        pending: true,
-      };
-
-    case poolConstants.MODAL_REMOVE_LIQUIDITY_SUCCESS:
-      return {
-        ...state,
-        pending: false,
-        transaction: action.transaction,
-      };
-
-    case poolConstants.MODAL_REMOVE_LIQUIDITY_ERROR:
-      return {
-        ...state,
-        pending: false,
-        ...action,
-      };
-
-    case poolConstants.MODAL_CLOSE_REMOVE_LIQUIDITY:
-      return {
-        ...state,
-        isRemoveLiquidModalOpen: false,
-        pending: false,
-        transaction: null,
-        data: {},
-        firstToken: null,
-        secondToken: null,
-        message: null,
-      };
-
     case loadDetailAddLiquidity.pending.type: {
       return {
         ...state,
-        isLoadingLiquidityDetail: true
+        isLoadingLiquidityDetail: true,
       };
     }
     case loadDetailAddLiquidity.fulfilled.type: {
@@ -269,13 +173,31 @@ export function liquidReducer(state = initialState, action) {
         isApproving: true,
       };
     }
-    case approveFirstTokenAddLiquidity.fulfilled.type: {
-      return {
-        ...state,
-        isApproving: false,
-        approveTokenA: action.payload.approveTokenA,
-      };
+
+    case poolConstants.APPROVE_TOKEN: {
+      const data = action.payload;
+      if (state.firstToken === data?.assetAddress) {
+        return {
+          ...state,
+          approveTokenA: state.approveTokenA + data?.approveAmount || 0,
+          isApproving: false,
+        };
+      } else if (state.secondToken === data?.assetAddress) {
+        return {
+          ...state,
+          approveTokenB: state.approveTokenB + data?.approveAmount || 0,
+          isApproving: false,
+        };
+      }
+      return state;
     }
+    // case approveFirstTokenAddLiquidity.fulfilled.type: {
+    //   return {
+    //     ...state,
+    //     // isApproving: false,
+    //     approveTokenA: action.payload.approveTokenA,
+    //   };
+    // }
     case approveFirstTokenAddLiquidity.rejected.type: {
       return {
         ...state,
@@ -380,7 +302,8 @@ export const selectAddingLiquidityFinishState = (state) =>
   state.liquidReducer.isAddingLiquiditySuccess;
 export const selectCheckApprovalState = (state) =>
   state.liquidReducer.isCheckingApproval;
-export const selectLoadLiquidityDetail = state => state.liquidReducer.isLoadingLiquidityDetail;
+export const selectLoadLiquidityDetail = (state) =>
+  state.liquidReducer.isLoadingLiquidityDetail;
 
 export const selectTotalSupply = (state) => state.liquidReducer.totalSupply;
 export const selectLiquidityPool = (state) => state.liquidReducer.liquidityPool;

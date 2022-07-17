@@ -9,6 +9,14 @@ const initialState = {
 const userAssetPools = createSlice({
   name: "userAssetPools",
   initialState,
+  reducers: {
+    updateLiquidityPool: (state, action) => {
+      const { poolAddress, liquidityPool } = action.payload;
+      if (poolAddress && liquidityPool) {
+        state.data[poolAddress] = liquidityPool;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(
       poolConstants.FETCH_POOL_ASSETS_SUCCESS,
@@ -40,9 +48,13 @@ const userAssetPools = createSlice({
 
 export default userAssetPools.reducer;
 
+export const { updateLiquidityPool } = userAssetPools.actions;
+
 export const selectUsersAddedPoolAddresses = (state) => {
   const entities = state.userAssetPools.data;
-  return state.userAssetPools.addresses.filter(address => entities[address].liquidityPool !== 0 );
+  return state.userAssetPools.addresses.filter(
+    (address) => entities[address].liquidityPool > 0
+  );
 };
 export const selectUserPoolAssetByPoolAddress = (state, poolAddress) =>
   state.userAssetPools.data[poolAddress];

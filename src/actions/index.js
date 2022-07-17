@@ -7,10 +7,11 @@ export * from "./lend/supply.actions";
 export * from "./lend/repay.actions";
 export * from "./pool.action";
 export * from "./liquidity/add.liquidity.actions";
-export * from "./liquidity/removeLiquidity.action"
+export * from "./liquidity/removeLiquidity.action";
 export * from "./stake.action";
 export * from "./unstake.action";
 export * from "./farm.action";
 export * from "./unfarm.action";
-
-export * from "./swap.action"
+export { updateLiquidityPool } from "../reducers/userAssetPools.reducer";
+export * from "./swap.action";
+export { clearRemoveLiquidityData } from "../reducers/removeLiquidity.reducer";

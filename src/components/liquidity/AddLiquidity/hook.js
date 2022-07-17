@@ -107,15 +107,27 @@ const useAddLiquidFacade = () => {
 
   const onSelectFirstCurrency = useCallback(
     (e) => {
-      dispatch(actions.selectFirstToken());
+      const action = account
+        ? actions.selectFirstToken()
+        : actions.alertActions.warning({
+            title: "Warning",
+            description: "You need to connect to your wallet first",
+          });
+      dispatch(action);
     },
-    [dispatch]
+    [account, dispatch]
   );
   const onSelectSecondCurrency = useCallback(
     (e) => {
-      dispatch(actions.selectSecondToken());
+      const action = account
+        ? actions.selectSecondToken()
+        : actions.alertActions.warning({
+            title: "Warning",
+            description: "You need to connect to your wallet first",
+          });
+      dispatch(action);
     },
-    [dispatch]
+    [account, dispatch]
   );
 
   const onChangeFirstTokenAmount = useCallback(
@@ -181,7 +193,7 @@ const useAddLiquidFacade = () => {
 
   const handlerStepToStep = (e) => {
     if (!account) {
-      dispatch(actions.web3Connect(true))
+      dispatch(actions.web3Connect(true));
     } else if (
       step === 1 &&
       firstToken &&
@@ -235,6 +247,7 @@ const useAddLiquidFacade = () => {
             setSecondTokenVolume(secondAmount);
           }
           setPrimaryButtonLabel("Supply");
+          setContinueAvailable(true);
         } else if (secondTokenVolume === 0 || secondTokenVolume === "") {
           if (firstTokenVolume !== 0 && firstTokenVolume !== "") {
             setSecondTokenVolume(
@@ -246,8 +259,8 @@ const useAddLiquidFacade = () => {
             secondTokenVolume * secondPerFirstTokenExchangeRate
           );
           setPrimaryButtonLabel("Supply");
+          setContinueAvailable(true);
         }
-        setContinueAvailable(true);
       }
 
       if (!firstToken || !secondToken) {
@@ -301,6 +314,11 @@ const useAddLiquidFacade = () => {
   }, [firstToken, secondToken, firstTokenVolume, secondTokenVolume, account]);
 
   useEffect(() => {
+    setFirstTokenVolume("");
+    setSecondTokenVolume("");
+  }, [firstToken, secondToken])
+
+  useEffect(() => {
     if (step === 3 && !isAddingLiquidity) {
       if (addLiquidityState === false) {
         // User decline or adding liquidity failed
@@ -309,7 +327,7 @@ const useAddLiquidFacade = () => {
         navigate(RouteName.LIQUIDITY);
       }
     }
-  }, [isAddingLiquidity, addLiquidityState, step, navigate]);
+  }, [isAddingLiquidity, addLiquidityState, step]);
 
   useEffect(() => {
     dispatch(actions.loadDetailAddLiquidity(poolAddress));

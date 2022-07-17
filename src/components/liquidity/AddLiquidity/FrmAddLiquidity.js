@@ -236,7 +236,7 @@ const FrmAddLiquidity = () => {
               <div className="flex flex-row items-center space-x-4">
                 <img src={firstTokenInfo?.icon} alt="" className="w-8 h-8" />
                 <span className="font-poppins_semi_bold text-2xl">
-                  {numberWithCommas(firstTokenVolume)}
+                  {firstTokenVolume > 1 ? numberWithCommas(firstTokenVolume) : firstTokenVolume}
                 </span>
               </div>
             </div>
@@ -245,7 +245,7 @@ const FrmAddLiquidity = () => {
               <div className="flex flex-row items-center space-x-4">
                 <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
                 <span className="font-poppins_semi_bold text-2xl">
-                  {numberWithCommas(secondTokenVolume)}
+                  {secondTokenVolume > 1 ? numberWithCommas(secondTokenVolume) : secondTokenVolume}
                 </span>
               </div>
             </div>
