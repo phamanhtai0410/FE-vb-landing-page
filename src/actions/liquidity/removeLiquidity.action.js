@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { poolConstants } from "../../constants";
@@ -6,12 +6,16 @@ import ERC20ABI_VB from "../../_contracts/assets/VB.json";
 import ERC20ABI_ROUTER from "../../_contracts/router.json";
 import { selectPoolInfoByAddress } from "../../reducers/assetsPool.reducer";
 import {
+  getAmountInWeiFormatted,
   getDecimalForAsset,
   getDecimalForAssetPair,
   isContainVET,
+  nFormatter,
 } from "../../utils/lib";
 import ERC20ABI_PAIR from "../../_contracts/pair.json";
 import { selectLiquidityPool } from "../../reducers/removeLiquidity.reducer";
+import { getUserTokenAmounts } from "../pool.action";
+import PartialConstants from "../../constants/partial.constants";
 // import { selectAssetAbiByAssetAddress } from "../reducers/web3.reducer";
 // import assetAbi from "../_contracts/asset-abi";
 
@@ -39,45 +43,21 @@ export const loadDetailRemoveLiquidity = createAsyncThunk(
       //   currentState,
       //   poolAddress
       // );
+      const pairDecimal = getDecimalForAssetPair(addressTokenA, addressTokenB);
 
       const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
       addressTokenA = await contractPair.methods.token0().call();
       addressTokenB = await contractPair.methods.token1().call();
 
       const balanceBigN = await contractPair.methods.balanceOf(account).call();
-      balanceAccount = ethers.utils.formatUnits(
-        balanceBigN,
-        getDecimalForAssetPair(addressTokenA, addressTokenB)
-      );
+      balanceAccount = ethers.utils.formatUnits(balanceBigN, pairDecimal);
 
-      //Lấy tokenA nắm giữ của account
-      try {
-        amountTokenA = await contractPair.methods
-          .providerAssets(account, addressTokenA)
-          .call();
-        if (amountTokenA) {
-          amountTokenA = ethers.utils.formatUnits(
-            amountTokenA,
-            process.env.REACT_APP_TOKEN_VEUSD === addressTokenA ? 6 : 18
-          );
-        }
-      } catch (e) {
-        console.error(e);
-      }
-
-      //Lấy tokenB nắm giữ của account
-      try {
-        amountTokenB = await contractPair.methods
-          .providerAssets(account, addressTokenB)
-          .call();
-        if (amountTokenB) {
-          amountTokenB = ethers.utils.formatUnits(
-            amountTokenB,
-            process.env.REACT_APP_TOKEN_VEUSD === addressTokenB ? 6 : 18
-          );
-        }
-      } catch (e) {
-        console.error(e);
+      let totalSupply = await contractPair.methods.totalSupply().call();
+      if (totalSupply) {
+        totalSupply = ethers.utils.formatUnits(totalSupply, pairDecimal);
+        // if (totalSupply < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+        //   totalSupply = nFormatter(totalSupply);
+        // }
       }
 
       if (account) {
@@ -101,8 +81,19 @@ export const loadDetailRemoveLiquidity = createAsyncThunk(
         reserves?.[1],
         getDecimalForAsset(addressTokenB)
       );
+
       abExchangeRate = reserves2 / reserves1;
       baExchangeRate = reserves1 / reserves2;
+
+      const { amountTokenA: _amountTokenA, amountTokenB: _amountTokenB } =
+        getUserTokenAmounts({
+          usersLP: balanceAccount,
+          totalLP: totalSupply,
+          formattedReserve0: reserves1,
+          formattedReserve1: reserves2,
+        });
+      if (_amountTokenA) amountTokenA = _amountTokenA;
+      if (_amountTokenB) amountTokenB = _amountTokenB;
     }
     return {
       addressTokenA,
@@ -129,10 +120,7 @@ export const approvePoolLiquidity = createAsyncThunk(
 
     const { web3, account, connex } = state.web3;
 
-    const contractAddLiquidity = new web3.eth.Contract(
-      ERC20ABI_VB,
-      poolAddress
-    );
+    const contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
 
     const poolInfo = selectPoolInfoByAddress(state, poolAddress);
 
@@ -175,7 +163,7 @@ export const approvePoolLiquidity = createAsyncThunk(
     //     .request();
     // }
 
-    if (account && contractAddLiquidity && poolAddress) {
+    if (account && contractPair && poolAddress) {
       const approveABI = ERC20ABI_PAIR.find(
         ({ name, type }) => name === "approve" && type === "function"
       );
@@ -187,7 +175,11 @@ export const approvePoolLiquidity = createAsyncThunk(
         .comment(`approve ${poolInfo?.assetsPoolName} on VeBank`)
         .request();
 
-      return { result, approvePool: 1 };
+        // The result currently is ignored. The approve type will be updated when the
+        // Approve event from the token's contract will trigger the approve token
+        // successfully state and it will be captured in the removeLiquidity.reducer
+
+      return { result };
     }
   }
 );
@@ -232,24 +224,30 @@ export const removeLiquidity = createAsyncThunk(
 
     console.log("liquidityPool", liquidityPool);
 
-    const amountAMin = web3.utils.toWei(
-      amountTokenA.toString(),
-      getDecimalForAsset(addressTokenA) === 6 ? "mwei" : "ether"
+    const amountAMin = getAmountInWeiFormatted(
+      web3,
+      amountTokenA,
+      tokenAInfo?.assetsDecimals
     );
 
-    const amountBMin = web3.utils.toWei(
-      amountTokenB.toString(),
-      getDecimalForAsset(addressTokenB) === 6 ? "mwei" : "ether"
+    const amountBMin = getAmountInWeiFormatted(
+      web3,
+      amountTokenB,
+      tokenBInfo?.assetsDecimals
     );
 
     const deadline = Math.round(new Date().getTime() / 1000) + 3600;
 
-    const removeAmount = web3.utils.toWei(
-      ((liquidityPool * amount) / 100.0).toString(),
-      getDecimalForAssetPair(addressTokenA, addressTokenB) === 12
-        ? "micro"
-        : "ether"
+    let removeAmount = getAmountInWeiFormatted(
+      web3,
+      liquidityPool,
+      getDecimalForAssetPair(addressTokenA, addressTokenB)
     );
+    // Calculate this way to prevent rounding from float type of JS
+    removeAmount = BigNumber.from(removeAmount)
+      .mul(BigNumber.from(amount))
+      .div(BigNumber.from(100))
+      .toString();
 
     let transaction;
     if (isPairContainVET) {
@@ -268,14 +266,14 @@ export const removeLiquidity = createAsyncThunk(
 
       // methodRemoveLiquidity.value(assetDesired.amountETHMin);
 
-      // console.log(
-      //   assetDesired.address,
-      //   removeAmount,
-      //   assetDesired.amountTokenMin,
-      //   assetDesired.amountETHMin,
-      //   account,
-      //   deadline
-      // );
+      console.table([
+        ["address", assetDesired.address],
+        ["removeAmount", removeAmount],
+        ["amountTokenMin", assetDesired.amountTokenMin],
+        ["amountETHMin", assetDesired.amountETHMin],
+        ["account", account],
+        ["deadline", deadline],
+      ]);
 
       transaction = await methodRemoveLiquidity
         .transact(
@@ -289,6 +287,16 @@ export const removeLiquidity = createAsyncThunk(
         .comment(`transaction remove pool ${assetsPoolName} from VeBank`)
         .request();
     } else {
+      console.table([
+        ["addressTokenA", addressTokenA],
+        ["addressTokenB", addressTokenB],
+        ["removeAmount", removeAmount],
+        ["amountAMin", "0"],
+        ["amountBMin", "0"],
+        ["account", account],
+        ["deadline", deadline],
+      ]);
+
       transaction = await methodRemoveLiquidity
         .transact(
           addressTokenA,

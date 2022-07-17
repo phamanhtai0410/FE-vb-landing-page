@@ -1,11 +1,16 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers, FixedNumber } from "ethers";
 
 import { poolConstants } from "../constants";
 
 import ERC20ABI_PAIR from "../_contracts/pair.json";
 import ERC20ABI_FACTORY from "../_contracts/factory.json";
-import { nFormatter } from "../utils/lib";
-import  PartialConstants  from "../constants/partial.constants";
+import {
+  getDecimalForAsset,
+  getDecimalForAssetPair,
+  nFormatter,
+} from "../utils/lib";
+import PartialConstants from "../constants/partial.constants";
+import * as actions from "./index";
 
 const ADDRESS_FACTORY = process.env.REACT_APP_ADDRESS_FACTORY;
 
@@ -14,7 +19,7 @@ const ADDRESS_FACTORY = process.env.REACT_APP_ADDRESS_FACTORY;
 export const getPoolAssets = () => async (dispatch, getState) => {
   const state = getState();
 
-  const { web3 } = state.web3;
+  const { web3, account } = state.web3;
   const { listAsset, data } = state.assetsPoolReducer;
 
   let dataList = [];
@@ -47,8 +52,79 @@ export const getPoolAssets = () => async (dispatch, getState) => {
           assetsPoolAddress
         );
 
+        if (contractPair) {
+          contractPair.events.Approval?.().removeAllListeners?.();
+          contractPair.events.Approval?.().on("data", async (data) => {
+            console.log("🐶🐶  ~ contractPair.events.Approval?. ~ data", data);
+            if (data.returnValues?.owner.toLowerCase?.() === account) {
+              const balanceBigN = await contractPair.methods
+                .balanceOf(account)
+                .call();
+              let liquidityPool = await ethers.utils.formatUnits(
+                balanceBigN,
+                getDecimalForAssetPair(item.addressTokenA, item.addressTokenB)
+              );
+              const approveAmount = Number(
+                ethers.utils.formatEther(
+                  data.returnValues?.value,
+                  PartialConstants.DEFAULT_ASSET_DECIMAL
+                )
+              );
+              dispatch(liquidityPoolApproved(assetsPoolAddress, approveAmount));
+              dispatch(
+                actions.updateLiquidityPool({
+                  poolAddress: assetsPoolAddress,
+                  liquidityPool,
+                })
+              );
+            }
+          });
+
+          contractPair.events.Transfer().removeAllListeners?.();
+          contractPair.events.Transfer().on("data", async (data) => {
+            console.log("Pair Transfer event emitted");
+            console.log(
+              "🐶🐶  ~ contractPair.events.allEvents().TransFer() ~ event",
+              data
+            );
+            const { from, to } = data.returnValues;
+            if (
+              from.toLowerCase() === account ||
+              to.toLowerCase() === account
+            ) {
+              const balanceBigN = await contractPair.methods
+                .balanceOf(account)
+                .call();
+              let liquidityPool = await ethers.utils.formatUnits(
+                balanceBigN,
+                getDecimalForAssetPair(item.addressTokenA, item.addressTokenB)
+              );
+              dispatch(
+                actions.updateLiquidityPool({
+                  poolAddress: assetsPoolAddress,
+                  liquidityPool,
+                })
+              );
+              const isUserReceiving = to?.toLowerCase() === account;
+              dispatch(
+                actions.alertActions.success({
+                  title: isUserReceiving
+                    ? "Add liquidity Confirmed"
+                    : "Remove liquidity Transaction Sent",
+                  description: "View on Chain",
+                })
+              );
+            }
+          });
+          console.log(
+            "🐶🐶  ~ contractPair.events.Transfer ~ contractPair.events.Transfer().countListener",
+            contractPair.events.Transfer().listenerCount?.()
+          );
+        }
+
         //Lấy tổng liquidity
         let totalSupply = await contractPair.methods.totalSupply().call();
+        const rawTotalSupply = totalSupply;
         if (totalSupply) {
           totalSupply = ethers.utils.formatUnits(totalSupply, assetsDecimals);
           if (totalSupply < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
@@ -59,6 +135,7 @@ export const getPoolAssets = () => async (dispatch, getState) => {
         dataList.push({
           ...item,
           liquidity: totalSupply,
+          rawTotalSupply,
           assetsPoolAddress,
         });
       }
@@ -114,37 +191,51 @@ export const getPoolAssetsByAccount =
             .balanceOf(account)
             .call();
           if (balanceBigN) {
-            balanceAccount = ethers.utils.formatUnits(
-              balanceBigN,
-              assetsDecimals
+            balanceAccount = ethers.utils.formatUnits(balanceBigN, 18);
+          }
+
+          const totalSupply = item.liquidity;
+          if (balanceAccount >= 0 && totalSupply) {
+            console.log("🐶🐶  ~ forawait ~ balanceAccount", balanceAccount);
+            let { 0: reserve0, 1: reserve1 } = await contractPair.methods
+              ?.getReserves()
+              .call();
+            reserve0 = ethers.utils.formatUnits(
+              reserve0,
+              getDecimalForAsset(item.addressTokenA)
             );
+            reserve1 = ethers.utils.formatUnits(
+              reserve1,
+              getDecimalForAsset(item.addressTokenB)
+            );
+            amountTokenA = (balanceAccount * reserve0 || 0) / totalSupply;
+            console.log("🐶🐶  ~ forawait ~ reserves?.[0]", reserve0);
+            amountTokenB = (balanceAccount * reserve1 || 0) / totalSupply;
+            console.log("🐶🐶  ~ forawait ~ reserves?.[1]", reserve1);
+            if (totalSupply < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+              totalSupply = nFormatter(totalSupply);
+            }
           }
 
           // balanceAccount = ethers.utils.formatUnits(balanceAccount,assetsDecimals);
 
           //Lấy tokenA nắm giữ của account
-          amountTokenA = await contractPair.methods
-            .providerAssets(account, item.addressTokenA)
-            .call();
+          // amountTokenA = await contractPair.methods
+          //   .providerAssets(account, item.addressTokenA)
+          //   .call();
           if (amountTokenA) {
-            amountTokenA = ethers.utils.formatUnits(
-              amountTokenA,
-              process.env.REACT_APP_TOKEN_VEUSD === item.addressTokenA ? 6 : 18
-            );
+            console.log("🐶🐶  ~ forawait ~ amountTokenA", amountTokenA);
             if (amountTokenA < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
               amountTokenA = nFormatter(amountTokenA);
+              console.log("🐶🐶  ~ forawait ~ amountTokenA", amountTokenA);
             }
           }
 
           //Lấy tokenA nắm giữ của account
-          amountTokenB = await contractPair.methods
-            .providerAssets(account, item.addressTokenB)
-            .call();
+          // amountTokenB = await contractPair.methods
+          //   .providerAssets(account, item.addressTokenB)
+          //   .call();
           if (amountTokenB) {
-            amountTokenB = ethers.utils.formatUnits(
-              amountTokenB,
-              process.env.REACT_APP_TOKEN_VEUSD === item.addressTokenB ? 6 : 18
-            );
             if (amountTokenB < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
               amountTokenB = nFormatter(amountTokenB);
             }
@@ -168,6 +259,54 @@ export const getPoolAssetsByAccount =
     return dataList;
   };
 
+export const getUserTokenAmounts = ({
+  usersLP,
+  totalLP,
+  formattedReserve0,
+  formattedReserve1,
+}) => {
+  console.log('🐶🐶  ~ formattedReserve1', formattedReserve1)
+  console.log('🐶🐶  ~ formattedReserve0', formattedReserve0)
+  console.log("🐶🐶  ~ totalLP", totalLP);
+  console.log("🐶🐶  ~ usersLP", usersLP);
+  // console.table([
+  //   ["usersLP", usersLP],
+  //   ["totalLP", totalLP],
+  //   ["formattedReserve0", formattedReserve0],
+  //   ["formattedReserve1", formattedReserve1],
+  // ]);
+  let amountTokenA = 0,
+    amountTokenB = 0;
+
+  try {
+    if (usersLP >= 0 && totalLP > 0) {
+      // amountTokenA = (BigNumber.from(usersLP)
+      //   .mul(BigNumber.from(formattedReserve0))
+      //   .div(BigNumber.from(totalLP))).toString();
+      amountTokenA = (usersLP * formattedReserve0) / totalLP;
+      // amountTokenB = (BigNumber.from(usersLP)
+      //   .mul(BigNumber.from(formattedReserve1))
+      //   .div(BigNumber.from(totalLP))).toString();
+      amountTokenB = (usersLP * formattedReserve1) / totalLP;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  // if (amountTokenA) {
+  //   if (amountTokenA < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+  //     amountTokenA = nFormatter(amountTokenA);
+  //   }
+  // }
+  // if (amountTokenB) {
+  //   if (amountTokenB < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
+  //     amountTokenB = nFormatter(amountTokenB);
+  //   }
+  // }
+
+  return { amountTokenA, amountTokenB };
+};
+
 export const closeAddLiquidity = () => {
   return {
     type: poolConstants.MODAL_CLOSE_ADD_LIQUIDITY,
@@ -179,3 +318,8 @@ export const closeRemoveLiquidity = () => {
     type: poolConstants.MODAL_CLOSE_REMOVE_LIQUIDITY,
   };
 };
+
+export const liquidityPoolApproved = (assetsPoolAddress, approveAmount) => ({
+  type: poolConstants.APPROVE_LP_TOKEN,
+  payload: { assetsPoolAddress, approveAmount },
+});

@@ -1,9 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   approvePoolLiquidity,
+  liquidityPoolApproved,
   loadDetailRemoveLiquidity,
   removeLiquidity,
 } from "../actions";
+import { poolConstants } from "../constants";
 
 const initialState = {
   poolApproval: 0,
@@ -23,11 +25,21 @@ const removeLiquiditySlice = createSlice({
   name: "removeLiquidity",
   initialState,
   reducers: {
-    initialRemoveLiquidityPage: (state, action) => {
-      const { poolAddress, addressTokenA, addressTokenB } = action.payload;
-      state.poolAddress = poolAddress;
-      state.addressTokenA = addressTokenA;
-      state.addressTokenB = addressTokenB;
+    clearRemoveLiquidityData: (state, _) => {
+      state.poolApproval = 0;
+      state.amountTokenA = 0;
+      state.amountTokenB = 0;
+      state.liquidityPool = 0;
+
+      state.addressTokenA = "";
+      state.addressTokenB = "";
+
+      state.isApproving = false;
+      state.isRemoving = false;
+      state.isRemoveSuccess = null;
+
+      state.abExchangeRate = null;
+      state.baExchangeRate = null;
     },
   },
   extraReducers: (builder) => {
@@ -35,10 +47,10 @@ const removeLiquiditySlice = createSlice({
       .addCase(approvePoolLiquidity.pending, (state, _) => {
         state.isApproving = true;
       })
-      .addCase(approvePoolLiquidity.fulfilled, (state, action) => {
-        state.isApproving = false;
-        state.poolApproval = action.payload.approvePool;
-      })
+      // .addCase(approvePoolLiquidity.fulfilled, (state, action) => {
+      //   state.isApproving = false;
+      //   state.poolApproval = action.payload.approvePool;
+      // })
       .addCase(approvePoolLiquidity.rejected, (state, _) => {
         state.isApproving = false;
       })
@@ -65,6 +77,13 @@ const removeLiquiditySlice = createSlice({
       .addCase(removeLiquidity.rejected, (state, _) => {
         state.isRemoving = false;
         state.isRemoveSuccess = false;
+      })
+      .addCase(poolConstants.APPROVE_LP_TOKEN, (state, action) => {
+        const data = action.payload;
+        if (data) {
+          state.poolApproval = data.approveAmount;
+          state.isApproving = false
+        }
       });
   },
 });
@@ -93,4 +112,4 @@ export const selectSecondTokenExchangeRate = (state) =>
 
 export const selectRemoveTransactionId = (state) => state.removeLiquidity.txid;
 
-export const { initialRemoveLiquidityPage } = removeLiquiditySlice.actions;
+export const { clearRemoveLiquidityData } = removeLiquiditySlice.actions;

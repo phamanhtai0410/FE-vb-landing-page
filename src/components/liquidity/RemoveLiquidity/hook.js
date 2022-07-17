@@ -12,6 +12,7 @@ import {
   selectAmountTokenB,
   selectApprovingState,
   selectFirstTokenExchangeRate,
+  selectLiquidityPool,
   selectPoolApproval,
   selectRemoveTransactionId,
   selectRemovingFinishState,
@@ -31,6 +32,7 @@ const useRemoveLiquidFacade = () => {
   const approvePoolState = useSelector(selectPoolApproval);
   const isRemoving = useSelector(selectRemovingState);
   const removePoolSuccessState = useSelector(selectRemovingFinishState);
+  const liquidityPool = useSelector(selectLiquidityPool);
   const firstTokenAddress = useSelector(selectAddressTokenA);
   const firstTokenInfo = useSelector((state) =>
     selectAssetByAddress(state, firstTokenAddress)
@@ -48,13 +50,17 @@ const useRemoveLiquidFacade = () => {
   //   selectPriceByTokenAddress(state, secondTokenAddress)
   // );
 
-  const firstPerSecondTokenExchangeRate = useSelector(selectFirstTokenExchangeRate);
+  const firstPerSecondTokenExchangeRate = useSelector(
+    selectFirstTokenExchangeRate
+  );
 
   // useMemo(
   //   () => nFormatter(firstTokenPrice / secondTokenPrice, 5),
   //   [firstTokenPrice, secondTokenPrice]
   // );
-  const secondPerFirstTokenExchangeRate = useSelector(selectSecondTokenExchangeRate);
+  const secondPerFirstTokenExchangeRate = useSelector(
+    selectSecondTokenExchangeRate
+  );
 
   // useMemo(
   //   () => nFormatter(secondTokenPrice / firstTokenPrice, 5),
@@ -76,13 +82,21 @@ const useRemoveLiquidFacade = () => {
     return secondTokenAmount * (amountPercentage / 100.0) || 0;
   }, [secondTokenAmount, amountPercentage]);
 
-  const isEnableBtnEnabled = useMemo(() => {
-    return amountPercentage !== 0 && !isApproving && approvePoolState === 0;
-  }, [amountPercentage, isApproving, approvePoolState]);
+  const removeAmount = useMemo(
+    () => (liquidityPool * amountPercentage) / 100,
+    [amountPercentage, liquidityPool]
+  );
+
+  const isEnabled = useMemo(() => {
+    return !isApproving && approvePoolState >= removeAmount;
+  }, [isApproving, removeAmount, approvePoolState]);
 
   const removeAvailable = useMemo(() => {
-    return amountPercentage !== 0 && approvePoolState !== 0;
-  }, [amountPercentage, approvePoolState]);
+    return (
+      amountPercentage > 0 &&
+      approvePoolState >= removeAmount
+    );
+  }, [amountPercentage, approvePoolState, removeAmount]);
 
   const closeModal = () => {
     navigation(-1);
@@ -156,7 +170,7 @@ const useRemoveLiquidFacade = () => {
 
   useEffect(() => {
     if (!isApproving) {
-      if (approvePoolState === 0) {
+      if (approvePoolState <= 0) {
         setEnableBtnLabel("Enable");
       } else {
         setEnableBtnLabel("Enabled");
@@ -171,6 +185,7 @@ const useRemoveLiquidFacade = () => {
     if (poolAddress && web3) {
       dispatch(actions.loadDetailRemoveLiquidity(poolAddress));
     }
+    return () => dispatch(actions.clearRemoveLiquidityData());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poolAddress, web3]);
 
@@ -197,7 +212,7 @@ const useRemoveLiquidFacade = () => {
     firstPerSecondTokenExchangeRate,
     secondPerFirstTokenExchangeRate,
     removeAvailable,
-    isEnableBtnEnabled,
+    isEnabled,
     amountPercentage,
     continueAvailable,
     primaryButtonLabel,
