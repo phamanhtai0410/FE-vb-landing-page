@@ -27,13 +27,16 @@ stages:
   - deploy
 
 .kubectl_config: &kubectl_config
-  - env
   - |
       if [ "$CI_COMMIT_REF_NAME" == "master" ]; then
         aws eks --region $AWS_REGION update-kubeconfig --name vb-production-cluster
       fi
   - |
       if [ "$CI_COMMIT_REF_NAME" == "stag" ]; then
+        aws eks --region $AWS_REGION update-kubeconfig --name rinz-staging-cluster
+      fi
+  - |
+      if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
         aws eks --region $AWS_REGION update-kubeconfig --name rinz-staging-cluster
       fi
 .predeploy: &predeploy |
@@ -183,7 +186,8 @@ deploy_dev:
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl && chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
     - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.38.0/skaffold-linux-amd64 && chmod +x skaffold &&  mv skaffold /usr/local/bin
     - aws sts get-caller-identity
-
+    - cat skaffold.yaml
+    - cat build.json
     - /usr/local/bin/skaffold deploy -p profile-dev   -a build.json
   only:
     refs:
@@ -208,6 +212,8 @@ deploy_test:
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl && chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
     - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.38.0/skaffold-linux-amd64 && chmod +x skaffold &&  mv skaffold /usr/local/bin
     - aws sts get-caller-identity
+    - cat skaffold.yaml
+    - cat build-test.json
     - /usr/local/bin/skaffold deploy -p profile-test   -a build-test.json
   only:
     refs:
