@@ -47,7 +47,6 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
 
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
 
-
         if (accountReserve.currentVariableDebt !== "0") {
             accountBalanceVariableDebt = ethers.utils.formatUnits(accountReserve.currentVariableDebt, dataToken.assetsDecimals);
             // console.log("accountBalanceVariableDebt", accountBalanceVariableDebt)
@@ -109,22 +108,22 @@ export const repayMarket = (dataToken, amount, rateMode = 2) => async (dispatch,
             description: `Repay ${amount} ${dataToken.assetsChain}`,
           }, key));
 
-        dispatch({
-            type: marketplaceConstants.MODAL_WITHDRAW_MARKET_REQUEST
-        });
+        dispatch({ type: marketplaceConstants.MODAL_WITHDRAW_MARKET_REQUEST });
 
-        let amountRepay = web3.utils.toWei(amount.toString());
+        //let amountRepay = web3.utils.toWei(amount.toString());
+
+        let amountRepay = ethers.utils.parseUnits(amount.toString(), dataToken.assetsDecimals);
         let amountApprove = 999999999;
 
         // approve Atoken 
         let approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
         let approveMethod = connex.thor.account(dataToken.assetsAddress).method(approveABI);
 
-        const c1_approve = approveMethod.asClause(dataToken.assetsAddress, web3.utils.toWei(amountApprove.toString()));
+        const c1_approve = approveMethod.asClause(ADDRESS_POOL, web3.utils.toWei(amountApprove.toString()));
 
         const withdrawETH_ABI = ERC20ABI_POOL.find(({ name, type }) => name === "repay" && type === "function");
-        const methodWithdraw = connex.thor.account(ADDRESS_POOL).method(withdrawETH_ABI);
-        const c2_repay = methodWithdraw.asClause(dataToken.assetsAddress, amountRepay, rateMode, account);
+        const methodRepay = connex.thor.account(ADDRESS_POOL).method(withdrawETH_ABI);
+        const c2_repay = methodRepay.asClause(dataToken.assetsAddress, amountRepay, rateMode, account);
 
         connex.vendor
             .sign('tx', [c1_approve, c2_repay])
