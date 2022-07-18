@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   const products = [
-    {title: "Trade", path: "#"},
+    {title: "Trade", path: "swap"},
     {title: "Lend/Borrow", path: "/markets"},
     {title: "Pool", path: "/pool"},
     {title: "Stake", path: "/stake"},
