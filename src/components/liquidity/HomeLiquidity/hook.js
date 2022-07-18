@@ -4,26 +4,29 @@ import { useNavigate } from "react-router-dom";
 import * as actions from "../../../actions";
 import RouteName from "../../../constants/routeName.constants";
 import { selectUsersAddedPoolAddresses } from "../../../reducers/userAssetPools.reducer";
-import { selectWeb3 } from "../../../reducers/web3.reducer";
+import { selectAccount, selectWeb3 } from "../../../reducers/web3.reducer";
 
 const useLiquidityFacade = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {web3} = useSelector(selectWeb3, shallowEqual);
+  const web3 = useSelector(selectWeb3);
+  const account = useSelector(selectAccount);
   const userPoolAddresses = useSelector(selectUsersAddedPoolAddresses);
 
   const addLiquidity = () => {
     navigate(RouteName.ADD_LIQUIDITY);
-  }
+  };
 
   const onFindOtherLPClicked = () => navigate(RouteName.POOL);
 
-  useEffect(() => {
-    if (web3) {
-      fetchPoolAssets();
-    }
-  }, [web3]);
+  // useEffect(() => {
+  //   if (web3) {
+  //     fetchPoolAssets();
+  //   }
+  // }, [web3]);
+
+  useEffect(() => fetchPoolAssets(), [account])
 
   async function fetchPoolAssets() {
     await dispatch(actions.getPoolAssets());

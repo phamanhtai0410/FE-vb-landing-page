@@ -36,7 +36,9 @@
   },
   "scripts": {
     "start": "env-cmd -f .env.development react-app-rewired start",
-    "build": "env-cmd -f .env.development react-app-rewired build --nomaps",
+    "build-dev": "env-cmd -f .env.development react-app-rewired build --nomaps",
+    "build-test": "env-cmd -f .env.testing react-app-rewired build --nomaps",
+    "build-stag": "env-cmd -f .env.staging react-app-rewired build --nomaps",
     "build-prod": "env-cmd -f .env.production react-app-rewired build --nomaps",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"

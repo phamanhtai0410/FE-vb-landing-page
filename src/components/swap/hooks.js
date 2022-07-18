@@ -16,6 +16,7 @@ import {
   selectAccountApprove,
   selectLoadingSwap,
   selectLoadingExchangeRate,
+  selectSwapSuccess,
 } from "../../reducers/swap.reducer";
 import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
 import { selectPriceByTokenAddress } from "../../reducers/assetsPrice.reducer";
@@ -42,7 +43,7 @@ const useSwapFacade = () => {
   const [inputSlippage, setInputSlippage] = useState(0.1);
   const [pressSwap, setPressSwap] = useState(false);
   const [showErr, setShowErr] = useState(false);
-  // const [userInput, setUserInput] = useState("");
+  const [showDetailInfo, setShowDetailInfo] = useState(false);
   const userInputRef = useRef(inputAmountIn);
   const amountInRef = useRef(inputAmountIn);
   const amountOutRef = useRef(inputAmountOut);
@@ -61,6 +62,7 @@ const useSwapFacade = () => {
   const amountsIn = useSelector(selectAmountsIn);
   const accountApprove = useSelector(selectAccountApprove);
   const loadingExchangeRate = useSelector(selectLoadingExchangeRate);
+  const swapSuccess = useSelector(selectSwapSuccess);
 
   const sourceTokenInfo = useSelector((state) =>
     selectAssetByAddress(state, sourceTokenAddress)
@@ -83,6 +85,8 @@ const useSwapFacade = () => {
   const vthoBalance = useSelector((state) =>
     selectBalanceById(state, process.env.REACT_APP_TOKEN_VTHO)
   );
+
+  const isSwapSuccess = useMemo(() => swapSuccess, [swapSuccess]);
 
   const swapFee = useMemo(
     () => (inputAmountIn * (fee * 0.1)) / 100,
@@ -181,6 +185,7 @@ const useSwapFacade = () => {
         getAmountOutDebounced(value);
       } else {
         setInputAmountOut("");
+        setShowDetailInfo(false);
       }
       // setInputAmountOut(value !== "" ? value * exchangeRate : "");
       // dispatch(
@@ -212,6 +217,10 @@ const useSwapFacade = () => {
     },
     [getAmountsInDebounced]
   );
+
+  const onShowDetailInfo = () => {
+    setShowDetailInfo(!showDetailInfo);
+  };
 
   useEffect(() => {
     dispatch(
@@ -246,7 +255,14 @@ const useSwapFacade = () => {
       }
       setPressSwap(false);
     } else {
-      getAmountOutDebounced(inputAmountIn);
+      if (amountInRef.current === userInputRef.current) {
+        setInputAmountIn(userInputRef.current);
+        setInputAmountOut("");
+        getAmountOutDebounced(userInputRef.current);
+      } else {
+        setInputAmountIn("");
+        getAmountsInDebounced(userInputRef.current);
+      }
     }
   }, [sourceTokenAddress]);
 
@@ -260,7 +276,14 @@ const useSwapFacade = () => {
       }
       setPressSwap(false);
     } else {
-      getAmountOutDebounced(inputAmountIn);
+      if (amountOutRef.current === userInputRef.current) {
+        setInputAmountOut(userInputRef.current);
+        setInputAmountIn("");
+        getAmountsInDebounced(userInputRef.current);
+      } else {
+        setInputAmountOut("");
+        getAmountOutDebounced(userInputRef.current);
+      }
     }
   }, [desireTokenAddress]);
 
@@ -310,7 +333,10 @@ const useSwapFacade = () => {
     accountApprove,
     onApproveToken,
     loadingSwap,
+    onShowDetailInfo,
+    showDetailInfo,
     loadingExchangeRate,
+    isSwapSuccess,
   };
 };
 

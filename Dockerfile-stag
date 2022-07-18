@@ -14,7 +14,7 @@ RUN npm install
 
 COPY . /vebank
 
-RUN npm run build
+RUN npm run build-stag
 
 
 # Stage 2

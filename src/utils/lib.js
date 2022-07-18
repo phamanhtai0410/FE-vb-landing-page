@@ -57,7 +57,8 @@ export function nFormatter(num, digits) {
   return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
 }
 
-export const isContainVET = (...ags) => [...ags].includes(process.env.REACT_APP_TOKEN_WVET);
+export const isContainVET = (...ags) =>
+  [...ags].includes(process.env.REACT_APP_TOKEN_WVET);
 
 export const getDecimalForAsset = (assetsAddress) =>
   assetsAddress === process.env.REACT_APP_TOKEN_VEUSD
@@ -81,8 +82,11 @@ export const getWeiUnitByDecimal = (decimal) => {
 
 export const getAmountInWeiFormatted = (web3, amount, decimalNumber) => {
   if (!web3) throw new Error("Web3 is required");
-  else if (!amount) throw new Error("Amount is required");
+  else if (!amount || amount === 0 || amount === 0.0) throw new Error("Amount is required");
   else if (!decimalNumber) throw new Error("DecimalNumber is required");
+
+  if (decimalNumber < PartialConstants.DEFAULT_ASSET_DECIMAL)
+    amount = Number(amount).toFixed(decimalNumber);
 
   return web3?.utils.toWei(
     amount.toString(),
@@ -106,12 +110,12 @@ export async function copyTextToClipboard(text) {
 }
 
 export const randomKeyUUID = () => {
-  return  uuidv4();
+  return uuidv4();
 };
 
-export const addressWalletCompact = (address) =>{
+export const addressWalletCompact = (address) => {
   return `${address.slice(0, 6)}...${address.slice(
     address.length - 4,
     address.length
   )}`;
-} 
+};

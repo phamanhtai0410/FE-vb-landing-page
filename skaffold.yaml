@@ -1,6 +1,63 @@
 apiVersion: skaffold/v2beta28 
 kind: Config	
 profiles:
+  - name: profile-dev
+    build:
+      tagPolicy:
+        gitCommit: {}
+      artifacts:
+      - image: [CONTAINER_REPO]
+        context: .
+        docker:
+          dockerfile: Dockerfile-dev
+    deploy:
+        # Using Helm as the deployment strategy
+        statusCheckDeadlineSeconds: 300
+        helm:
+          # Pass the parameters according to  
+          releases:
+            - name: [IMAGE_NAME]
+              chartPath: ./helm-template
+              namespace: [NAMESPACE]
+              # Location of the chart - here, we use a local chart
+              wait: true
+              # Path to the values file
+              valuesFiles:
+              - ./dev.yaml
+              artifactOverrides:
+                image.repository: [CONTAINER_REPO]
+             
+          flags:
+            upgrade:
+              - --install
+  - name: profile-test
+    build:
+      tagPolicy:
+        gitCommit: {}
+      artifacts:
+      - image: [CONTAINER_REPO]
+        context: .
+        docker:
+          dockerfile: Dockerfile-test
+    deploy:
+        # Using Helm as the deployment strategy
+        statusCheckDeadlineSeconds: 300
+        helm:
+          # Pass the parameters according to  
+          releases:
+            - name: [IMAGE_NAME]
+              chartPath: ./helm-template
+              namespace: [NAMESPACE]
+              # Location of the chart - here, we use a local chart
+              wait: true
+              # Path to the values file
+              valuesFiles:
+              - ./test.yaml
+              artifactOverrides:
+                image.repository: [CONTAINER_REPO]
+          flags:
+            upgrade:
+              - --install
   - name: profile-stag
     build:
       tagPolicy:
@@ -9,7 +66,7 @@ profiles:
       - image: [CONTAINER_REPO]
         context: .
         docker:
-          dockerfile: Dockerfile
+          dockerfile: Dockerfile-stag
     deploy:
         # Using Helm as the deployment strategy
         statusCheckDeadlineSeconds: 300

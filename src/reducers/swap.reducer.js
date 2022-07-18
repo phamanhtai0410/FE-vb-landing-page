@@ -35,6 +35,7 @@ const initialState = {
   reserves1: null,
   reserves2: null,
   totalSupply: null,
+  swapSuccess: false,
 };
 
 const swapAssetSlice = createSlice({
@@ -82,6 +83,7 @@ const swapAssetSlice = createSlice({
     refreshDataSwap: (state) => {
       state.amountsIn = "";
       state.amountsOut = "";
+      state.swapSuccess = true;
       state.loadingSwap = false;
     },
   },
@@ -105,20 +107,27 @@ const swapAssetSlice = createSlice({
         state.loadingGetAmountOut = false;
         state.amountsIn = action.payload.inputAmountIn;
         state.amountsOut = action.payload.amountsOutFormat;
+        state.swapSuccess = false;
+        state.isSwap = true;
       })
       .addCase(getAmountsOut.rejected, (state, action) => {
         state.loadingGetAmountOut = false;
+        state.isSwap = false;
       })
       .addCase(getAmountsIn.pending, (state, action) => {
         state.loadingGetAmountIn = true;
+        state.amountsIn = "";
       })
       .addCase(getAmountsIn.fulfilled, (state, action) => {
         state.loadingGetAmountIn = false;
         state.amountsIn = action.payload.amountsInFormat;
         state.amountsOut = action.payload.inputAmountOut;
+        state.swapSuccess = false;
+        state.isSwap = true;
       })
       .addCase(getAmountsIn.rejected, (state, action) => {
         state.loadingGetAmountIn = false;
+        state.isSwap = false;
       })
       .addCase(checkApproveToken.fulfilled, (state, action) => {
         state.accountApprove = action.payload.accountApprove;
@@ -193,5 +202,6 @@ export const selectLoadingGetAmountIn = (state) =>
 export const selectAmountsIn = (state) => state.swapAsset.amountsIn;
 export const selectAccountApprove = (state) => state.swapAsset.accountApprove;
 export const selectLoadingSwap = (state) => state.swapAsset.loadingSwap;
+export const selectSwapSuccess = (state) => state.swapAsset.swapSuccess;
 export const selectLoadingExchangeRate = (state) =>
   state.swapAsset.loadingExchangeRate;

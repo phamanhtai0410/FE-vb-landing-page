@@ -2,8 +2,6 @@ import { ethers, FixedNumber } from "ethers";
 
 import { poolConstants } from "../../constants";
 
-import ERC20ABI_VB from "../../_contracts/assets/VB.json";
-
 import ERC20ABI_ROUTER from "../../_contracts/router.json";
 import ERC20ABI_FACTORY from "../../_contracts/factory.json";
 import ERC20ABI_PAIR from "../../_contracts/pair.json";
@@ -209,6 +207,10 @@ export const loadDetailAddLiquidity = createAsyncThunk(
 
     if (poolAddress) {
       contractPair = new web3.eth.Contract(ERC20ABI_PAIR, poolAddress);
+      console.log(
+        "🐶🐶  ~ contractPair.events",
+        contractPair.events.allEvents()
+      );
       firstTokenAddress = await contractPair.methods.token0().call();
       secondTokenAddress = await contractPair.methods.token1().call();
       firstTokenAddress && dispatch(setFirstToken(firstTokenAddress));
@@ -278,10 +280,12 @@ export const loadDetailAddLiquidity = createAsyncThunk(
         if (reserveB == 0) baExchangeRate = 0;
         else baExchangeRate = reserveA / reserveB;
 
-        const balanceBigN = await contractPair.methods
-          .balanceOf(account)
-          .call();
-        liquidityPool = ethers.utils.formatUnits(balanceBigN, assetsDecimal);
+        if (account) {
+          const balanceBigN = await contractPair.methods
+            .balanceOf(account)
+            .call();
+          liquidityPool = ethers.utils.formatUnits(balanceBigN, assetsDecimal);
+        }
 
         totalSupply = await contractPair.methods?.totalSupply().call();
         if (totalSupply) {
@@ -306,7 +310,7 @@ export const loadDetailAddLiquidity = createAsyncThunk(
 
 export const addLiquidity = createAsyncThunk(
   poolConstants.ADD_LIQUIDITY,
-  async ({ firstAmount, secondAmount }, { getState }) => {
+  async ({ firstAmount, secondAmount }, { getState, dispatch }) => {
     const currentState = getState();
     const { firstToken, secondToken } = currentState.liquidReducer;
     const { connex, account, web3 } = currentState.web3;
@@ -344,12 +348,6 @@ export const addLiquidity = createAsyncThunk(
         // console.log("Address exist");
         reserveA = reserves?.[firstToken === _firstTokenAddress ? 0 : 1]; // the position is swap
         reserveB = reserves?.[secondToken === _secondTokenAddress ? 1 : 0]; // the position is swap
-
-        console.log("🐶🐶  ~ contractPair.methods", contractPair.events);
-        contractPair.events.TransFer?.({}).on("data", async function (event) {
-          console.log("Pair event emitted");
-          console.log("🐶🐶  ~ contractFactory.events.TransFer ~ event", event);
-        });
       } else {
         // First user add pool
         reserveA = secondAmount / firstAmount;
@@ -369,7 +367,7 @@ export const addLiquidity = createAsyncThunk(
       secondTokenInfo?.assetsDecimals
     );
 
-    const transactionFee = "50";
+    const transactionFee = "3"; // 0.3%
 
     // Calculate amountMin to send to smart contract
     const amountAMin = isPoolAddressExist

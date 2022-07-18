@@ -56,7 +56,7 @@ const LiquidityExcerpt = ({ poolAddress }) => {
           src={IcCollapse}
           alt=""
           className={`w-11 h-11 transition-transform delay-350 ${
-            isExpanded ? "rotate-180" : ""
+            !isExpanded ? "rotate-180" : ""
           }`}
         />
       </div>

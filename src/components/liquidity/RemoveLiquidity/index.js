@@ -24,7 +24,7 @@ const ModalRemoveLiquidity = () => {
     firstPerSecondTokenExchangeRate,
     secondPerFirstTokenExchangeRate,
     amountPercentage,
-    isEnableBtnEnabled,
+    isEnabled,
     primaryButtonLabel,
     onSelectMileStone,
     onEnableClicked,
@@ -249,9 +249,9 @@ const ModalRemoveLiquidity = () => {
             <button
               onClick={onEnableClicked}
               className={`btn-modal-veb w-full h-16.5 text-lg font-poppins_medium ${
-                isEnableBtnEnabled ? "bg-btn-veb" : ""
+                !isEnabled ? "bg-btn-veb" : ""
               }`}
-              disabled={!isEnableBtnEnabled}
+              disabled={isEnabled}
             >
               {enableBtnLabel}
             </button>
