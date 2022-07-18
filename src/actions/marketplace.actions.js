@@ -46,7 +46,6 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
         for await (const item of data) {
 
             const getReserveData = await contractAAVE.methods.getReserveData(item.assetsAddress).call();
-            console.log("getReserveData",getReserveData);
 
             const {
                 variableBorrowRate,
@@ -202,7 +201,7 @@ export const getAccountOverview = () => async (dispatch, getState) => {
                 }
 
             } catch (error) {
-                console.log("getUserAccountData", error);
+                console.log("error getUserAccountData:", error);
             }
 
             for await (const item of dataAccountAssets) {

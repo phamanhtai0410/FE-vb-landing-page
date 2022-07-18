@@ -6,6 +6,7 @@ import { marketplaceConstants } from '../../constants';
 import ERC20ABI_VB from '../../_contracts/assets/VB.json';
 import ERC20ABI_WETH_GETAWAY from '../../_contracts/lend/WETHGateway.json';
 import ERC20ABI_POOL from '../../_contracts/lend/Pool.json';
+import ERC20ABI_AAVE from '../../_contracts/lend/AaveProtocolDataProvider.json';
 
 import ERC20ABI_STABLE_DEBT_TOKEN from '../../_contracts/lend/StableDebtToken.json';
 import ERC20ABI_VARIBLE_DEBT_TOKEN from '../../_contracts/lend/VariableDebtToken.json';
@@ -13,6 +14,8 @@ import ERC20ABI_VARIBLE_DEBT_TOKEN from '../../_contracts/lend/VariableDebtToken
 import { randomKeyUUID } from '../../utils/lib';
 import * as actions from '../.';
 
+
+const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (chinh là VET Asset)
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 
@@ -42,6 +45,7 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
         return;
     }
 
+    const contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
     const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
     //  let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
 
@@ -51,19 +55,41 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
 
     // const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
     // console.log(`getUserReserveData`, accountReserve);
+    if(contractPOOL){
+        const accountData = await contractPOOL.methods.getUserAccountData(account).call();
 
-    const accountData = await contractPOOL.methods.getUserAccountData(account).call();
-    console.log("getUserAccountData", accountData);
+        if (accountData.availableBorrowsBase) {
+            accountBalance = ethers.utils.formatUnits(accountData.availableBorrowsBase, 18);
+            accountBalance = accountBalance / dataPrice[dataToken.assetsAddress];
+        }
 
+        
+        if(contractAAVE ){
 
-    if (accountData.availableBorrowsBase) {
-        accountBalance = ethers.utils.formatUnits(accountData.availableBorrowsBase, 18);
-        accountBalance = accountBalance / dataPrice[dataToken.assetsAddress];
+            const getReserveData = await contractAAVE.methods.getReserveData(dataToken.assetsAddress).call();
+            const configReserveData = await contractAAVE.methods.getReserveConfigurationData(dataToken.assetsAddress).call();
+
+            // totalPoolSupply - TotalPoolDebt/(1 - reserveFactor)
+            let totalBorrowRate = (getReserveData.totalVariableDebt  /(10000-Number(configReserveData.reserveFactor)));
+            totalBorrowRate = Number(getReserveData.totalAToken) - Number(totalBorrowRate);
+            totalBorrowRate = totalBorrowRate.toLocaleString('fullwide', {useGrouping:false});
+
+            if(dataToken.assetsAddress === process.env.REACT_APP_TOKEN_VEUSD){
+                totalBorrowRate =  web3.utils.toWei(totalBorrowRate, 'micro');
+            }
+
+            // Tổng pool có chép borrow nhỏ hơn giá trị user có thể variableBorrowRate
+            if(totalBorrowRate < accountData.availableBorrowsBase){
+                accountBalance = ethers.utils.formatUnits(totalBorrowRate, 18);
+                accountBalance = accountBalance / dataPrice[dataToken.assetsAddress];
+            }
+            
+        }
+        
     }
 
 
-    
-
+  
     if (dataToken.assetsChain === "VET") {
 
         // check approveDelegation
