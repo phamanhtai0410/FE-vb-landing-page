@@ -1,8 +1,12 @@
 variables:
   REGION: asia-southeast1
   IMAGE_NAME: vb-landing-page
+  CONTAINER_REPO_ASIA_DEV: 420811272222.dkr.ecr.ap-southeast-1.amazonaws.com/vb-development-ecr/landing-page
+  CONTAINER_REPO_ASIA_TEST: 420811272222.dkr.ecr.ap-southeast-1.amazonaws.com/vb-testing-ecr/landing-page
   CONTAINER_REPO_ASIA_STAG: 420811272222.dkr.ecr.ap-southeast-1.amazonaws.com/vb-staging-ecr/landing-page
   CONTAINER_REPO_ASIA_PROD: 420811272222.dkr.ecr.ap-southeast-1.amazonaws.com/vb-production-ecr/landing-page
+  NAMESPACE_DEV: vb-website-dev
+  NAMESPACE_TEST: vb-website-test
   NAMESPACE_STAG: vb-website-stag
   NAMESPACE_PROD: vb-website
   FULLREPO_ASIA_STAG: $CONTAINER_REPO_ASIA_STAG:$CI_COMMIT_SHORT_SHA
@@ -38,6 +42,66 @@ stages:
   helm repo add helm-template s3://rinz-helm-template
   helm pull s3://rinz-helm-template/helm-template-$HELM_VERSION.tgz --untar=true
 
+build_dev:
+  image: docker:19.03.1
+  tags:
+  - rinz-stag
+  stage: build
+  services:
+  - docker:19.03.1-dind
+  before_script:
+    - apk add --no-cache curl jq python py-pip wget git bash
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
+    - pip install awscli==1.19.112  
+    - export VERIFY_CHECKSUM=false && curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && chmod +x ./get_helm.sh && ./get_helm.sh
+    - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.38.0/skaffold-linux-amd64 && chmod +x skaffold &&  mv skaffold /usr/local/bin
+  script:
+    - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $CONTAINER_REPO_ASIA_DEV
+    - |
+      if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
+        sed -i -e "s#\[NAMESPACE\]#$NAMESPACE_DEV#g" skaffold.yaml
+        sed -i -e "s#\[IMAGE_NAME\]#$IMAGE_NAME#g" skaffold.yaml
+        sed -i -e "s#\[CONTAINER_REPO\]#$CONTAINER_REPO_ASIA_DEV#g" skaffold.yaml
+      fi
+    - /usr/local/bin/skaffold build -p profile-dev --file-output=build.json
+  only:
+    refs:
+      - dev
+  artifacts:
+    paths:
+    - skaffold.yaml
+    - build.json
+build_test:
+  image: docker:19.03.1
+  tags:
+  - rinz-stag
+  stage: build
+  services:
+  - docker:19.03.1-dind
+  before_script:
+    - apk add --no-cache curl jq python py-pip wget git bash
+    - git submodule sync --recursive
+    - git submodule update --init --recursive
+    - pip install awscli==1.19.112  
+    - export VERIFY_CHECKSUM=false && curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && chmod +x ./get_helm.sh && ./get_helm.sh
+    - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.38.0/skaffold-linux-amd64 && chmod +x skaffold &&  mv skaffold /usr/local/bin
+  script:
+    - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $CONTAINER_REPO_ASIA_TEST
+    - |
+      if [ "$CI_COMMIT_REF_NAME" == "stag" ]; then
+        sed -i -e "s#\[NAMESPACE\]#$NAMESPACE_TEST#g" skaffold.yaml
+        sed -i -e "s#\[IMAGE_NAME\]#$IMAGE_NAME#g" skaffold.yaml
+        sed -i -e "s#\[CONTAINER_REPO\]#$CONTAINER_REPO_ASIA_TEST#g" skaffold.yaml
+      fi
+    - /usr/local/bin/skaffold build -p profile-test --file-output=build-test.json
+  only:
+    refs:
+      - stag
+  artifacts:
+    paths:
+    - skaffold.yaml
+    - build-test.json
 build_stag:
   image: docker:19.03.1
   tags:
@@ -98,6 +162,54 @@ build_prod:
     paths:
     - skaffold.yaml
     - build.json
+
+deploy_dev:
+  stage: deploy
+  image:  alpine/helm:3.2.1
+  tags:
+  - rinz-stag
+  script:
+    - *predeploy
+    - *kubectl_config
+    - git clone https://read-token:$GITLAB_TOKEN@gitlab.rinznetwork.com/rinz-io-devops/helm-value/$IMAGE_NAME.git
+    - mv $IMAGE_NAME/dev.yaml .
+    - |
+      if [ "$CI_COMMIT_REF_NAME" == "dev" ]; then
+        sed -i -e "s#\[FULLREPO_ASIA\]#$FULLREPO_ASIA_DEV#g" dev.yaml
+        sed -i -e "s#\[NAMESPACE\]#$NAMESPACE_DEV#g" dev.yaml
+      fi
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl && chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
+    - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.38.0/skaffold-linux-amd64 && chmod +x skaffold &&  mv skaffold /usr/local/bin
+    - aws sts get-caller-identity
+
+    - /usr/local/bin/skaffold deploy -p profile-dev   -a build.json
+  only:
+    refs:
+      - dev
+
+
+deploy_test:
+  stage: deploy
+  image:  alpine/helm:3.2.1
+  tags:
+  - rinz-stag
+  script:
+    - *predeploy
+    - *kubectl_config
+    - git clone https://read-token:$GITLAB_TOKEN@gitlab.rinznetwork.com/rinz-io-devops/helm-value/$IMAGE_NAME.git
+    - mv $IMAGE_NAME/test.yaml .
+    - |
+      if [ "$CI_COMMIT_REF_NAME" == "stag" ]; then
+        sed -i -e "s#\[FULLREPO_ASIA\]#$FULLREPO_ASIA_TEST#g" test.yaml
+        sed -i -e "s#\[NAMESPACE\]#$NAMESPACE_TEST#g" test.yaml
+      fi
+    - curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl && chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
+    - curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/v1.38.0/skaffold-linux-amd64 && chmod +x skaffold &&  mv skaffold /usr/local/bin
+    - aws sts get-caller-identity
+    - /usr/local/bin/skaffold deploy -p profile-test   -a build-test.json
+  only:
+    refs:
+      - stag
 deploy_stag:
   stage: deploy
   image:  alpine/helm:3.2.1
@@ -121,6 +233,7 @@ deploy_stag:
   only:
     refs:
       - stag
+
 deploy_prod:
   stage: deploy
   image:  alpine/helm:3.2.1
