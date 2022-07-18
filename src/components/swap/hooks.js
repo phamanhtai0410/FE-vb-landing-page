@@ -34,6 +34,8 @@ import {
   onApproveTokenForAccount,
 } from "../../actions";
 import { useDebouncedCallback } from "use-debounce";
+import PartialConstants from "../../constants/partial.constants";
+import { getDecimalForAsset } from "../../utils/lib";
 
 const useSwapFacade = () => {
   const dispatch = useDispatch();
@@ -112,8 +114,12 @@ const useSwapFacade = () => {
   );
 
   const amountOutMin = useMemo(
-    () => inputAmountOut - (inputAmountOut * inputSlippage) / 100,
-    [inputAmountOut, inputSlippage]
+    () =>
+      getDecimalForAsset(desireTokenInfo.assetsAddress) ===
+      PartialConstants.VEUSD_DECIMAL
+        ? (inputAmountOut - (inputAmountOut * inputSlippage) / 100).toFixed(6)
+        : inputAmountOut - (inputAmountOut * inputSlippage) / 100,
+    [desireTokenInfo.assetsAddress, inputAmountOut, inputSlippage]
   );
 
   const onSwapDesireToken = () => {

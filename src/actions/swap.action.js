@@ -96,9 +96,14 @@ export const checkAssetExistsPools = createAsyncThunk(
         dispatch(updateStatusSwap(true));
         return assetsPoolAddress;
       } else {
+        const key = randomKeyUUID();
         dispatch(
           actions.alertActions.warning(
-            `${assetsPoolName} not existing in pools`
+            {
+              title: "Warning",
+              description: `${assetsPoolName} not existing in pools`,
+            },
+            key
           )
         );
         dispatch(updateStatusSwap(false));
@@ -227,7 +232,7 @@ export const getAmountsOut = createAsyncThunk(
 
       const amountInUint = web3.utils.toWei(
         inputAmountIn.toString(),
-        getDecimalForAsset(addressTokenA) === 6 ? "mwei" : "ether"
+        getDecimalForAsset(addressTokenA) ===  PartialConstants.VEUSD_DECIMAL ? "mwei" : "ether"
       );
 
       const amountsOut = await contractFactory.methods
@@ -262,7 +267,7 @@ export const getAmountsIn = createAsyncThunk(
 
       const amountOutUint = web3.utils.toWei(
         inputAmountOut.toString(),
-        getDecimalForAsset(addressTokenB) === 6 ? "mwei" : "ether"
+        getDecimalForAsset(addressTokenB) ===  PartialConstants.VEUSD_DECIMAL ? "mwei" : "ether"
       );
 
       const amountsIn = await contractFactory.methods
@@ -372,12 +377,16 @@ export const swapAsset = createAsyncThunk(
 
     const amountOutMin = web3.utils.toWei(
       minAmountOut.toString(),
-      getDecimalForAsset(addressTokenA) === 6 ? "mwei" : "ether"
+      getDecimalForAsset(addressTokenB) === PartialConstants.VEUSD_DECIMAL
+        ? "mwei"
+        : "ether"
     );
     const deadline = getDeadline();
     const amountIn = web3.utils.toWei(
       amountInToSwap.toString(),
-      getDecimalForAsset(addressTokenB) === 6 ? "mwei" : "ether"
+      getDecimalForAsset(addressTokenA) === PartialConstants.VEUSD_DECIMAL
+        ? "mwei"
+        : "ether"
     );
 
     let functionName = "";
@@ -470,6 +479,13 @@ export const swapAsset = createAsyncThunk(
             );
           });
       } else {
+        console.table([
+          ["method", functionName],
+          ["addressTokenA", addressTokenA],
+          ["addressTokenB", addressTokenB],
+          ["amountIn", amountIn],
+          ["amountOutMin", amountOutMin],
+        ]);
         //swap another token to VET token
         transaction = await methodSwapToken
           .transact(amountIn, amountOutMin, pathAddress, account, deadline)

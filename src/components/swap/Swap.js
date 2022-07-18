@@ -103,13 +103,19 @@ const Swap = () => {
               <div className="flex flex-row text-[#647BB4] space-x-1 ml-4">
                 <button
                   onClick={() => onChangeSourceInput(sourceTokenBalance)}
-                  className="w-[57px] h-[28px] bg-[#203557] rounded"
+                  className={`${
+                    !account ? "bg-vbDisabled" : "bg-[#203557]"
+                  } w-[57px] h-[28px] bg-[#203557] rounded flex flex-row items-center justify-center`}
+                  disabled={!account}
                 >
                   Max
                 </button>
                 <button
                   onClick={() => onChangeSourceInput(sourceTokenBalance / 2.0)}
-                  className="w-[57px] h-[28px] bg-[#203557] rounded"
+                  className={`${
+                    !account ? "bg-vbDisabled" : "bg-[#203557]"
+                  } w-[57px] h-[28px] rounded bg-[#203557]" flex flex-row items-center justify-center`}
+                  disabled={!account}
                 >
                   Half
                 </button>
@@ -304,7 +310,7 @@ const Swap = () => {
                     <div className="loading" />
                   ) : (
                     <p>
-                     {`0.30% /`} {swapFee} {sourceTokenInfo?.assetsChain}
+                      {`0.30% /`} {swapFee} {sourceTokenInfo?.assetsChain}
                     </p>
                   )}
                 </div>
