@@ -57,6 +57,8 @@ function App() {
 
           <Route path="/swap" element={<SwapPage />} />
 
+          <Route path="/trade" element={<Navigate to="/swap" />} />
+
           <Route path="/liquidity" >
             <Route path="add/:addressPool" element={<AddLiquidityPage  />} />
             <Route path="add" element={<AddLiquidityPage  />} />

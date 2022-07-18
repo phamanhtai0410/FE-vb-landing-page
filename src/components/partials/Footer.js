@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   const products = [
-    {title: "Trade", path: "#"},
+    {title: "Trade", path: "swap"},
     {title: "Lend/Borrow", path: "/markets"},
     {title: "Pool", path: "/pool"},
     {title: "Stake", path: "/stake"},
@@ -46,16 +46,24 @@ const Footer = () => {
     }
   ]
 
-  const [showMore, setShowMore] = useState(false);
+  const [showMoreValue, setShowMore] = useState("");
+  const showSocialDetai = (title) => {
+    if (title === showMoreValue) {
+      setShowMore("");
+    }
+    else {
+      setShowMore(title);
+    }
+  }
   return (
 
     <footer>
 
       <div className="w-full bg-[#000324]">
 
-        <div className="py-16 px-6 lg:px-10 flex flex-col md:flex-row justify-between xl:px-52">
+        <div className="py-16 px-6 flex flex-col md:flex-row justify-between items-center lg:px-52">
 
-          <div className="flex flex-col font-poppins">
+          <div className="flex flex-col font-poppins md:text-left text-center">
             <div className='flex flex-row items-center space-x-2'>
               <img src={footer.IcLogo} alt="Logo VeBank" className="cursor-pointer" />
               <img src={footer.IcLogoText} alt="Logo VeBank" className="cursor-pointer" />
@@ -67,7 +75,7 @@ const Footer = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-4 w-[55%]">
+          <div className="md:grid md:grid-cols-4 flex flex-row w-full sm:w-3/4 md:w-[55%] justify-between md:mt-0 mt-8">
             <div className="flex flex-col">
               <span className="font-poppins_semi_bold text-lg text-[#39C5F1]">PRODUCT</span>
               <div className="flex flex-col space-y-4 mt-6">
@@ -113,11 +121,11 @@ const Footer = () => {
                 ))}
               </div>
             </div>
-            <div className="flex flex-col">
+            <div className="hidden md:flex flex-col">
               <span className="font-poppins_semi_bold text-lg text-[#39C5F1]">COMMUNITY</span>
               <div className="flex flex-col space-y-4 mt-6">
                 {communities.map((item, index) => (
-                  <div className="relative flex flex-row items-center space-x-3 cursor-pointer" onClick={() => setShowMore(!showMore)}>
+                  <div className="relative flex flex-row items-center space-x-3 cursor-pointer" onClick={() => showSocialDetai(item.title)}>
                     <img src={item.icon} alt={item.title} />
                     {item?.link ? 
                     <a
@@ -134,15 +142,16 @@ const Footer = () => {
                     {item?.details &&
                     <div>
                       <img src={footer.IcArrowBot} alt={item.title} />
-                      {showMore && <div className="absolute flex flex-col divide-y-[1px] divide-[#000324] bg-[#0E1B31] rounded-lg px-4 py-2 top-0 left-36">
+                      {showMoreValue === item.title && <div className="absolute flex flex-col divide-y-[1px] divide-[#000324] bg-[#0E1B31] rounded-lg px-4 py-2 top-10 lg:top-8 right-0 z-10">
                         {item.details.map((item, index) => (
-                          <div className="py-2">
+                          <div className="py-2 pr-4 flex flex-row">
+                            <img src={footer.IcTelegram} alt={item.title} className="w-4 h-4" />
                             <a
                               key={index}
                               href={item.link}
                               target={"_blank"}
                               rel="noopener noreferrer"
-                              className="text-sm text-[#D9D9D9] whitespace-nowrap"
+                              className="text-sm text-[#D9D9D9] whitespace-nowrap pl-[10px]"
                             >
                               {item.title}
                             </a>
@@ -157,6 +166,42 @@ const Footer = () => {
               </div>
             </div>
           </div>
+          <div className="relative flex md:hidden flex-col mt-12 w-1/2">
+              <div className="flex flex-row w-full justify-between">
+                {communities.map((item, index) => (
+                  <div className="relative flex flex-row items-center space-x-3 cursor-pointer" onClick={() => showSocialDetai(item.title)}>
+                   <a
+                      key={index}
+                      href={item.link}
+                      target={"_blank"}
+                      rel="noopener noreferrer"
+                      className="text-sm text-[#D9D9D9]"
+                    >
+                      <img src={item.icon} alt={item.title} />
+                    </a>
+                    
+                    {item?.details && showMoreValue === item.title &&
+                      <div className="absolute flex flex-col divide-y-[1px] divide-[#000324] bg-[#0E1B31] rounded-lg px-4 py-2 bottom-[-1px] left-8 z-10">
+                        {item.details.map((item, index) => (
+                          <div key={index} className="py-2 pr-4 flex flex-row w-full items-center">
+                            <img src={footer.IcTelegram} alt={item.title} className="w-4 h-4" />
+                            <a
+                              href={item.link}
+                              target={"_blank"}
+                              rel="noopener noreferrer"
+                              className="text-sm text-[#D9D9D9] whitespace-nowrap pl-[10px]"
+                            >
+                              {item.title}
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                      
+                    }
+                  </div>
+                ))}
+              </div>
+            </div>
 
         </div>
 

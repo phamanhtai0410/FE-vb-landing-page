@@ -3,7 +3,6 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import * as actions from "../../../actions";
 import { selectAssetByAddress } from "../../../reducers/assetsMarket.reducer";
-import { selectPoolInfoByAddress } from "../../../reducers/assetsPool.reducer";
 import {
   selectAddingLiquidityFinishState,
   selectAddingLiquidityState,
@@ -19,7 +18,6 @@ import {
   selectLiquidityPool,
   selectLoadLiquidityDetail,
 } from "../../../reducers/liquid.reducer";
-import { nFormatter } from "../../../utils/lib";
 import { selectBalanceById } from "../../../reducers/accountBalance.reducer";
 import RouteName from "../../../constants/routeName.constants";
 import { selectAccount } from "../../../reducers/web3.reducer";
@@ -55,13 +53,6 @@ const useAddLiquidFacade = () => {
   const reserveB = useSelector(selectReserveA);
   const reserveA = useSelector(selectReserveB);
 
-  // const firstTokenPrice = useSelector((state) =>
-  //   selectPriceByTokenAddress(state, firstToken)
-  // );
-  // const secondTokenPrice = useSelector((state) =>
-  //   selectPriceByTokenAddress(state, secondToken)
-  // );
-
   const [step, setStep] = useState(1);
   const [continueAvailable, setContinueAvailable] = useState(false);
   const [firstTokenVolume, setFirstTokenVolume] = useState("");
@@ -69,28 +60,24 @@ const useAddLiquidFacade = () => {
   const [primaryButtonLabel, setPrimaryButtonLabel] = useState("Invalid pair");
 
   const firstPerSecondTokenExchangeRate =
-    useSelector(selectFirstTokenExchangeRate) ||
+    useSelector(selectFirstTokenExchangeRate) ??
     secondTokenVolume / firstTokenVolume;
 
-  // useMemo(
-  //   () => nFormatter(firstTokenPrice / secondTokenPrice, 6),
-  //   [firstTokenPrice, secondTokenPrice]
-  // );
   const secondPerFirstTokenExchangeRate =
-    useSelector(selectSecondTokenExchangeRate) ||
+    useSelector(selectSecondTokenExchangeRate) ??
     firstTokenVolume / secondTokenVolume;
 
   const liquidityEstimated = useMemo(() => {
-    if (totalSupply === 0 || totalSupply === 0.0) {
+    if (!totalSupply) {
       return (
         Math.sqrt(firstTokenVolume * secondTokenVolume) -
         Number(process.env.REACT_APP_MINIMUM_LIQUIDITY)
       );
     }
-    return Math.min(
+    return reserveA !== 0 || reserveB !== 0 ? Math.min(
       (firstTokenVolume * totalSupply) / reserveA,
       (secondTokenVolume * totalSupply) / reserveB
-    );
+    ) : 0; // No reserves => No calculations
   }, [totalSupply, firstTokenVolume, reserveA, secondTokenVolume, reserveB]);
 
   const shareAPool = useMemo(
@@ -99,11 +86,6 @@ const useAddLiquidFacade = () => {
       (Number(totalSupply) + liquidityEstimated),
     [liquidityEstimated, totalSupply, userCurrentLiquidityPool]
   );
-
-  // useMemo(
-  //   () => nFormatter(secondTokenPrice / firstTokenPrice, 6),
-  //   [firstTokenPrice, secondTokenPrice]
-  // );
 
   const onSelectFirstCurrency = useCallback(
     (e) => {
@@ -142,7 +124,7 @@ const useAddLiquidFacade = () => {
         // ) {
         // if (value <= firstTokenBalance) {
         setFirstTokenVolume(value);
-        setSecondTokenVolume(secondTokenAmount);
+        setSecondTokenVolume(secondTokenAmount.toString());
         // }
       }
     },
@@ -161,7 +143,7 @@ const useAddLiquidFacade = () => {
         // ) {
         // if (value <= secondTokenBalance) {
         setSecondTokenVolume(value);
-        setFirstTokenVolume(firstTokenAmount);
+        setFirstTokenVolume(firstTokenAmount.toString());
         // }
       }
     },
@@ -272,6 +254,7 @@ const useAddLiquidFacade = () => {
         setPrimaryButtonLabel("Connect wallet");
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadingLiquidityDetail]);
 
   useEffect(() => {
@@ -327,6 +310,7 @@ const useAddLiquidFacade = () => {
         navigate(RouteName.LIQUIDITY);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAddingLiquidity, addLiquidityState, step]);
 
   useEffect(() => {

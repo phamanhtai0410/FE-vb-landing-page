@@ -24,6 +24,9 @@ const initialState = {
   secondToken: null,
   tokenSelecting: "",
 
+  reserveA: 0,
+  reserveB: 0,
+
   isCheckingApproval: false,
   isApproving: false,
   isAddingLiquidity: false,

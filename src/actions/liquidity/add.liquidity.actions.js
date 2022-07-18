@@ -280,10 +280,12 @@ export const loadDetailAddLiquidity = createAsyncThunk(
         if (reserveB == 0) baExchangeRate = 0;
         else baExchangeRate = reserveA / reserveB;
 
-        const balanceBigN = await contractPair.methods
-          .balanceOf(account)
-          .call();
-        liquidityPool = ethers.utils.formatUnits(balanceBigN, assetsDecimal);
+        if (account) {
+          const balanceBigN = await contractPair.methods
+            .balanceOf(account)
+            .call();
+          liquidityPool = ethers.utils.formatUnits(balanceBigN, assetsDecimal);
+        }
 
         totalSupply = await contractPair.methods?.totalSupply().call();
         if (totalSupply) {

@@ -11,6 +11,7 @@
     "@vechain/ethers": "^4.0.27-5",
     "crypto-js": "^4.1.1",
     "ethers": "^5.6.4",
+    "mathjs": "^10.6.4",
     "react": "^17.0.2",
     "react-beforeunload": "^2.5.3",
     "react-dom": "^17.0.2",
@@ -36,7 +37,9 @@
   },
   "scripts": {
     "start": "env-cmd -f .env.development react-app-rewired start",
-    "build": "env-cmd -f .env.development react-app-rewired build --nomaps",
+    "build-dev": "env-cmd -f .env.development react-app-rewired build --nomaps",
+    "build-test": "env-cmd -f .env.testing react-app-rewired build --nomaps",
+    "build-stag": "env-cmd -f .env.staging react-app-rewired build --nomaps",
     "build-prod": "env-cmd -f .env.production react-app-rewired build --nomaps",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
