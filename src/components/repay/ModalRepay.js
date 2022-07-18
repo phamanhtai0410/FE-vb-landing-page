@@ -75,12 +75,29 @@ const ModalRepay = () => {
     }
 
     const onChangeAmount = (e) => {
+
         const { value } = e.target;
-        if (value <= accountBalance) {
-            setAmount(value);
+    
+        // Giá trị rỗng
+        if(e.target.value === ""){
+            setAmount(value)
+            setValues([0]);
+            onChangeRemainAmount(0);
+        }
+
+        // Lớn hơn giá trị cho phép
+        if (Number(value) > Number(accountBalance)) {
+            return;
+        }
+
+        // kiêm tra input number
+        let pattern = /^\d+\.?\d*$/;
+        if (pattern.test(value)) {
+            setAmount(value)
             setValues([value]);
             onChangeRemainAmount(value);
         }
+
     }
     const onChangeRemainAmount = (values) => {
 

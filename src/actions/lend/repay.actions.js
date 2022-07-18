@@ -118,11 +118,9 @@ export const repayMarket = (dataToken, amount, rateMode = 2) => async (dispatch,
 
         // approve Atoken 
         let approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
-        // let approveMethod = connex.thor.account(process.env.REACT_APP_ATOKEN_VET).method(approveABI);
+        let approveMethod = connex.thor.account(dataToken.assetsAddress).method(approveABI);
 
-        let approveMethod = connex.thor.account(process.env.REACT_APP_ATOKEN_VET).method(approveABI);
-
-        const c1_approve = approveMethod.asClause(ADDRESS_GATEWAY, web3.utils.toWei(amountApprove.toString()));
+        const c1_approve = approveMethod.asClause(dataToken.assetsAddress, web3.utils.toWei(amountApprove.toString()));
 
         const withdrawETH_ABI = ERC20ABI_POOL.find(({ name, type }) => name === "repay" && type === "function");
         const methodWithdraw = connex.thor.account(ADDRESS_POOL).method(withdrawETH_ABI);

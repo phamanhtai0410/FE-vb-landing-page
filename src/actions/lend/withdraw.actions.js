@@ -38,15 +38,31 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
     if (dataToken.assetsAddress) {
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
-
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
 
         console.log("getUserReserveData", accountReserve)
 
+        const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
+        const accountData = await contractPOOL.methods.getUserAccountData(account).call();
+        console.log("getUserAccountData",accountData);
+
+        
         // get balance A Token your account withdrawal is allowed
         if (accountReserve.currentATokenBalance) {
             accountBalance = ethers.utils.formatUnits(accountReserve.currentATokenBalance, dataToken.assetsDecimals);
+            if(accountData && accountData.availableBorrowsBase){
+                const amountMaxWithdrow = accountData.totalCollateralBase - (accountData.totalDebtBase /accountData.ltv);
+                console.log("amountMaxWithdrow",amountMaxWithdrow);
+                if( amountMaxWithdrow < accountReserve.currentATokenBalance ){
+                    accountBalance = ethers.utils.formatUnits(amountMaxWithdrow, dataToken.assetsDecimals);
+                }
+             
+            }
         }
+
+
+      
+        // totalCollateralBase - (totalDebtBase/ltv)
 
         let TOKEN_APPROVE = ADDRESS_POOL;
         if (dataToken.assetsChain === "VET") {

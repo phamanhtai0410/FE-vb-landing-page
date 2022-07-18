@@ -98,7 +98,7 @@ const ModalSupply = () => {
         }
 
         // kiêm tra input number
-        let pattern = /^\d+$/;
+        let pattern = /^\d+\.?\d*$/;
         if (pattern.test(value)) {
             setAmount(value)
         }
