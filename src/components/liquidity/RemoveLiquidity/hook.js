@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import { useState, useEffect, useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import * as actions from "../../../actions";
 import { selectAssetByAddress } from "../../../reducers/assetsMarket.reducer";
-import { selectPoolInfoByAddress } from "../../../reducers/assetsPool.reducer";
-import { selectPriceByTokenAddress } from "../../../reducers/assetsPrice.reducer";
 import {
   selectAddressTokenA,
   selectAddressTokenB,
@@ -38,34 +36,18 @@ const useRemoveLiquidFacade = () => {
     selectAssetByAddress(state, firstTokenAddress)
   );
   const firstTokenAmount = useSelector(selectAmountTokenA);
-  // const firstTokenPrice = useSelector((state) =>
-  //   selectPriceByTokenAddress(state, firstTokenAddress)
-  // );
   const secondTokenAddress = useSelector(selectAddressTokenB);
   const secondTokenInfo = useSelector((state) =>
     selectAssetByAddress(state, secondTokenAddress)
   );
   const secondTokenAmount = useSelector(selectAmountTokenB);
-  // const secondTokenPrice = useSelector((state) =>
-  //   selectPriceByTokenAddress(state, secondTokenAddress)
-  // );
 
   const firstPerSecondTokenExchangeRate = useSelector(
     selectFirstTokenExchangeRate
   );
-
-  // useMemo(
-  //   () => nFormatter(firstTokenPrice / secondTokenPrice, 5),
-  //   [firstTokenPrice, secondTokenPrice]
-  // );
   const secondPerFirstTokenExchangeRate = useSelector(
     selectSecondTokenExchangeRate
   );
-
-  // useMemo(
-  //   () => nFormatter(secondTokenPrice / firstTokenPrice, 5),
-  //   [firstTokenPrice, secondTokenPrice]
-  // );
 
   const [step, setStep] = useState(1);
   const [enableBtnLabel, setEnableBtnLabel] = useState("Enable");
