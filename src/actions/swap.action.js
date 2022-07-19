@@ -68,7 +68,6 @@ export const checkAssetExistsPools = createAsyncThunk(
                   tokenAddressA: addressTokenA,
                   tokenAddressB: addressTokenB,
                   assetsPoolAddress: assetsPoolAddress,
-                  emptyAddress: emptyAddress,
                 })
               );
             }
@@ -99,6 +98,7 @@ export const checkAssetExistsPools = createAsyncThunk(
           assetsPoolAddress: assetsPoolAddress,
           poolErr: "",
           isSwap: true,
+          emptyAddress: emptyAddress,
         };
       } else {
         dispatch(updateStatusSwap(false));
@@ -106,6 +106,7 @@ export const checkAssetExistsPools = createAsyncThunk(
           assetsPoolAddress: assetsPoolAddress,
           poolErr: `${assetsPoolName} not existing in pools`,
           isSwap: false,
+          emptyAddress: emptyAddress,
         };
       }
     }

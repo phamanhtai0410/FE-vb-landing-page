@@ -267,7 +267,7 @@ const Swap = () => {
                     <p>Fetching price...</p>
                   ) : (
                     <div className="w-full flex flex-row items-center justify-between">
-                      <div className="row-center space-x-2 w-full">
+                      <div className="row-center space-x-2">
                         <p>
                           1 {sourceTokenInfo?.assetsChain} = {exchangeRate}{" "}
                           {desireTokenInfo?.assetsChain}
@@ -277,16 +277,16 @@ const Swap = () => {
                       )})`}</p> */}
                       </div>
                       <div className="w-fit flex flex-row items-center">
-                        <div className="bg-itemForm rounded-lg p-2 flex flex-row items-center">
+                        <div className="bg-itemForm rounded-lg p-2 flex flex-row items-center w-fit">
                           <img src={IcGas} alt="gas" className="w-4" />
-                          <p className="mr-4 ml-1">{`$${
+                          <p className="ml-1">{`$${(
                             swapFee * sourceTokenPrice
-                          }`}</p>
+                          ).toFixed(6)}`}</p>
                         </div>
                         <img
                           src={showDetailInfo ? IcUp : IcDown}
                           alt="IcDown"
-                          className="w-4"
+                          className="w-4 ml-2"
                         />
                       </div>
                     </div>

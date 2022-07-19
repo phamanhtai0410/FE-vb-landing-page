@@ -37,7 +37,7 @@ const initialState = {
   totalSupply: null,
   swapSuccess: false,
   poolErr: "",
-  emptyAddress: true
+  emptyAddress: false,
 };
 
 const swapAssetSlice = createSlice({
@@ -138,8 +138,12 @@ const swapAssetSlice = createSlice({
       .addCase(onApproveTokenForAccount.fulfilled, (state, action) => {
         state.accountApprove = action.payload;
       })
+      .addCase(checkAssetExistsPools.pending, (state, action) => {
+        state.emptyAddress = false;
+      })
       .addCase(checkAssetExistsPools.fulfilled, (state, action) => {
         state.poolAddress = action.payload.assetsPoolAddress;
+        state.emptyAddress = action.payload.emptyAddress;
         state.poolErr = action.payload.poolErr;
         state.isSwap = action.payload.isSwap;
       })
