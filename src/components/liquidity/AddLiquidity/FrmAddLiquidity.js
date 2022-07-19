@@ -13,7 +13,7 @@ import IcQuestionCircle from "../../../assets/images/buttons/ic_question_outline
 import Asset from "./Asset";
 import useAddLiquidFacade from "./hook";
 import GradientStrokeWrapper from "../../partials/GradientStrokeWrapper";
-import { PartialConstants } from "../../../constants/partial.constants";
+import PartialConstants from "../../../constants/partial.constants";
 
 import BtnLiquidityApproveA from "./BtnLiquidityApproveA";
 import BtnLiquidityApproveB from "./BtnLiquidityApproveB";
@@ -188,13 +188,19 @@ const FrmAddLiquidity = () => {
               <div className="flex flex-1 flex-row justify-between items-center mt-4 px-2 py-5 liquid-wrapper">
                 <div className="price-pool-item">
                   <p className="value">
-                    {nFormatter(firstPerSecondTokenExchangeRate, 6)}
+                    {nFormatter(
+                      firstPerSecondTokenExchangeRate,
+                      PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER
+                    )}
                   </p>
                   <p className="label">{`${secondTokenInfo?.assetsChain} per ${firstTokenInfo?.assetsChain}`}</p>
                 </div>
                 <div className="price-pool-item">
                   <p className="value">
-                    {nFormatter(secondPerFirstTokenExchangeRate, 6)}
+                    {nFormatter(
+                      secondPerFirstTokenExchangeRate,
+                      PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER
+                    )}
                   </p>
                   <p className="label">{`${firstTokenInfo?.assetsChain} per ${secondTokenInfo?.assetsChain}`}</p>
                 </div>
@@ -216,7 +222,11 @@ const FrmAddLiquidity = () => {
           <div className="flex flex-col space-y-6">
             <div className="flex flex-row items-center">
               <p className=" text-4xl font-poppins_medium mr-8">
-                {liquidityEstimated}
+                {/*Minh said only PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER fractional digit*/}
+                {nFormatter(
+                  liquidityEstimated,
+                  PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER
+                )}
               </p>
               <div className="flex flex-row space-x-3">
                 <img src={firstTokenInfo?.icon} alt="" className="w-8 h-8" />
@@ -236,7 +246,17 @@ const FrmAddLiquidity = () => {
               <div className="flex flex-row items-center space-x-4">
                 <img src={firstTokenInfo?.icon} alt="" className="w-8 h-8" />
                 <span className="font-poppins_semi_bold text-2xl">
-                  {firstTokenVolume > 1 ? numberWithCommas(firstTokenVolume) : firstTokenVolume}
+                  {firstTokenVolume > 1
+                    ? numberWithCommas(
+                        nFormatter(
+                          firstTokenVolume,
+                          PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER
+                        )
+                      )
+                    : nFormatter(
+                        firstTokenVolume,
+                        PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER
+                      )}
                 </span>
               </div>
             </div>
@@ -245,20 +265,48 @@ const FrmAddLiquidity = () => {
               <div className="flex flex-row items-center space-x-4">
                 <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
                 <span className="font-poppins_semi_bold text-2xl">
-                  {secondTokenVolume > 1 ? numberWithCommas(secondTokenVolume) : secondTokenVolume}
+                  {secondTokenVolume > 1
+                    ? numberWithCommas(
+                        nFormatter(
+                          secondTokenVolume,
+                          PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER
+                        )
+                      )
+                    : nFormatter(
+                        secondTokenVolume,
+                        PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER
+                      )}
                 </span>
               </div>
             </div>
             <div className="price-pool-share-row items-start">
               <p className="self-start font-poppins_light">Rates</p>
               <div className="flex flex-col justify-end">
-                <p className="text-right">{`1 ${firstTokenInfo?.assetsChain} = ${firstPerSecondTokenExchangeRate} ${secondTokenInfo?.assetsChain}`}</p>
-                <p className="text-right">{`1 ${secondTokenInfo?.assetsChain} = ${secondPerFirstTokenExchangeRate} ${firstTokenInfo?.assetsChain}`}</p>
+                <p className="text-right">{`1 ${
+                  firstTokenInfo?.assetsChain
+                } = ${nFormatter(
+                  firstPerSecondTokenExchangeRate,
+                  PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER
+                )} ${secondTokenInfo?.assetsChain}`}</p>
+                <p className="text-right">{`1 ${
+                  secondTokenInfo?.assetsChain
+                } = ${nFormatter(
+                  secondPerFirstTokenExchangeRate,
+                  PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER
+                )} ${firstTokenInfo?.assetsChain}`}</p>
               </div>
             </div>
             <div className="price-pool-share-row">
               <p>Share a Pool</p>
-              <p>{shareAPool < 0.01 ? "<0,01" : nFormatter(shareAPool, 8)}%</p>
+              <p>
+                {shareAPool < 0.01
+                  ? "<0,01"
+                  : nFormatter(
+                      shareAPool,
+                      PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER
+                    )}
+                %
+              </p>
             </div>
           </div>
         </div>

@@ -9,6 +9,11 @@ export function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+// eslint-disable-next-line no-extend-native
+String.prototype.isMatch = function (pattern) {
+  return pattern.test(this);
+};
+
 export const getDeadline = () => Math.round(new Date().getTime() / 1000) + 3600;
 
 export const getTimeStamp = () => new Date().getTime().toString();
@@ -82,7 +87,8 @@ export const getWeiUnitByDecimal = (decimal) => {
 
 export const getAmountInWeiFormatted = (web3, amount, decimalNumber) => {
   if (!web3) throw new Error("Web3 is required");
-  else if (!amount || amount === 0 || amount === 0.0) throw new Error("Amount is required");
+  else if (!amount || amount === 0 || amount === 0.0)
+    throw new Error("Amount is required");
   else if (!decimalNumber) throw new Error("DecimalNumber is required");
 
   if (decimalNumber < PartialConstants.DEFAULT_ASSET_DECIMAL)

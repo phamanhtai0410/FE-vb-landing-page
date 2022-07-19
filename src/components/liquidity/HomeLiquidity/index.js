@@ -12,8 +12,12 @@ import LiquidityExcerpt from "./LiquidityExcerpt";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 const Liquidity = () => {
-  const { userPoolAddresses, addLiquidity, onFindOtherLPClicked } =
-    useLiquidityFacade();
+  const {
+    poolAddresses,
+    userPoolAddresses,
+    addLiquidity,
+    onFindOtherLPClicked,
+  } = useLiquidityFacade();
 
   return (
     <div className="w-full lg:w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative z-50">
@@ -65,17 +69,21 @@ const Liquidity = () => {
               No liquidity found.
             </p>
           )}
-          <p className="mt-8 self-center text-xl font-poppins_light text-[#678BCA]">
-            Don’t see a pool you joined?
-          </p>
-          <SecondaryButton
-            label="Find other LP tokens"
-            labelColor="#0CD2EC"
-            className="mt-4 w-48 h-11 rounded-lg btn-modal-secondary self-center"
-            labelClassName="text-base"
-            borderRadius="0.5rem"
-            onClick={onFindOtherLPClicked}
-          />
+          {poolAddresses.length > 0 && (
+            <>
+              <p className="mt-8 self-center text-xl font-poppins_light text-[#678BCA]">
+                Don’t see a pool you joined?
+              </p>
+              <SecondaryButton
+                label="Find other LP tokens"
+                labelColor="#0CD2EC"
+                className="mt-4 w-48 h-11 rounded-lg btn-modal-secondary self-center"
+                labelClassName="text-base"
+                borderRadius="0.5rem"
+                onClick={onFindOtherLPClicked}
+              />
+            </>
+          )}
         </div>
       </div>
 
