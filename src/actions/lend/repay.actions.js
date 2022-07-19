@@ -2,11 +2,13 @@ import { ethers } from 'ethers';
 
 import {  marketplaceConstants } from '../../constants';
 
-import ERC20ABI_VB from '../../_contracts/assets/VB.json';
+import ERC20ABI from '../../_contracts/abi-erc20.json';
 import ERC20ABI_AAVE from '../../_contracts/lend/AaveProtocolDataProvider.json';
 import ERC20ABI_WETH_GETAWAY from '../../_contracts/lend/WETHGateway.json';
 import ERC20ABI_POOL from '../../_contracts/lend/Pool.json';
 import ERC20ABI_VARIBLE_DEBT_TOKEN from '../../_contracts/lend/VariableDebtToken.json';
+
+
 
 import { randomKeyUUID } from '../../utils/lib';
 import * as actions from '../.';
@@ -66,8 +68,7 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
         // gia tri dc repay
         accountBalance = accountBalanceVariableDebt;
 
-      
-        const contractBorrow = new web3.eth.Contract(approveABI, dataToken.assetsAddress);
+        const contractBorrow = new web3.eth.Contract(ERC20ABI, dataToken.assetsAddress);
         accountApprove = await contractBorrow.methods.allowance(account, ADDRESS_POOL).call();
   
         if(accountApprove && accountApprove <= accountBalanceStableDebt){
