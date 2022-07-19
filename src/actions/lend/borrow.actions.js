@@ -73,13 +73,15 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
             let totalBorrowRate = (getReserveData.totalVariableDebt  /(10000-Number(configReserveData.reserveFactor)));
             totalBorrowRate = Number(getReserveData.totalAToken) - Number(totalBorrowRate);
             totalBorrowRate = totalBorrowRate.toLocaleString('fullwide', {useGrouping:false});
+            console.log("totalBorrowRate",totalBorrowRate);
+            console.log("accountData.availableBorrowsBase",accountData.availableBorrowsBase);
 
             if(dataToken.assetsAddress === process.env.REACT_APP_TOKEN_VEUSD){
                 totalBorrowRate =  web3.utils.toWei(totalBorrowRate, 'micro');
             }
 
             // Tổng pool có chép borrow nhỏ hơn giá trị user có thể variableBorrowRate
-            if(totalBorrowRate < accountData.availableBorrowsBase){
+            if(Number(totalBorrowRate) < Number(accountData.availableBorrowsBase)){
                 accountBalance = ethers.utils.formatUnits(totalBorrowRate, 18);
                 accountBalance = accountBalance / dataPrice[dataToken.assetsAddress];
             }

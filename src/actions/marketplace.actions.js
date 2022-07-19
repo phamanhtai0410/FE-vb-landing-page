@@ -195,7 +195,6 @@ export const getAccountOverview = () => async (dispatch, getState) => {
             try {
 
                 const accountPool = await contractPOOL.methods.getUserAccountData(account).call();
-
                 if (accountPool && accountPool.healthFactor) {
                     healthFactor = ethers.utils.formatUnits(accountPool.healthFactor || '0', 18);
                 }
@@ -258,6 +257,8 @@ export const getAccountAssets = () => async (dispatch, getState) => {
 
                 const accountReserve = await contractAAVE.methods.getUserReserveData(item.assetsAddress, account).call();
                 
+                console.log("getUserReserveData",accountReserve);
+
                 let balanceSupply = 0;
                 if (accountReserve.currentATokenBalance !== "0") {
 

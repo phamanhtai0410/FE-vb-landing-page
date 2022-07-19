@@ -75,12 +75,29 @@ const ModalRepay = () => {
     }
 
     const onChangeAmount = (e) => {
+
         const { value } = e.target;
-        if (value <= accountBalance) {
-            setAmount(value);
+    
+        // Giá trị rỗng
+        if(e.target.value === ""){
+            setAmount(value)
+            setValues([0]);
+            onChangeRemainAmount(0);
+        }
+
+        // Lớn hơn giá trị cho phép
+        if (Number(value) > Number(accountBalance)) {
+            return;
+        }
+
+        // kiêm tra input number
+        let pattern = /^\d+\.?\d*$/;
+        if (pattern.test(value)) {
+            setAmount(value)
             setValues([value]);
             onChangeRemainAmount(value);
         }
+
     }
     const onChangeRemainAmount = (values) => {
 
@@ -115,17 +132,12 @@ const ModalRepay = () => {
     const showBtnView = () => {
         let btn = "";
         if (dataToken) {
-
             btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
-
-            // if (dataToken.assetsChain === "VET") {
-            //     btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
-            // } else if (accountApprove === 0) {
-            //     btn = <BtnRepayApprove dataToken={dataToken} pending={pending} />
-            // } else {
-            //     btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
-            // }
-
+            if (Number(accountApprove) === 0) {
+                btn = <BtnRepayApprove dataToken={dataToken} pending={pending} />
+            } else {
+                btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
+            }
         }
         return btn;
 

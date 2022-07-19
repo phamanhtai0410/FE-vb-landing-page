@@ -99,7 +99,8 @@ const ModalBorrow = () => {
         }
 
         // kiêm tra input number
-        let pattern = /^\d+$/;
+        let pattern = /^\d+\.?\d*$/;
+        console.log(pattern.test(value));
         if (pattern.test(value)) {
             setAmount(value)
             setValues([value]);
