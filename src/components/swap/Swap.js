@@ -61,6 +61,7 @@ const Swap = () => {
     showDetailInfo,
     isSwapSuccess,
     emptyAddress,
+    loadingApprove,
   } = useSwapFacade();
 
   const renderTitleButton = () => {
@@ -68,7 +69,11 @@ const Swap = () => {
       if (poolErr !== "") {
         return poolErr;
       } else {
-        return "Approve";
+        if (loadingApprove) {
+          return "Approving...";
+        } else {
+          return "Approve";
+        }
       }
     } else {
       if (showErr || poolErr !== "") {
@@ -354,12 +359,12 @@ const Swap = () => {
 
             {account && (
               <button
-                disabled={!isSwap || loadingSwap || showErr}
+                disabled={!isSwap || loadingSwap || loadingApprove || showErr}
                 onClick={
                   accountApprove === 0 ? onApproveToken : onSwapAssetToken
                 }
                 className={`w-full ${
-                  isSwap && !loadingSwap && !showErr
+                  isSwap && !loadingSwap && !loadingApprove && !showErr
                     ? "btn-veb"
                     : "bg-btn-veb-disabled rounded-lg"
                 }  h-12`}

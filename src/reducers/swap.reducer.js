@@ -23,6 +23,7 @@ const initialState = {
   isSwap: true,
   loadingFee: false,
   loadingSwap: false,
+  loadingApprove: false,
   pairFee: 0,
   loadingGetAmountOut: false,
   loadingGetAmountIn: false,
@@ -88,6 +89,10 @@ const swapAssetSlice = createSlice({
       state.swapSuccess = true;
       state.loadingSwap = false;
     },
+    approveSuccess: (state, action) => {
+      state.loadingApprove = false;
+      state.accountApprove = action.payload.accountApprove;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -135,8 +140,15 @@ const swapAssetSlice = createSlice({
         state.accountApprove = action.payload.accountApprove;
         state.contractSwap = action.payload.contractSwap;
       })
+      .addCase(onApproveTokenForAccount.pending, (state, action) => {
+        state.loadingApprove = true;
+      })
       .addCase(onApproveTokenForAccount.fulfilled, (state, action) => {
-        state.accountApprove = action.payload;
+        state.loadingApprove = false;
+        state.accountApprove = action.payload.accountApprove;
+      })
+      .addCase(onApproveTokenForAccount.rejected, (state, action) => {
+        state.loadingApprove = false;
       })
       .addCase(checkAssetExistsPools.pending, (state, action) => {
         state.emptyAddress = false;
@@ -193,6 +205,7 @@ export const {
   // countExchangeRate,
   updateStatusSwap,
   refreshDataSwap,
+  approveSuccess,
 } = swapAssetSlice.actions;
 
 export const selectSourceToken = (state) => state.swapAsset.sourceTokenAddress;
@@ -213,6 +226,7 @@ export const selectLoadingGetAmountIn = (state) =>
 export const selectAmountsIn = (state) => state.swapAsset.amountsIn;
 export const selectAccountApprove = (state) => state.swapAsset.accountApprove;
 export const selectLoadingSwap = (state) => state.swapAsset.loadingSwap;
+export const selectLoadingApprove = (state) => state.swapAsset.loadingApprove;
 export const selectSwapSuccess = (state) => state.swapAsset.swapSuccess;
 export const selectLoadingExchangeRate = (state) =>
   state.swapAsset.loadingExchangeRate;

@@ -19,6 +19,7 @@ import {
 
 import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
 import {
+  approveSuccess,
   getSymbolPairs,
   refreshDataSwap,
   updateStatusSwap,
@@ -312,7 +313,7 @@ export const checkApproveToken = createAsyncThunk(
     accountApprove = ethers.utils.formatEther(accountApprove);
     accountApprove = Number(accountApprove);
 
-    return { contractSwap, accountApprove };
+    return { contractSwap: contractSwap, accountApprove: accountApprove };
   }
 );
 
@@ -322,11 +323,21 @@ export const onApproveTokenForAccount = createAsyncThunk(
     const state = getState();
     const { web3, account, connex } = state.web3;
     const { contractSwap } = state.swapAsset;
-    const amountMax = 1000000000;
+    let amountMax = 0;
 
     const addressToken = tokenInfo?.assetsAddress || "";
 
     if (account && contractSwap && addressToken) {
+      const key = randomKeyUUID();
+      dispatch(
+        actions.alertActions.loading(
+          {
+            title: "Waiting For Approve",
+            description: `Approve ${tokenInfo.assetsChain} on VeBank`,
+          },
+          key
+        )
+      );
       const approveABI = {
         constant: false,
         inputs: [
@@ -345,10 +356,36 @@ export const onApproveTokenForAccount = createAsyncThunk(
 
       approveMethod
         .transact(ADDRESS_ROUTER, web3.utils.toWei(amountMax.toString()))
-        .comment(`approve ${tokenInfo.assetsChain} on VeBank`)
-        .request();
-
-      return amountMax;
+        .comment(`Approve ${tokenInfo.assetsChain} on VeBank`)
+        .request()
+        .then(() => {
+          amountMax = 1000000000;
+          dispatch(approveSuccess({accountApprove: amountMax}))
+          dispatch(
+            actions.alertActions.update(
+              {
+                status: "success",
+                title: "Approve successfully",
+                description: `Approve ${tokenInfo.assetsChain} successfully`,
+              },
+              key
+            )
+          );
+        })
+        .catch((e) => {
+          amountMax = 0;
+          dispatch(
+            actions.alertActions.update(
+              {
+                status: "warning",
+                title: "Approve failed",
+                description: `Approve ${tokenInfo.assetsChain} failed`,
+              },
+              key
+            )
+          );
+          return { accountApprove: amountMax };
+        });
     }
   }
 );
