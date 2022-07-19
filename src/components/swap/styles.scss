@@ -1,3 +1,11 @@
+.more__info__hidden {
+  max-height: 56px;
+  transition: max-height 1s;
+}
+.more__info__show {
+  max-height: 300px;
+  transition: max-height 1s;
+}
 .loading {
     width: 16px;
     height: 16px;

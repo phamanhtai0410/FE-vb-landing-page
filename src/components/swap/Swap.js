@@ -243,46 +243,57 @@ const Swap = () => {
       <div className="col-x-center justify-center space-y-4">
         {userInputRef.current !== "" && !isSwapSuccess && (
           <div className="flex flex-col w-full space-y-4">
-            <button
-              onClick={onShowDetailInfo}
-              className="px-4 h-12 text-sm rounded-lg bg-transparent border-[1px] border-vbDisableText"
+            <div
+              className={`${
+                showDetailInfo ? "more__info__show" : "more__info__hidden"
+              } h-fit w-full overflow-hidden`}
             >
-              <div className="flex flex-row justify-start items-center">
-                {loadingGetAmountOut || loadingGetAmountIn ? (
-                  <div className="loading mr-2" />
-                ) : (
-                  <img src={IcReload} alt="Refresh" className="w-4 h-4 mr-2" />
-                )}
-                {loadingGetAmountOut || loadingGetAmountIn ? (
-                  <p>Fetching price...</p>
-                ) : (
-                  <div className="w-full flex flex-row items-center justify-between">
-                    <div className="row-center space-x-2 w-full">
-                      <p>
-                        1 {sourceTokenInfo?.assetsChain} = {exchangeRate}{" "}
-                        {desireTokenInfo?.assetsChain}
-                      </p>
-                      {/* <p>{`($${(exchangeRate * desireTokenPrice).toFixed(
+              <button
+                onClick={onShowDetailInfo}
+                className="px-4 h-12 text-sm w-full rounded-lg bg-transparent border-[1px] border-vbDisableText"
+              >
+                <div className="flex flex-row justify-start items-center">
+                  {loadingGetAmountOut || loadingGetAmountIn ? (
+                    <div className="loading mr-2" />
+                  ) : (
+                    <img
+                      src={IcReload}
+                      alt="Refresh"
+                      className="w-4 h-4 mr-2"
+                    />
+                  )}
+                  {loadingGetAmountOut || loadingGetAmountIn ? (
+                    <p>Fetching price...</p>
+                  ) : (
+                    <div className="w-full flex flex-row items-center justify-between">
+                      <div className="row-center space-x-2 w-full">
+                        <p>
+                          1 {sourceTokenInfo?.assetsChain} = {exchangeRate}{" "}
+                          {desireTokenInfo?.assetsChain}
+                        </p>
+                        {/* <p>{`($${(exchangeRate * desireTokenPrice).toFixed(
                         3
                       )})`}</p> */}
-                    </div>
-                    <div className="w-fit flex flex-row items-center">
-                      <div className="bg-itemForm rounded-lg p-2 flex flex-row items-center">
-                        <img src={IcGas} alt="gas" className="w-4" />
-                        <p className="mr-4 ml-1">{`$${swapFee * sourceTokenPrice}`}</p>
                       </div>
-                      <img
-                        src={showDetailInfo ? IcUp : IcDown}
-                        alt="IcDown"
-                        className="w-4"
-                      />
+                      <div className="w-fit flex flex-row items-center">
+                        <div className="bg-itemForm rounded-lg p-2 flex flex-row items-center">
+                          <img src={IcGas} alt="gas" className="w-4" />
+                          <p className="mr-4 ml-1">{`$${
+                            swapFee * sourceTokenPrice
+                          }`}</p>
+                        </div>
+                        <img
+                          src={showDetailInfo ? IcUp : IcDown}
+                          alt="IcDown"
+                          className="w-4"
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            </button>
-            {showDetailInfo && (
-              <div className="col px-4 py-5 space-y-4 rounded-lg border border-vbDisableText p-2">
+                  )}
+                </div>
+              </button>
+
+              <div className="mt-4 px-4 py-5 space-y-4 rounded-lg border border-vbDisableText">
                 <div className="flex justify-between">
                   <div className="flex space-x-2">
                     <p className="text-grey-3">Minimum receive</p>
@@ -338,7 +349,8 @@ const Swap = () => {
                   )}
                 </div>
               </div>
-            )}
+            </div>
+
             {account && (
               <button
                 disabled={!isSwap || loadingSwap || showErr}

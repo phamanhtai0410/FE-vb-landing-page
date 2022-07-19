@@ -3,7 +3,7 @@ import Modal from "react-modal";
 
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 
-import * as actions from "../../actions";
+// import * as actions from "../../actions";
 import { TransitionGroup } from "react-transition-group";
 
 import {
