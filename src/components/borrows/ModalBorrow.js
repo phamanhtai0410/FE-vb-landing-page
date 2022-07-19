@@ -40,7 +40,7 @@ const ModalBorrow = () => {
     const [step, setStep] = useState(1);
     const [rate, setRate] = useState(2);
 
-    const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, accountVariableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
+    const { dataToken, accountBalance, accountApprove, loading, accountVariableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
 
     const dispatch = useDispatch();
     const amountInputRef = useAutoFocus();
@@ -192,7 +192,9 @@ const ModalBorrow = () => {
                             Available to borrow
                         </div>
                         <div>
-                            <span className='font-poppins font-bold'>{accountBalance}</span>
+                            <span className='font-poppins font-bold inline-block'> 
+                            {accountBalance ? accountBalance : <TailSpin className='w-4 h-4 mr-2' />}
+                            </span>
                             <span className='text-[#BFBFBF] pl-2'>{dataToken ? dataToken.assetsChain : ""}</span>
                         </div>
                     </div>
@@ -203,6 +205,7 @@ const ModalBorrow = () => {
 
                         <input
                             value={amount}
+                   
                             ref={amountInputRef}
                             onChange={onChangeAmount}
                             className="bg-transparent focus:outline-none placeholder-slate-400 font-poppins appearance-none text-base w-full"
@@ -223,7 +226,7 @@ const ModalBorrow = () => {
                     </div>
 
                     <div className='px-8'>
-                        <Range
+                        {loading === false ?   <Range
                             step={1}
                             min={0}
                             max={accountBalance}
@@ -245,7 +248,8 @@ const ModalBorrow = () => {
                                     className="w-3 h-3 transform translate-x-10 bg-slate-50 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                 />
                             )}
-                        />
+                        />:""}
+                      
                     </div>
                 </div>
 
