@@ -133,7 +133,7 @@ const ModalRepay = () => {
         let btn = "";
         if (dataToken) {
             btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
-            if (Number(accountApprove) === 0) {
+            if (Number(accountApprove) <= Number(accountBalance)) {
                 btn = <BtnRepayApprove dataToken={dataToken} pending={pending} />
             } else {
                 btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
