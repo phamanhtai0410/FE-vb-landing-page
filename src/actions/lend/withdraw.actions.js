@@ -39,8 +39,7 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
-
-        console.log("getUserReserveData", accountReserve)
+        console.log("getUserReserveData", accountReserve);
 
         const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
         const accountData = await contractPOOL.methods.getUserAccountData(account).call();

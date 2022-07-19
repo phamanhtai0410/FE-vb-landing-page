@@ -173,5 +173,6 @@ export function assetsPoolReducer(state = initialState, payload) {
   }
 }
 
+export const selectPoolAddresses = state => state.assetsPoolReducer.ids;
 export const selectPoolInfoByAddress = (state, address) =>
   state.assetsPoolReducer.entities[address];

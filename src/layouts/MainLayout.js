@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { Outlet } from 'react-router-dom';
 
 import Header from '../components/partials/Header';
@@ -9,9 +9,9 @@ const MainLayout = () => {
     // const [spinner, setSpinner] = useState(true);
     // const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     setTimeout(() => setSpinner(false), 1500)
-    // }, []);  
+    useEffect(() => {
+        console.log(`${process.env.REACT_APP_NAME} ${process.env.REACT_APP_VERSION}`)
+    }, []);  
 
     // if (spinner) {
     //     return "..loading";

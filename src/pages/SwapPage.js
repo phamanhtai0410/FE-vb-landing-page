@@ -52,7 +52,7 @@ const SwapPage = () => {
 
   return (
     <section className="box-borrows mx-auto bg-cover bg-center">
-      <div className="w-full h-full pb-9 min-h-screen flex items-center justify-center bg-content -z-50">
+      <div className="w-full h-full pb-9 min-h-screen overflow-hidden flex items-center justify-center bg-content -z-50 pt-24">
         <div
           className={`${
             isSelectTokenModalOpen ? "hidden" : "flex"

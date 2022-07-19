@@ -47,14 +47,14 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
 
     const contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
     const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
-    //  let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
 
-    // const getReserveData = await contractAAVE.methods.getReserveData(dataToken.assetsAddress).call();
-    // let balanceTotalSupply = ethers.utils.formatUnits(getReserveData.totalAToken, dataToken.assetsDecimals);
-    // accountBalance = Math.round(balanceTotalSupply * 100) / 100;
+    dispatch({
+        type: marketplaceConstants.MODAL_OPEN_BORROW_MARKET,
+        dataToken,
+        accountBalance,
+        loading:true,
+    });
 
-    // const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
-    // console.log(`getUserReserveData`, accountReserve);
     if(contractPOOL){
         const accountData = await contractPOOL.methods.getUserAccountData(account).call();
 
@@ -73,8 +73,6 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
             let totalBorrowRate = (getReserveData.totalVariableDebt  /(10000-Number(configReserveData.reserveFactor)));
             totalBorrowRate = Number(getReserveData.totalAToken) - Number(totalBorrowRate);
             totalBorrowRate = totalBorrowRate.toLocaleString('fullwide', {useGrouping:false});
-            console.log("totalBorrowRate",totalBorrowRate);
-            console.log("accountData.availableBorrowsBase",accountData.availableBorrowsBase);
 
             if(dataToken.assetsAddress === process.env.REACT_APP_TOKEN_VEUSD){
                 totalBorrowRate =  web3.utils.toWei(totalBorrowRate, 'micro');
@@ -123,6 +121,7 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
 
     dispatch({
         type: marketplaceConstants.MODAL_OPEN_BORROW_MARKET,
+        loading:false,
         accountApprove,
         accountStableDebtApprove,
         accountVariableDebtApprove,

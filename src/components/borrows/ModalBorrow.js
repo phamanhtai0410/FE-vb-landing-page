@@ -40,7 +40,7 @@ const ModalBorrow = () => {
     const [step, setStep] = useState(1);
     const [rate, setRate] = useState(2);
 
-    const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, accountVariableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
+    const { dataToken, accountBalance, accountApprove, loading, accountVariableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.borrowReducer, shallowEqual);
 
     const dispatch = useDispatch();
     const amountInputRef = useAutoFocus();
@@ -100,7 +100,6 @@ const ModalBorrow = () => {
 
         // kiêm tra input number
         let pattern = /^\d+\.?\d*$/;
-        console.log(pattern.test(value));
         if (pattern.test(value)) {
             setAmount(value)
             setValues([value]);
@@ -192,7 +191,9 @@ const ModalBorrow = () => {
                             Available to borrow
                         </div>
                         <div>
-                            <span className='font-poppins font-bold'>{accountBalance}</span>
+                            <span className='font-poppins font-bold inline-block'> 
+                            {accountBalance ? accountBalance : <TailSpin className='w-4 h-4 mr-2' />}
+                            </span>
                             <span className='text-[#BFBFBF] pl-2'>{dataToken ? dataToken.assetsChain : ""}</span>
                         </div>
                     </div>
@@ -223,7 +224,7 @@ const ModalBorrow = () => {
                     </div>
 
                     <div className='px-8'>
-                        <Range
+                        {loading === false ?   <Range
                             step={1}
                             min={0}
                             max={accountBalance}
@@ -245,7 +246,8 @@ const ModalBorrow = () => {
                                     className="w-3 h-3 transform translate-x-10 bg-slate-50 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                 />
                             )}
-                        />
+                        />:""}
+                      
                     </div>
                 </div>
 
