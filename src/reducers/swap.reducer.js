@@ -36,6 +36,8 @@ const initialState = {
   reserves2: null,
   totalSupply: null,
   swapSuccess: false,
+  poolErr: "",
+  emptyAddress: true
 };
 
 const swapAssetSlice = createSlice({
@@ -137,7 +139,9 @@ const swapAssetSlice = createSlice({
         state.accountApprove = action.payload;
       })
       .addCase(checkAssetExistsPools.fulfilled, (state, action) => {
-        state.poolAddress = action.payload;
+        state.poolAddress = action.payload.assetsPoolAddress;
+        state.poolErr = action.payload.poolErr;
+        state.isSwap = action.payload.isSwap;
       })
       .addCase(swapAsset.pending, (state) => {
         state.loadingSwap = true;
@@ -166,6 +170,9 @@ const swapAssetSlice = createSlice({
       .addCase(checkTotalSupplyAvailable.fulfilled, (state, action) => {
         state.totalSupply = action.payload.totalSupply;
         state.isSwap = action.payload.isSwap;
+        if (state.emptyAddress) {
+          state.poolErr = action.payload.poolErr;
+        }
       });
   },
 });
@@ -205,3 +212,5 @@ export const selectLoadingSwap = (state) => state.swapAsset.loadingSwap;
 export const selectSwapSuccess = (state) => state.swapAsset.swapSuccess;
 export const selectLoadingExchangeRate = (state) =>
   state.swapAsset.loadingExchangeRate;
+export const selectPoolErr = (state) => state.swapAsset.poolErr;
+export const selectEmptyAddress = (state) => state.swapAsset.emptyAddress;

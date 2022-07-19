@@ -68,6 +68,7 @@ export const checkAssetExistsPools = createAsyncThunk(
                   tokenAddressA: addressTokenA,
                   tokenAddressB: addressTokenB,
                   assetsPoolAddress: assetsPoolAddress,
+                  emptyAddress: emptyAddress,
                 })
               );
             }
@@ -94,19 +95,18 @@ export const checkAssetExistsPools = createAsyncThunk(
           })
         );
         dispatch(updateStatusSwap(true));
-        return assetsPoolAddress;
+        return {
+          assetsPoolAddress: assetsPoolAddress,
+          poolErr: "",
+          isSwap: true,
+        };
       } else {
-        const key = randomKeyUUID();
-        dispatch(
-          actions.alertActions.warning(
-            {
-              title: "Warning",
-              description: `${assetsPoolName} not existing in pools`,
-            },
-            key
-          )
-        );
         dispatch(updateStatusSwap(false));
+        return {
+          assetsPoolAddress: assetsPoolAddress,
+          poolErr: `${assetsPoolName} not existing in pools`,
+          isSwap: false,
+        };
       }
     }
   }
@@ -136,7 +136,6 @@ export const checkExchangeRatePool = createAsyncThunk(
         reserves?.[1],
         getDecimalForAsset(tokenAddressB ? tokenAddressB : desireTokenAddress)
       );
-
       return { reserves1, reserves2 };
     }
   }
@@ -144,11 +143,12 @@ export const checkExchangeRatePool = createAsyncThunk(
 
 export const checkTotalSupplyAvailable = createAsyncThunk(
   "checkTotalSupplyAvailable",
-  async (_, { dispatch, getState }) => {
+  async ({ amountOut }, { dispatch, getState }) => {
     const state = getState();
     const { web3 } = state.web3;
     const {
-      amountsIn,
+      poolErr,
+      amountsOut,
       reserves2,
       poolAddress,
       sourceTokenAddress,
@@ -174,12 +174,17 @@ export const checkTotalSupplyAvailable = createAsyncThunk(
       }
 
       if (
-        parseFloat(amountsIn) > parseFloat(reserves2) ||
+        parseFloat(amountOut ? amountOut : amountsOut) >
+          parseFloat(reserves2) ||
         parseFloat(totalSupply) <= 0.0
       ) {
-        return { totalSupply: totalSupply, isSwap: false };
+        return {
+          totalSupply: totalSupply,
+          isSwap: false,
+          poolErr: "Pool not enough volume",
+        };
       } else {
-        return { totalSupply: totalSupply, isSwap: true };
+        return { totalSupply: totalSupply, isSwap: true, poolErr: poolErr };
       }
     }
   }
@@ -205,12 +210,13 @@ export const getPairsFee = createAsyncThunk(
         .getPair(addressTokenA, addressTokenB)
         .call();
       const emptyAddress = /^0x0+$/.test(assetsPoolAddress); // true chưa có
+      let pairFee = 0;
       if (!emptyAddress && assetsPoolAddress) {
-        const pairFee = await contractFactory.methods
+        pairFee = await contractFactory.methods
           .getPairsFee(assetsPoolAddress)
           .call();
-        return pairFee;
       }
+      return pairFee;
     }
   }
 );
@@ -232,7 +238,9 @@ export const getAmountsOut = createAsyncThunk(
 
       const amountInUint = web3.utils.toWei(
         inputAmountIn.toString(),
-        getDecimalForAsset(addressTokenA) ===  PartialConstants.VEUSD_DECIMAL ? "mwei" : "ether"
+        getDecimalForAsset(addressTokenA) === PartialConstants.VEUSD_DECIMAL
+          ? "mwei"
+          : "ether"
       );
 
       const amountsOut = await contractFactory.methods
@@ -267,7 +275,9 @@ export const getAmountsIn = createAsyncThunk(
 
       const amountOutUint = web3.utils.toWei(
         inputAmountOut.toString(),
-        getDecimalForAsset(addressTokenB) ===  PartialConstants.VEUSD_DECIMAL ? "mwei" : "ether"
+        getDecimalForAsset(addressTokenB) === PartialConstants.VEUSD_DECIMAL
+          ? "mwei"
+          : "ether"
       );
 
       const amountsIn = await contractFactory.methods
