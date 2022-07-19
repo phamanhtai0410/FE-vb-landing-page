@@ -17,7 +17,7 @@ const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (c
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 
-const approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
+const approveABI = ERC20ABI_POOL.find(({ name, type }) => (name === "approve" && type === "function"));
 
 // ------------------------ REPAY ------------------------ //
 
@@ -70,6 +70,8 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
 
         const contractBorrow = new web3.eth.Contract(ERC20ABI, dataToken.assetsAddress);
         accountApprove = await contractBorrow.methods.allowance(account, ADDRESS_POOL).call();
+        
+        console.log("accountApprove",accountApprove);
   
         if(accountApprove && accountApprove <= accountBalanceStableDebt){
             // get the approved ADDRESS_POOL

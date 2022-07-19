@@ -38,7 +38,7 @@ const ModalRepay = () => {
     const [values, setValues] = useState([0]);
     const [step, setStep] = useState(1);
 
-    const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.repayReducer, shallowEqual);
+    const { dataToken, accountBalance, accountApprove, loading, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.repayReducer, shallowEqual);
 
     const dispatch = useDispatch();
 
@@ -133,7 +133,7 @@ const ModalRepay = () => {
         let btn = "";
         if (dataToken) {
             btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
-            if (Number(accountApprove) === 0) {
+            if (Number(accountApprove) <= Number(accountBalance)) {
                 btn = <BtnRepayApprove dataToken={dataToken} pending={pending} />
             } else {
                 btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
@@ -174,7 +174,9 @@ const ModalRepay = () => {
                             Available to repay
                         </div>
                         <div>
-                            <span className='font-poppins font-bold'>{accountBalance}</span>
+                            <span className='font-poppins font-bold'>
+                                {accountBalance ? accountBalance : <TailSpin className='w-4 h-4 mr-2' />}
+                            </span>
                             <span className='text-[#BFBFBF] pl-2'>{dataToken ? dataToken.assetsChain : ""}</span>
                         </div>
                     </div>
