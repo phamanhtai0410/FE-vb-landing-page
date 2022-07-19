@@ -17,6 +17,7 @@ import {
   selectLoadingSwap,
   selectLoadingExchangeRate,
   selectSwapSuccess,
+  selectPoolErr,
 } from "../../reducers/swap.reducer";
 import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
 import { selectPriceByTokenAddress } from "../../reducers/assetsPrice.reducer";
@@ -65,6 +66,7 @@ const useSwapFacade = () => {
   const accountApprove = useSelector(selectAccountApprove);
   const loadingExchangeRate = useSelector(selectLoadingExchangeRate);
   const swapSuccess = useSelector(selectSwapSuccess);
+  const poolErr = useSelector(selectPoolErr);
 
   const sourceTokenInfo = useSelector((state) =>
     selectAssetByAddress(state, sourceTokenAddress)
@@ -118,7 +120,7 @@ const useSwapFacade = () => {
       getDecimalForAsset(desireTokenInfo.assetsAddress) ===
       PartialConstants.VEUSD_DECIMAL
         ? (inputAmountOut - (inputAmountOut * inputSlippage) / 100).toFixed(6)
-        : inputAmountOut - (inputAmountOut * inputSlippage) / 100,
+        : (inputAmountOut - (inputAmountOut * inputSlippage) / 100).toFixed(18),
     [desireTokenInfo.assetsAddress, inputAmountOut, inputSlippage]
   );
 
@@ -181,6 +183,9 @@ const useSwapFacade = () => {
         tokenBInfo: desireTokenInfo,
       })
     );
+    dispatch(checkTotalSupplyAvailable({
+      amountOut: value
+    }));
   }, 1000);
 
   const onChangeSourceInput = useCallback(
@@ -299,7 +304,9 @@ const useSwapFacade = () => {
 
   useEffect(() => {
     checkBalance(amountsIn);
-    dispatch(checkTotalSupplyAvailable());
+    dispatch(checkTotalSupplyAvailable({
+      amountOut: inputAmountOut
+    }));
   }, [amountsIn, dispatch]);
 
   return {
@@ -343,6 +350,7 @@ const useSwapFacade = () => {
     showDetailInfo,
     loadingExchangeRate,
     isSwapSuccess,
+    poolErr,
   };
 };
 

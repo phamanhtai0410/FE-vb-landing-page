@@ -8,12 +8,12 @@ import IcUp from "../../assets/images/up_fill.svg";
 import IcDropDown from "../../assets/images/ic_dropdown.svg";
 import IcReload from "../../assets/images/ic_reload.svg";
 import IcSetting from "../../assets/images/buttons/ic_setting_outline.svg";
-import IcQuestionCircle from "../../assets/images/ic_question_circle.svg";
+// import IcQuestionCircle from "../../assets/images/ic_question_circle.svg";
 import IcQuestionCircleYellow from "../../assets/images/question_circle_yellow.svg";
-import IcSwapWhiteNoBackground from "../../assets/images/ic_swap_white_no_background.svg";
+// import IcSwapWhiteNoBackground from "../../assets/images/ic_swap_white_no_background.svg";
 
 import BtnConnectInPage from "../account/BtnConnectInPage";
-import BtnOpenSwap from "./BtnOpenSwap";
+// import BtnOpenSwap from "./BtnOpenSwap";
 
 import useSwapFacade from "./hooks";
 import HighlightedAssetIcon from "./HighlightedAssetIcon";
@@ -23,6 +23,7 @@ import "./styles.scss";
 
 const Swap = () => {
   const {
+    poolErr,
     isSwap,
     swapFee,
     showErr,
@@ -37,13 +38,13 @@ const Swap = () => {
     sourceTokenInfo,
     desireTokenInfo,
     sourceTokenPrice,
-    desireTokenPrice,
+    // desireTokenPrice,
     sourceTokenBalance,
     desireTokenBalance,
     vthoBalance,
     // sourcePerDesireTokenPrice,
     // desireTokenAmount,
-    setInputAmount,
+    // setInputAmount,
     setInputSlippage,
     onSwapAssetToken,
     onSwapDesireToken,
@@ -60,6 +61,28 @@ const Swap = () => {
     showDetailInfo,
     isSwapSuccess,
   } = useSwapFacade();
+
+  const renderTitleButton = () => {
+    if (accountApprove === 0) {
+      if (poolErr !== "") {
+        return poolErr;
+      } else {
+        return "Approve";
+      }
+    } else {
+      if (showErr || poolErr !== "") {
+        if (showErr) {
+          return `Your ${sourceTokenInfo?.assetsChain} balance is not enough`;
+        } else {
+          return poolErr;
+        }
+      } else if (loadingSwap) {
+        return "Swapping...";
+      } else {
+        return "Swap";
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col p-2 space-y-4">
@@ -246,7 +269,7 @@ const Swap = () => {
                     <div className="w-fit flex flex-row items-center">
                       <div className="bg-itemForm rounded-lg p-2 flex flex-row items-center">
                         <img src={IcGas} alt="gas" className="w-4" />
-                        <p className="mr-4 ml-1">$0.69</p>
+                        <p className="mr-4 ml-1">{`$${swapFee * sourceTokenPrice}`}</p>
                       </div>
                       <img
                         src={showDetailInfo ? IcUp : IcDown}
@@ -328,13 +351,16 @@ const Swap = () => {
                     : "bg-btn-veb-disabled rounded-lg"
                 }  h-12`}
               >
-                {accountApprove === 0
+                {renderTitleButton()}
+                {/* {accountApprove === 0
                   ? "Approve"
-                  : showErr
-                  ? `Your ${sourceTokenInfo?.assetsChain} balance is not enough`
+                  : showErr || poolErr !== ""
+                  ? showErr
+                    ? `Your ${sourceTokenInfo?.assetsChain} balance is not enough`
+                    : poolErr
                   : loadingSwap
                   ? "Swapping..."
-                  : "Swap"}
+                  : "Swap"} */}
               </button>
             )}
           </div>
