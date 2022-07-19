@@ -27,6 +27,7 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
 
     const state = getState();
     const { web3, account } = state.web3;
+    const dataPrice = state.assetsPriceReducer.data;
 
     let accountBalance = 0;
     let accountApprove = 0;
@@ -34,6 +35,14 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
     if (!account) {
         return;
     }
+
+    dispatch({
+        type: marketplaceConstants.MODAL_OPEN_WITHDRAW_MARKET,
+        loading:true,
+        accountApprove,
+        accountBalance: accountBalance,
+        dataToken
+    });
 
     if (dataToken.assetsAddress) {
 
@@ -45,24 +54,27 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
         const accountData = await contractPOOL.methods.getUserAccountData(account).call();
         console.log("getUserAccountData",accountData);
 
-        
         // get balance A Token your account withdrawal is allowed
         if (accountReserve.currentATokenBalance) {
             accountBalance = ethers.utils.formatUnits(accountReserve.currentATokenBalance, dataToken.assetsDecimals);
             if(accountData && accountData.availableBorrowsBase){
-                const amountMaxWithdrow = accountData.totalCollateralBase - (accountData.totalDebtBase /accountData.ltv);
+                let amountMaxWithdrow = accountData.totalCollateralBase - (accountData.totalDebtBase /accountData.ltv);
+          
+                amountMaxWithdrow = amountMaxWithdrow * dataPrice[dataToken.assetsAddress];
+                amountMaxWithdrow = amountMaxWithdrow.toLocaleString('fullwide', {useGrouping:false});
+
                 console.log("amountMaxWithdrow",amountMaxWithdrow);
-                if( amountMaxWithdrow < accountReserve.currentATokenBalance ){
+                console.log("currentATokenBalance",accountReserve.currentATokenBalance);
+                
+                if( amountMaxWithdrow < Number(accountReserve.currentATokenBalance )){
                     accountBalance = ethers.utils.formatUnits(amountMaxWithdrow, dataToken.assetsDecimals);
+                   // accountBalance = accountBalance * dataPrice[dataToken.assetsAddress];
+
                 }
-             
             }
         }
 
-
-      
         // totalCollateralBase - (totalDebtBase/ltv)
-
         let TOKEN_APPROVE = ADDRESS_POOL;
         if (dataToken.assetsChain === "VET") {
             TOKEN_APPROVE = ADDRESS_GATEWAY;
@@ -78,11 +90,11 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
             accountApprove = 0;
         }
 
-
     }
 
     dispatch({
         type: marketplaceConstants.MODAL_OPEN_WITHDRAW_MARKET,
+        loading:false,
         accountApprove,
         accountBalance: accountBalance,
         dataToken
@@ -270,7 +282,7 @@ export const withdrawETHMarket = (dataToken, amount) => async (dispatch, getStat
         const c2_withdraw = methodWithdraw.asClause(ADDRESS_POOL, amountWithdraw, account)
 
         connex.vendor
-            .sign('tx', [c1_approve, c2_withdraw])
+            .sign('tx', [ c2_withdraw])
             .comment(`transfer ${amount} to withdrawETH`)
             .request()
             .then(transaction => {

@@ -76,14 +76,14 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
         // gia tri dc repay
         accountBalance = accountBalanceVariableDebt;
 
-        // const contractBorrow = new web3.eth.Contract(ERC20ABI, dataToken.assetsAddress);
-        // accountApprove = await contractBorrow.methods.allowance(account, ADDRESS_POOL).call();
+        const contractBorrow = new web3.eth.Contract(ERC20ABI, dataToken.assetsAddress);
+        accountApprove = await contractBorrow.methods.allowance(account, ADDRESS_POOL).call();
   
-        // if(accountApprove){
-        //     // get the approved ADDRESS_POOL
-        //     accountApprove = ethers.utils.formatUnits(accountApprove, dataToken.assetsDecimals);
-        //     accountApprove = Number(accountApprove);
-        // }
+        if(accountApprove){
+            // get the approved ADDRESS_POOL
+            accountApprove = ethers.utils.formatUnits(accountApprove, dataToken.assetsDecimals);
+            accountApprove = Number(accountApprove);
+        }
 
     }
 

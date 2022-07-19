@@ -56,7 +56,9 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
     });
 
     if(contractPOOL){
+
         const accountData = await contractPOOL.methods.getUserAccountData(account).call();
+        console.log("getUserAccountData",accountData);
 
         if (accountData.availableBorrowsBase) {
             accountBalance = ethers.utils.formatUnits(accountData.availableBorrowsBase, 18);
@@ -81,14 +83,12 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
             // Tổng pool có chép borrow nhỏ hơn giá trị user có thể variableBorrowRate
             if(Number(totalBorrowRate) < Number(accountData.availableBorrowsBase)){
                 accountBalance = ethers.utils.formatUnits(totalBorrowRate, 18);
-                accountBalance = accountBalance / dataPrice[dataToken.assetsAddress];
+                accountBalance = accountBalance * dataPrice[dataToken.assetsAddress];
             }
             
         }
         
     }
-
-
   
     if (dataToken.assetsChain === "VET") {
 
