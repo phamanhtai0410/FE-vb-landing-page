@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   approvePoolLiquidity,
-  liquidityPoolApproved,
   loadDetailRemoveLiquidity,
   removeLiquidity,
 } from "../actions";
@@ -82,7 +81,7 @@ const removeLiquiditySlice = createSlice({
         const data = action.payload;
         if (data) {
           state.poolApproval = data.approveAmount;
-          state.isApproving = false
+          state.isApproving = false;
         }
       });
   },

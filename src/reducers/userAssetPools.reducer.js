@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { poolConstants } from "../constants";
 
 const initialState = {
   addresses: [],
@@ -16,39 +15,25 @@ const userAssetPools = createSlice({
         state.data[poolAddress] = liquidityPool;
       }
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(
-      poolConstants.FETCH_POOL_ASSETS_SUCCESS,
-      (state, action) => {
-        const { data: poolAssetsList } = action;
-        for (const poolAsset of poolAssetsList) {
-          const {
-            assetsPoolAddress,
-            balanceAccount,
-            amountTokenA,
-            amountTokenB,
-            addressTokenA,
-            addressTokenB,
-          } = poolAsset;
-          if (!state.addresses.includes(assetsPoolAddress)) {
-            state.addresses.push(assetsPoolAddress);
-          }
-          state.data[assetsPoolAddress] = {
-            ...state.data[assetsPoolAddress],
-            liquidityPool: balanceAccount,
-            [addressTokenA]: amountTokenA || 0,
-            [addressTokenB]: amountTokenB || 0,
-          };
-        }
+    updateUserAssets: (state, action) => {
+      const { assetsPoolAddress, liquidityPool, amountTokenA, amountTokenB } =
+        action.payload;
+      if (!state.addresses.includes(assetsPoolAddress)) {
+        state.addresses.push(assetsPoolAddress);
       }
-    );
+      state.data[assetsPoolAddress] = {
+        ...state.data[assetsPoolAddress],
+        liquidityPool,
+        amountTokenA,
+        amountTokenB,
+      };
+    },
   },
 });
 
 export default userAssetPools.reducer;
 
-export const { updateLiquidityPool } = userAssetPools.actions;
+export const { updateLiquidityPool, updateUserAssets } = userAssetPools.actions;
 
 export const selectUsersAddedPoolAddresses = (state) => {
   const entities = state.userAssetPools.data;
@@ -59,4 +44,8 @@ export const selectUsersAddedPoolAddresses = (state) => {
 export const selectUserPoolAssetByPoolAddress = (state, poolAddress) =>
   state.userAssetPools.data[poolAddress];
 export const selectUserLiquidityPoolByPoolAddress = (state, poolAddress) =>
-  state.userAssetPools.data[poolAddress].liquidityPool;
+  state.userAssetPools.data[poolAddress]?.liquidityPool;
+export const selectUserAmountAByPoolAddress = (state, poolAddress) =>
+  state.userAssetPools.data[poolAddress]?.amountTokenA;
+export const selectUserAmountBByPoolAddress = (state, poolAddress) =>
+  state.userAssetPools.data[poolAddress]?.amountTokenB;
