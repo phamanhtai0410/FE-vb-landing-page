@@ -132,17 +132,12 @@ const ModalRepay = () => {
     const showBtnView = () => {
         let btn = "";
         if (dataToken) {
-
             btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
-
-            // if (dataToken.assetsChain === "VET") {
-            //     btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
-            // } else if (accountApprove === 0) {
-            //     btn = <BtnRepayApprove dataToken={dataToken} pending={pending} />
-            // } else {
-            //     btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
-            // }
-
+            if (Number(accountApprove) === 0) {
+                btn = <BtnRepayApprove dataToken={dataToken} pending={pending} />
+            } else {
+                btn = <BtnRepay dataToken={dataToken} pending={pending} amount={amount} />
+            }
         }
         return btn;
 

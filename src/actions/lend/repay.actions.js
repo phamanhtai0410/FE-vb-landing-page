@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 
 import {  marketplaceConstants } from '../../constants';
 
+import ERC20ABI_VB from '../../_contracts/assets/VB.json';
 import ERC20ABI_AAVE from '../../_contracts/lend/AaveProtocolDataProvider.json';
 import ERC20ABI_WETH_GETAWAY from '../../_contracts/lend/WETHGateway.json';
 import ERC20ABI_POOL from '../../_contracts/lend/Pool.json';
@@ -63,12 +64,15 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
         // gia tri dc repay
         accountBalance = accountBalanceVariableDebt;
 
-        let contractVariableDebt = new web3.eth.Contract(ERC20ABI_VARIBLE_DEBT_TOKEN, process.env.REACT_APP_VARIABLE_DEBT_TOKEN_VET);
-        accountVariableDebtApprove = await contractVariableDebt.methods.borrowAllowance(account, ADDRESS_GATEWAY).call();
+        const contractBorrow = new web3.eth.Contract(ERC20ABI_VB, dataToken.assetsAddress);
+        accountApprove = await contractBorrow.methods.allowance(account, ADDRESS_POOL).call();
 
-        accountVariableDebtApprove = ethers.utils.formatEther(accountVariableDebtApprove);
-        accountVariableDebtApprove = Number(accountVariableDebtApprove);
-        accountApprove = accountVariableDebtApprove;
+        if(accountApprove && accountApprove <= accountBalanceStableDebt){
+            // get the approved ADDRESS_POOL
+            accountApprove = ethers.utils.formatUnits(accountApprove, dataToken.assetsDecimals);
+            accountApprove = Number(accountApprove);
+        }
+
 
     }
 
@@ -125,8 +129,13 @@ export const repayMarket = (dataToken, amount, rateMode = 2) => async (dispatch,
         const methodRepay = connex.thor.account(ADDRESS_POOL).method(withdrawETH_ABI);
         const c2_repay = methodRepay.asClause(dataToken.assetsAddress, amountRepay, rateMode, account);
 
+        let clauses = [c2_repay];
+        if(amount >= amountApprove){
+            clauses.push(c1_approve);
+        }
+
         connex.vendor
-            .sign('tx', [c1_approve, c2_repay])
+            .sign('tx', clauses)
             .comment(`transfer ${amount} ${dataToken.assetsChain} to Repay VeBank`)
             .request()
             .then(transaction => {
@@ -209,8 +218,13 @@ export const repayETHMarket = (dataToken, amount, rateMode = 2) => async (dispat
         methodRepay.value(amountRepay);
         const c2_repay = methodRepay.asClause(ADDRESS_POOL, amountRepay, rateMode, account);
 
+        let clauses = [c2_repay];
+        if(amount >= amountApprove){
+            clauses.push(c1_approve);
+        }
+
         connex.vendor
-            .sign('tx', [c1_approve, c2_repay])
+            .sign('tx',clauses)
             .comment(`transfer ${amount} VET to repayETH`)
             .request()
             .then(transaction => {
