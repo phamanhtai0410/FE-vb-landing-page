@@ -125,3 +125,6 @@ export const addressWalletCompact = (address) => {
     address.length
   )}`;
 };
+export const compareString = (a, b) => {
+  return a.toString().toLowerCase() === b.toString().toLowerCase();
+}

@@ -9,7 +9,11 @@ import getWeb3 from "../utils/getWeb3";
 import * as actions from "./";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { selectAssetByAddress } from "../reducers/assetsMarket.reducer";
-import { addressWalletCompact, randomKeyUUID } from "../utils/lib";
+import {
+  addressWalletCompact,
+  compareString,
+  randomKeyUUID,
+} from "../utils/lib";
 import assetAbi from "../_contracts/asset-abi";
 import PartialConstants from "../constants/partial.constants";
 
@@ -141,7 +145,6 @@ export const web3Disconnect = () => async (dispatch, getState) => {
   // setTimeout(() => {
   //     dispatch({ type: destroyConstants.DESTROY_SESSION });
   // }, 1000);
-
 };
 
 export const instantiateVetContracts = () => async (dispatch, getState) => {
@@ -177,7 +180,7 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
           console.log("🐶🐶  ~ contractVET.events.Approval ~ data", data);
           // dispatch(instantiateVetContracts());
 
-          if (data.returnValues?.owner.toLowerCase?.() === account) {
+          if (compareString(data.returnValues?.owner, account)) {
             const accInfo = await connex.thor.account(account).get();
 
             let balanceVET = 0;
@@ -256,7 +259,7 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
           // const { wad: value } = event?.returnValues;
           const { txOrigin } = event?.meta;
           // const formattedValue = Number(ethers.utils.formatUnits(value, 18));
-          if (txOrigin?.toLowerCase() === account) {
+          if (compareString(txOrigin, account)) {
             // console.log("User send amount away");
             // balance -= formattedValue;
             // dispatch(instantiateVetContracts());
@@ -308,7 +311,7 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
         .on("data", async (data) => {
           console.log("🐶🐶  ~ contractVTHO.events.Approval ~ data", data);
           // dispatch(instantiateVetContracts());
-          if (data.returnValues?.src?.toLowerCase?.() === account) {
+          if (compareString(data.returnValues?.src, account)) {
             const accInfo = await connex.thor.account(account).get();
 
             let balanceVET = 0;
@@ -368,7 +371,7 @@ export const instantiateVetContracts = () => async (dispatch, getState) => {
           // const { wad: value } = event?.returnValues;
           const { txOrigin } = event?.meta;
           // const formattedValue = Number(ethers.utils.formatUnits(value, 18));
-          if (txOrigin.toLowerCase() === account) {
+          if (compareString(txOrigin, account)) {
             // console.log("User send amount away");
             // balance -= formattedValue;
             // dispatch(instantiateVetContracts());
@@ -604,19 +607,19 @@ export const instantiateVEUSDContracts = createAsyncThunk(
                   });
                 });
 
-                const approveAmount = Number(
-                  ethers.utils.formatEther(
-                    data.returnValues?.value,
-                    PartialConstants.VEUSD_DECIMAL
-                  )
-                );
-                dispatch({
-                  type: poolConstants.APPROVE_TOKEN,
-                  payload: {
-                    assetAddress: TOKEN_VEUSD,
-                    approveAmount,
-                  },
-                });
+              const approveAmount = Number(
+                ethers.utils.formatEther(
+                  data.returnValues?.value,
+                  PartialConstants.VEUSD_DECIMAL
+                )
+              );
+              dispatch({
+                type: poolConstants.APPROVE_TOKEN,
+                payload: {
+                  assetAddress: TOKEN_VEUSD,
+                  approveAmount,
+                },
+              });
             }
           })
           .on("error", async (err) => {
