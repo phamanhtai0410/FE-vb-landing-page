@@ -17,7 +17,7 @@ const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (c
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 
-const approveABI = ERC20ABI_POOL.find(({ name, type }) => (name === "approve" && type === "function"));
+const approveABI = ERC20ABI.find(({ name, type }) => (name === "approve" && type === "function"));
 
 // ------------------------ REPAY ------------------------ //
 
@@ -48,6 +48,14 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
     let accountVariableDebtApprove = 0;
     let accountStableDebtApprove = 0;
 
+    dispatch({
+        type: marketplaceConstants.MODAL_OPEN_REPAY_MARKET,
+        loading: true,
+        accountApprove,
+        accountBalance,
+        dataToken
+    });
+
     if (dataToken.assetsAddress && contractAAVE) {
 
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
@@ -68,22 +76,20 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
         // gia tri dc repay
         accountBalance = accountBalanceVariableDebt;
 
-        const contractBorrow = new web3.eth.Contract(ERC20ABI, dataToken.assetsAddress);
-        accountApprove = await contractBorrow.methods.allowance(account, ADDRESS_POOL).call();
-        
-        console.log("accountApprove",accountApprove);
+        // const contractBorrow = new web3.eth.Contract(ERC20ABI, dataToken.assetsAddress);
+        // accountApprove = await contractBorrow.methods.allowance(account, ADDRESS_POOL).call();
   
-        if(accountApprove && accountApprove <= accountBalanceStableDebt){
-            // get the approved ADDRESS_POOL
-            accountApprove = ethers.utils.formatUnits(accountApprove, dataToken.assetsDecimals);
-            accountApprove = Number(accountApprove);
-        }
-
+        // if(accountApprove){
+        //     // get the approved ADDRESS_POOL
+        //     accountApprove = ethers.utils.formatUnits(accountApprove, dataToken.assetsDecimals);
+        //     accountApprove = Number(accountApprove);
+        // }
 
     }
 
     dispatch({
         type: marketplaceConstants.MODAL_OPEN_REPAY_MARKET,
+        loading: false,
         accountApprove,
         accountStableDebtApprove,
         accountVariableDebtApprove,
@@ -110,9 +116,8 @@ export const approveRepay = (dataToken) => async (dispatch, getState) => {
         dispatch(actions.alertActions.loading({
             title: "Waiting For Approve",
             description: `Approve Supply ${dataToken.assetsChain} on VeBank`,
-          }, key));
+        }, key));
 
-       
         const approveMethod = connex.thor.account(dataToken.assetsAddress).method(approveABI);
 
         let TOKEN_APPROVE = ADDRESS_POOL;
@@ -153,8 +158,6 @@ export const approveRepay = (dataToken) => async (dispatch, getState) => {
 
 
 };
-
-
 
 
 /**

@@ -120,7 +120,7 @@ const ModalSupply = () => {
     const showBtnView = () => {
         let btn = "";
         if (dataToken) {
-            if (accountApprove === 0) {
+            if (accountApprove === 0 || accountApprove < Number(accountBalance)) {
                 btn = <BtnSupplyApprove dataToken={dataToken} pending={pending} />
             } else {
                 btn = <BtnSupply dataToken={dataToken} pending={pending} amount={amount} />
