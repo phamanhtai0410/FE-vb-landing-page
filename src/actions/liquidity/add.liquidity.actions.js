@@ -17,11 +17,8 @@ import {
   getAmountInWeiFormatted,
   getDecimalForAsset,
   getDecimalForAssetPair,
-  getWeiUnitByDecimal,
   isContainVET,
-  nFormatter,
 } from "../../utils/lib";
-import PartialConstants from "../../constants/partial.constants";
 import assert from "assert";
 
 const ADDRESS_ROUTER = process.env.REACT_APP_ADDRESS_ROUTER;

@@ -74,10 +74,12 @@ const useAddLiquidFacade = () => {
         Number(process.env.REACT_APP_MINIMUM_LIQUIDITY)
       );
     }
-    return reserveA !== 0 || reserveB !== 0 ? Math.min(
-      (firstTokenVolume * totalSupply) / reserveA,
-      (secondTokenVolume * totalSupply) / reserveB
-    ) : 0; // No reserves => No calculations
+    return reserveA !== 0 || reserveB !== 0
+      ? Math.min(
+          (firstTokenVolume * totalSupply) / reserveA,
+          (secondTokenVolume * totalSupply) / reserveB
+        )
+      : 0; // No reserves => No calculations
   }, [totalSupply, firstTokenVolume, reserveA, secondTokenVolume, reserveB]);
 
   const shareAPool = useMemo(
@@ -114,40 +116,56 @@ const useAddLiquidFacade = () => {
 
   const onChangeFirstTokenAmount = useCallback(
     (value) => {
-      if (totalSupply === 0) {
-        setFirstTokenVolume(value);
-      } else {
-        const secondTokenAmount = value * firstPerSecondTokenExchangeRate;
-        // if (
-        //   value <= firstTokenBalance &&
-        //   secondTokenAmount <= secondTokenBalance
-        // ) {
-        // if (value <= firstTokenBalance) {
-        setFirstTokenVolume(value);
-        setSecondTokenVolume(secondTokenAmount.toString());
-        // }
+      if (value.isMatch?.(/^\d*\.?\d*$/)) {
+        if (totalSupply === 0) {
+          setFirstTokenVolume(value);
+        } else if (value !== "") {
+          const secondTokenAmount = value * firstPerSecondTokenExchangeRate;
+          // if (
+          //   value <= firstTokenBalance &&
+          //   secondTokenAmount <= secondTokenBalance
+          // ) {
+          // if (value <= firstTokenBalance) {
+          setFirstTokenVolume(value);
+          setSecondTokenVolume(secondTokenAmount);
+          // }
+        } else {
+          // Clear inputs from both field
+          setFirstTokenVolume(value);
+          setSecondTokenVolume(value);
+        }
+      } else if (value !== "") {
+        setFirstTokenVolume(firstTokenVolume);
       }
     },
-    [firstPerSecondTokenExchangeRate, totalSupply]
+    [firstPerSecondTokenExchangeRate, firstTokenVolume, totalSupply]
   );
 
   const onChangeSecondTokenAmount = useCallback(
     (value) => {
-      if (totalSupply === 0) {
-        setSecondTokenVolume(value);
-      } else {
-        const firstTokenAmount = value * secondPerFirstTokenExchangeRate;
-        // if (
-        //   value <= secondTokenBalance &&
-        //   firstTokenAmount <= firstTokenBalance
-        // ) {
-        // if (value <= secondTokenBalance) {
-        setSecondTokenVolume(value);
-        setFirstTokenVolume(firstTokenAmount.toString());
-        // }
+      if (value.isMatch?.(/^\d*\.?\d*$/)) {
+        if (totalSupply === 0) {
+          setSecondTokenVolume(value);
+        } else if (value !== "") {
+          const firstTokenAmount = value * secondPerFirstTokenExchangeRate;
+          // if (
+          //   value <= secondTokenBalance &&
+          //   firstTokenAmount <= firstTokenBalance
+          // ) {
+          // if (value <= secondTokenBalance) {
+          setSecondTokenVolume(value);
+          setFirstTokenVolume(firstTokenAmount);
+          // }
+        } else {
+          // Clear inputs from both field
+          setFirstTokenVolume(value);
+          setSecondTokenVolume(value);
+        }
+      } else if (value !== "") {
+        setSecondTokenVolume(secondTokenVolume);
       }
     },
-    [totalSupply, secondPerFirstTokenExchangeRate]
+    [totalSupply, secondPerFirstTokenExchangeRate, secondTokenVolume]
   );
 
   const closeModal = () => {
@@ -254,7 +272,7 @@ const useAddLiquidFacade = () => {
         setPrimaryButtonLabel("Connect wallet");
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadingLiquidityDetail]);
 
   useEffect(() => {
@@ -299,7 +317,7 @@ const useAddLiquidFacade = () => {
   useEffect(() => {
     setFirstTokenVolume("");
     setSecondTokenVolume("");
-  }, [firstToken, secondToken])
+  }, [firstToken, secondToken]);
 
   useEffect(() => {
     if (step === 3 && !isAddingLiquidity) {
@@ -310,7 +328,7 @@ const useAddLiquidFacade = () => {
         navigate(RouteName.LIQUIDITY);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAddingLiquidity, addLiquidityState, step]);
 
   useEffect(() => {
