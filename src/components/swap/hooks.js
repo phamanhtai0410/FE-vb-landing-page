@@ -18,6 +18,7 @@ import {
   selectLoadingExchangeRate,
   selectSwapSuccess,
   selectPoolErr,
+  selectEmptyAddress,
 } from "../../reducers/swap.reducer";
 import { selectAssetByAddress } from "../../reducers/assetsMarket.reducer";
 import { selectPriceByTokenAddress } from "../../reducers/assetsPrice.reducer";
@@ -36,7 +37,7 @@ import {
 } from "../../actions";
 import { useDebouncedCallback } from "use-debounce";
 import PartialConstants from "../../constants/partial.constants";
-import { getDecimalForAsset } from "../../utils/lib";
+import { getDecimalForAsset, randomKeyUUID } from "../../utils/lib";
 
 const useSwapFacade = () => {
   const dispatch = useDispatch();
@@ -67,6 +68,7 @@ const useSwapFacade = () => {
   const loadingExchangeRate = useSelector(selectLoadingExchangeRate);
   const swapSuccess = useSelector(selectSwapSuccess);
   const poolErr = useSelector(selectPoolErr);
+  const emptyAddress = useSelector(selectEmptyAddress);
 
   const sourceTokenInfo = useSelector((state) =>
     selectAssetByAddress(state, sourceTokenAddress)
@@ -183,9 +185,11 @@ const useSwapFacade = () => {
         tokenBInfo: desireTokenInfo,
       })
     );
-    dispatch(checkTotalSupplyAvailable({
-      amountOut: value
-    }));
+    dispatch(
+      checkTotalSupplyAvailable({
+        amountOut: value,
+      })
+    );
   }, 1000);
 
   const onChangeSourceInput = useCallback(
@@ -304,10 +308,27 @@ const useSwapFacade = () => {
 
   useEffect(() => {
     checkBalance(amountsIn);
-    dispatch(checkTotalSupplyAvailable({
-      amountOut: inputAmountOut
-    }));
+    dispatch(
+      checkTotalSupplyAvailable({
+        amountOut: inputAmountOut,
+      })
+    );
   }, [amountsIn, dispatch]);
+
+  useEffect(() => {
+    if (emptyAddress && (inputAmountIn || inputAmountOut)) {
+      const key = randomKeyUUID();
+      dispatch(
+        actions.alertActions.warning(
+          {
+            title: "Warning",
+            description: `${sourceTokenInfo?.assetsChain} - ${desireTokenInfo?.assetsChain} not existing in pools`,
+          },
+          key
+        )
+      );
+    }
+  }, [emptyAddress, dispatch, inputAmountIn, inputAmountOut]);
 
   return {
     isSwap,
@@ -351,6 +372,7 @@ const useSwapFacade = () => {
     loadingExchangeRate,
     isSwapSuccess,
     poolErr,
+    emptyAddress,
   };
 };
 

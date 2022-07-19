@@ -60,6 +60,7 @@ const Swap = () => {
     onShowDetailInfo,
     showDetailInfo,
     isSwapSuccess,
+    emptyAddress,
   } = useSwapFacade();
 
   const renderTitleButton = () => {
@@ -241,7 +242,7 @@ const Swap = () => {
       </div>
 
       <div className="col-x-center justify-center space-y-4">
-        {userInputRef.current !== "" && !isSwapSuccess && (
+        {userInputRef.current !== "" && !isSwapSuccess && !emptyAddress && (
           <div className="flex flex-col w-full space-y-4">
             <div
               className={`${

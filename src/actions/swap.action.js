@@ -101,16 +101,6 @@ export const checkAssetExistsPools = createAsyncThunk(
           isSwap: true,
         };
       } else {
-        const key = randomKeyUUID();
-        dispatch(
-          actions.alertActions.warning(
-            {
-              title: "Warning",
-              description: `${assetsPoolName} not existing in pools`,
-            },
-            key
-          )
-        );
         dispatch(updateStatusSwap(false));
         return {
           assetsPoolAddress: assetsPoolAddress,

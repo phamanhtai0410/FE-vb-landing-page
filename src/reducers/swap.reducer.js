@@ -213,3 +213,4 @@ export const selectSwapSuccess = (state) => state.swapAsset.swapSuccess;
 export const selectLoadingExchangeRate = (state) =>
   state.swapAsset.loadingExchangeRate;
 export const selectPoolErr = (state) => state.swapAsset.poolErr;
+export const selectEmptyAddress = (state) => state.swapAsset.emptyAddress;
