@@ -174,7 +174,7 @@ const ModalRepay = () => {
                             Available to repay
                         </div>
                         <div>
-                            <span className='font-poppins font-bold'>
+                            <span className='font-poppins font-bold inline-block'>
                                 {accountBalance ? accountBalance : <TailSpin className='w-4 h-4 mr-2' />}
                             </span>
                             <span className='text-[#BFBFBF] pl-2'>{dataToken ? dataToken.assetsChain : ""}</span>
@@ -212,7 +212,7 @@ const ModalRepay = () => {
                     </div>
 
                     <div className='px-8'>
-                        <Range
+                        {loading === false ? <Range
                             step={1}
                             min={0}
                             max={accountBalance > 0 ? accountBalance : null}
@@ -234,7 +234,8 @@ const ModalRepay = () => {
                                     className="w-3 h-3 transform translate-x-10 bg-slate-50 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                 />
                             )}
-                        />
+                        />:"" }
+                       
                     </div>
                 </div>
 

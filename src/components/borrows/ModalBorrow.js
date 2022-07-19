@@ -100,7 +100,6 @@ const ModalBorrow = () => {
 
         // kiêm tra input number
         let pattern = /^\d+\.?\d*$/;
-        console.log(pattern.test(value));
         if (pattern.test(value)) {
             setAmount(value)
             setValues([value]);
@@ -205,7 +204,6 @@ const ModalBorrow = () => {
 
                         <input
                             value={amount}
-                   
                             ref={amountInputRef}
                             onChange={onChangeAmount}
                             className="bg-transparent focus:outline-none placeholder-slate-400 font-poppins appearance-none text-base w-full"
