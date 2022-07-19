@@ -6,20 +6,20 @@ import { useNavigate } from "react-router-dom";
 import { selectUserLiquidityPoolByPoolAddress } from "../../reducers/userAssetPools.reducer";
 import RouteName from "../../constants/routeName.constants";
 
-const BtnOpenRemoveLiquidity = ({ item }) => {
-
+const BtnOpenRemoveLiquidity = ({ assetsPoolAddress = "" }) => {
   const navigate = useNavigate();
 
-  const liquidityPool = useSelector(state => selectUserLiquidityPoolByPoolAddress(state, item?.assetsPoolAddress));
+  const liquidityPool = useSelector((state) =>
+    selectUserLiquidityPoolByPoolAddress(state, assetsPoolAddress ?? "")
+  );
 
   const disabledRule = useMemo(() => {
-    return liquidityPool == 0
+    return liquidityPool == 0;
   }, [liquidityPool]);
-
 
   const handlerOpenModal = async () => {
     // if (item && item.assetsAddress && disabledRule === false) {
-    navigate(`${RouteName.REMOVE_LIQUIDITY}/${item?.assetsPoolAddress}`);
+    navigate(`${RouteName.REMOVE_LIQUIDITY}/${assetsPoolAddress ?? ""}`);
     // }
   };
 

@@ -11,13 +11,15 @@ import * as actions from "../../actions";
 import LiquidPairIcon from "../partials/LiquidPairIcon";
 
 const AssetsPool = () => {
-
   const [openRowAssets, setOpenRowAssets] = useState([]);
 
   const dispatch = useDispatch();
 
   const { web3 } = useSelector((state) => state.web3, shallowEqual);
-  const { data } = useSelector(  (state) => state.assetsPoolReducer,  shallowEqual );
+  const { data } = useSelector(
+    (state) => state.assetsPoolReducer,
+    shallowEqual
+  );
 
   useEffect(() => {
     if (web3) {
@@ -43,17 +45,13 @@ const AssetsPool = () => {
   };
 
   const checkShowDown = (assetsAddress) => {
-    return !(openRowAssets.indexOf(assetsAddress) === -1);
+    return (openRowAssets.indexOf(assetsAddress) === -1);
   };
 
   const showListAsset = (dataList) => {
     if (dataList && dataList.length > 0) {
       return dataList.map((item, index) => (
-        <CSSTransition
-          key={index}
-          timeout={500}
-          classNames="item_asset"
-        >
+        <CSSTransition key={index} timeout={500} classNames="item_asset">
           <div>
             <div
               className="grid grid-cols-12 mt-6 bg-[#182844] justify-items-center content-around font-poppins text-base rounded cursor-pointer"
@@ -93,18 +91,19 @@ const AssetsPool = () => {
                 <img
                   alt="sort row"
                   className={`w-4 h-4 transition-transform delay-350 ${
-                    checkShowDown(item.assetsPoolAddress) ? "rotate-180" : ""
+                    checkShowDown(item.assetsPoolAddress) ? "" : "rotate-180"
                   }`}
                   src={IcDropdown}
                 />
               </div>
             </div>
 
-            <PoolRowAction
-              key={item.assetsPoolAddress + "_act"}
-              openRowAssets={openRowAssets}
-              item={item}
-            />
+            {!checkShowDown(item.assetsPoolAddress) && (
+              <PoolRowAction
+                key={item.assetsPoolAddress + "_act"}
+                assetsPoolAddress={item.assetsPoolAddress}
+              />
+            )}
           </div>
         </CSSTransition>
       ));

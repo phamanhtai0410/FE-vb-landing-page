@@ -65,6 +65,11 @@ export function nFormatter(num, digits) {
 export const isContainVET = (...ags) =>
   [...ags].includes(process.env.REACT_APP_TOKEN_WVET);
 
+/**
+ * Get the decimal number of the given asset tokens
+ * @param {assetsAddress} assetsAddress is the address of the asset that we need to get the decimal value from
+ * @returns the corresponding decimal value of the asset that
+ */
 export const getDecimalForAsset = (assetsAddress) =>
   assetsAddress === process.env.REACT_APP_TOKEN_VEUSD
     ? PartialConstants.VEUSD_DECIMAL

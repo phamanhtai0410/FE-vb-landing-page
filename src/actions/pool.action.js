@@ -1,14 +1,10 @@
-import { BigNumber, ethers, FixedNumber } from "ethers";
+import { ethers } from "ethers";
 
 import { poolConstants } from "../constants";
 
 import ERC20ABI_PAIR from "../_contracts/pair.json";
 import ERC20ABI_FACTORY from "../_contracts/factory.json";
-import {
-  getDecimalForAsset,
-  getDecimalForAssetPair,
-  nFormatter,
-} from "../utils/lib";
+import { getDecimalForAsset } from "../utils/lib";
 import PartialConstants from "../constants/partial.constants";
 import * as actions from "./index";
 
@@ -32,21 +28,13 @@ export const getPoolAssets = () => async (dispatch, getState) => {
     );
 
     for await (const item of dataAssets) {
-      //"getPair(address tokenA, address tokenB),
+      const { addressTokenA, addressTokenB } = item;
       const assetsPoolAddress = await contractFactory.methods
-        .getPair(item.addressTokenA, item.addressTokenB)
+        .getPair(addressTokenA, addressTokenB)
         .call();
       const emptyAddress = /^0x0+$/.test(assetsPoolAddress); // true chưa có
 
       if (!emptyAddress && assetsPoolAddress) {
-        let assetsDecimals = 18;
-        if (
-          item.addressTokenA === process.env.REACT_APP_TOKEN_VEUSD ||
-          item.addressTokenB === process.env.REACT_APP_TOKEN_VEUSD
-        ) {
-          assetsDecimals = 12;
-        }
-
         const contractPair = new web3.eth.Contract(
           ERC20ABI_PAIR,
           assetsPoolAddress
@@ -62,7 +50,7 @@ export const getPoolAssets = () => async (dispatch, getState) => {
                 .call();
               let liquidityPool = await ethers.utils.formatUnits(
                 balanceBigN,
-                getDecimalForAssetPair(item.addressTokenA, item.addressTokenB)
+                PartialConstants.DEFAULT_ASSET_DECIMAL
               );
               const approveAmount = Number(
                 ethers.utils.formatEther(
@@ -74,7 +62,7 @@ export const getPoolAssets = () => async (dispatch, getState) => {
               dispatch(
                 actions.updateLiquidityPool({
                   poolAddress: assetsPoolAddress,
-                  liquidityPool,
+                  balanceAccount: liquidityPool,
                 })
               );
             }
@@ -89,20 +77,23 @@ export const getPoolAssets = () => async (dispatch, getState) => {
             );
             const { from, to } = data.returnValues;
             if (
-              from.toLowerCase() === account ||
-              to.toLowerCase() === account
+              from.toLowerCase() === account.toLowerCase() ||
+              to.toLowerCase() === account.toLowerCase()
             ) {
-              const balanceBigN = await contractPair.methods
-                .balanceOf(account)
-                .call();
-              let liquidityPool = await ethers.utils.formatUnits(
-                balanceBigN,
-                getDecimalForAssetPair(item.addressTokenA, item.addressTokenB)
-              );
+              const { amountTokenA, amountTokenB, liquidityPool } =
+                await getUserTokenAmounts({
+                  contractPair,
+                  account,
+                  addressTokenA,
+                  addressTokenB,
+                });
+
               dispatch(
-                actions.updateLiquidityPool({
-                  poolAddress: assetsPoolAddress,
+                actions.updateUserAssets({
+                  assetsPoolAddress,
                   liquidityPool,
+                  amountTokenA,
+                  amountTokenB,
                 })
               );
               const isUserReceiving = to?.toLowerCase() === account;
@@ -124,18 +115,16 @@ export const getPoolAssets = () => async (dispatch, getState) => {
 
         //Lấy tổng liquidity
         let totalSupply = await contractPair.methods.totalSupply().call();
-        const rawTotalSupply = totalSupply;
         if (totalSupply) {
-          totalSupply = ethers.utils.formatUnits(totalSupply, assetsDecimals);
-          if (totalSupply < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
-            totalSupply = nFormatter(totalSupply);
-          }
+          totalSupply = ethers.utils.formatUnits(
+            totalSupply,
+            PartialConstants.DEFAULT_ASSET_DECIMAL
+          );
         }
 
         dataList.push({
           ...item,
           liquidity: totalSupply,
-          rawTotalSupply,
           assetsPoolAddress,
         });
       }
@@ -168,17 +157,7 @@ export const getPoolAssetsByAccount =
 
     if (account && ADDRESS_FACTORY && dataAssetPool.length > 0) {
       for await (const item of dataAssetPool) {
-        let assetsDecimals = 18;
-        if (
-          item.addressTokenA === process.env.REACT_APP_TOKEN_VEUSD ||
-          item.addressTokenB === process.env.REACT_APP_TOKEN_VEUSD
-        ) {
-          assetsDecimals = 12;
-        }
-
-        let balanceAccount = 0;
-        let amountTokenA = 0;
-        let amountTokenB = 0;
+        const { addressTokenA, addressTokenB, assetsPoolAddress } = item;
 
         if (item.assetsPoolAddress && account) {
           const contractPair = new web3.eth.Contract(
@@ -186,67 +165,28 @@ export const getPoolAssetsByAccount =
             item.assetsPoolAddress
           );
 
-          //Lấy số lượng LP đang nắm giữ của account
-          const balanceBigN = await contractPair.methods
-            .balanceOf(account)
-            .call();
-          if (balanceBigN) {
-            balanceAccount = ethers.utils.formatUnits(balanceBigN, 18);
-          }
-
-          const totalSupply = item.liquidity;
-          if (balanceAccount >= 0 && totalSupply) {
-            console.log("🐶🐶  ~ forawait ~ balanceAccount", balanceAccount);
-            let { 0: reserve0, 1: reserve1 } = await contractPair.methods
-              ?.getReserves()
-              .call();
-            reserve0 = ethers.utils.formatUnits(
-              reserve0,
-              getDecimalForAsset(item.addressTokenA)
-            );
-            reserve1 = ethers.utils.formatUnits(
-              reserve1,
-              getDecimalForAsset(item.addressTokenB)
-            );
-            amountTokenA = (balanceAccount * reserve0 || 0) / totalSupply;
-            console.log("🐶🐶  ~ forawait ~ reserves?.[0]", reserve0);
-            amountTokenB = (balanceAccount * reserve1 || 0) / totalSupply;
-            console.log("🐶🐶  ~ forawait ~ reserves?.[1]", reserve1);
-            if (totalSupply < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
-              totalSupply = nFormatter(totalSupply);
-            }
-          }
-
-          // balanceAccount = ethers.utils.formatUnits(balanceAccount,assetsDecimals);
-
-          //Lấy tokenA nắm giữ của account
-          // amountTokenA = await contractPair.methods
-          //   .providerAssets(account, item.addressTokenA)
-          //   .call();
-          if (amountTokenA) {
-            console.log("🐶🐶  ~ forawait ~ amountTokenA", amountTokenA);
-            if (amountTokenA < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
-              amountTokenA = nFormatter(amountTokenA);
-              console.log("🐶🐶  ~ forawait ~ amountTokenA", amountTokenA);
-            }
-          }
-
-          //Lấy tokenA nắm giữ của account
-          // amountTokenB = await contractPair.methods
-          //   .providerAssets(account, item.addressTokenB)
-          //   .call();
-          if (amountTokenB) {
-            if (amountTokenB < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
-              amountTokenB = nFormatter(amountTokenB);
-            }
-          }
+          const { amountTokenA, amountTokenB, liquidityPool } =
+            await getUserTokenAmounts({
+              contractPair,
+              account,
+              addressTokenA,
+              addressTokenB,
+            });
 
           dataList.push({
             ...item,
-            balanceAccount,
+            balanceAccount: liquidityPool,
             amountTokenA,
             amountTokenB,
           });
+          dispatch(
+            actions.updateUserAssets({
+              assetsPoolAddress,
+              liquidityPool,
+              amountTokenA,
+              amountTokenB,
+            })
+          );
         }
       }
 
@@ -259,52 +199,79 @@ export const getPoolAssetsByAccount =
     return dataList;
   };
 
-export const getUserTokenAmounts = ({
-  usersLP,
-  totalLP,
-  formattedReserve0,
-  formattedReserve1,
+export const getUserTokenAmounts = async ({
+  contractPair,
+  account,
+  addressTokenA,
+  addressTokenB,
 }) => {
-  console.log('🐶🐶  ~ formattedReserve1', formattedReserve1)
-  console.log('🐶🐶  ~ formattedReserve0', formattedReserve0)
-  console.log("🐶🐶  ~ totalLP", totalLP);
-  console.log("🐶🐶  ~ usersLP", usersLP);
-  // console.table([
-  //   ["usersLP", usersLP],
-  //   ["totalLP", totalLP],
-  //   ["formattedReserve0", formattedReserve0],
-  //   ["formattedReserve1", formattedReserve1],
-  // ]);
-  let amountTokenA = 0,
-    amountTokenB = 0;
+  if (!contractPair) throw new Error('contractPair is missing');
+  else if (!account) throw new Error('account is missing');
+  else if (!addressTokenA) throw new Error('addressTokenA is missing');
+  else if (!addressTokenB) throw new Error('addressTokenB is missing');
+
+  let amountTokenA = 0;
+  let amountTokenB = 0;
+  let liquidityPool = 0;
+  let totalSupply = 0;
+  let reserve1 = 0;
+  let reserve2 = 0;
 
   try {
-    if (usersLP >= 0 && totalLP > 0) {
-      // amountTokenA = (BigNumber.from(usersLP)
+    const balanceBigN = await contractPair.methods.balanceOf(account).call();
+    liquidityPool = await ethers.utils.formatUnits(
+      balanceBigN,
+      PartialConstants.DEFAULT_ASSET_DECIMAL
+    );
+    totalSupply = await contractPair.methods.totalSupply().call();
+    if (totalSupply) {
+      totalSupply = ethers.utils.formatUnits(
+        totalSupply,
+        PartialConstants.DEFAULT_ASSET_DECIMAL
+      );
+    }
+
+    let { 0: _reserve0, 1: _reserve1 } = await contractPair.methods
+      ?.getReserves()
+      .call();
+
+    // Check if token position is match or not, swap reserve position if it's not match.
+    const firstTokenAddress = await contractPair.methods.token0().call();
+    if (firstTokenAddress !== addressTokenA) {
+      [_reserve0, _reserve1] = [_reserve1, _reserve0];
+    }
+
+    _reserve0 = ethers.utils.formatUnits(
+      _reserve0,
+      getDecimalForAsset(addressTokenA)
+    );
+    _reserve1 = ethers.utils.formatUnits(
+      _reserve1,
+      getDecimalForAsset(addressTokenB)
+    );
+    if (liquidityPool >= 0 && totalSupply > 0) {
+      // amountTokenA = (BigNumber.from(liquidityPool)
       //   .mul(BigNumber.from(formattedReserve0))
       //   .div(BigNumber.from(totalLP))).toString();
-      amountTokenA = (usersLP * formattedReserve0) / totalLP;
-      // amountTokenB = (BigNumber.from(usersLP)
+      amountTokenA = (liquidityPool * _reserve0) / totalSupply;
+      // amountTokenB = (BigNumber.from(liquidityPool)
       //   .mul(BigNumber.from(formattedReserve1))
       //   .div(BigNumber.from(totalLP))).toString();
-      amountTokenB = (usersLP * formattedReserve1) / totalLP;
+      amountTokenB = (liquidityPool * _reserve1) / totalSupply;
     }
+    [reserve1, reserve2] = [_reserve0, _reserve1];
   } catch (error) {
     console.error(error);
   }
 
-  // if (amountTokenA) {
-  //   if (amountTokenA < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
-  //     amountTokenA = nFormatter(amountTokenA);
-  //   }
-  // }
-  // if (amountTokenB) {
-  //   if (amountTokenB < PartialConstants.MIN_AMOUNT_TO_FORMAT) {
-  //     amountTokenB = nFormatter(amountTokenB);
-  //   }
-  // }
-
-  return { amountTokenA, amountTokenB };
+  return {
+    amountTokenA,
+    amountTokenB,
+    liquidityPool,
+    totalSupply,
+    reserve1,
+    reserve2,
+  };
 };
 
 export const closeAddLiquidity = () => {

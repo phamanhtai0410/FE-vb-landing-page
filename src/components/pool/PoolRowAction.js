@@ -1,19 +1,36 @@
+import { memo } from "react";
+import { useSelector } from "react-redux";
+import { selectPoolInfoByAddress } from "../../reducers/assetsPool.reducer";
+import {
+  selectUserAmountAByPoolAddress,
+  selectUserAmountBByPoolAddress,
+  selectUserLiquidityPoolByPoolAddress,
+} from "../../reducers/userAssetPools.reducer";
 import { nFormatter } from "../../utils/lib";
 import BtnOpenAddLiquidity from "./BtnOpenAddLiquidity";
 import BtnOpenRemoveLiquidity from "./BtnOpenRemoveLiquidity";
 
-const PoolRowAction = ({ openRowAssets, item }) => {
+const PoolRowAction = ({ assetsPoolAddress = "" }) => {
 
-  if (openRowAssets.indexOf(item.assetsPoolAddress) === -1) {
-    return <></>;
-  }
+  const userLiquidity = useSelector((state) =>
+    selectUserLiquidityPoolByPoolAddress(state, assetsPoolAddress ?? "")
+  );
+  const amountTokenA = useSelector((state) =>
+    selectUserAmountAByPoolAddress(state, assetsPoolAddress ?? "")
+  );
+  const amountTokenB = useSelector((state) =>
+    selectUserAmountBByPoolAddress(state, assetsPoolAddress ?? "")
+  );
+  const poolInfo = useSelector((state) =>
+    selectPoolInfoByAddress(state, assetsPoolAddress)
+  );
 
-  const showAmountUSD = () =>{
-    if(Number(item.amountTokenA) && Number(item.amountTokenB)){
-      return (item.amountTokenA/item.amountTokenB).toFixed(4)
+  const showAmountUSD = () => {
+    if (amountTokenA && amountTokenB) {
+      return (amountTokenA / amountTokenB).toFixed(4);
     }
-   return 0;
-  }
+    return 0;
+  };
 
   return (
     <div className="bg-[#182844] p-6 mt-2 fade-in-box">
@@ -22,9 +39,11 @@ const PoolRowAction = ({ openRowAssets, item }) => {
           <label className="font-poppins text-[14px] text-[#678BCA]">
             Your Liquidity
           </label>
-          <div className="font-montserrat text-[16px] text-[#3EE8FF]">${nFormatter(showAmountUSD(), 2)}</div>
           <div className="font-montserrat text-[16px] text-[#3EE8FF]">
-            {item.balanceAccount} LP
+            ${nFormatter(showAmountUSD(), 2)}
+          </div>
+          <div className="font-montserrat text-[16px] text-[#3EE8FF]">
+            {userLiquidity || 0.0} LP
           </div>
         </div>
 
@@ -33,29 +52,32 @@ const PoolRowAction = ({ openRowAssets, item }) => {
             Assets Pooled
           </label>
           <div className="font-montserrat text-[16px] text-[#3EE8FF]">
-            {item.amountTokenA} {item.assetsChainA}
+            {amountTokenA || 0} {poolInfo.assetsChainA}
           </div>
           <div className="font-montserrat text-[16px] text-[#3EE8FF]">
-            {item.amountTokenB} {item.assetsChainB}
+            {amountTokenB || 0} {poolInfo.assetsChainB}
           </div>
         </div>
 
         <div>
           <label className="text-[#678BCA] font-poppins text-[14px]">
-          Your Share
+            Your Share
           </label>
           <div className="font-montserrat text-[16px] text-[#3EE8FF]">
-            {item.liquidity > 0 ? nFormatter((item.balanceAccount * 100) / item.liquidity, 2) : 0}%
+            {poolInfo.liquidity > 0
+              ? nFormatter((userLiquidity * 100) / poolInfo.liquidity, 2)
+              : 0}
+            %
           </div>
         </div>
 
         <div className="flex flex-row space-x-6 justify-center items-center">
-          <BtnOpenRemoveLiquidity item={item} />
-          <BtnOpenAddLiquidity item={item} />
+          <BtnOpenRemoveLiquidity assetsPoolAddress={assetsPoolAddress} />
+          <BtnOpenAddLiquidity assetsPoolAddress={assetsPoolAddress} />
         </div>
       </div>
     </div>
   );
 };
 
-export default PoolRowAction;
+export default memo(PoolRowAction);

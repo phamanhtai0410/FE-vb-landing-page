@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectPoolInfoByAddress } from "../../../reducers/assetsPool.reducer";
-import { selectUserPoolAssetByPoolAddress } from "../../../reducers/userAssetPools.reducer";
+import { selectUserAmountAByPoolAddress, selectUserAmountBByPoolAddress, selectUserLiquidityPoolByPoolAddress, selectUserPoolAssetByPoolAddress } from "../../../reducers/userAssetPools.reducer";
 import { nFormatter, numberWithCommas } from "../../../utils/lib";
 import LiquidPairIcon from "../../partials/LiquidPairIcon";
 import IcCollapse from "../../../assets/images/buttons/ic_collapse.svg";
@@ -15,14 +15,15 @@ const LiquidityExcerpt = ({ poolAddress }) => {
   const poolInfo = useSelector((state) =>
     selectPoolInfoByAddress(state, poolAddress)
   );
-
-  const userAssets = useSelector((state) =>
-    selectUserPoolAssetByPoolAddress(state, poolAddress)
+  const userLiquidity = useSelector((state) =>
+    selectUserLiquidityPoolByPoolAddress(state, poolAddress)
   );
+  const amountTokenA = useSelector((state) => selectUserAmountAByPoolAddress(state, poolAddress));
+  const amountTokenB = useSelector((state) => selectUserAmountBByPoolAddress(state, poolAddress));
 
   const shareAPool = useMemo(
-    () => (poolInfo?.balanceAccount / poolInfo?.liquidity) * 100.0,
-    [poolInfo?.balanceAccount, poolInfo?.liquidity]
+    () => (userLiquidity / poolInfo?.liquidity) * 100.0,
+    [poolInfo?.liquidity, userLiquidity]
   );
 
   const removeLiquidity = () => {
@@ -49,7 +50,7 @@ const LiquidityExcerpt = ({ poolAddress }) => {
             <p className="font-poppins_semi_bold text-xl">{`${poolInfo?.assetsChainA}/${poolInfo?.assetsChainB}`}</p>
           </div>
           <p className="w-2/3 text-xl text-grey-2 font-poppins_light">
-            {nFormatter(poolInfo?.balanceAccount, 5)}
+            {nFormatter(userLiquidity, 5)}
           </p>
         </div>
         <img
@@ -67,14 +68,14 @@ const LiquidityExcerpt = ({ poolAddress }) => {
               <img src={poolInfo?.iconOrigin} alt="" className="w-8 h-8" />
               <p className="flex-grow font-poppins_semi_bold text-xl">{`Pooled ${poolInfo?.assetsChainA}`}</p>
               <p className="text-xl font-poppins_light">
-                {nFormatter(userAssets?.[poolInfo?.addressTokenA], 5)}
+                {nFormatter(amountTokenA, 5)}
               </p>
             </div>
             <div className="full-row-between-center space-x-4">
               <img src={poolInfo?.iconAssets} alt="" className="w-8 h-8" />
               <p className="flex-grow font-poppins_semi_bold text-xl">{`Pooled ${poolInfo?.assetsChainB}`}</p>
               <p className="text-xl font-poppins_light">
-                {nFormatter(userAssets?.[poolInfo?.addressTokenB], 5)}
+                {nFormatter(amountTokenB, 5)}
               </p>
             </div>
             <div className="full-row-between-center">
