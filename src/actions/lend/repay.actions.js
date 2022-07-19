@@ -73,7 +73,7 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
         
         console.log("accountApprove",accountApprove);
   
-        if(accountApprove && accountApprove <= accountBalanceStableDebt){
+        if(accountApprove){
             // get the approved ADDRESS_POOL
             accountApprove = ethers.utils.formatUnits(accountApprove, dataToken.assetsDecimals);
             accountApprove = Number(accountApprove);
