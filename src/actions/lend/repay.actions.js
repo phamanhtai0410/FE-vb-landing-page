@@ -15,6 +15,8 @@ const ADDRESS_GATEWAY = process.env.REACT_APP_ADDRESS_GATEWAY; // WETHGateway (c
 const ADDRESS_POOL = process.env.REACT_APP_ADDRESS_POOL;
 const TOKEN_AAVE = process.env.REACT_APP_ADDRESS_PROTOCOL;
 
+const approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
+
 // ------------------------ REPAY ------------------------ //
 
 /**
@@ -29,7 +31,7 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
     const { web3, account } = state.web3;
 
     let accountBalance = 0;
-    let accountApprove = 1;
+    let accountApprove = 0;
     // let contractBorrow;
 
     if (!account || !dataToken) {
@@ -64,9 +66,10 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
         // gia tri dc repay
         accountBalance = accountBalanceVariableDebt;
 
-        const contractBorrow = new web3.eth.Contract(ERC20ABI_VB, dataToken.assetsAddress);
+      
+        const contractBorrow = new web3.eth.Contract(approveABI, dataToken.assetsAddress);
         accountApprove = await contractBorrow.methods.allowance(account, ADDRESS_POOL).call();
-
+  
         if(accountApprove && accountApprove <= accountBalanceStableDebt){
             // get the approved ADDRESS_POOL
             accountApprove = ethers.utils.formatUnits(accountApprove, dataToken.assetsDecimals);
@@ -88,6 +91,67 @@ export const loadModalRepay = (dataToken) => async (dispatch, getState) => {
     });
 
 };
+
+export const approveRepay = (dataToken) => async (dispatch, getState) => {
+
+    const state = getState();
+
+    const { web3, account, connex } = state.web3;
+
+    const amountMax = 1000000000;
+
+    if (account && dataToken.assetsAddress) {
+
+        const key = randomKeyUUID();
+
+        dispatch(actions.alertActions.loading({
+            title: "Waiting For Approve",
+            description: `Approve Supply ${dataToken.assetsChain} on VeBank`,
+          }, key));
+
+       
+        const approveMethod = connex.thor.account(dataToken.assetsAddress).method(approveABI);
+
+        let TOKEN_APPROVE = ADDRESS_POOL;
+
+        approveMethod
+            .transact(TOKEN_APPROVE, web3.utils.toWei(amountMax.toString()))
+            .comment(`approve ${dataToken.assetsChain} on VeBank`)
+            .request()
+            .then(result => {
+
+                dispatch({
+                    type: marketplaceConstants.MODAL_OPEN_REPAY_MARKET,
+                    accountApprove: amountMax
+                });
+
+                dispatch(actions.alertActions.update({
+                    status: "success",
+                    title: "Approve success",
+                    description: `Approve supply ${dataToken.assetsChain} on VeBank success!`,
+                  }, key));
+
+                return result;
+
+            }).catch((e) => {
+
+                console.log("error----", e);
+                dispatch(actions.alertActions.update({
+                    status: "warning",
+                    title: "Approve Supply Rejected",
+                    description: e.message
+                  }, key));
+                return e;
+
+            });
+
+    }
+
+
+
+};
+
+
 
 
 /**
@@ -120,7 +184,6 @@ export const repayMarket = (dataToken, amount, rateMode = 2) => async (dispatch,
         let amountApprove = 999999999;
 
         // approve Atoken 
-        let approveABI = { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }
         let approveMethod = connex.thor.account(dataToken.assetsAddress).method(approveABI);
 
         const c1_approve = approveMethod.asClause(ADDRESS_POOL, web3.utils.toWei(amountApprove.toString()));
