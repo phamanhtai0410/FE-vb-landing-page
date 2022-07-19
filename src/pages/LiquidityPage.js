@@ -6,7 +6,7 @@ import Liquidity from "../components/liquidity/HomeLiquidity";
 const LiquidityPage = () => {
   return (
     <section className="box-borrows mx-auto bg-cover bg-center">
-      <div className="w-full h-full pb-9 min-h-screen flex items-center justify-center bg-content -z-50">
+      <div className="w-full h-full pb-9 min-h-screen flex items-center justify-center bg-content -z-50 pt-24">
         <Liquidity />
       </div>
     </section>
