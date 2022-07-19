@@ -35,7 +35,7 @@ const ModalWithdraw = () => {
     const [values, setValues] = useState([0]);
     const [step, setStep] = useState(1);
 
-    const { dataToken, accountBalance, accountApprove, accountStableDebtApprove, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.withdrawReducer, shallowEqual);
+    const { dataToken, accountBalance, accountApprove, loading, errorCode, message, transaction, pending, isOpen } = useSelector(state => state.withdrawReducer, shallowEqual);
 
     const dispatch = useDispatch();
     const amountInputRef = useAutoFocus();
@@ -172,7 +172,9 @@ const ModalWithdraw = () => {
                             Available to withdraw
                         </div>
                         <div>
-                            <span className='font-poppins font-bold'>{accountBalance}</span>
+                            <span className='font-poppins font-bold inline-block'>
+                            {accountBalance ? accountBalance : <TailSpin className='w-4 h-4 mr-2' />}
+                            </span>
                             <span className='text-[#BFBFBF] pl-2'>{dataToken ? dataToken.assetsChain : ""}</span>
                         </div>
                     </div>
@@ -203,7 +205,7 @@ const ModalWithdraw = () => {
                     </div>
 
                     <div className='px-8'>
-                        <Range
+                        {loading === false ? <Range
                             step={1}
                             min={0}
                             max={accountBalance}
@@ -225,7 +227,8 @@ const ModalWithdraw = () => {
                                     className="w-3 h-3 transform translate-x-10 bg-slate-50 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                 />
                             )}
-                        />
+                        />:""}
+                     
                     </div>
                 </div>
 
