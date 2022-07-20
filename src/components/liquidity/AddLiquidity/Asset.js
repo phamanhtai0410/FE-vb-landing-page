@@ -17,7 +17,7 @@ const Asset = ({
   const assetInfo = useSelector(state => selectAssetByAddress(state, assetAddress));
 
   const onClickMaxButton = () => {
-    onVolumeChange(assetBalance);
+    onVolumeChange(assetBalance.toString());
   };
 
   const isBalanceAvailable = useMemo(

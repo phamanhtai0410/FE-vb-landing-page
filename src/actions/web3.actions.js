@@ -456,7 +456,7 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
         .on("data", async (data) => {
           console.log("🐶🐶  ~ VB approval event ~ data", data);
 
-          if (data.returnValues?.owner.toLowerCase?.() === account) {
+          if (data.returnValues?.owner?.equals?.(account)) {
             contractVB.methods
               .balanceOf(account)
               .call()
@@ -511,7 +511,7 @@ export const instantiateVBContracts = () => async (dispatch, getState) => {
           // const { value, from, to } = event?.returnValues;
           const { txOrigin } = event?.meta;
           // const formattedValue = Number(ethers.utils.formatUnits(value, 18));
-          if (txOrigin.toLowerCase() === account) {
+          if (txOrigin.equals(account)) {
             // console.log("User send amount away");
             // if (account.toLowerCase() === to) {
             //   balance += formattedValue;
@@ -593,7 +593,7 @@ export const instantiateVEUSDContracts = createAsyncThunk(
           .Approval?.()
           .on("data", async (data) => {
             console.log("🐶🐶  ~ contractVEUSD.events.Approval ~ data", data);
-            if (data.returnValues?.owner.toLowerCase?.() === account) {
+            if (data.returnValues?.owner?.equals?.(account)) {
               contractVEUSD.methods
                 .balanceOf(account)
                 .call()
