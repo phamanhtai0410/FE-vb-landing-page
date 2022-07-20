@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles.scss";
 
 import IcSettingWhite from "../../../assets/images/buttons/ic_setting_white.svg";
@@ -19,6 +19,10 @@ const Liquidity = () => {
     onFindOtherLPClicked,
   } = useLiquidityFacade();
 
+  const [poolSelect, setPoolSelect] = useState("")
+  const setSelectPool = (poolAddress) => {
+    setPoolSelect(poolAddress);
+  }
   return (
     <div className="w-full lg:w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative z-50">
       {/*Header*/}
@@ -59,7 +63,7 @@ const Liquidity = () => {
               {/* <TransitionGroup className="gap-4"> */}
               {userPoolAddresses.map((address) => (
                 <CSSTransition key={address} timeout={500}>
-                  <LiquidityExcerpt key={address} poolAddress={address} />
+                  <LiquidityExcerpt key={address} poolAddress={address} poolSelect={poolSelect} setPoolSelect={setPoolSelect} />
                 </CSSTransition>
               ))}
               {/* </TransitionGroup> */}

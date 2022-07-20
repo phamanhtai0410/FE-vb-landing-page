@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from "react";
+import React, { Fragment, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { selectPoolInfoByAddress } from "../../../reducers/assetsPool.reducer";
 import { selectUserAmountAByPoolAddress, selectUserAmountBByPoolAddress, selectUserLiquidityPoolByPoolAddress, selectUserPoolAssetByPoolAddress } from "../../../reducers/userAssetPools.reducer";
@@ -8,10 +8,9 @@ import IcCollapse from "../../../assets/images/buttons/ic_collapse.svg";
 import { useNavigate } from "react-router-dom";
 import RouteName from "../../../constants/routeName.constants";
 
-const LiquidityExcerpt = ({ poolAddress }) => {
+const LiquidityExcerpt = ({ poolAddress, poolSelect, setPoolSelect }) => {
   const navigate = useNavigate();
 
-  const [isExpanded, setIsExpanded] = useState(false);
   const poolInfo = useSelector((state) =>
     selectPoolInfoByAddress(state, poolAddress)
   );
@@ -34,11 +33,20 @@ const LiquidityExcerpt = ({ poolAddress }) => {
     navigate(`${RouteName.ADD_LIQUIDITY}/${poolAddress}`);
   };
 
+  const onClickPool = (poolAddress) => {
+    if (poolAddress===poolSelect) {
+      setPoolSelect("");
+    }
+    else {
+      setPoolSelect(poolAddress);
+    }
+  };
+
   return (
     <div className="liquid-wrapper px-4 py-4 col-y-center">
       <div
         className="flex flex-row justify-between items-start cursor-pointer"
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={() => onClickPool(poolAddress)}
       >
         <div className="flex flex-col space-y-2">
           <div className="flex flex-row items-center space-x-4">
@@ -57,12 +65,12 @@ const LiquidityExcerpt = ({ poolAddress }) => {
           src={IcCollapse}
           alt=""
           className={`w-11 h-11 transition-transform delay-350 ${
-            !isExpanded ? "rotate-180" : ""
+            poolAddress!==poolSelect ? "rotate-180" : ""
           }`}
         />
       </div>
-      {isExpanded && (
-        <div className="fade-in-box full-col-y-center">
+      {
+        <div className={`${(poolAddress === poolSelect) ? "flex" : "hidden"} fade-in-box flex-col`}>
           <div className="col mt-10 space-y-6">
             <div className="full-row-between-center space-x-4">
               <img src={poolInfo?.iconOrigin} alt="" className="w-8 h-8" />
@@ -100,7 +108,7 @@ const LiquidityExcerpt = ({ poolAddress }) => {
             + Add liquidity instead
           </p>
         </div>
-      )}
+      }
     </div>
   );
 };
