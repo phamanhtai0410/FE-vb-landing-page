@@ -48,29 +48,35 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
-        console.log("getUserReserveData", accountReserve);
+        //console.log("getUserReserveData",accountReserve);
+
+        // const getReserveData = await contractAAVE.methods.getReserveData(dataToken.assetsAddress).call();
+
+        let totalCollateralPool = accountReserve.currentATokenBalance - (accountReserve.currentStableDebt  + accountReserve.currentVariableDebt);
+        //let totalCollateralPool = getReserveData.totalAToken - (getReserveData.totalStableDebt  + getReserveData.totalVariableDebt)
+        totalCollateralPool = totalCollateralPool.toLocaleString('fullwide', {useGrouping:false});
+        totalCollateralPool = ethers.utils.formatEther(totalCollateralPool);
+        //console.log("totalCollateralPool",totalCollateralPool);
 
         const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
         const accountData = await contractPOOL.methods.getUserAccountData(account).call();
-        console.log("getUserAccountData",accountData);
-
+        
         // get balance A Token your account withdrawal is allowed
         if (accountReserve.currentATokenBalance) {
-            accountBalance = ethers.utils.formatUnits(accountReserve.currentATokenBalance, dataToken.assetsDecimals);
+            //accountBalance = ethers.utils.formatUnits(accountReserve.currentATokenBalance, dataToken.assetsDecimals);
             if(accountData && accountData.availableBorrowsBase){
-                let amountMaxWithdrow = accountData.totalCollateralBase - (accountData.totalDebtBase /accountData.ltv);
-          
-                amountMaxWithdrow = amountMaxWithdrow * dataPrice[dataToken.assetsAddress];
-                amountMaxWithdrow = amountMaxWithdrow.toLocaleString('fullwide', {useGrouping:false});
 
-                console.log("amountMaxWithdrow",amountMaxWithdrow);
-                console.log("currentATokenBalance",accountReserve.currentATokenBalance);
-                
-                if( amountMaxWithdrow < Number(accountReserve.currentATokenBalance )){
-                    accountBalance = ethers.utils.formatUnits(amountMaxWithdrow, dataToken.assetsDecimals);
-                   // accountBalance = accountBalance * dataPrice[dataToken.assetsAddress];
+                let amountWithdraw = accountData.totalCollateralBase - (accountData.totalDebtBase /(accountData.ltv/10000));
 
+                amountWithdraw = amountWithdraw.toLocaleString('fullwide', {useGrouping:false});
+                amountWithdraw = ethers.utils.formatEther(amountWithdraw) / dataPrice[dataToken.assetsAddress];
+
+                if( amountWithdraw > Number(totalCollateralPool)){
+                    accountBalance = totalCollateralPool;
+                }else{
+                    accountBalance = amountWithdraw;
                 }
+                
             }
         }
 
