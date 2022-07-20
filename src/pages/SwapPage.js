@@ -56,7 +56,7 @@ const SwapPage = () => {
         <div
           className={`${
             isSelectTokenModalOpen ? "hidden" : "flex"
-          } flex flex-row p-2 space-x-6`}
+          } flex flex-row p-4 space-x-6 sm:mx-0 mx-1`}
         >
           {/* <div className="flex flex-col">
             <div className="rounded-2xl border border-vbLine bg-popupVb p-8 w-full md:w-[308px] h-[172px]">

@@ -123,11 +123,10 @@ export const checkExchangeRatePool = createAsyncThunk(
   ) => {
     const state = getState();
     const { web3 } = state.web3;
-    const { poolAddress } = state.swapAsset;
     if (web3 && ADDRESS_FACTORY) {
       const contractPair = new web3.eth.Contract(
         ERC20ABI_PAIR,
-        assetsPoolAddress ? assetsPoolAddress : poolAddress
+        assetsPoolAddress
       );
       const reserves = await contractPair.methods.getReserves().call();
       const addressToken1 = await contractPair.methods.token0().call();
@@ -404,7 +403,7 @@ export const swapAsset = createAsyncThunk(
   ) => {
     const currentState = getState();
 
-    const { pairFee, poolAddress } = currentState.swapAsset;
+    const { poolAddress } = currentState.swapAsset;
     const { connex, account, web3 } = currentState.web3;
     const assetsPoolName = `${tokenAInfo?.assetsChain} - ${tokenBInfo?.assetsChain}`;
     const key = randomKeyUUID();
