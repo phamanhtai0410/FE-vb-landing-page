@@ -272,14 +272,14 @@ const useSwapFacade = () => {
       }
       setPressSwap(false);
     } else {
-      if (amountInRef.current === userInputRef.current) {
-        setInputAmountIn(userInputRef.current);
-        setInputAmountOut("");
-        getAmountOutDebounced(userInputRef.current);
-      } else {
-        setInputAmountIn("");
-        getAmountsInDebounced(userInputRef.current);
-      }
+      // if (amountInRef.current === userInputRef.current) {
+      //   setInputAmountIn(userInputRef.current);
+      //   setInputAmountOut("");
+      //   getAmountOutDebounced(userInputRef.current);
+      // } else {
+      //   setInputAmountIn("");
+      // }
+      getAmountOutDebounced(inputAmountIn);
     }
   }, [sourceTokenAddress]);
 
@@ -293,14 +293,15 @@ const useSwapFacade = () => {
       }
       setPressSwap(false);
     } else {
-      if (amountOutRef.current === userInputRef.current) {
-        setInputAmountOut(userInputRef.current);
-        setInputAmountIn("");
-        getAmountsInDebounced(userInputRef.current);
-      } else {
-        setInputAmountOut("");
-        getAmountOutDebounced(userInputRef.current);
-      }
+      // if (amountOutRef.current === userInputRef.current) {
+      //   setInputAmountOut(userInputRef.current);
+      //   setInputAmountIn("");
+      //   getAmountsInDebounced(userInputRef.current);
+      // } else {
+      //   setInputAmountOut("");
+      //   getAmountOutDebounced(userInputRef.current);
+      // }
+      getAmountOutDebounced(inputAmountIn);
     }
   }, [desireTokenAddress]);
 

@@ -274,7 +274,10 @@ const Swap = () => {
                     <div className="w-full flex flex-row items-center justify-between">
                       <div className="row-center space-x-2">
                         <p>
-                          1 {sourceTokenInfo?.assetsChain} = {exchangeRate}{" "}
+                          1 {sourceTokenInfo?.assetsChain} ={" "}
+                          {exchangeRate.toString().length >= 18
+                            ? exchangeRate.toFixed(18)
+                            : exchangeRate}{" "}
                           {desireTokenInfo?.assetsChain}
                         </p>
                         {/* <p>{`($${(exchangeRate * desireTokenPrice).toFixed(
@@ -284,9 +287,9 @@ const Swap = () => {
                       <div className="w-fit flex flex-row items-center">
                         <div className="bg-itemForm rounded-lg p-2 flex flex-row items-center w-fit">
                           <img src={IcGas} alt="gas" className="w-4" />
-                          <p className="ml-1">{`$${(
-                            swapFee * sourceTokenPrice
-                          ).toFixed(6)}`}</p>
+                          <p className="ml-1">
+                            {swapFee.toFixed(6)} {sourceTokenInfo?.assetsChain}
+                          </p>
                         </div>
                         <img
                           src={showDetailInfo ? IcUp : IcDown}
@@ -309,17 +312,17 @@ const Swap = () => {
                     {amountOutMin} {desireTokenInfo?.assetsChain}
                   </p>
                 </div>
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                   <div className="flex space-x-2">
                     <p className="text-vbLine">Price Impact</p>
-                    {/* <img src={IcQuestionCircle} alt="" /> */}
+                    <img src={IcQuestionCircle} alt="" />
                   </div>
                   <p className="text-vbLine">
                     {" "}
                     {`-0.01% / -0.1 ${sourceTokenInfo?.assetsChain}`}{" "}
                   </p>
-                  {/* <p className="text-vbLine"> &lt; 0.01% </p> */}
-                </div>
+                  <p className="text-vbLine"> &lt; 0.01% </p>
+                </div> */}
                 <div className="flex justify-between">
                   <div className="flex space-x-2 w-full">
                     <p className="text-grey-3 min-w-fit">Slippage tolerance</p>

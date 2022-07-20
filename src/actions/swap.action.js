@@ -10,6 +10,7 @@ import ERC20ABI_VB from "../_contracts/assets/VB.json";
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
+  compareString,
   getDeadline,
   getDecimalForAsset,
   isContainVET,
@@ -122,21 +123,26 @@ export const checkExchangeRatePool = createAsyncThunk(
   ) => {
     const state = getState();
     const { web3 } = state.web3;
-    const { poolAddress, sourceTokenAddress, desireTokenAddress } =
-      state.swapAsset;
+    const { poolAddress } = state.swapAsset;
     if (web3 && ADDRESS_FACTORY) {
       const contractPair = new web3.eth.Contract(
         ERC20ABI_PAIR,
         assetsPoolAddress ? assetsPoolAddress : poolAddress
       );
       const reserves = await contractPair.methods.getReserves().call();
+      const addressToken1 = await contractPair.methods.token0().call();
+      const addressToken2 = await contractPair.methods.token1().call();
       const reserves1 = ethers.utils.formatUnits(
-        reserves?.[0],
-        getDecimalForAsset(tokenAddressA ? tokenAddressA : sourceTokenAddress)
+        compareString(addressToken1, tokenAddressA)
+          ? reserves?.[0]
+          : reserves?.[1],
+        getDecimalForAsset(tokenAddressA)
       );
       const reserves2 = ethers.utils.formatUnits(
-        reserves?.[1],
-        getDecimalForAsset(tokenAddressB ? tokenAddressB : desireTokenAddress)
+        compareString(addressToken2, tokenAddressB)
+          ? reserves?.[1]
+          : reserves?.[0],
+        getDecimalForAsset(tokenAddressB)
       );
       return { reserves1, reserves2 };
     }
@@ -360,7 +366,7 @@ export const onApproveTokenForAccount = createAsyncThunk(
         .request()
         .then(() => {
           amountMax = 1000000000;
-          dispatch(approveSuccess({accountApprove: amountMax}))
+          dispatch(approveSuccess({ accountApprove: amountMax }));
           dispatch(
             actions.alertActions.update(
               {
