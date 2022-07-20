@@ -26,7 +26,7 @@ const PoolRowAction = ({ assetsPoolAddress = "" }) => {
   );
 
   const showAmountUSD = () => {
-    if (amountTokenA && amountTokenB) {
+    if (amountTokenA > 0 && amountTokenB > 0) {
       return (amountTokenA / amountTokenB).toFixed(4);
     }
     return 0;

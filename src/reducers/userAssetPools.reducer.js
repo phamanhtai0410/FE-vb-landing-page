@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { shallowEqual } from "react-redux";
 
 const initialState = {
   addresses: [],
@@ -35,12 +36,20 @@ export default userAssetPools.reducer;
 
 export const { updateLiquidityPool, updateUserAssets } = userAssetPools.actions;
 
-export const selectUsersAddedPoolAddresses = (state) => {
-  const entities = state.userAssetPools.data;
-  return state.userAssetPools.addresses.filter(
-    (address) => entities[address].liquidityPool > 0
-  );
-};
+export const selectAllAddresses = (state) => state.userAssetPools.addresses;
+export const selectAllPoolBalance = (state) => state.userAssetPools.data;
+
+const _selectUsersAddedPoolAddresses = createSelector(
+  [selectAllAddresses, selectAllPoolBalance],
+  (addressList, data) =>
+    addressList.filter((address) => data[address]?.liquidityPool > 0),
+  {
+    equalityCheck: (prev, next) => prev.length === next.length,
+  }
+);
+
+export const selectUsersAddedPoolAddresses = state => _selectUsersAddedPoolAddresses(state);
+
 export const selectUserPoolAssetByPoolAddress = (state, poolAddress) =>
   state.userAssetPools.data[poolAddress];
 export const selectUserLiquidityPoolByPoolAddress = (state, poolAddress) =>
