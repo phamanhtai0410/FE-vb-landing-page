@@ -17,7 +17,7 @@ const Asset = ({
   const assetInfo = useSelector(state => selectAssetByAddress(state, assetAddress));
 
   const onClickMaxButton = () => {
-    onVolumeChange(assetBalance);
+    onVolumeChange(assetBalance.toString());
   };
 
   const isBalanceAvailable = useMemo(
@@ -61,7 +61,7 @@ const Asset = ({
           value={volume}
           pattern="^[0-9]*\.?[0-9]*$"
           onChange={(e) => onVolumeChange(e.target.value)}
-          className="flex flex-1 px-4 py-6 focus:outline-none placeholder:text-vbDisableText font-poppins_medium text-2xl border-2 border-[#4F92A7] rounded-lg bg-transparent"
+          className="flex flex-1 pl-4 pr-20 py-6 focus:outline-none placeholder:text-vbDisableText font-poppins_medium text-2xl border-2 border-[#4F92A7] rounded-lg bg-transparent"
           type="text"
         />
         {assetInfo && (

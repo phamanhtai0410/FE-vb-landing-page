@@ -87,12 +87,12 @@ const FrmAddLiquidity = () => {
   // }, [firstTokenVolume?.current?.value, secondTokenVolume?.current?.value])
 
   return (
-    <div className="w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative z-50">
+    <div className="w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative">
       {/*Header*/}
       <GradientStrokeWrapper borderRadius="1rem" className="-z-10" />
       {step !== 1 && step !== 4 ? (
         <div className="flex flex-row flex-1 items-center justify-between">
-          <p className="font-poppins_medium text-white text-base">
+          <p className="font-poppins_bold text-white text-lg">
             You will receive
           </p>
           <img
@@ -219,9 +219,9 @@ const FrmAddLiquidity = () => {
 
         {/* STEP 2 */}
         <div className={`${step === 2 ? "" : "hidden"} flex flex-col`}>
-          <div className="flex flex-col space-y-6">
+          <div className="flex flex-col space-y-4">
             <div className="flex flex-row items-center">
-              <p className=" text-base font-poppins_medium mr-8">
+              <p className=" text-2xl font-poppins_medium mr-8">
                 {/*Minh said only PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER fractional digit*/}
                 {nFormatter(
                   liquidityEstimated,
@@ -229,17 +229,17 @@ const FrmAddLiquidity = () => {
                 )}
               </p>
               <div className="flex flex-row space-x-3">
-                <img src={firstTokenInfo?.icon} alt="" className="w-7 h-7" />
-                <img src={secondTokenInfo?.icon} alt="" className="w-7 h-7" />
+                <img src={firstTokenInfo?.icon} alt="" className="w-6 h-6" />
+                <img src={secondTokenInfo?.icon} alt="" className="w-6 h-6" />
               </div>
             </div>
-            <p className="text-xl">{`${firstTokenInfo?.assetsChain}/${secondTokenInfo?.assetsChain} Pool Tokens`}</p>
-            <p className="text-base text-justify font-poppins_light">
+            <p className="font-poppins_medium text-base">{`${firstTokenInfo?.assetsChain}/${secondTokenInfo?.assetsChain} Pool Tokens`}</p>
+            <p className="text-sm text-justify font-poppins_light text-[#7694DE]">
               Output is estimated. If the price changes by more than 0.5%, your
               transaction will be reverted.
             </p>
           </div>
-          <p className="mt-8 font-poppins text-xl">Price and pool share</p>
+          <p className="mt-8 font-poppins_bold text-base">Price and pool share</p>
           <div className="flex flex-col mt-4 px-4 py-6 space-y-4 liquid-wrapper">
             <div className="price-pool-share-row">
               <p className="font-poppins_light">{`${firstTokenInfo?.assetsChain} Deposited`}</p>

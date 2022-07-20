@@ -4,7 +4,7 @@ import { poolConstants } from "../constants";
 
 import ERC20ABI_PAIR from "../_contracts/pair.json";
 import ERC20ABI_FACTORY from "../_contracts/factory.json";
-import { getDecimalForAsset } from "../utils/lib";
+import { compareString, getDecimalForAsset } from "../utils/lib";
 import PartialConstants from "../constants/partial.constants";
 import * as actions from "./index";
 
@@ -44,7 +44,7 @@ export const getPoolAssets = () => async (dispatch, getState) => {
           contractPair.events.Approval?.().removeAllListeners?.();
           contractPair.events.Approval?.().on("data", async (data) => {
             console.log("🐶🐶  ~ contractPair.events.Approval?. ~ data", data);
-            if (data.returnValues?.owner.toLowerCase?.() === account) {
+            if (compareString(data.returnValues?.owner ?? "", account)) {
               const balanceBigN = await contractPair.methods
                 .balanceOf(account)
                 .call();
@@ -76,10 +76,7 @@ export const getPoolAssets = () => async (dispatch, getState) => {
               data
             );
             const { from, to } = data.returnValues;
-            if (
-              from.toLowerCase() === account.toLowerCase() ||
-              to.toLowerCase() === account.toLowerCase()
-            ) {
+            if (from.equals(account) || to.equals(account)) {
               const { amountTokenA, amountTokenB, liquidityPool } =
                 await getUserTokenAmounts({
                   contractPair,
@@ -96,7 +93,7 @@ export const getPoolAssets = () => async (dispatch, getState) => {
                   amountTokenB,
                 })
               );
-              const isUserReceiving = to?.toLowerCase() === account;
+              const isUserReceiving = to?.equals(account);
               dispatch(
                 actions.alertActions.success({
                   title: isUserReceiving
@@ -107,10 +104,6 @@ export const getPoolAssets = () => async (dispatch, getState) => {
               );
             }
           });
-          console.log(
-            "🐶🐶  ~ contractPair.events.Transfer ~ contractPair.events.Transfer().countListener",
-            contractPair.events.Transfer().listenerCount?.()
-          );
         }
 
         //Lấy tổng liquidity
@@ -205,10 +198,10 @@ export const getUserTokenAmounts = async ({
   addressTokenA,
   addressTokenB,
 }) => {
-  if (!contractPair) throw new Error('contractPair is missing');
-  else if (!account) throw new Error('account is missing');
-  else if (!addressTokenA) throw new Error('addressTokenA is missing');
-  else if (!addressTokenB) throw new Error('addressTokenB is missing');
+  if (!contractPair) throw new Error("contractPair is missing");
+  else if (!account) throw new Error("account is missing");
+  else if (!addressTokenA) throw new Error("addressTokenA is missing");
+  else if (!addressTokenB) throw new Error("addressTokenB is missing");
 
   let amountTokenA = 0;
   let amountTokenB = 0;
