@@ -92,7 +92,7 @@ const FrmAddLiquidity = () => {
       <GradientStrokeWrapper borderRadius="1rem" className="-z-10" />
       {step !== 1 && step !== 4 ? (
         <div className="flex flex-row flex-1 items-center justify-between">
-          <p className="font-poppins_medium text-white text-3xl">
+          <p className="font-poppins_medium text-white text-base">
             You will receive
           </p>
           <img
@@ -138,13 +138,13 @@ const FrmAddLiquidity = () => {
             <img
               src={IcSettingWhite}
               alt="Setting"
-              className="w-8 h-8 cursor-pointer"
+              className="w-7 h-7 cursor-pointer"
               // onClick={closeModal}
             />
             <img
               src={IcHistoryWhite}
               alt="History"
-              className="w-8 h-8 cursor-pointer"
+              className="w-7 h-7 cursor-pointer"
               // onClick={closeModal}
             />
           </div>
@@ -167,7 +167,7 @@ const FrmAddLiquidity = () => {
           <img
             src={IcPlusGradient}
             alt="Add"
-            className="w-8 h-8 mt-4 self-center"
+            className="w-7 h-7 mt-4 self-center"
           />
           <Asset
             assetAddress={secondToken}
@@ -221,7 +221,7 @@ const FrmAddLiquidity = () => {
         <div className={`${step === 2 ? "" : "hidden"} flex flex-col`}>
           <div className="flex flex-col space-y-6">
             <div className="flex flex-row items-center">
-              <p className=" text-4xl font-poppins_medium mr-8">
+              <p className=" text-base font-poppins_medium mr-8">
                 {/*Minh said only PartialConstants.DEFAULT_FORMAT_FLOATING_NUMBER fractional digit*/}
                 {nFormatter(
                   liquidityEstimated,
@@ -229,8 +229,8 @@ const FrmAddLiquidity = () => {
                 )}
               </p>
               <div className="flex flex-row space-x-3">
-                <img src={firstTokenInfo?.icon} alt="" className="w-8 h-8" />
-                <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
+                <img src={firstTokenInfo?.icon} alt="" className="w-7 h-7" />
+                <img src={secondTokenInfo?.icon} alt="" className="w-7 h-7" />
               </div>
             </div>
             <p className="text-xl">{`${firstTokenInfo?.assetsChain}/${secondTokenInfo?.assetsChain} Pool Tokens`}</p>
@@ -240,12 +240,12 @@ const FrmAddLiquidity = () => {
             </p>
           </div>
           <p className="mt-8 font-poppins text-xl">Price and pool share</p>
-          <div className="flex flex-col mt-4 px-4 py-6 space-y-[1.75rem] liquid-wrapper">
+          <div className="flex flex-col mt-4 px-4 py-6 space-y-4 liquid-wrapper">
             <div className="price-pool-share-row">
               <p className="font-poppins_light">{`${firstTokenInfo?.assetsChain} Deposited`}</p>
               <div className="flex flex-row items-center space-x-4">
-                <img src={firstTokenInfo?.icon} alt="" className="w-8 h-8" />
-                <span className="font-poppins_semi_bold text-2xl">
+                <img src={firstTokenInfo?.icon} alt="" className="w-6 h-6" />
+                <span className="font-poppins_semi_bold text-base">
                   {firstTokenVolume > 1
                     ? numberWithCommas(
                         nFormatter(
@@ -263,8 +263,8 @@ const FrmAddLiquidity = () => {
             <div className="price-pool-share-row">
               <p className="font-poppins_light">{`${secondTokenInfo?.assetsChain} Deposited`}</p>
               <div className="flex flex-row items-center space-x-4">
-                <img src={secondTokenInfo?.icon} alt="" className="w-8 h-8" />
-                <span className="font-poppins_semi_bold text-2xl">
+                <img src={secondTokenInfo?.icon} alt="" className="w-6 h-6" />
+                <span className="font-poppins_semi_bold text-base">
                   {secondTokenVolume > 1
                     ? numberWithCommas(
                         nFormatter(
