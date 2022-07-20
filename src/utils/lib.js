@@ -1,7 +1,7 @@
+/* eslint-disable no-extend-native */
 import { ethers } from "ethers";
 import PartialConstants from "../constants/partial.constants";
 import { v4 as uuidv4 } from "uuid";
-import { address } from "thor-devkit";
 
 var CryptoJS = require("crypto-js");
 
@@ -9,9 +9,16 @@ export function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-// eslint-disable-next-line no-extend-native
 String.prototype.isMatch = function (pattern) {
   return pattern.test(this);
+};
+/**
+ * This function is used to compare ignore cases of string.
+ * @param {otherString} otherString is the string that need to be compared with this string
+ * @returns true if the string is equal, false if it's not.
+ */
+String.prototype.equals = function (otherString) {
+  return this.toLowerCase() === otherString.toLowerCase();
 };
 
 export const getDeadline = () => Math.round(new Date().getTime() / 1000) + 3600;
@@ -132,4 +139,4 @@ export const addressWalletCompact = (address) => {
 };
 export const compareString = (a, b) => {
   return a.toString().toLowerCase() === b.toString().toLowerCase();
-}
+};

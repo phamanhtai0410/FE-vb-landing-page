@@ -14,7 +14,7 @@ const PoolRowAction = ({ assetsPoolAddress = "" }) => {
 
   const userLiquidity = useSelector((state) =>
     selectUserLiquidityPoolByPoolAddress(state, assetsPoolAddress ?? "")
-  );
+  ) ?? 0;
   const amountTokenA = useSelector((state) =>
     selectUserAmountAByPoolAddress(state, assetsPoolAddress ?? "")
   );
@@ -43,7 +43,7 @@ const PoolRowAction = ({ assetsPoolAddress = "" }) => {
             ${nFormatter(showAmountUSD(), 2)}
           </div>
           <div className="font-montserrat text-[16px] text-[#3EE8FF]">
-            {userLiquidity || 0.0} LP
+            {userLiquidity || 0} LP
           </div>
         </div>
 
@@ -64,8 +64,8 @@ const PoolRowAction = ({ assetsPoolAddress = "" }) => {
             Your Share
           </label>
           <div className="font-montserrat text-[16px] text-[#3EE8FF]">
-            {poolInfo.liquidity > 0
-              ? nFormatter((userLiquidity * 100) / poolInfo.liquidity, 2)
+            {poolInfo?.liquidity > 0
+              ? nFormatter((userLiquidity * 100) / poolInfo?.liquidity, 2)
               : 0}
             %
           </div>
