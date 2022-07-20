@@ -47,7 +47,6 @@ export const getMarketAssets = (isCurrentUSD) => async (dispatch, getState) => {
 
             const getReserveData = await contractAAVE.methods.getReserveData(item.assetsAddress).call();
 
-            console.log(getReserveData);
             const {
                 variableBorrowRate,
                 stableBorrowRate,
