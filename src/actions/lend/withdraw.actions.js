@@ -50,6 +50,10 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
         console.log("getUserReserveData", accountReserve);
 
+        const getReserveData = await contractAAVE.methods.getReserveData(dataToken.assetsAddress).call();
+
+        const totalCollateralPool = getReserveData.totalAToken - (getReserveData.totalStableDebt  + getReserveData.totalVariableDebt)
+
         const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
         const accountData = await contractPOOL.methods.getUserAccountData(account).call();
         console.log("getUserAccountData",accountData);
@@ -58,19 +62,18 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
         if (accountReserve.currentATokenBalance) {
             accountBalance = ethers.utils.formatUnits(accountReserve.currentATokenBalance, dataToken.assetsDecimals);
             if(accountData && accountData.availableBorrowsBase){
-                let amountMaxWithdrow = accountData.totalCollateralBase - (accountData.totalDebtBase /accountData.ltv);
+
+                //let amountWithdrow = accountData.totalCollateralBase - (accountData.totalDebtBase /accountData.ltv);
+                let amountWithdrow = accountReserve.currentATokenBalance - accountData.totalCollateralBase ;
           
-                amountMaxWithdrow = amountMaxWithdrow * dataPrice[dataToken.assetsAddress];
-                amountMaxWithdrow = amountMaxWithdrow.toLocaleString('fullwide', {useGrouping:false});
+                amountWithdrow = amountWithdrow.toLocaleString('fullwide', {useGrouping:false});
+                console.log("amountMaxWithdrow",amountWithdrow);
 
-                console.log("amountMaxWithdrow",amountMaxWithdrow);
-                console.log("currentATokenBalance",accountReserve.currentATokenBalance);
-                
-                if( amountMaxWithdrow < Number(accountReserve.currentATokenBalance )){
-                    accountBalance = ethers.utils.formatUnits(amountMaxWithdrow, dataToken.assetsDecimals);
+                if( amountWithdrow > Number(totalCollateralPool )){
+                    accountBalance = ethers.utils.formatUnits(totalCollateralPool, dataToken.assetsDecimals);
                    // accountBalance = accountBalance * dataPrice[dataToken.assetsAddress];
-
                 }
+                
             }
         }
 
