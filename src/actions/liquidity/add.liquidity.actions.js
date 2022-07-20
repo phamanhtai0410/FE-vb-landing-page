@@ -406,14 +406,14 @@ export const addLiquidity = createAsyncThunk(
           address: secondToken,
           amountTokenDesired: amountB,
           amountTokenMin: amountBMin,
-          amountETHMin: amountAMin,
+          amountETHMin: amountA,
         };
       } else {
         tokenDesired = {
           address: firstToken,
           amountTokenDesired: amountA,
           amountTokenMin: amountAMin,
-          amountETHMin: amountBMin,
+          amountETHMin: amountB,
         };
       }
 
