@@ -20,6 +20,7 @@ import {
   isContainVET,
 } from "../../utils/lib";
 import assert from "assert";
+import PartialConstants from "../../constants/partial.constants";
 
 const ADDRESS_ROUTER = process.env.REACT_APP_ADDRESS_ROUTER;
 const ADDRESS_FACTORY = process.env.REACT_APP_ADDRESS_FACTORY;
@@ -227,10 +228,11 @@ export const loadDetailAddLiquidity = createAsyncThunk(
     let abExchangeRate, baExchangeRate;
 
     if (firstTokenAddress && secondTokenAddress) {
-      const assetsDecimal = getDecimalForAssetPair(
-        firstTokenAddress,
-        secondTokenAddress
-      );
+      const assetsDecimal = PartialConstants.DEFAULT_ASSET_DECIMAL;
+      // getDecimalForAssetPair(
+      //   firstTokenAddress,
+      //   secondTokenAddress
+      // );
 
       let contractFactory = new web3.eth.Contract(
         ERC20ABI_FACTORY,
