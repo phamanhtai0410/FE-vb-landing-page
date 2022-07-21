@@ -24,7 +24,6 @@ const amountMaxApprove = 9999999999;
  * 
  */
 export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
-    console.log("loadModalWithdraw",dataToken);
 
     const state = getState();
     const { web3, account } = state.web3;
