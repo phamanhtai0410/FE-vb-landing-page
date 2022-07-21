@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers, FixedNumber } from "ethers";
 
 import { poolConstants } from "../constants";
 
@@ -216,12 +216,14 @@ export const getUserTokenAmounts = async ({
       balanceBigN,
       PartialConstants.DEFAULT_ASSET_DECIMAL
     );
+    liquidityPool = FixedNumber.from(liquidityPool);
     totalSupply = await contractPair.methods.totalSupply().call();
     if (totalSupply) {
       totalSupply = ethers.utils.formatUnits(
         totalSupply,
         PartialConstants.DEFAULT_ASSET_DECIMAL
       );
+      totalSupply = FixedNumber.from(totalSupply);
     }
 
     let { 0: _reserve0, 1: _reserve1 } = await contractPair.methods
@@ -238,25 +240,32 @@ export const getUserTokenAmounts = async ({
       _reserve0,
       getDecimalForAsset(addressTokenA)
     );
+    _reserve0 = FixedNumber.from(_reserve0);
     _reserve1 = ethers.utils.formatUnits(
       _reserve1,
       getDecimalForAsset(addressTokenB)
     );
+    _reserve1 = FixedNumber.from(_reserve1);
     if (liquidityPool >= 0 && totalSupply > 0) {
       // amountTokenA = (BigNumber.from(liquidityPool)
       //   .mul(BigNumber.from(formattedReserve0))
       //   .div(BigNumber.from(totalLP))).toString();
-      amountTokenA = (liquidityPool * _reserve0) / totalSupply;
+      amountTokenA = liquidityPool.mulUnsafe(_reserve0).divUnsafe(totalSupply);
       // amountTokenB = (BigNumber.from(liquidityPool)
       //   .mul(BigNumber.from(formattedReserve1))
       //   .div(BigNumber.from(totalLP))).toString();
-      amountTokenB = (liquidityPool * _reserve1) / totalSupply;
+      amountTokenB = liquidityPool.mulUnsafe(_reserve1).divUnsafe(totalSupply);
     }
     [reserve1, reserve2] = [_reserve0, _reserve1];
+    amountTokenA = amountTokenA.toString();
+    amountTokenB = amountTokenB.toString();
+    liquidityPool = liquidityPool.toString();
+    totalSupply = totalSupply.toString();
+    reserve1 = reserve1.toString();
+    reserve2 = reserve2.toString();
   } catch (error) {
     console.error(error);
   }
-
   return {
     amountTokenA,
     amountTokenB,

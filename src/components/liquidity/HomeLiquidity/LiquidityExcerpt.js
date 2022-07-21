@@ -58,7 +58,7 @@ const LiquidityExcerpt = ({ poolAddress, poolSelect, setPoolSelect }) => {
             <p className="font-poppins_semi_bold text-xl">{`${poolInfo?.assetsChainA}/${poolInfo?.assetsChainB}`}</p>
           </div>
           <p className="w-2/3 text-xl text-grey-2 font-poppins_light">
-            {nFormatter(userLiquidity, 5)}
+            {nFormatter(userLiquidity, 8)}
           </p>
         </div>
         <img

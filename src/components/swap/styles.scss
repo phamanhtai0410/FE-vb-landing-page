@@ -1,10 +1,10 @@
 .more__info__hidden {
-  max-height: 56px;
-  transition: max-height 1s;
+  max-height: 0px;
+  transition: max-height 1.2s;
 }
 .more__info__show {
   max-height: 300px;
-  transition: max-height 1s;
+  transition: max-height 1.2s;
 }
 .loading {
     width: 16px;
@@ -27,9 +27,9 @@
   }
 
 .loading__exchange__rate {
-    width: 24px;
-    height: 24px;
-    border: solid 2px white;
+    width: 20px;
+    height: 20px;
+    border: solid 2px #02A4FF;
     border-radius: 50%;
     border-right-color: transparent;
     border-bottom-color: transparent;

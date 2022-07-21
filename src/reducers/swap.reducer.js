@@ -186,9 +186,7 @@ const swapAssetSlice = createSlice({
       .addCase(checkTotalSupplyAvailable.fulfilled, (state, action) => {
         state.totalSupply = action.payload.totalSupply;
         state.isSwap = action.payload.isSwap;
-        if (state.emptyAddress) {
-          state.poolErr = action.payload.poolErr;
-        }
+        state.poolErr = action.payload.poolErr;
       });
   },
 });

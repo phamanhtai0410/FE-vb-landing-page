@@ -7,6 +7,7 @@ import IcDown from "../../assets/images/down_fill.svg";
 import IcUp from "../../assets/images/up_fill.svg";
 import IcDropDown from "../../assets/images/ic_dropdown.svg";
 import IcReload from "../../assets/images/ic_reload.svg";
+import IcLoading from "../../assets/images/loading_swap.svg";
 import IcSetting from "../../assets/images/buttons/ic_setting_outline.svg";
 // import IcQuestionCircle from "../../assets/images/ic_question_circle.svg";
 import IcQuestionCircleYellow from "../../assets/images/question_circle_yellow.svg";
@@ -37,7 +38,7 @@ const Swap = () => {
     inputSlippage,
     sourceTokenInfo,
     desireTokenInfo,
-    sourceTokenPrice,
+    // sourceTokenPrice,
     // desireTokenPrice,
     sourceTokenBalance,
     desireTokenBalance,
@@ -91,14 +92,14 @@ const Swap = () => {
   };
 
   return (
-    <div className="flex flex-col p-2 space-y-4">
+    <div className="flex flex-col space-y-4">
       <div className="flex justify-between w-full">
         <h2 className="font-poppins_semi_bold text-xl">Swap</h2>
         <div className="flex space-x-2 items-center">
           {loadingExchangeRate ? (
             <div className="loading__exchange__rate" />
           ) : (
-            <img src={IcReload} alt="Refresh" />
+            <img src={IcLoading} alt="Refresh" />
           )}
           <img className="cursor-pointer" src={IcSetting} alt="" />
         </div>
@@ -248,58 +249,76 @@ const Swap = () => {
 
       <div className="col-x-center justify-center space-y-4">
         {userInputRef.current !== "" && !isSwapSuccess && !emptyAddress && (
-          <div className="flex flex-col w-full space-y-4">
+          <div className="flex flex-col w-full space-y-2">
+            <button
+              onClick={onShowDetailInfo}
+              className="px-4 h-12 text-sm w-full rounded-lg bg-transparent border-[1px] border-vbDisableText"
+            >
+              <div className="flex flex-row justify-start items-center">
+                {loadingGetAmountOut || loadingGetAmountIn ? (
+                  <div className="loading mr-2" />
+                ) : (
+                  <img src={IcReload} alt="Refresh" className="w-4 h-4 mr-2" />
+                )}
+                {loadingGetAmountOut || loadingGetAmountIn ? (
+                  <p>Fetching price...</p>
+                ) : (
+                  <div className="w-full flex flex-row items-center justify-between">
+                    <div className="row-center space-x-2 w-fit group relative">
+                      <p className="sm:flex hidden ">
+                        1 {sourceTokenInfo?.assetsChain} ={" "}
+                        {exchangeRate.toString().split(".")[1].length >= 18
+                          ? `${exchangeRate.toFixed(18)}...`
+                          : exchangeRate}{" "}
+                        {desireTokenInfo?.assetsChain}
+                      </p>
+                      <p className="sm:hidden flex">
+                        1 {sourceTokenInfo?.assetsChain} ={" "}
+                        {exchangeRate.toString().length >= 18
+                          ? `${exchangeRate.toFixed(6)}...`
+                          : exchangeRate}{" "}
+                        {desireTokenInfo?.assetsChain}
+                      </p>
+                      <div class="absolute bottom-0 right-[-24px] flex-col items-center hidden mb-6 group-hover:flex">
+                        <span class="relative z-10 px-2 py-3 text-xs leading-none text-white whitespace-no-wrap border-[1px] border-vbDisableText bg-itemForm rounded-lg shadow-lg">
+                          {exchangeRate} {desireTokenInfo?.assetsChain}
+                        </span>
+                        <div class="w-3 h-3 -mt-2 rotate-45 bg-itemForm  border-[1px] border-vbDisableText"></div>
+                      </div>
+                      {/* <p>{`($${(exchangeRate * desireTokenPrice).toFixed(
+                        3
+                      )})`}</p> */}
+                    </div>
+                    <div className="sm:max-w-[156px] w-fit max-w-[162px] flex flex-row items-center justify-end">
+                      <div className="bg-itemForm rounded-lg p-2 flex flex-row items-center w-fit group relative">
+                        <img src={IcGas} alt="gas" className="w-4" />
+                        <p className="ml-1">
+                          {swapFee.toFixed(6)}
+                          {"... "} {sourceTokenInfo?.assetsChain}
+                        </p>
+                        <div class="absolute bottom-0 flex-col items-center hidden mb-6 group-hover:flex">
+                          <span class="relative z-10 px-2 py-3 text-xs leading-none text-white whitespace-no-wrap border-[1px] border-vbDisableText bg-itemForm rounded-lg shadow-lg">
+                            {swapFee} {sourceTokenInfo?.assetsChain}
+                          </span>
+                          <div class="w-3 h-3 -mt-2 rotate-45 bg-itemForm  border-[1px] border-vbDisableText"></div>
+                        </div>
+                      </div>
+                      <img
+                        src={showDetailInfo ? IcUp : IcDown}
+                        alt="IcDown"
+                        className="w-4 ml-2"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </button>
             <div
               className={`${
                 showDetailInfo ? "more__info__show" : "more__info__hidden"
               } h-fit w-full overflow-hidden`}
             >
-              <button
-                onClick={onShowDetailInfo}
-                className="px-4 h-12 text-sm w-full rounded-lg bg-transparent border-[1px] border-vbDisableText"
-              >
-                <div className="flex flex-row justify-start items-center">
-                  {loadingGetAmountOut || loadingGetAmountIn ? (
-                    <div className="loading mr-2" />
-                  ) : (
-                    <img
-                      src={IcReload}
-                      alt="Refresh"
-                      className="w-4 h-4 mr-2"
-                    />
-                  )}
-                  {loadingGetAmountOut || loadingGetAmountIn ? (
-                    <p>Fetching price...</p>
-                  ) : (
-                    <div className="w-full flex flex-row items-center justify-between">
-                      <div className="row-center space-x-2">
-                        <p>
-                          1 {sourceTokenInfo?.assetsChain} = {exchangeRate}{" "}
-                          {desireTokenInfo?.assetsChain}
-                        </p>
-                        {/* <p>{`($${(exchangeRate * desireTokenPrice).toFixed(
-                        3
-                      )})`}</p> */}
-                      </div>
-                      <div className="w-fit flex flex-row items-center">
-                        <div className="bg-itemForm rounded-lg p-2 flex flex-row items-center w-fit">
-                          <img src={IcGas} alt="gas" className="w-4" />
-                          <p className="ml-1">{`$${(
-                            swapFee * sourceTokenPrice
-                          ).toFixed(6)}`}</p>
-                        </div>
-                        <img
-                          src={showDetailInfo ? IcUp : IcDown}
-                          alt="IcDown"
-                          className="w-4 ml-2"
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </button>
-
-              <div className="mt-4 px-4 py-5 space-y-4 rounded-lg border border-vbDisableText">
+              <div className="px-4 py-5 space-y-4 rounded-lg border border-vbDisableText my-2">
                 <div className="flex justify-between">
                   <div className="flex space-x-2">
                     <p className="text-grey-3">Minimum receive</p>
@@ -309,29 +328,36 @@ const Swap = () => {
                     {amountOutMin} {desireTokenInfo?.assetsChain}
                   </p>
                 </div>
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                   <div className="flex space-x-2">
                     <p className="text-vbLine">Price Impact</p>
-                    {/* <img src={IcQuestionCircle} alt="" /> */}
+                    <img src={IcQuestionCircle} alt="" />
                   </div>
                   <p className="text-vbLine">
                     {" "}
                     {`-0.01% / -0.1 ${sourceTokenInfo?.assetsChain}`}{" "}
                   </p>
-                  {/* <p className="text-vbLine"> &lt; 0.01% </p> */}
-                </div>
-                <div className="flex justify-between">
+                  <p className="text-vbLine"> &lt; 0.01% </p>
+                </div> */}
+                <div className="flex justify-between flex-row w-full items-center">
                   <div className="flex space-x-2 w-full">
                     <p className="text-grey-3 min-w-fit">Slippage tolerance</p>
                     {/* <img className="w-5" src={IcQuestionCircle} alt="" /> */}
                   </div>
-                  <div className="w-full flex flex-row justify-end">
+                  <div className="w-20 flex flex-row justify-end items-center">
                     <input
-                      className="bg-transparent w-fit py-[0.0625rem] rounded focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
+                      className="bg-transparent py-[0.0625rem] rounded focus:outline-none placeholder-vbDisableText font-poppins_medium text-base text-grey-1 text-right"
                       type="number"
                       min={0.1}
+                      max={100}
                       value={inputSlippage}
-                      onChange={(event) => setInputSlippage(event.target.value)}
+                      onChange={(event) => {
+                        if (event.target.value > 100) {
+                          setInputSlippage(100);
+                        } else {
+                          setInputSlippage(event.target.value);
+                        }
+                      }}
                       placeholder="0.1"
                     />
                     <p className="ml-1">%</p>
@@ -383,7 +409,7 @@ const Swap = () => {
             )}
           </div>
         )}
-        {!account && <BtnConnectInPage className="w-full btn-veb h-12 mt-4" />}
+        {!account && <BtnConnectInPage className="w-full btn-veb h-12" />}
         {/* (
           <button
             className="btn-veb h-12 text-sm bg-btn-veb-disabled border-[1px] border-[#4B5C86]"
