@@ -24,6 +24,7 @@ const amountMaxApprove = 9999999999;
  * 
  */
 export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
+    console.log("loadModalWithdraw",dataToken);
 
     const state = getState();
     const { web3, account } = state.web3;
@@ -48,34 +49,49 @@ export const loadModalWithdraw = (dataToken) => async (dispatch, getState) => {
 
         let contractAAVE = new web3.eth.Contract(ERC20ABI_AAVE, TOKEN_AAVE);
         const accountReserve = await contractAAVE.methods.getUserReserveData(dataToken.assetsAddress, account).call();
-        //console.log("getUserReserveData",accountReserve);
+       // accountBalance = ethers.utils.formatEther(accountReserve.currentATokenBalance); 
+        console.log("getUserReserveData",accountReserve);
 
-        // const getReserveData = await contractAAVE.methods.getReserveData(dataToken.assetsAddress).call();
+        const getReserveData = await contractAAVE.methods.getReserveData(dataToken.assetsAddress).call();
+        console.log("getReserveData",getReserveData);
 
-        let totalCollateralPool = accountReserve.currentATokenBalance - (accountReserve.currentStableDebt  + accountReserve.currentVariableDebt);
-        //let totalCollateralPool = getReserveData.totalAToken - (getReserveData.totalStableDebt  + getReserveData.totalVariableDebt)
-        totalCollateralPool = totalCollateralPool.toLocaleString('fullwide', {useGrouping:false});
-        totalCollateralPool = ethers.utils.formatEther(totalCollateralPool);
-        //console.log("totalCollateralPool",totalCollateralPool);
+        //let totalUserCollateralPool = accountReserve.currentATokenBalance - (accountReserve.currentStableDebt  + accountReserve.currentVariableDebt);
+        let totalUserCollateralPool = getReserveData.totalAToken - (getReserveData.totalStableDebt  + getReserveData.totalVariableDebt)
+        totalUserCollateralPool = totalUserCollateralPool.toLocaleString('fullwide', {useGrouping:false});
+        totalUserCollateralPool = ethers.utils.formatUnits(totalUserCollateralPool, dataToken.assetsDecimals);
 
         const contractPOOL = new web3.eth.Contract(ERC20ABI_POOL, ADDRESS_POOL);
         const accountData = await contractPOOL.methods.getUserAccountData(account).call();
+        console.log("getUserAccountData",accountData);
         
         // get balance A Token your account withdrawal is allowed
         if (accountReserve.currentATokenBalance) {
-            //accountBalance = ethers.utils.formatUnits(accountReserve.currentATokenBalance, dataToken.assetsDecimals);
+            accountBalance = ethers.utils.formatUnits(accountReserve.currentATokenBalance, dataToken.assetsDecimals);
             if(accountData && accountData.availableBorrowsBase){
 
-                let amountWithdraw = accountData.totalCollateralBase - (accountData.totalDebtBase /(accountData.ltv/10000));
+                // totalUserCollateralPool : Tổng số lượng amoun withdraw đang có
+                // totalUserWithdraw : Tổng số lượng user có thể withdraw
 
-                amountWithdraw = amountWithdraw.toLocaleString('fullwide', {useGrouping:false});
-                amountWithdraw = ethers.utils.formatEther(amountWithdraw) / dataPrice[dataToken.assetsAddress];
+                let totalUserWithdraw = accountData.totalCollateralBase - (accountData.totalDebtBase /(accountData.ltv/10000));
+                totalUserWithdraw = totalUserWithdraw.toLocaleString('fullwide', {useGrouping:false});
+                totalUserWithdraw = ethers.utils.formatEther(totalUserWithdraw) / dataPrice[dataToken.assetsAddress];
 
-                if( amountWithdraw > Number(totalCollateralPool)){
-                    accountBalance = totalCollateralPool;
-                }else{
-                    accountBalance = amountWithdraw;
+                // console.log("currentATokenBalance", accountBalance);
+                // console.log("totalUserWithdraw", totalUserWithdraw);
+                // console.log("totalUserCollateralPool", totalUserCollateralPool);
+
+                if(totalUserWithdraw > 0){ // lúc nay
+                    if(totalUserWithdraw < Number(totalUserCollateralPool)){
+                        accountBalance = totalUserWithdraw;
+                    }
                 }
+
+                if(accountBalance > totalUserCollateralPool){ // pool khong đủ cung cấp
+                    accountBalance = totalUserCollateralPool;
+                }
+
+
+                console.log("accountBalance",accountBalance);
                 
             }
         }
