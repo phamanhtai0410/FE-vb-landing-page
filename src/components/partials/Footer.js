@@ -55,6 +55,14 @@ const Footer = () => {
       setShowMore(title);
     }
   }
+  
+  window.addEventListener('mouseup', function(event){
+    const ignoreMe = document.getElementById("show-more");
+    if (event.target !== ignoreMe && event.target.parentNode !== ignoreMe){
+      setShowMore("");
+    }
+  });
+
   return (
 
     <footer>
@@ -125,7 +133,7 @@ const Footer = () => {
               <span className="font-poppins_semi_bold text-lg text-[#39C5F1]">COMMUNITY</span>
               <div className="flex flex-col space-y-4 mt-6">
                 {communities.map((item, index) => (
-                  <div className="relative flex flex-row items-center space-x-3 cursor-pointer" onClick={() => showSocialDetai(item.title)}>
+                  <div id="show-more" className="relative flex flex-row items-center space-x-3 cursor-pointer" onClick={() => showSocialDetai(item.title)}>
                     <img src={item.icon} alt={item.title} />
                     {item?.link ? 
                     <a

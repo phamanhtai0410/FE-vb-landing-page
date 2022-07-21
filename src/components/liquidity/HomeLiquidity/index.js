@@ -24,7 +24,7 @@ const Liquidity = () => {
     setPoolSelect(poolAddress);
   }
   return (
-    <div className="w-full lg:w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative">
+    <div className="w-full lg:w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative z-0">
       {/*Header*/}
       <GradientStrokeWrapper borderRadius="1rem" className="-z-10" />
 

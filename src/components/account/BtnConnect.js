@@ -51,7 +51,11 @@ const BtnConnect = () => {
     copyTextToClipboard(account)
       .then(() => {
         // If successful, update the isCopied state value
-        dispatch(actions.alertActions.success("Copied"));
+        dispatch(
+          actions.alertActions.success({
+            title: "Copied"
+          })
+        );
       })
       .catch((err) => {
         console.log(err);

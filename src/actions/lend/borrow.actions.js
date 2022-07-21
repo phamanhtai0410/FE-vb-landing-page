@@ -58,7 +58,6 @@ export const loadModalBorrow = (dataToken) => async (dispatch, getState) => {
     if(contractPOOL){
 
         const accountData = await contractPOOL.methods.getUserAccountData(account).call();
-        console.log("getUserAccountData",accountData);
 
         if (accountData.availableBorrowsBase) {
             accountBalance = ethers.utils.formatUnits(accountData.availableBorrowsBase, 18);

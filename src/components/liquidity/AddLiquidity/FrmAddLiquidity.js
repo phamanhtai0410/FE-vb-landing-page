@@ -87,7 +87,7 @@ const FrmAddLiquidity = () => {
   // }, [firstTokenVolume?.current?.value, secondTokenVolume?.current?.value])
 
   return (
-    <div className="w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative">
+    <div className="w-[500px] rounded-2xl p-10 bg-[#182233] mx-auto relative z-0">
       {/*Header*/}
       <GradientStrokeWrapper borderRadius="1rem" className="-z-10" />
       {step !== 1 && step !== 4 ? (
